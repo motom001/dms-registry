@@ -33,5 +33,5 @@ jobs:
       - name: Signed-off-by in allen Commits des Pull Requests
         if: github.event_name == 'pull_request'
         run: |
-          fehlt=$(git log --format='%H %s%n%b%n--ENDE--' origin/${{ github.base_ref }}..HEAD | awk '/^[0-9a-f]{40} /{c=$1; ok=0} /^Signed-off-by: /{ok=1} /^--ENDE--$/{ if(!ok) print c }')
+          fehlt=$(git log --no-merges --format='%H %s%n%b%n--ENDE--' origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }} | awk '/^[0-9a-f]{40} /{c=$1; ok=0} /^Signed-off-by: /{ok=1} /^--ENDE--$/{ if(!ok) print c }')
           if [ -n "$fehlt" ]; then echo "::error::Commits ohne Signed-off-by (git commit -s): $fehlt"; exit 1; fi
