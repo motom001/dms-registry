@@ -1,0 +1,19 @@
+# Sichten dieses Pakets – erscheinen links in der Ablage. Schema: schema/inhalt.schema.json
+# eltern: lokaler Schlüssel einer anderen Sicht dieses Pakets (leer = oberste Ebene)
+# typen: lokale Schlüssel der Mappentypen (oder <paket>:<schluessel>)
+# bedingungen: gelten zusammen (UND); Operatoren wie in der Werkbank, z. B. gleich, enthaelt,
+#   kleiner, groesser, zwischen, imZeitraum, einerVon, zeigtAuf, leer, nichtLeer, ja, nein
+
+- schluessel: beispiele
+  name: Beispiele
+  beschreibung: Alle Beispiele
+  typen: [beispiel]
+
+- schluessel: beispiele_eins_zwei
+  name: Eins und Zwei
+  eltern: beispiele
+  typen: [beispiel]
+  bedingungen:
+    - feld: art
+      operator: einerVon
+      wert: [Eins, Zwei]

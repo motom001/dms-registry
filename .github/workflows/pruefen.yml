@@ -1,0 +1,37 @@
+# Prüft Vorlage und Pakete nach REGELN.md – bei jedem Pull Request und auf main.
+name: Pakete prüfen
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet pyyaml jsonschema
+      - name: Vorlage und Pakete prüfen
+        run: |
+          basis=""
+          if [ "${{ github.event_name }}" = pull_request ]; then basis="--basis origin/${{ github.base_ref }}"; fi
+          python3 werkzeuge/pruefen.py $basis
+      - name: Neues Paket aus der Vorlage lässt sich anlegen
+        run: |
+          werkzeuge/neues-paket.sh probe_paket "Probe"
+          sed -i 's/<Name>/CI/' pakete/probe_paket/LICENSE
+          python3 werkzeuge/pruefen.py pakete/probe_paket
+      - name: Signed-off-by in allen Commits des Pull Requests
+        if: github.event_name == 'pull_request'
+        run: |
+          fehlt=$(git log --format='%H %s%n%b%n--ENDE--' origin/${{ github.base_ref }}..HEAD | awk '/^[0-9a-f]{40} /{c=$1; ok=0} /^Signed-off-by: /{ok=1} /^--ENDE--$/{ if(!ok) print c }')
+          if [ -n "$fehlt" ]; then echo "::error::Commits ohne Signed-off-by (git commit -s): $fehlt"; exit 1; fi

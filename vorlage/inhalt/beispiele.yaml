@@ -1,0 +1,8 @@
+# Beispiel-Mappen (optional). Bei der Installation fragt das DMS, ob sie angelegt werden sollen.
+# Keine echten Daten!
+- typ: beispiel
+  werte:
+    bezeichnung: Erstes Beispiel
+    art: Eins
+    datum: "2027-01-31"
+    betrag: 12.5

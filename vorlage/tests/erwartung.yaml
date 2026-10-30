@@ -1,0 +1,5 @@
+# Was nach der Installation im DMS vorhanden sein muss. pruefen.py vergleicht das mit inhalt/;
+# sobald es die Paketverwaltung gibt, installiert die CI das Paket in ein echtes DMS und prüft dagegen.
+mappentypen: [beispiel]
+sichten: [beispiele, beispiele_eins_zwei]
+beispiele: 1
