@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/motom001/dms-registry/schema/manifest.schema.json",
+  "title": "manifest.yaml eines DMS-Pakets",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "name", "version", "beschreibung", "autor", "lizenz", "dms", "inhalt"],
+  "properties": {
+    "schema": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" },
+    "name": { "type": "string", "minLength": 2, "maxLength": 60 },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "beschreibung": { "type": "string", "minLength": 10, "maxLength": 300 },
+    "autor": {
+      "type": "object", "additionalProperties": false, "required": ["name", "github"],
+      "properties": { "name": { "type": "string" }, "github": { "type": "string", "pattern": "^[A-Za-z0-9-]+$" } }
+    },
+    "lizenz": {
+      "enum": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "MPL-2.0", "LGPL-3.0-or-later", "GPL-3.0-or-later", "AGPL-3.0-or-later", "CC0-1.0"]
+    },
+    "dms": { "type": "string", "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$" },
+    "abhaengigkeiten": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]{1,19}$" },
+      "additionalProperties": { "type": "string", "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$" }
+    },
+    "inhalt": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "mappentypen": { "type": "string" },
+        "sichten": { "type": "string" },
+        "rollen": { "type": "string" },
+        "beispiele": { "type": "string" }
+      }
+    },
+    "code": {
+      "type": "object", "additionalProperties": false, "required": ["sprache", "quelle", "rechte"],
+      "properties": {
+        "sprache": { "enum": ["rust", "go", "c", "assemblyscript", "javascript"] },
+        "quelle": { "type": "string" },
+        "ereignisse": { "type": "array", "items": { "type": "string", "pattern": "^[a-z]+\\.[a-z_]+$" }, "uniqueItems": true },
+        "rechte": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "lesen": { "type": "array", "items": { "type": "string" } },
+            "schreiben": { "type": "array", "items": { "type": "string" } },
+            "dokumente": { "enum": ["keine", "lesen", "schreiben"] }
+          }
+        },
+        "netz": { "type": "array", "items": { "type": "string", "pattern": "^https://[^/\\s]+" }, "uniqueItems": true },
+        "einstellungen": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["schluessel", "name", "typ"],
+            "properties": {
+              "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+              "name": { "type": "string" },
+              "typ": { "enum": ["text", "zahl", "janein", "auswahl", "geheim"] },
+              "optionen": { "type": "array", "items": { "type": "string" } },
+              "standard": {},
+              "pflicht": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/motom001/dms-registry/schema/inhalt.schema.json",
+  "title": "Inhalte eines DMS-Pakets (mappentypen.yaml, sichten.yaml, beispiele.yaml)",
+  "$defs": {
+    "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+    "typverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$" },
+    "feld": {
+      "type": "object", "required": ["key", "label", "typ"],
+      "properties": {
+        "key": { "$ref": "#/$defs/schluessel" },
+        "label": { "type": "string", "minLength": 1 },
+        "typ": { "enum": ["text", "langtext", "formatiert", "zahl", "betrag", "datum", "janein", "auswahl", "referenz", "passwort"] },
+        "pflicht": { "type": "boolean" }, "eindeutig": { "type": "boolean" }, "hilfe": { "type": "string" },
+        "standard": {}, "minLen": { "type": "integer" }, "maxLen": { "type": "integer" }, "muster": { "type": "string" },
+        "min": { "type": "number" }, "max": { "type": "number" }, "nachkomma": { "type": "integer" }, "waehrung": { "type": "string" },
+        "optionen": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "mehrfach": { "type": "boolean" },
+        "ziel": { "$ref": "#/$defs/typverweis" },
+        "verweisart": { "enum": ["zugehoerigkeit", "bezug"] },
+        "frist": { "type": "object", "required": ["vorlauf", "einheit"], "properties": { "vorlauf": { "type": "integer", "minimum": 0 }, "einheit": { "enum": ["tage", "wochen", "monate"] }, "wiederholung": { "type": "integer" } } }
+      },
+      "allOf": [
+        { "if": { "properties": { "typ": { "const": "auswahl" } } }, "then": { "required": ["optionen"] } },
+        { "if": { "properties": { "typ": { "const": "referenz" } } }, "then": { "required": ["ziel"] } }
+      ]
+    },
+    "register": {
+      "type": "object", "required": ["key", "name", "art"],
+      "properties": {
+        "key": { "$ref": "#/$defs/schluessel" }, "name": { "type": "string" },
+        "art": { "enum": ["felder", "dokumente", "verknuepfungen", "protokoll"] },
+        "felder": { "type": "array", "items": { "$ref": "#/$defs/schluessel" } },
+        "quellen": { "type": "array", "items": { "type": "object", "required": ["typ", "feld"], "properties": { "typ": { "$ref": "#/$defs/typverweis" }, "feld": { "$ref": "#/$defs/schluessel" } } } },
+        "volltext": { "type": "boolean" }
+      }
+    },
+    "mappentyp": {
+      "type": "object", "required": ["schluessel", "name", "beschreibung", "felder", "register"],
+      "properties": {
+        "schluessel": { "$ref": "#/$defs/schluessel" }, "name": { "type": "string" }, "beschreibung": { "type": "string" },
+        "titelVorlage": { "type": "string" },
+        "felder": { "type": "array", "items": { "$ref": "#/$defs/feld" } },
+        "register": { "type": "array", "items": { "$ref": "#/$defs/register" }, "minItems": 1 },
+        "trefferliste": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "sicht": {
+      "type": "object", "required": ["schluessel", "name"],
+      "properties": {
+        "schluessel": { "$ref": "#/$defs/schluessel" }, "name": { "type": "string" }, "beschreibung": { "type": "string" },
+        "eltern": { "$ref": "#/$defs/schluessel" },
+        "typen": { "type": "array", "items": { "$ref": "#/$defs/typverweis" } },
+        "bedingungen": { "type": "array", "items": { "type": "object", "required": ["feld", "operator"], "properties": { "feld": { "type": "string" }, "operator": { "type": "string" }, "wert": {} } } },
+        "trefferliste": { "type": "string" }
+      }
+    },
+    "beispiel": {
+      "type": "object", "required": ["typ", "werte"],
+      "properties": { "typ": { "$ref": "#/$defs/typverweis" }, "werte": { "type": "object" } }
+    }
+  },
+  "mappentypen": { "type": "array", "items": { "$ref": "#/$defs/mappentyp" } },
+  "sichten": { "type": "array", "items": { "$ref": "#/$defs/sicht" } },
+  "beispiele": { "type": "array", "items": { "$ref": "#/$defs/beispiel" } }
+}

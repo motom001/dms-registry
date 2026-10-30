@@ -1,0 +1,44 @@
+# Beschreibung des Pakets. Schema: schema/manifest.schema.json
+schema: 1
+
+# Id = Ordnername unter pakete/: Kleinbuchstaben, Ziffern, _; beginnt mit einem Buchstaben; max. 20 Zeichen.
+id: vorlage
+name: Vorlage
+version: 1.0.0                      # SemVer; bei jeder Änderung erhöhen und CHANGELOG.md ergänzen
+beschreibung: Kurz in einem Satz, was das Paket bringt.
+
+autor:
+  name: Vorname Nachname
+  github: dein-github-name
+lizenz: MIT                         # SPDX-Kennung aus REGELN.md, Text in LICENSE
+
+# Ab welcher DMS-Version das Paket läuft (SemVer-Bereich).
+dms: ">=0.41.0"
+
+# Andere Pakete, die vorher installiert sein müssen (Id: Versionsbereich).
+abhaengigkeiten: {}
+#  basis: ">=1.0.0"
+
+# Was das Paket anlegt. Pfade relativ zum Paketordner.
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  beispiele: inhalt/beispiele.yaml   # optional: Beispiel-Mappen, auf Wunsch bei der Installation
+
+# Nur für Pakete mit Code – sonst weglassen. Noch nicht verfügbar, siehe code/README.md.
+# code:
+#   sprache: rust                    # rust, go, c, assemblyscript, javascript
+#   quelle: code/
+#   ereignisse:                      # worauf das Paket reagiert (nicht blockierend)
+#     - dokument.hochgeladen
+#   rechte:                          # Rechte des Dienstkontos dieses Pakets
+#     lesen: [vorlage:beispiel]      # Mappentypen, die es lesen darf
+#     schreiben: [vorlage:beispiel]  # … und ändern darf
+#     dokumente: lesen               # keine | lesen | schreiben
+#   netz: []                         # erlaubte Adressen, z. B. ["https://api.beispiel.de"]
+#   einstellungen:                   # daraus baut das DMS ein Formular
+#     - schluessel: sprache
+#       name: Sprache
+#       typ: auswahl
+#       optionen: [Deutsch, Englisch]
+#       standard: Deutsch

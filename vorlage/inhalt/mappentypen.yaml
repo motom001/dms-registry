@@ -1,0 +1,49 @@
+# Mappentypen dieses Pakets. Schema: schema/inhalt.schema.json
+# Schlüssel sind im Paket lokal; das DMS legt den Typ als <paket-id>_<schluessel> an.
+# Feldtypen: text, langtext, formatiert, zahl, betrag, datum, janein, auswahl, referenz, passwort
+# Registerarten: felder, dokumente, verknuepfungen, protokoll
+
+- schluessel: beispiel
+  name: Beispiel
+  beschreibung: Ein Beispiel-Mappentyp – ersetzen oder löschen.
+  titelVorlage: "{bezeichnung}"
+  felder:
+    - key: bezeichnung
+      label: Bezeichnung
+      typ: text
+      pflicht: true
+      maxLen: 120
+    - key: art
+      label: Art
+      typ: auswahl
+      optionen: [Eins, Zwei, Sonstige]
+      standard: Eins
+    - key: datum
+      label: Datum
+      typ: datum
+      # Erinnerung als Aufgabe „Frist“, hier 1 Monat vorher:
+      frist: { vorlauf: 1, einheit: monate }
+    - key: betrag
+      label: Betrag
+      typ: betrag
+      min: 0
+      waehrung: EUR
+    # Verweis auf einen Typ dieses Pakets: ziel: beispiel
+    # Verweis auf ein anderes Paket:      ziel: basis:organisation (dann unter abhaengigkeiten nennen)
+    # - key: organisation
+    #   label: Organisation
+    #   typ: referenz
+    #   ziel: basis:organisation
+    #   verweisart: bezug
+  register:
+    - key: daten
+      name: Daten
+      art: felder
+      felder: [bezeichnung, art, datum, betrag]
+    - key: dokumente
+      name: Dokumente
+      art: dokumente
+    - key: protokoll
+      name: Protokoll
+      art: protokoll
+  trefferliste: [bezeichnung, art, datum, betrag]
