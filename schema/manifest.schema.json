@@ -4,61 +4,324 @@
   "title": "manifest.yaml eines DMS-Pakets",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "id", "name", "version", "beschreibung", "autor", "lizenz", "dms", "inhalt"],
+  "required": [
+    "schema",
+    "id",
+    "name",
+    "version",
+    "beschreibung",
+    "autor",
+    "lizenz",
+    "dms",
+    "inhalt"
+  ],
+  "$defs": {
+    "einstellungsfeld": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schluessel",
+        "name",
+        "typ"
+      ],
+      "properties": {
+        "schluessel": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,39}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "typ": {
+          "enum": [
+            "text",
+            "mehrzeilig",
+            "zahl",
+            "janein",
+            "datum",
+            "auswahl",
+            "mehrfachauswahl",
+            "geheim",
+            "mappentyp",
+            "feld",
+            "benutzer",
+            "rolle",
+            "sicht"
+          ]
+        },
+        "hilfe": {
+          "type": "string"
+        },
+        "pflicht": {
+          "type": "boolean"
+        },
+        "standard": {},
+        "optionen": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "mappentyp": {
+          "type": "string",
+          "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$",
+          "description": "bei typ feld: Mappentyp, aus dem ein Feld gewählt wird"
+        }
+      }
+    },
+    "abschnitt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "abschnitt",
+        "felder"
+      ],
+      "properties": {
+        "abschnitt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hilfe": {
+          "type": "string"
+        },
+        "felder": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/einstellungsfeld"
+          }
+        }
+      }
+    },
+    "liste": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "liste",
+        "name",
+        "eintrag",
+        "felder"
+      ],
+      "properties": {
+        "liste": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,39}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "eintrag": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hilfe": {
+          "type": "string"
+        },
+        "sortierbar": {
+          "type": "boolean"
+        },
+        "felder": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/einstellungsfeld"
+          }
+        }
+      }
+    }
+  },
   "properties": {
-    "schema": { "const": 1 },
-    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" },
-    "name": { "type": "string", "minLength": 2, "maxLength": 60 },
-    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
-    "beschreibung": { "type": "string", "minLength": 10, "maxLength": 300 },
+    "schema": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{1,19}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 60
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "beschreibung": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 300
+    },
     "autor": {
-      "type": "object", "additionalProperties": false, "required": ["name", "github"],
-      "properties": { "name": { "type": "string" }, "github": { "type": "string", "pattern": "^[A-Za-z0-9-]+$" } }
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "github"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "github": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$"
+        }
+      }
     },
     "lizenz": {
-      "enum": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "MPL-2.0", "LGPL-3.0-or-later", "GPL-3.0-or-later", "AGPL-3.0-or-later", "CC0-1.0"]
+      "enum": [
+        "MIT",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "MPL-2.0",
+        "LGPL-3.0-or-later",
+        "GPL-3.0-or-later",
+        "AGPL-3.0-or-later",
+        "CC0-1.0"
+      ]
     },
-    "dms": { "type": "string", "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$" },
+    "dms": {
+      "type": "string",
+      "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$"
+    },
     "abhaengigkeiten": {
       "type": "object",
-      "propertyNames": { "pattern": "^[a-z][a-z0-9_]{1,19}$" },
-      "additionalProperties": { "type": "string", "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$" }
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]{1,19}$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$"
+      }
     },
     "inhalt": {
-      "type": "object", "additionalProperties": false,
+      "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "mappentypen": { "type": "string" },
-        "sichten": { "type": "string" },
-        "rollen": { "type": "string" },
-        "beispiele": { "type": "string" }
+        "mappentypen": {
+          "type": "string"
+        },
+        "sichten": {
+          "type": "string"
+        },
+        "rollen": {
+          "type": "string"
+        },
+        "beispiele": {
+          "type": "string"
+        }
       }
     },
     "code": {
-      "type": "object", "additionalProperties": false, "required": ["sprache", "quelle", "rechte"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sprache",
+        "quelle",
+        "rechte"
+      ],
       "properties": {
-        "sprache": { "enum": ["rust", "go", "c", "assemblyscript", "javascript"] },
-        "quelle": { "type": "string" },
-        "ereignisse": { "type": "array", "items": { "type": "string", "pattern": "^[a-z]+\\.[a-z_]+$" }, "uniqueItems": true },
-        "rechte": {
-          "type": "object", "additionalProperties": false,
-          "properties": {
-            "lesen": { "type": "array", "items": { "type": "string" } },
-            "schreiben": { "type": "array", "items": { "type": "string" } },
-            "dokumente": { "enum": ["keine", "lesen", "schreiben"] }
-          }
+        "sprache": {
+          "enum": [
+            "rust",
+            "go",
+            "c",
+            "assemblyscript",
+            "javascript"
+          ]
         },
-        "netz": { "type": "array", "items": { "type": "string", "pattern": "^https://[^/\\s]+" }, "uniqueItems": true },
-        "einstellungen": {
+        "quelle": {
+          "type": "string"
+        },
+        "ereignisse": {
           "type": "array",
           "items": {
-            "type": "object", "required": ["schluessel", "name", "typ"],
+            "type": "string",
+            "pattern": "^[a-z]+\\.[a-z_]+$"
+          },
+          "uniqueItems": true
+        },
+        "rechte": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "lesen": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "schreiben": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "dokumente": {
+              "enum": [
+                "keine",
+                "lesen",
+                "schreiben"
+              ]
+            }
+          }
+        },
+        "netz": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^https://[^/\\s]+"
+          },
+          "uniqueItems": true
+        },
+        "einstellungen": {
+          "type": "array",
+          "description": "Abschnitte und Listen (höchstens zwei Ebenen); daraus baut das DMS ein Formular",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/abschnitt"
+              },
+              {
+                "$ref": "#/$defs/liste"
+              }
+            ]
+          }
+        },
+        "aktionen": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "schluessel",
+              "name"
+            ],
             "properties": {
-              "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
-              "name": { "type": "string" },
-              "typ": { "enum": ["text", "zahl", "janein", "auswahl", "geheim"] },
-              "optionen": { "type": "array", "items": { "type": "string" } },
-              "standard": {},
-              "pflicht": { "type": "boolean" }
+              "schluessel": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,39}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "hilfe": {
+                "type": "string"
+              },
+              "bestaetigen": {
+                "type": "boolean"
+              }
             }
           }
         }

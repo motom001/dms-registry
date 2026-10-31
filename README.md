@@ -73,6 +73,17 @@ python3 werkzeuge/pruefen.py pakete/mein_paket
 
 Dann einen Pull Request stellen. Wie das im Einzelnen läuft, steht in [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Einstellungen von Paketen
+
+Pakete mit Code beschreiben ihre Einstellungen im Manifest unter `code.einstellungen`; das DMS baut daraus ein Formular (**Werkbank → Pakete → *Paket* → Einstellungen**), prüft und speichert die Werte und gibt sie dem Paket. Höchstens zwei Ebenen:
+
+- **Abschnitt:** `abschnitt` (Überschrift), optional `hilfe`, `felder`
+- **Liste** gleich aufgebauter Einträge: `liste` (Schlüssel), `name`, `eintrag` (z. B. „Regel“), optional `hilfe`, `sortierbar`, `felder`
+
+Ein **Feld** hat `schluessel`, `name`, `typ` und optional `hilfe`, `pflicht`, `standard`, `optionen` (Auswahl), `min`/`max` (Zahl), `mappentyp` (beim Typ `feld`). Typen: `text`, `mehrzeilig`, `zahl`, `janein`, `datum`, `auswahl`, `mehrfachauswahl`, `geheim` und die Verweise `mappentyp`, `feld`, `benutzer`, `rolle`, `sicht` (gespeichert wird die stabile Id, ausgewählt aus Listen). **`code.aktionen`** (`schluessel`, `name`, optional `hilfe`, `bestaetigen`) werden zu Knöpfen im Formular. Ein Beispiel steht auskommentiert in [`vorlage/manifest.yaml`](vorlage/manifest.yaml).
+
+`werkzeuge/pruefen.py` prüft zusätzlich: Schlüssel eindeutig je Ebene bzw. Liste, `standard` passt zum Typ, Auswahl hat `optionen`, `geheim` und Verweise haben keine Vorgabe, Verweise auf Mappentypen anderer Pakete nur als `<paket>:<schluessel>` und nur auf Abhängigkeiten.
+
 ## Grundsätze
 
 - **Alles ist Open Source.** Jedes Paket hier steht unter einer freien Lizenz und wird aus seinem Quellcode gebaut. Fertige Programmdateien nimmt die Registry nicht an.

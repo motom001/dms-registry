@@ -20,6 +20,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install --quiet pyyaml jsonschema markdown
+      - name: Tests der Prüfung
+        run: python3 -m unittest werkzeuge/test_pruefen.py
       - name: Vorlage und Pakete prüfen
         run: |
           basis=""

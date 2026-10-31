@@ -54,6 +54,81 @@ def geaendert(git_ref: str, ordner: Path) -> bool:
     return r.returncode != 0
 
 
+DATUM = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+VERWEISE = {'mappentyp', 'feld', 'benutzer', 'rolle', 'sicht'}
+
+
+def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> list[str]:
+    """Einstellungen und Aktionen im Manifest (code.einstellungen, code.aktionen) über das Schema hinaus."""
+    fehler: list[str] = []
+
+    def typ_ok(v: str, wo: str):
+        if ':' in v:
+            paket = v.split(':', 1)[0]
+            if paket != paket_id and paket not in abh:
+                fehler.append(f'{wo}: „{v}“ verweist auf Paket „{paket}“, das nicht unter abhaengigkeiten steht')
+            elif paket == paket_id and v.split(':', 1)[1] not in typen:
+                fehler.append(f'{wo}: Mappentyp „{v}“ gibt es in diesem Paket nicht')
+        elif v not in typen:
+            fehler.append(f'{wo}: Mappentyp „{v}“ gibt es in diesem Paket nicht (anderes Paket: <paket>:<schluessel>)')
+
+    def felder(liste: list, wo: str):
+        gesehen = set()
+        for f in liste or []:
+            if not isinstance(f, dict):
+                continue
+            s, typ, w = f.get('schluessel'), f.get('typ'), f'{wo}/{f.get("schluessel")}'
+            if s in gesehen:
+                fehler.append(f'{wo}: Schlüssel „{s}“ doppelt')
+            gesehen.add(s)
+            if typ in ('auswahl', 'mehrfachauswahl') and not f.get('optionen'):
+                fehler.append(f'{w}: {typ} braucht optionen')
+            if f.get('mappentyp') is not None:
+                if typ != 'feld':
+                    fehler.append(f'{w}: mappentyp gibt es nur bei typ feld')
+                else:
+                    typ_ok(str(f['mappentyp']), w)
+            if 'standard' not in f:
+                continue
+            st = f['standard']
+            if typ == 'geheim':
+                fehler.append(f'{w}: geheim hat keine Vorgabe (Zugangsdaten nie als standard)')
+            elif typ in VERWEISE:
+                fehler.append(f'{w}: Verweise ({typ}) haben keine Vorgabe – die Ids gibt es erst im DMS')
+            elif typ in ('text', 'mehrzeilig') and not isinstance(st, str):
+                fehler.append(f'{w}: standard muss Text sein')
+            elif typ == 'zahl' and (isinstance(st, bool) or not isinstance(st, (int, float)) or ('min' in f and st < f['min']) or ('max' in f and st > f['max'])):
+                fehler.append(f'{w}: standard muss eine Zahl (zwischen min und max) sein')
+            elif typ == 'janein' and not isinstance(st, bool):
+                fehler.append(f'{w}: standard muss true oder false sein')
+            elif typ == 'datum' and not (isinstance(st, str) and DATUM.match(st)):
+                fehler.append(f'{w}: standard muss ein Datum JJJJ-MM-TT sein')
+            elif typ == 'auswahl' and st not in (f.get('optionen') or []):
+                fehler.append(f'{w}: standard steht nicht in optionen')
+            elif typ == 'mehrfachauswahl' and not (isinstance(st, list) and all(x in (f.get('optionen') or []) for x in st)):
+                fehler.append(f'{w}: standard muss eine Liste aus optionen sein')
+        return gesehen
+
+    oben: set = set()
+    for b in code.get('einstellungen') or []:
+        if not isinstance(b, dict):
+            continue
+        if 'liste' in b:
+            if b['liste'] in oben:
+                fehler.append(f'code.einstellungen: Schlüssel „{b["liste"]}“ doppelt')
+            oben.add(b['liste'])
+            felder(b.get('felder'), f'code.einstellungen/{b["liste"]}')
+        else:
+            for s in felder(b.get('felder'), f'code.einstellungen/{b.get("abschnitt")}'):
+                if s in oben:
+                    fehler.append(f'code.einstellungen: Schlüssel „{s}“ doppelt')
+                oben.add(s)
+    aktionen = [a.get('schluessel') for a in code.get('aktionen') or [] if isinstance(a, dict)]
+    for s in {x for x in aktionen if aktionen.count(x) > 1}:
+        fehler.append(f'code.aktionen: Schlüssel „{s}“ doppelt')
+    return fehler
+
+
 def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler: list[str] = []
     vorlage = ordner.name == 'vorlage'
@@ -180,6 +255,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     elif not vorlage:
         fehler.append('tests/erwartung.yaml fehlt')
 
+    if isinstance(m.get('code'), dict):
+        fehler += pruefe_einstellungen(m['code'], str(m.get('id')), typen, abh)
     if 'code' in m:
         quelle = ordner / str(m['code'].get('quelle', ''))
         if not quelle.is_dir() or not any(p.is_file() and p.name != 'README.md' for p in quelle.rglob('*')):

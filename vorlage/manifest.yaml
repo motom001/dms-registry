@@ -36,9 +36,22 @@ inhalt:
 #     schreiben: [vorlage:beispiel]  # … und ändern darf
 #     dokumente: lesen               # keine | lesen | schreiben
 #   netz: []                         # erlaubte Adressen, z. B. ["https://api.beispiel.de"]
-#   einstellungen:                   # daraus baut das DMS ein Formular
-#     - schluessel: sprache
-#       name: Sprache
-#       typ: auswahl
-#       optionen: [Deutsch, Englisch]
-#       standard: Deutsch
+#   einstellungen:                   # daraus baut das DMS ein Formular (Werkbank → Pakete → Einstellungen)
+#     - abschnitt: Allgemein         # Abschnitt: Überschrift, optional hilfe, felder
+#       felder:
+#         - schluessel: aktiv
+#           name: Regeln automatisch anwenden
+#           typ: janein              # text, mehrzeilig, zahl, janein, datum, auswahl, mehrfachauswahl, geheim,
+#           standard: true           # Verweise: mappentyp, feld (mit mappentyp:), benutzer, rolle, sicht
+#         - schluessel: schluessel_api
+#           name: API-Schlüssel
+#           typ: geheim              # Zugangsdaten nur als geheim – nie als text oder als standard
+#     - liste: regeln                # Liste gleich aufgebauter Einträge (zweite und letzte Ebene)
+#       name: Regeln
+#       eintrag: Regel
+#       sortierbar: true
+#       felder:
+#         - { schluessel: absender, name: Absender enthält, typ: text }
+#         - { schluessel: ziel, name: Mappentyp, typ: mappentyp, pflicht: true }
+#   aktionen:                        # Knöpfe im Formular; das DMS ruft das Paket auf und zeigt die Antwort
+#     - { schluessel: anwenden, name: Regeln jetzt auf neue Post anwenden, bestaetigen: true }
