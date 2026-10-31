@@ -1,0 +1,14 @@
+# Ansichten des Pakets Fahrzeuge. Schema: schema/inhalt.schema.json
+- schluessel: fahrzeuge
+  name: Fahrzeuge
+  beschreibung: Fahrzeuge und Werkstattrechnungen
+  typen: [fahrzeug, werkstattrechnung]
+- { schluessel: alle_fahrzeuge, name: Alle Fahrzeuge, eltern: fahrzeuge, typen: [fahrzeug] }
+- { schluessel: werkstattrechnungen, name: Werkstattrechnungen, eltern: fahrzeuge, typen: [werkstattrechnung] }
+- schluessel: hu_faellig
+  name: HU fällig
+  beschreibung: Fahrzeuge, deren Hauptuntersuchung in den nächsten 3 Monaten fällig oder schon überfällig ist
+  eltern: fahrzeuge
+  typen: [fahrzeug]
+  bedingungen:
+    - { feld: hu_faellig, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }

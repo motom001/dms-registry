@@ -1,7 +1,7 @@
 # Der Maintainer gibt alles frei; je Paket kommt der Pfleger dazu, z. B.
-# /pakete/haushalt/  @motom001
-/pakete/haus/  @motom001 @pfleger
+# /pakete/haushalt/  @motom001 @pfleger
 *  @motom001
 /pakete/basis/  @motom001
 /pakete/haushalt/  @motom001
 /pakete/haus/  @motom001
+/pakete/fahrzeuge/  @motom001

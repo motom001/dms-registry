@@ -1,0 +1,56 @@
+# Mappentypen des Pakets Fahrzeuge. Schema: schema/inhalt.schema.json
+# Das DMS legt sie als fahrzeuge_<schluessel> an; angezeigt wird der Name.
+# Gemeinsame Felder wie im Paket Haushalt: art, verbleib_original (→ Ablageort des DMS).
+
+- schluessel: fahrzeug
+  name: Fahrzeug
+  beschreibung: Auto, Motorrad, Wohnmobil, Anhänger oder E-Bike.
+  titelVorlage: "{bezeichnung} – {kennzeichen}"
+  felder:
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: "z. B. „Familienauto“ oder „VW Golf“" }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Pkw, Motorrad, Wohnmobil, Anhänger, E-Bike, Sonstige]
+    - { key: kennzeichen, label: Kennzeichen, typ: text, eindeutig: true, maxLen: 20, hilfe: "z. B. MU-ST 123" }
+    - { key: fin, label: Fahrzeug-Identnummer, typ: text, maxLen: 17, muster: "[A-HJ-NPR-Z0-9]{17}", hilfe: 17 Zeichen ohne I, O und Q – steht im Fahrzeugschein unter E }
+    - { key: erstzulassung, label: Erstzulassung, typ: datum }
+    - { key: halter, label: Halter, typ: text, maxLen: 120, hilfe: Wer im Fahrzeugschein steht }
+    - key: hu_faellig
+      label: HU fällig
+      typ: datum
+      hilfe: Nächste Hauptuntersuchung (Plakette, Monat genügt – dann den Monatsersten). Das DMS erinnert 60 Tage vorher.
+      frist: { vorlauf: 60, einheit: tage }
+    - { key: versicherung, label: Versicherung, typ: referenz, ziel: "haushalt:versicherung", verweisart: bezug, hilfe: Die Kfz-Versicherung aus dem Paket Haushalt }
+    - { key: finanzierung, label: Finanzierung/Leasing, typ: referenz, ziel: "haushalt:vertrag", verweisart: bezug, hilfe: Kredit- oder Leasingvertrag aus dem Paket Haushalt }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Fahrzeugbrief (Zulassungsbescheinigung Teil II) liegt }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, kennzeichen, fin, erstzulassung, halter, hu_faellig, versicherung, finanzierung, verbleib_original] }
+    - key: werkstattrechnungen
+      name: Werkstattrechnungen
+      art: verknuepfungen
+      quellen: [{ typ: werkstattrechnung, feld: fahrzeug }]
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [bezeichnung, art, kennzeichen, hu_faellig]
+
+- schluessel: werkstattrechnung
+  name: Werkstattrechnung
+  beschreibung: Rechnung über Inspektion, Reparatur, Reifenwechsel oder HU.
+  titelVorlage: "{datum} – {fahrzeug} – {werkstatt}"
+  felder:
+    - { key: fahrzeug, label: Fahrzeug, typ: referenz, ziel: fahrzeug, verweisart: zugehoerigkeit }
+    - { key: werkstatt, label: Werkstatt, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: datum, label: Datum, typ: datum, pflicht: true }
+    - { key: kilometerstand, label: Kilometerstand, typ: zahl, min: 0, nachkomma: 0 }
+    - { key: arbeiten, label: Arbeiten, typ: langtext, hilfe: "z. B. „Inspektion, Bremsbeläge vorn, Ölwechsel“" }
+    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo die Rechnung auf Papier liegt }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, werkstatt, datum, kilometerstand, arbeiten, betrag, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [datum, fahrzeug, werkstatt, kilometerstand, betrag]
