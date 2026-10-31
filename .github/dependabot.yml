@@ -1,0 +1,11 @@
+# Abhängigkeiten aktuell halten – wie im Repository dms. Dependabot öffnet Pull Requests, die CI prüft sie.
+# Sicherheitsupdates kommen sofort (Dependabot security updates, in den Repository-Einstellungen an).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule: { interval: weekly, day: monday, time: "05:00", timezone: Europe/Berlin }
+    groups:
+      aktionen:
+        patterns: ["*"]
+    commit-message: { prefix: "CI" }
