@@ -1,5 +1,6 @@
-# Zwei Beispiel-Mappen mit erfundenen Daten.
+# Beispiel-Mappen mit erfundenen Daten. Verweise zwischen Beispielen ({ beispiel: … }) ab DMS 0.79.0.
 - typ: organisation
+  schluessel: stadtwerke
   werte:
     name: Stadtwerke Musterstadt
     kuerzel: SWM
@@ -14,6 +15,7 @@
     ort: Musterstadt
     land: Deutschland
 - typ: organisation
+  schluessel: praxis
   werte:
     name: Praxis Dr. Beispiel
     art: [Arzt/Praxis]
@@ -25,3 +27,72 @@
     plz: "12345"
     ort: Musterstadt
     land: Deutschland
+- typ: organisation
+  schluessel: sparkasse
+  werte:
+    name: Sparkasse Musterstadt
+    kuerzel: SPK
+    art: [Bank]
+    kundennummer: "KD 4711 0815"
+    telefon: "0123 9999-0"
+    internet: https://www.sparkasse-musterstadt.example
+    strasse: Hauptstraße
+    hausnummer: "10"
+    plz: "12345"
+    ort: Musterstadt
+    land: Deutschland
+- typ: niederlassung
+  schluessel: filiale_markt
+  werte:
+    organisation: { beispiel: sparkasse }
+    name: Filiale Marktplatz
+    art: Filiale
+    nummer: "012"
+    oeffnungszeiten: "Mo–Fr 9–16 Uhr, Do bis 18 Uhr"
+    telefon: "0123 9999-120"
+    strasse: Marktplatz
+    hausnummer: "3"
+    plz: "12345"
+    ort: Musterstadt
+- typ: niederlassung
+  werte:
+    organisation: { beispiel: sparkasse }
+    name: Zweigstelle Nordviertel
+    art: Zweigstelle
+    nummer: "027"
+    telefon: "0123 9999-270"
+    strasse: Lindenallee
+    hausnummer: "41"
+    plz: "12347"
+    ort: Musterstadt
+- typ: person
+  werte:
+    anrede: Frau
+    vorname: Sabine
+    nachname: Beraterin
+    beziehung: [Ansprechpartner]
+    organisation: { beispiel: sparkasse }
+    niederlassung: { beispiel: filiale_markt }
+    funktion: Kundenberaterin
+    telefon: "0123 9999-125"
+    email: sabine.beraterin@sparkasse-musterstadt.example
+- typ: person
+  werte:
+    anrede: Herr
+    titel: Dr.
+    vorname: Bernd
+    nachname: Beispiel
+    beziehung: [Arzt/Ärztin]
+    organisation: { beispiel: praxis }
+    funktion: Hausarzt
+- typ: person
+  werte:
+    vorname: Oma
+    nachname: Muster
+    beziehung: [Familie]
+    geburtstag: "1948-05-12"
+    telefon: "0123 55555"
+    strasse: Rosenweg
+    hausnummer: "2"
+    plz: "12345"
+    ort: Musterstadt

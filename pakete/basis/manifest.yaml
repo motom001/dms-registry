@@ -2,13 +2,14 @@
 schema: 1
 id: basis
 name: Basis
-version: 1.0.0
-beschreibung: Mappentyp Organisation für Firmen, Behörden, Ärzte, Versicherungen und andere Stellen – mit Kontakt, Anschrift und Sichten nach Art.
+version: 1.1.0
+beschreibung: Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: MIT
-dms: ">=0.63.0"
+# 0.79.0: Beispiele verweisen auf Beispiele ({ beispiel: … })
+dms: ">=0.79.0"
 abhaengigkeiten: {}
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
