@@ -57,7 +57,7 @@
     },
     "beispiel": {
       "type": "object", "required": ["typ", "werte"],
-      "properties": { "typ": { "$ref": "#/$defs/typverweis" }, "werte": { "type": "object" } }
+      "properties": { "typ": { "$ref": "#/$defs/typverweis" }, "schluessel": { "$ref": "#/$defs/schluessel" }, "werte": { "type": "object" } }
     }
   },
   "mappentypen": { "type": "array", "items": { "$ref": "#/$defs/mappentyp" } },
