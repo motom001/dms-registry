@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-10-31T22:12:07Z",
+  "erstellt": "2026-10-31T22:14:06Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -639,6 +639,115 @@
       },
       "lizenz": "MIT",
       "aktuell": "1.0.1"
+    },
+    {
+      "id": "vermietung",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.79.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.0.0",
+            "haus": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "mietobjekt",
+                "name": "Mietobjekt"
+              },
+              {
+                "schluessel": "wohnung",
+                "name": "Wohnung"
+              },
+              {
+                "schluessel": "mietvertrag",
+                "name": "Mietvertrag"
+              },
+              {
+                "schluessel": "nebenkostenabrechnung",
+                "name": "Nebenkostenabrechnung"
+              },
+              {
+                "schluessel": "ausgabe",
+                "name": "Ausgabe Mietobjekt"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "vermietung",
+                "name": "Vermietung"
+              },
+              {
+                "schluessel": "mietobjekte",
+                "name": "Mietobjekte"
+              },
+              {
+                "schluessel": "wohnungen",
+                "name": "Wohnungen"
+              },
+              {
+                "schluessel": "mietvertraege",
+                "name": "Mietverträge"
+              },
+              {
+                "schluessel": "mietvertraege_laufend",
+                "name": "Laufende Mietverträge"
+              },
+              {
+                "schluessel": "nebenkosten",
+                "name": "Nebenkostenabrechnungen"
+              },
+              {
+                "schluessel": "ausgaben",
+                "name": "Ausgaben"
+              },
+              {
+                "schluessel": "ausgaben_dieses_jahr",
+                "name": "Ausgaben dieses Jahr"
+              },
+              {
+                "schluessel": "ausgaben_letztes_jahr",
+                "name": "Ausgaben letztes Jahr"
+              },
+              {
+                "schluessel": "ausgaben_umlagefaehig",
+                "name": "Umlagefähig letztes Jahr"
+              },
+              {
+                "schluessel": "abrechnung_offen",
+                "name": "Abrechnung offen"
+              },
+              {
+                "schluessel": "mieterhoehung",
+                "name": "Mieterhöhung möglich"
+              },
+              {
+                "schluessel": "vertrag_endet",
+                "name": "Vertrag endet bald"
+              }
+            ],
+            "beispiele": 11
+          },
+          "code": false,
+          "archiv": "archive/vermietung-1.0.0.zip",
+          "sha256": "e699bdaea9a1aafd7974e7f88da45bb1b1ced4339d9f095d067204f17ae29eb3",
+          "groesse": 336448,
+          "veroeffentlicht": "2026-10-31T22:14:06Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/vermietung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/CHANGELOG.md"
+        }
+      ],
+      "name": "Vermietung",
+      "beschreibung": "Mietobjekte, Wohnungen, Mietverträge, Nebenkostenabrechnungen und Ausgaben – für Vermieter mit wenigen Wohnungen, mit Fristen für Abrechnung, Mieterhöhung und Vertragsende.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "MIT",
+      "aktuell": "1.0.0"
     }
   ]
 }
