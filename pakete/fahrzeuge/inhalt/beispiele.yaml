@@ -1,0 +1,9 @@
+# Beispiel-Mappen der erfundenen Familie Muster.
+# Verweise (Fahrzeug, Werkstatt, Versicherung, Ablageort „Safe“) setzt du nach der Installation selbst:
+# Beispiele können noch nicht auf andere Mappen zeigen.
+- typ: fahrzeug
+  werte: { bezeichnung: Familienauto, art: Pkw, kennzeichen: MU-ST 123, fin: WVWZZZ1KZAW000001, erstzulassung: "2019-05-17", halter: Max Muster, hu_faellig: "2027-01-01" }
+- typ: werkstattrechnung
+  werte: { datum: "2025-05-12", kilometerstand: 61450, arbeiten: "Inspektion, Ölwechsel, Innenraumfilter", betrag: 389.4 }
+- typ: werkstattrechnung
+  werte: { datum: "2026-04-03", kilometerstand: 74210, arbeiten: "Reifenwechsel, Bremsbeläge vorn", betrag: 214 }
