@@ -56,6 +56,15 @@ def geaendert(git_ref: str, ordner: Path) -> bool:
 
 DATUM = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 VERWEISE = {'mappentyp', 'feld', 'benutzer', 'rolle', 'sicht'}
+# Mappentypen, die das DMS selbst mitbringt (ab 0.75.0); Verweis als dms:<schluessel>.
+DMS_TYPEN = {'ablageort', 'benutzer', 'rolle'}
+
+
+def dms_fehler(v: str, wo: str) -> str | None:
+    """Prüft einen Verweis dms:<schluessel>; None, wenn er erlaubt ist."""
+    if v.split(':', 1)[1] in DMS_TYPEN:
+        return None
+    return f'{wo}: Mappentyp „{v}“ bringt das DMS nicht mit (erlaubt: ' + ', '.join(f'dms:{t}' for t in sorted(DMS_TYPEN)) + ')'
 
 
 def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> list[str]:
@@ -65,7 +74,10 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> lis
     def typ_ok(v: str, wo: str):
         if ':' in v:
             paket = v.split(':', 1)[0]
-            if paket != paket_id and paket not in abh:
+            if paket == 'dms':
+                if (f := dms_fehler(v, wo)):
+                    fehler.append(f)
+            elif paket != paket_id and paket not in abh:
                 fehler.append(f'{wo}: „{v}“ verweist auf Paket „{paket}“, das nicht unter abhaengigkeiten steht')
             elif paket == paket_id and v.split(':', 1)[1] not in typen:
                 fehler.append(f'{wo}: Mappentyp „{v}“ gibt es in diesem Paket nicht')
@@ -150,6 +162,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     if not isinstance(m, dict):
         return fehler + ['manifest.yaml: leer oder kein Objekt']
     fehler += schema_fehler(Draft202012Validator(SCHEMA_MANIFEST), m, 'manifest.yaml')
+    if m.get('id') == 'dms':
+        fehler.append('manifest.yaml: id „dms“ ist reserviert (Verweise auf Mappentypen des DMS)')
     if not vorlage and m.get('id') != ordner.name:
         fehler.append(f"manifest.yaml: id „{m.get('id')}“ muss wie der Ordner heißen („{ordner.name}“)")
 
@@ -191,7 +205,10 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     def verweis_ok(v: str, wo: str):
         if ':' in v:
             paket = v.split(':', 1)[0]
-            if paket != m.get('id') and paket not in abh:
+            if paket == 'dms':
+                if (f := dms_fehler(v, wo)):
+                    fehler.append(f)
+            elif paket != m.get('id') and paket not in abh:
                 fehler.append(f'{wo}: „{v}“ verweist auf Paket „{paket}“, das nicht unter abhaengigkeiten steht')
         elif v not in typen:
             fehler.append(f'{wo}: Mappentyp „{v}“ gibt es in diesem Paket nicht')

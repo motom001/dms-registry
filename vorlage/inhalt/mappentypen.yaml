@@ -30,6 +30,7 @@
       waehrung: EUR
     # Verweis auf einen Typ dieses Pakets: ziel: beispiel
     # Verweis auf ein anderes Paket:      ziel: basis:organisation (dann unter abhaengigkeiten nennen)
+    # Verweis auf einen Typ des DMS:      ziel: dms:ablageort (auch dms:benutzer, dms:rolle; braucht dms: ">=0.75.0")
     # - key: organisation
     #   label: Organisation
     #   typ: referenz
