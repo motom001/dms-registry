@@ -1,0 +1,4 @@
+# Was nach der Installation im DMS vorhanden sein muss.
+mappentypen: [konto, vertrag, versicherung, steuerjahr, arbeitsverhaeltnis, vorsorge, ausweis, gesundheit, anschaffung, bildung]
+sichten: [haushalt, konten, vertraege, versicherungen, steuerjahre, arbeit, vorsorge, ausweise, gesundheit, anschaffungen, bildung, sachversicherungen, personenversicherungen, kuendigung_bald, laeuft_ab, garantie_bald]
+beispiele: 14

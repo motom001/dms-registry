@@ -1,0 +1,18 @@
+# Paket Haushalt. Schema: schema/manifest.schema.json
+schema: 1
+id: haushalt
+name: Haushalt
+version: 1.0.0
+beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Verträge, Versicherungen, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: MIT
+# 0.75.0: Verweise auf den Ablageort des DMS (dms:ablageort)
+dms: ">=0.75.0"
+abhaengigkeiten:
+  basis: ">=1.0.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  beispiele: inhalt/beispiele.yaml

@@ -1,0 +1,55 @@
+# Ansichten des Pakets Haushalt. Schema: schema/inhalt.schema.json
+# Ordner „Haushalt“ mit je einer Ansicht pro Mappentyp, dazu Ansichten für anstehende Fristen.
+
+- schluessel: haushalt
+  name: Haushalt
+  beschreibung: Alle Unterlagen des Haushalts
+  typen: [konto, vertrag, versicherung, steuerjahr, arbeitsverhaeltnis, vorsorge, ausweis, gesundheit, anschaffung, bildung]
+
+- { schluessel: konten, name: Konten, eltern: haushalt, typen: [konto] }
+- { schluessel: vertraege, name: Verträge, eltern: haushalt, typen: [vertrag] }
+- { schluessel: versicherungen, name: Versicherungen, eltern: haushalt, typen: [versicherung] }
+- { schluessel: steuerjahre, name: Steuerjahre, eltern: haushalt, typen: [steuerjahr] }
+- { schluessel: arbeit, name: Arbeitsverhältnisse, eltern: haushalt, typen: [arbeitsverhaeltnis] }
+- { schluessel: vorsorge, name: Vorsorge, eltern: haushalt, typen: [vorsorge] }
+- { schluessel: ausweise, name: Ausweise & Urkunden, eltern: haushalt, typen: [ausweis] }
+- { schluessel: gesundheit, name: Gesundheit, eltern: haushalt, typen: [gesundheit] }
+- { schluessel: anschaffungen, name: Anschaffungen, eltern: haushalt, typen: [anschaffung] }
+- { schluessel: bildung, name: Bildung, eltern: haushalt, typen: [bildung] }
+
+# Versicherungen nach Art: Sach- und Personenversicherungen.
+- schluessel: sachversicherungen
+  name: Sachversicherungen
+  eltern: versicherungen
+  typen: [versicherung]
+  bedingungen:
+    - { feld: art, operator: einerVon, wert: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz] }
+- schluessel: personenversicherungen
+  name: Personenversicherungen
+  eltern: versicherungen
+  typen: [versicherung]
+  bedingungen:
+    - { feld: art, operator: einerVon, wert: [Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall] }
+
+# Fristen
+- schluessel: kuendigung_bald
+  name: Kündigung in den nächsten 3 Monaten
+  beschreibung: Verträge und Versicherungen, die du bald kündigen müsstest, wenn du wechseln willst
+  eltern: haushalt
+  typen: [vertrag, versicherung]
+  bedingungen:
+    - { feld: kuendigen_bis, operator: zwischen, wert: [{ art: heute }, { art: heute, versatz: 3, einheit: monate }] }
+- schluessel: laeuft_ab
+  name: Läuft bald ab
+  beschreibung: Ausweise, die in den nächsten 6 Monaten ablaufen oder schon abgelaufen sind
+  eltern: haushalt
+  typen: [ausweis]
+  bedingungen:
+    - { feld: gueltig_bis, operator: kleiner, wert: { art: heute, versatz: 6, einheit: monate } }
+- schluessel: garantie_bald
+  name: Garantie läuft ab
+  beschreibung: Anschaffungen, deren Garantie in den nächsten 3 Monaten endet
+  eltern: haushalt
+  typen: [anschaffung]
+  bedingungen:
+    - { feld: garantie_bis, operator: zwischen, wert: [{ art: heute }, { art: heute, versatz: 3, einheit: monate }] }
