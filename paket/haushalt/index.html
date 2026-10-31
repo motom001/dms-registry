@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Haushalt – DMS-Pakete</title>
+  <meta name="description" content="Die typischen Unterlagen eines Haushalts – Konten, Verträge, Versicherungen, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">H</span>
+      <div><h1>Haushalt</h1><p class="leise">Die typischen Unterlagen eines Haushalts – Konten, Verträge, Versicherungen, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="haushalt@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/haushalt">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 31.10.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>MIT</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.75.0</dd>
+      <dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.0.0</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><details><summary><strong>Konto</strong> – 8 Felder</summary><ul><li>Bank <span class="leise">(Verweis)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Inhaber <span class="leise">(Text)</span></li><li>IBAN <span class="leise">(Text)</span></li><li>Online-Zugang <span class="leise">(Passwort)</span></li><li>Eröffnet am <span class="leise">(Datum)</span></li><li>Gekündigt am <span class="leise">(Datum)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Vertrag</strong> – 10 Felder</summary><ul><li>Vertragspartner <span class="leise">(Verweis)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Vertragsnummer <span class="leise">(Text)</span></li><li>Beginn <span class="leise">(Datum)</span></li><li>Mindestlaufzeit bis <span class="leise">(Datum)</span></li><li>Kündigungsfrist <span class="leise">(Text)</span></li><li>Kündigen bis <span class="leise">(Datum)</span></li><li>Betrag <span class="leise">(Betrag)</span></li><li>Zahlweise <span class="leise">(Auswahl)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Versicherung</strong> – 9 Felder</summary><ul><li>Versicherer <span class="leise">(Verweis)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Versicherungsnummer <span class="leise">(Text)</span></li><li>Versichert <span class="leise">(Text)</span></li><li>Beitrag <span class="leise">(Betrag)</span></li><li>Zahlweise <span class="leise">(Auswahl)</span></li><li>Hauptfälligkeit <span class="leise">(Datum)</span></li><li>Kündigen bis <span class="leise">(Datum)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Steuerjahr</strong> – 6 Felder</summary><ul><li>Jahr <span class="leise">(Text, Pflicht)</span></li><li>Abgegeben am <span class="leise">(Datum)</span></li><li>Bescheid vom <span class="leise">(Datum)</span></li><li>Erstattung/Nachzahlung <span class="leise">(Betrag)</span></li><li>Einspruch bis <span class="leise">(Datum)</span></li><li>Steuerberater <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Arbeitsverhältnis</strong> – 7 Felder</summary><ul><li>Arbeitgeber <span class="leise">(Verweis)</span></li><li>Person <span class="leise">(Text, Pflicht)</span></li><li>Tätigkeit <span class="leise">(Text)</span></li><li>Beginn <span class="leise">(Datum)</span></li><li>Ende <span class="leise">(Datum)</span></li><li>Steuerjahre <span class="leise">(Verweis)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Vorsorge</strong> – 6 Felder</summary><ul><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Anbieter <span class="leise">(Verweis)</span></li><li>Vertragsnummer <span class="leise">(Text)</span></li><li>Person <span class="leise">(Text)</span></li><li>Beginn <span class="leise">(Datum)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Ausweis &amp; Urkunde</strong> – 6 Felder</summary><ul><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Person <span class="leise">(Text, Pflicht)</span></li><li>Nummer <span class="leise">(Text)</span></li><li>Ausgestellt am <span class="leise">(Datum)</span></li><li>Gültig bis <span class="leise">(Datum)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Gesundheit</strong> – 6 Felder</summary><ul><li>Person <span class="leise">(Text, Pflicht)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Datum <span class="leise">(Datum)</span></li><li>Praxis <span class="leise">(Verweis)</span></li><li>Betrag <span class="leise">(Betrag)</span></li><li>Steuerjahr <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Anschaffung</strong> – 8 Felder</summary><ul><li>Gegenstand <span class="leise">(Text, Pflicht)</span></li><li>Händler <span class="leise">(Verweis)</span></li><li>Kaufdatum <span class="leise">(Datum)</span></li><li>Preis <span class="leise">(Betrag)</span></li><li>Seriennummer <span class="leise">(Text)</span></li><li>Garantie bis <span class="leise">(Datum)</span></li><li>Steuerjahr <span class="leise">(Verweis)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Bildung</strong> – 8 Felder</summary><ul><li>Person <span class="leise">(Text, Pflicht)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Einrichtung <span class="leise">(Verweis)</span></li><li>Von <span class="leise">(Datum)</span></li><li>Bis <span class="leise">(Datum)</span></li><li>Abschluss <span class="leise">(Text)</span></li><li>Steuerjahr <span class="leise">(Verweis)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details>
+      <h3>Sichten</h3><ul><li>Haushalt</li><li>Konten <span class="leise">(unter Haushalt)</span></li><li>Verträge <span class="leise">(unter Haushalt)</span></li><li>Versicherungen <span class="leise">(unter Haushalt)</span></li><li>Steuerjahre <span class="leise">(unter Haushalt)</span></li><li>Arbeitsverhältnisse <span class="leise">(unter Haushalt)</span></li><li>Vorsorge <span class="leise">(unter Haushalt)</span></li><li>Ausweise &amp; Urkunden <span class="leise">(unter Haushalt)</span></li><li>Gesundheit <span class="leise">(unter Haushalt)</span></li><li>Anschaffungen <span class="leise">(unter Haushalt)</span></li><li>Bildung <span class="leise">(unter Haushalt)</span></li><li>Sachversicherungen <span class="leise">(unter Versicherungen)</span></li><li>Personenversicherungen <span class="leise">(unter Versicherungen)</span></li><li>Kündigung in den nächsten 3 Monaten <span class="leise">(unter Haushalt)</span></li><li>Läuft bald ab <span class="leise">(unter Haushalt)</span></li><li>Garantie läuft ab <span class="leise">(unter Haushalt)</span></li></ul>
+      <p>14 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netz</h2><p>Kein Code: Das Paket legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.</p></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Das Paket <strong>Haushalt</strong> bringt die typischen Unterlagen eines Haushalts fertig mit: Konten, Verträge, Versicherungen, Steuerjahre, Arbeitsverhältnisse, Vorsorge, Ausweise und Urkunden, Gesundheit, Anschaffungen und Bildung. Statt die Werkbank selbst einzurichten, installierst du es mit einem Klick unter <strong>Werkbank → Pakete</strong> und kannst sofort ablegen. Das Paket <strong>Basis</strong> (Organisation) kommt dabei automatisch mit.</p>
+<p><img alt="Die zehn Mappentypen des Pakets mit ihren Feldern, Fristen und Beispielen" src="https://raw.githubusercontent.com/motom001/dms-registry/main/pakete/haushalt/bilder/ueberblick.png"></p>
+<h3>Inhalt</h3>
+<table>
+<thead>
+<tr>
+<th>Mappentyp</th>
+<th>wofür</th>
+<th>wichtige Felder</th>
+<th>Frist</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Konto</td>
+<td>Girokonto, Sparkonto, Depot, Kreditkarte, Kredit, Bausparvertrag</td>
+<td>Bank, Art, Inhaber, IBAN, Online-Zugang (Passwort), eröffnet/gekündigt am</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Vertrag</td>
+<td>Strom, Gas, Internet, Mobilfunk, Streaming, Miete, Mitgliedschaft …</td>
+<td>Vertragspartner, Art, Vertragsnummer, Beginn, Mindestlaufzeit, Kündigungsfrist, Betrag, Zahlweise</td>
+<td><strong>Kündigen bis</strong> (30 Tage vorher)</td>
+</tr>
+<tr>
+<td>Versicherung</td>
+<td>Haftpflicht, Hausrat, Kfz, Berufsunfähigkeit …</td>
+<td>Versicherer, Art, Versicherungsnummer, Versichert, Beitrag, Zahlweise</td>
+<td><strong>Hauptfälligkeit</strong> (jährlich, 6 Wochen vorher), <strong>Kündigen bis</strong> (30 Tage vorher)</td>
+</tr>
+<tr>
+<td>Steuerjahr</td>
+<td>Einkommensteuer eines Jahres</td>
+<td>Jahr (eindeutig), abgegeben am, Bescheid vom, Erstattung/Nachzahlung, Steuerberater</td>
+<td><strong>Einspruch bis</strong> (7 Tage vorher)</td>
+</tr>
+<tr>
+<td>Arbeitsverhältnis</td>
+<td>Anstellung, Minijob, Ausbildung</td>
+<td>Arbeitgeber, Person, Tätigkeit, Beginn, Ende, Steuerjahre</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Vorsorge</td>
+<td>Rente, Riester, Rürup, Bausparen …</td>
+<td>Art, Anbieter, Vertragsnummer, Person, Beginn</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Ausweis &amp; Urkunde</td>
+<td>Personalausweis, Reisepass, Führerschein, Urkunden, Zeugnisse</td>
+<td>Art, Person, Nummer, ausgestellt am</td>
+<td><strong>Gültig bis</strong> (90 Tage vorher)</td>
+</tr>
+<tr>
+<td>Gesundheit</td>
+<td>Arztbriefe, Befunde, Impfungen, Rezepte, Rechnungen</td>
+<td>Person, Art, Datum, Praxis, Betrag, Steuerjahr</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Anschaffung</td>
+<td>Geräte und Möbel mit Kassenbon</td>
+<td>Gegenstand, Händler, Kaufdatum, Preis, Seriennummer, Steuerjahr</td>
+<td><strong>Garantie bis</strong> (30 Tage vorher)</td>
+</tr>
+<tr>
+<td>Bildung</td>
+<td>Schule, Ausbildung, Studium, Kurse</td>
+<td>Person, Art, Einrichtung, von, bis, Abschluss, Steuerjahr</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Register:</strong> jeder Typ hat <em>Allgemein</em> (die Felder), <em>Dokumente</em>, <em>Verknüpfungen</em> und <em>Historie</em>. Das <strong>Steuerjahr</strong> hat zusätzlich <em>Belege</em>: Dort erscheinen alle Anschaffungen, Gesundheitsunterlagen, Bildungsnachweise und Arbeitsverhältnisse, bei denen du dieses Steuerjahr eingetragen hast.</p>
+<p><strong>Verweise:</strong></p>
+<ul>
+<li>Bank, Vertragspartner, Versicherer, Arbeitgeber, Anbieter, Praxis, Händler, Einrichtung und Steuerberater sind <strong>Organisationen</strong> aus dem Paket Basis. Eine Organisation legst du einmal an und wählst sie danach überall aus.</li>
+<li><strong>Verbleib Originaldokumente</strong> zeigt auf einen <strong>Ablageort</strong> des DMS (z. B. „Arbeitszimmer › Schrank › roter Ordner“). So findest du das Papier, wenn du das Original brauchst. Das Feld heißt in allen Typen gleich (<code>verbleib_original</code>), deshalb funktionieren gemeinsame Ansichten wie „Originale nach Ort“.</li>
+<li><strong>Person</strong> ist vorerst ein Textfeld („Erika Muster“). Ein eigener Mappentyp für Personen kommt später mit dem Paket Basis.</li>
+</ul>
+<p><strong>Fristen:</strong> An den Datumsfeldern mit Frist erinnert das DMS rechtzeitig unter <strong>Zu erledigen</strong> und in der Ansicht <strong>Anstehend</strong> – bei der Hauptfälligkeit einer Versicherung jedes Jahr wieder.</p>
+<p><strong>Ansichten:</strong> <em>Haushalt</em> mit allen Unterlagen und darunter</p>
+<ul>
+<li>je eine Ansicht pro Mappentyp (<em>Konten</em>, <em>Verträge</em>, <em>Versicherungen</em> … <em>Bildung</em>); unter <em>Versicherungen</em> die <em>Sachversicherungen</em> (Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz) und die <em>Personenversicherungen</em> (Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall),</li>
+<li><em>Kündigung in den nächsten 3 Monaten</em> – Verträge und Versicherungen, bei denen „Kündigen bis“ in den nächsten drei Monaten liegt,</li>
+<li><em>Läuft bald ab</em> – Ausweise, die in den nächsten sechs Monaten ablaufen oder schon abgelaufen sind,</li>
+<li><em>Garantie läuft ab</em> – Anschaffungen, deren Garantie in den nächsten drei Monaten endet.</li>
+</ul>
+<p><strong>Beispiele (optional):</strong> 14 Mappen der erfundenen Familie Muster (Erika, Max und Lena) – je Typ ein bis zwei. Die Verweise auf Organisationen, Steuerjahr und Ablageort setzt du in den Beispielen selbst, z. B. die Waschmaschine auf das Steuerjahr 2025.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS ab Version 0.75 (Verweis auf den Ablageort des DMS)</li>
+<li>Paket <strong>Basis</strong> ab 1.0.0 – wird bei der Installation aus dem Katalog mitinstalliert</li>
+</ul>
+<h3>Rechte und Netz</h3>
+<p>Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Ansichten und auf Wunsch Beispiel-Mappen an.</p>
+<h3>Wer was sehen darf</h3>
+<p>Nicht alles gehört vor alle Augen: Gesundheitsunterlagen und Konten (mit den Zugangsdaten zum Online-Banking) sollen meist nur die Eltern sehen. Das Paket schreibt dafür nichts vor – du richtest es nach der Installation selbst ein. Berechtigungen pflegst du am <strong>Mappentyp</strong> (Werkbank → Mappentypen → <em>Gesundheit</em> bzw. <em>Konto</em>, Abschnitt <strong>Berechtigungen</strong>). Ein Beispiel:</p>
+<ol>
+<li>Unter <strong>Werkbank → Benutzer</strong> eine Rolle <strong>Eltern</strong> anlegen und Erika und Max geben.</li>
+<li>Am Mappentyp <strong>Gesundheit</strong> eine Regel anlegen: <strong>Nur Eltern</strong> – wenn <em>Benutzer hat nicht Rolle Eltern</em> → <strong>✗ C R U D P</strong>.</li>
+<li>Dieselbe Regel mit <strong>Regel in andere Mappentypen kopieren</strong> auch an den Mappentyp <strong>Konto</strong> geben und <strong>Mappentyp speichern</strong>.</li>
+<li>Im <strong>Testlauf</strong> darunter mit Lenas Benutzer prüfen: Sie darf keine Gesundheits- oder Kontomappe lesen.</li>
+</ol>
+<p>Wer nur die Passwörter schützen will, entzieht statt <strong>R</strong> nur <strong>P</strong> (Passwörter sehen). Mehr dazu im Administratorhandbuch unter „Berechtigungen“.</p>
+<h3>Nach der Installation</h3>
+<ol>
+<li>Die eigenen Banken, Versicherer, Ärzte und Firmen als <strong>Organisation</strong> anlegen (oder aus der Post heraus).</li>
+<li>Unter <strong>Ablage → Ablageorte</strong> die Orte anlegen, an denen Papier liegt.</li>
+<li>Verträge, Versicherungen und Ausweise ablegen; die Fristen erinnern von selbst.</li>
+<li>Die Beispiel-Mappen löschen, sobald du sie nicht mehr brauchst.</li>
+</ol>
+<p>Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.</p>
+<h3>Pflege</h3>
+<p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Haushalt“ im Titel.</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung.</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/haushalt-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haushalt@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>
