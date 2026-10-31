@@ -1,12 +1,12 @@
 # Beispiel-Mappen der erfundenen Familie Muster (Erika, Max und Tochter Lena).
-# Verweise auf Organisationen, Steuerjahre und Ablageorte setzt du nach der Installation selbst:
-# Beispiele können noch nicht auf andere Mappen zeigen.
+# Die Beispiele zeigen aufeinander und auf Beispiele aus Basis ({ beispiel: … }, ab DMS 0.79.0).
+# Ablageorte setzt du selbst – sie gehören dem DMS, nicht einem Paket.
 - typ: konto
-  werte: { art: Girokonto, inhaber: Erika und Max Muster, iban: DE02 1203 0000 0000 2020 51, eroeffnet_am: "2015-04-01" }
+  werte: { bank: { beispiel: "basis:sparkasse" }, art: Girokonto, inhaber: Erika und Max Muster, iban: DE02 1203 0000 0000 2020 51, eroeffnet_am: "2015-04-01" }
 - typ: konto
   werte: { art: Depot, inhaber: Erika Muster, eroeffnet_am: "2021-09-15" }
 - typ: vertrag
-  werte: { art: Strom, vertragsnummer: S-2024-0815, beginn: "2024-01-01", mindestlaufzeit_bis: "2026-12-31", kuendigungsfrist: 1 Monat zum Ende der Laufzeit, kuendigen_bis: "2026-11-30", betrag: 89, zahlweise: monatlich }
+  werte: { vertragspartner: { beispiel: "basis:stadtwerke" }, art: Strom, vertragsnummer: S-2024-0815, beginn: "2024-01-01", mindestlaufzeit_bis: "2026-12-31", kuendigungsfrist: 1 Monat zum Ende der Laufzeit, kuendigen_bis: "2026-11-30", betrag: 89, zahlweise: monatlich }
 - typ: vertrag
   werte: { art: Mobilfunk, vertragsnummer: "0170-1234567", beginn: "2025-03-01", mindestlaufzeit_bis: "2027-02-28", kuendigungsfrist: 1 Monat, kuendigen_bis: "2027-01-31", betrag: 19.99, zahlweise: monatlich }
 - typ: versicherung
@@ -14,9 +14,10 @@
 - typ: versicherung
   werte: { art: Berufsunfähigkeit, versicherungsnummer: BU-7788, versichert: Max Muster, beitrag: 72, zahlweise: monatlich, hauptfaelligkeit: "2027-04-01", kuendigen_bis: "2027-01-01" }
 - typ: steuerjahr
+  schluessel: steuer2025
   werte: { jahr: "2025", abgegeben_am: "2026-05-20", bescheid_vom: "2026-08-12", ergebnis: 843.17, einspruch_bis: "2026-09-12" }
 - typ: arbeitsverhaeltnis
-  werte: { person: Max Muster, taetigkeit: Elektroniker, beginn: "2018-08-01" }
+  werte: { steuerjahr: [{ beispiel: steuer2025 }], person: Max Muster, taetigkeit: Elektroniker, beginn: "2018-08-01" }
 - typ: vorsorge
   werte: { art: gesetzliche Rente, person: Erika Muster, vertragsnummer: "12 150378 M 007" }
 - typ: ausweis
@@ -24,8 +25,11 @@
 - typ: ausweis
   werte: { art: Geburtsurkunde, person: Lena Muster, ausgestellt_am: "2011-06-03" }
 - typ: gesundheit
-  werte: { person: Lena Muster, art: Impfung, datum: "2026-02-10" }
+  werte: { praxis: { beispiel: "basis:praxis" }, person: Lena Muster, art: Impfung, datum: "2026-02-10" }
 - typ: anschaffung
   werte: { gegenstand: Waschmaschine, kaufdatum: "2025-01-18", preis: 549, seriennummer: WM-4711-0815, garantie_bis: "2027-01-18" }
 - typ: bildung
   werte: { person: Lena Muster, art: Schule, von: "2017-08-01", abschluss: Grundschule }
+- typ: versicherung
+  schluessel: kfz
+  werte: { art: Kfz, versicherungsnummer: KFZ-2019-55, versichert: Familienauto MU-ST 123, beitrag: 412.8, zahlweise: jährlich, hauptfaelligkeit: "2027-01-01", kuendigen_bis: "2026-11-30" }

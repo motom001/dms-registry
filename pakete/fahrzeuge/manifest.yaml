@@ -2,14 +2,14 @@
 schema: 1
 id: fahrzeuge
 name: Fahrzeuge
-version: 1.0.0
+version: 1.0.1
 beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: MIT
-# 0.75.0: Verweise auf den Ablageort des DMS (dms:ablageort)
-dms: ">=0.75.0"
+# 0.75.0: Verweise auf den Ablageort des DMS (dms:ablageort); 0.79.0: Verweise zwischen Beispielen
+dms: ">=0.79.0"
 abhaengigkeiten:
   basis: ">=1.0.0"
   haushalt: ">=1.0.0"
