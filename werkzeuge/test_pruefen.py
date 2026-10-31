@@ -88,10 +88,47 @@ class Einstellungen(unittest.TestCase):
         self.assertTrue(any('gibt es in diesem Paket nicht' in f for f in self.paket(self.mit(**{'0__6__mappentyp': 'gibtsnicht'}))))
         self.assertTrue(any('nur bei typ feld' in f for f in self.paket(self.mit(**{'0__7__mappentyp': 'beispiel'}))))
 
+    def test_verweise_auf_typen_des_dms(self):
+        self.assertEqual(self.paket(self.mit(**{'0__6__mappentyp': 'dms:ablageort'})), [])
+        self.assertTrue(any('bringt das DMS nicht mit' in f for f in self.paket(self.mit(**{'0__6__mappentyp': 'dms:post'}))))
+
     def test_mehr_als_zwei_ebenen_geht_nicht(self):
         c = self.mit()
         c['einstellungen'][1]['felder'].append({'liste': 'unter', 'name': 'Unter', 'eintrag': 'x', 'felder': []})
         self.assertTrue(any('code' in f for f in self.paket(c)))
+
+
+class Inhalt(unittest.TestCase):
+    """Verweise in inhalt/ und reservierte Paket-Id (dms:…, #310 im DMS)."""
+
+    def paket(self, ziel_typ: str, paket_id: str = 'probe') -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / paket_id
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = paket_id
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            typen = yaml.safe_load((ziel / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+            typen[0]['felder'].append({'key': 'ort', 'label': 'Ort', 'typ': 'referenz', 'ziel': ziel_typ, 'verweisart': 'bezug'})
+            typen[0]['register'][0]['felder'].append('ort')
+            (ziel / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump(typen, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_dms_typen_ohne_abhaengigkeit(self):
+        self.assertEqual(self.paket('dms:ablageort'), [])
+        self.assertEqual(self.paket('dms:benutzer'), [])
+
+    def test_unbekannter_dms_typ(self):
+        self.assertTrue(any('bringt das DMS nicht mit' in f for f in self.paket('dms:post')))
+
+    def test_fremdes_paket_weiter_nur_mit_abhaengigkeit(self):
+        self.assertTrue(any('nicht unter abhaengigkeiten' in f for f in self.paket('basis:organisation')))
+
+    def test_id_dms_ist_reserviert(self):
+        self.assertTrue(any('reserviert' in f for f in self.paket('beispiel', 'dms')))
 
 
 if __name__ == '__main__':
