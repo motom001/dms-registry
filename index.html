@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DMS-Pakete</title>
+  <meta name="description" content="Pakete für das DMS: fertige Mappentypen und Sichten">
+  <link rel="stylesheet" href="stil.css">
+  <script src="dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <h1>Pakete für das DMS</h1>
+    <p class="leise">Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">DMS</a> – Open Source und vom DMS-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.</p>
+    <div class="werkzeuge">
+      <input type="search" id="suche" placeholder="Paket suchen …" aria-label="Pakete durchsuchen">
+      <select id="art" aria-label="Art"><option value="">Alle Pakete</option><option value="konfiguration">Konfiguration</option><option value="code">Mit Code</option></select>
+    </div>
+    <div class="kacheln">
+      <a class="kachel" href="paket/basis/" data-art="konfiguration" data-suche="basis basis mappentyp organisation für firmen, behörden, ärzte, versicherungen und andere stellen – mit kontakt, anschrift und sichten nach art. thomas meissner">
+        <span class="symbol" aria-hidden="true">B</span>
+        <span class="name">Basis</span>
+        <span class="text">Mappentyp Organisation für Firmen, Behörden, Ärzte, Versicherungen und andere Stellen – mit Kontakt, Anschrift und Sichten nach Art.</span>
+        <span class="unter">1.0.0 · Thomas Meissner</span>
+      </a>
+    </div>
+    <p id="keine" class="leerhinweis" hidden>Kein Paket gefunden.</p>
+    <p class="leise">Stand: 31.10.2026 · 1 Paket</p>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="katalog.json">katalog.json</a></footer>
+</body>
+</html>
