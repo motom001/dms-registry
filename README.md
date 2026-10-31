@@ -34,10 +34,12 @@ Jedes Paket enthält mindestens:
 
 ## Katalog
 
-Bei jedem Merge auf `main` baut die CI den **Katalog** und veröffentlicht ihn über GitHub Pages:
+Bei jedem Merge auf `main` baut die CI den **Katalog** und legt ihn auf den Branch `gh-pages`:
 
-- **`https://motom001.github.io/dms-registry/katalog.json`** – die Standard-Katalogadresse im DMS
-- `https://motom001.github.io/dms-registry/archive/<id>-<version>.zip` – je Paketversion ein Archiv mit genau den Dateien des Paketordners (ohne Ordner davor)
+- **`https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json`** – die Standard-Katalogadresse im DMS
+- `…/gh-pages/archive/<id>-<version>.zip` – je Paketversion ein Archiv mit genau den Dateien des Paketordners (ohne Ordner davor)
+
+Ist GitHub Pages für das Repository eingeschaltet (Quelle: Branch `gh-pages`), ist derselbe Inhalt auch unter `https://motom001.github.io/dms-registry/` erreichbar.
 
 `katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige DMS-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele), ob das Paket Code hat, Adresse des Archivs (relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
 
