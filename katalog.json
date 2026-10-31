@@ -1,7 +1,65 @@
 {
   "format": 1,
-  "erstellt": "2026-10-31T09:04:09Z",
+  "erstellt": "2026-10-31T09:06:34Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
-  "pakete": []
+  "pakete": [
+    {
+      "id": "basis",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.63.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "organisation",
+                "name": "Organisation"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "organisationen",
+                "name": "Organisationen"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "banken",
+                "name": "Banken"
+              },
+              {
+                "schluessel": "behoerden",
+                "name": "Behörden"
+              },
+              {
+                "schluessel": "aerzte",
+                "name": "Ärzte und Praxen"
+              }
+            ],
+            "beispiele": 2
+          },
+          "code": false,
+          "archiv": "archive/basis-1.0.0.zip",
+          "sha256": "55a5a45f1ab8bbd41b1b0ec5b9fd65e271fc68fc930f2e5626b8723a3e2fb72a",
+          "groesse": 4605,
+          "veroeffentlicht": "2026-10-31T09:06:34Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/basis",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/CHANGELOG.md"
+        }
+      ],
+      "name": "Basis",
+      "beschreibung": "Mappentyp Organisation für Firmen, Behörden, Ärzte, Versicherungen und andere Stellen – mit Kontakt, Anschrift und Sichten nach Art.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "MIT",
+      "aktuell": "1.0.0"
+    }
+  ]
 }
