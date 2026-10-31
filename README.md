@@ -15,7 +15,7 @@ Im DMS installierst du Pakete unter **Werkbank → Pakete**. Die Paketverwaltung
 pakete/<paket>/        ein Ordner je Paket, Name = Paket-Id
 vorlage/               Vorlage für ein neues Paket – kopieren und loslegen
 schema/                JSON-Schemas für manifest.yaml und die Inhalte
-werkzeuge/             neues-paket.sh, pruefen.py (läuft auch in der CI)
+werkzeuge/             neues-paket.sh, pruefen.py, katalog.py (laufen auch in der CI)
 REGELN.md              was erlaubt ist, was nicht, welche Lizenzen
 CONTRIBUTING.md        wie ein Paket hierher kommt
 ```
@@ -31,6 +31,32 @@ Jedes Paket enthält mindestens:
 | `inhalt/` | Mappentypen, Sichten, Beispiele (YAML) |
 | `code/` | nur bei Paketen mit Code: Quellcode, wird in der CI gebaut |
 | `tests/` | Erwartungen an das Paket |
+
+## Katalog
+
+Bei jedem Merge auf `main` baut die CI den **Katalog** und veröffentlicht ihn über GitHub Pages:
+
+- **`https://motom001.github.io/dms-registry/katalog.json`** – die Standard-Katalogadresse im DMS
+- `https://motom001.github.io/dms-registry/archive/<id>-<version>.zip` – je Paketversion ein Archiv mit genau den Dateien des Paketordners (ohne Ordner davor)
+
+`katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige DMS-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele), ob das Paket Code hat, Adresse des Archivs (relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
+
+```json
+{
+  "format": 1, "erstellt": "2026-11-01T10:00:00Z", "quelle": "https://github.com/motom001/dms-registry", "signatur": null,
+  "pakete": [{
+    "id": "basis", "name": "Basis", "beschreibung": "…", "autor": { "name": "…", "github": "…" }, "lizenz": "CC0-1.0", "aktuell": "1.0.0",
+    "versionen": [{
+      "version": "1.0.0", "dms": ">=0.63.0", "abhaengigkeiten": {},
+      "inhalt": { "mappentypen": [{ "schluessel": "organisation", "name": "Organisation" }], "sichten": [ … ], "beispiele": 2 },
+      "code": false, "archiv": "archive/basis-1.0.0.zip", "sha256": "…", "groesse": 4711, "veroeffentlicht": "…",
+      "quelle": "…", "readme": "…", "changelog": "…"
+    }]
+  }]
+}
+```
+
+Ältere Versionen bleiben im Katalog und als Archiv abrufbar. Ein Archiv mit gleicher Id und Version ändert sich nie: Ändert sich ein Paket ohne neue Version, schlägt die Prüfung im Pull Request fehl. Lokal baust du den Katalog mit `python3 werkzeuge/katalog.py <ordner>`. Das Feld `signatur` ist für eine spätere Signatur des Katalogs vorgesehen und heute `null`.
 
 ## Ein Paket erstellen
 
