@@ -1,17 +1,18 @@
 # Beispiel-Mappen der erfundenen Familie Muster.
-# Verweise (Immobilie, Fachbetrieb, Wartungsvertrag, Ablageort) setzt du nach der Installation selbst:
-# Beispiele können noch nicht auf andere Mappen zeigen.
+# Wartungen und Zählerstände zeigen auf die Immobilie ({ beispiel: … }, ab DMS 0.79.0).
+# Fachbetrieb, Wartungsvertrag und Ablageort setzt du selbst.
 - typ: immobilie
+  schluessel: musterweg
   werte: { bezeichnung: Einfamilienhaus Musterweg 1, art: Eigentum, strasse: Musterweg, hausnummer: "1", plz: "12345", ort: Musterstadt, baujahr: "1998", wohnflaeche: 142.5, grundstueck: 520 }
 - typ: wartung
-  werte: { gegenstand: Heizung, zuletzt_am: "2025-12-03", turnus: 12, naechste_faellig: "2026-12-03", notiz: "Gas-Brennwerttherme, Abgasmessung in Ordnung." }
+  werte: { immobilie: { beispiel: musterweg }, gegenstand: Heizung, zuletzt_am: "2025-12-03", turnus: 12, naechste_faellig: "2026-12-03", notiz: "Gas-Brennwerttherme, Abgasmessung in Ordnung." }
 - typ: wartung
-  werte: { gegenstand: Rauchmelder, zuletzt_am: "2026-03-14", turnus: 12, naechste_faellig: "2027-03-14" }
+  werte: { immobilie: { beispiel: musterweg }, gegenstand: Rauchmelder, zuletzt_am: "2026-03-14", turnus: 12, naechste_faellig: "2027-03-14" }
 - typ: zaehlerstand
-  werte: { zaehlerart: Strom, zaehlernummer: "1ESY1160123456", abgelesen_am: "2025-12-31", stand: 48213, einheit: kWh }
+  werte: { immobilie: { beispiel: musterweg }, zaehlerart: Strom, zaehlernummer: "1ESY1160123456", abgelesen_am: "2025-12-31", stand: 48213, einheit: kWh }
 - typ: zaehlerstand
-  werte: { zaehlerart: Strom, zaehlernummer: "1ESY1160123456", abgelesen_am: "2026-06-30", stand: 49987, einheit: kWh }
+  werte: { immobilie: { beispiel: musterweg }, zaehlerart: Strom, zaehlernummer: "1ESY1160123456", abgelesen_am: "2026-06-30", stand: 49987, einheit: kWh }
 - typ: zaehlerstand
-  werte: { zaehlerart: Gas, zaehlernummer: G4-0815-77, abgelesen_am: "2025-12-31", stand: 23104.512, einheit: m³ }
+  werte: { immobilie: { beispiel: musterweg }, zaehlerart: Gas, zaehlernummer: G4-0815-77, abgelesen_am: "2025-12-31", stand: 23104.512, einheit: m³ }
 - typ: zaehlerstand
-  werte: { zaehlerart: Gas, zaehlernummer: G4-0815-77, abgelesen_am: "2026-06-30", stand: 24310.207, einheit: m³ }
+  werte: { immobilie: { beispiel: musterweg }, zaehlerart: Gas, zaehlernummer: G4-0815-77, abgelesen_am: "2026-06-30", stand: 24310.207, einheit: m³ }

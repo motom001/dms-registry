@@ -24,11 +24,11 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 **Ansichten:** *Haus* mit allem und darunter *Immobilien*, *Wartungen*, *Zählerstände* (darunter *dieses Jahr* und *letztes Jahr* zum Vergleich) sowie *Wartung fällig* – Wartungen, die in den nächsten drei Monaten fällig oder schon überfällig sind.
 
-**Beispiele (optional):** das Einfamilienhaus Musterweg 1 der Familie Muster mit Heizungs- und Rauchmelderwartung sowie je zwei Ablesungen von Strom- und Gaszähler. Die Verweise (Immobilie, Fachbetrieb, Wartungsvertrag, Ablageort) setzt du selbst – Beispiele können noch nicht auf andere Mappen zeigen.
+**Beispiele (optional):** das Einfamilienhaus Musterweg 1 der Familie Muster mit Heizungs- und Rauchmelderwartung sowie je zwei Ablesungen von Strom- und Gaszähler. Wartungen und Zählerstände hängen schon am Haus; Fachbetrieb, Wartungsvertrag und Ablageort setzt du selbst.
 
 ## Voraussetzungen
 
-- DMS ab Version 0.75 (Verweis auf den Ablageort des DMS)
+- DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)
 - Pakete **Basis** ab 1.0.0 und **Haushalt** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz

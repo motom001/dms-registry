@@ -21,11 +21,11 @@ Das Paket **Fahrzeuge** bringt die Mappentypen **Fahrzeug** und **Werkstattrechn
 
 **Ansichten:** *Fahrzeuge* mit allem und darunter *Alle Fahrzeuge*, *Werkstattrechnungen* und *HU fällig* – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist.
 
-**Beispiele (optional):** das Familienauto der Familie Muster und zwei Werkstattrechnungen. Die Verweise (Fahrzeug, Werkstatt, Versicherung, Ablageort „Safe“) setzt du selbst – Beispiele können noch nicht auf andere Mappen zeigen.
+**Beispiele (optional):** das Familienauto der Familie Muster und zwei Werkstattrechnungen. Die Rechnungen hängen am Auto, das Auto zeigt auf die Kfz-Versicherung aus Haushalt (wenn deren Beispiele installiert sind). Werkstatt und Ablageort „Safe“ setzt du selbst.
 
 ## Voraussetzungen
 
-- DMS ab Version 0.75 (Verweis auf den Ablageort des DMS)
+- DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)
 - Pakete **Basis** ab 1.0.0 und **Haushalt** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz

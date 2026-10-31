@@ -36,11 +36,11 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 - *Läuft bald ab* – Ausweise, die in den nächsten sechs Monaten ablaufen oder schon abgelaufen sind,
 - *Garantie läuft ab* – Anschaffungen, deren Garantie in den nächsten drei Monaten endet.
 
-**Beispiele (optional):** 14 Mappen der erfundenen Familie Muster (Erika, Max und Lena) – je Typ ein bis zwei. Die Verweise auf Organisationen, Steuerjahr und Ablageort setzt du in den Beispielen selbst, z. B. die Waschmaschine auf das Steuerjahr 2025.
+**Beispiele (optional):** 15 Mappen der erfundenen Familie Muster (Erika, Max und Lena) – je Typ ein bis zwei, dazu die Kfz-Versicherung fürs Paket Fahrzeuge. Sie hängen zusammen: Das Girokonto zeigt auf die Sparkasse, der Stromvertrag auf die Stadtwerke, die Impfung auf die Praxis Dr. Beispiel (alle aus dem Paket Basis), Max’ Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
 
 ## Voraussetzungen
 
-- DMS ab Version 0.75 (Verweis auf den Ablageort des DMS)
+- DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)
 - Paket **Basis** ab 1.0.0 – wird bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
