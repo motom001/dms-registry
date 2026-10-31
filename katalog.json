@@ -1,12 +1,80 @@
 {
   "format": 1,
-  "erstellt": "2026-10-31T21:50:08Z",
+  "erstellt": "2026-10-31T22:06:51Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
     {
       "id": "basis",
       "versionen": [
+        {
+          "version": "1.1.0",
+          "dms": ">=0.79.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "organisation",
+                "name": "Organisation"
+              },
+              {
+                "schluessel": "niederlassung",
+                "name": "Niederlassung"
+              },
+              {
+                "schluessel": "person",
+                "name": "Person"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "organisationen",
+                "name": "Organisationen"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "banken",
+                "name": "Banken"
+              },
+              {
+                "schluessel": "behoerden",
+                "name": "Behörden"
+              },
+              {
+                "schluessel": "aerzte",
+                "name": "Ärzte und Praxen"
+              },
+              {
+                "schluessel": "niederlassungen",
+                "name": "Niederlassungen"
+              },
+              {
+                "schluessel": "personen",
+                "name": "Personen"
+              },
+              {
+                "schluessel": "familie",
+                "name": "Familie und Freunde"
+              },
+              {
+                "schluessel": "ansprechpartner",
+                "name": "Ansprechpartner"
+              }
+            ],
+            "beispiele": 8
+          },
+          "code": false,
+          "archiv": "archive/basis-1.1.0.zip",
+          "sha256": "a821add123ac02aca37764f580dc9e616b7ee146ccc80d098b3897b377793d09",
+          "groesse": 7786,
+          "veroeffentlicht": "2026-10-31T22:06:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/basis",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/CHANGELOG.md"
+        },
         {
           "version": "1.0.0",
           "dms": ">=0.63.0",
@@ -53,13 +121,13 @@
         }
       ],
       "name": "Basis",
-      "beschreibung": "Mappentyp Organisation für Firmen, Behörden, Ärzte, Versicherungen und andere Stellen – mit Kontakt, Anschrift und Sichten nach Art.",
+      "beschreibung": "Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "MIT",
-      "aktuell": "1.0.0"
+      "aktuell": "1.1.0"
     },
     {
       "id": "fahrzeuge",

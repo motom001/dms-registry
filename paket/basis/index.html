@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Basis – DMS-Pakete</title>
-  <meta name="description" content="Mappentyp Organisation für Firmen, Behörden, Ärzte, Versicherungen und andere Stellen – mit Kontakt, Anschrift und Sichten nach Art.">
+  <meta name="description" content="Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.">
   <link rel="stylesheet" href="../../stil.css">
   <script src="../../dms.js" defer></script>
 </head>
@@ -16,24 +16,24 @@
     <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
     <div class="paketkopf">
       <span class="symbol gross" aria-hidden="true">B</span>
-      <div><h1>Basis</h1><p class="leise">Mappentyp Organisation für Firmen, Behörden, Ärzte, Versicherungen und andere Stellen – mit Kontakt, Anschrift und Sichten nach Art.</p></div>
+      <div><h1>Basis</h1><p class="leise">Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="basis@1.0.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="basis@1.1.0">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/basis">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.0.0 vom 31.10.2026</dd>
+      <dt>Version</dt><dd>1.1.0 vom 31.10.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>MIT</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.63.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.79.0</dd>
       <dt>Abhängigkeiten</dt><dd>keine</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
-      <h3>Mappentypen</h3><details><summary><strong>Organisation</strong> – 14 Felder</summary><ul><li>Name <span class="leise">(Text, Pflicht)</span></li><li>Kürzel <span class="leise">(Text)</span></li><li>Art <span class="leise">(Auswahl)</span></li><li>Kundennummer <span class="leise">(Text)</span></li><li>Beschreibung <span class="leise">(Langtext)</span></li><li>Telefon <span class="leise">(Text)</span></li><li>Fax <span class="leise">(Text)</span></li><li>E-Mail <span class="leise">(Text)</span></li><li>Internetseite <span class="leise">(Text)</span></li><li>Straße <span class="leise">(Text)</span></li><li>Hausnummer <span class="leise">(Text)</span></li><li>PLZ <span class="leise">(Text)</span></li><li>Ort <span class="leise">(Text)</span></li><li>Land <span class="leise">(Text)</span></li></ul></details>
-      <h3>Sichten</h3><ul><li>Organisationen</li><li>Versicherungen <span class="leise">(unter Organisationen)</span></li><li>Banken <span class="leise">(unter Organisationen)</span></li><li>Behörden <span class="leise">(unter Organisationen)</span></li><li>Ärzte und Praxen <span class="leise">(unter Organisationen)</span></li></ul>
-      <p>2 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+      <h3>Mappentypen</h3><details><summary><strong>Organisation</strong> – 14 Felder</summary><ul><li>Name <span class="leise">(Text, Pflicht)</span></li><li>Kürzel <span class="leise">(Text)</span></li><li>Art <span class="leise">(Auswahl)</span></li><li>Kundennummer <span class="leise">(Text)</span></li><li>Beschreibung <span class="leise">(Langtext)</span></li><li>Telefon <span class="leise">(Text)</span></li><li>Fax <span class="leise">(Text)</span></li><li>E-Mail <span class="leise">(Text)</span></li><li>Internetseite <span class="leise">(Text)</span></li><li>Straße <span class="leise">(Text)</span></li><li>Hausnummer <span class="leise">(Text)</span></li><li>PLZ <span class="leise">(Text)</span></li><li>Ort <span class="leise">(Text)</span></li><li>Land <span class="leise">(Text)</span></li></ul></details><details><summary><strong>Niederlassung</strong> – 15 Felder</summary><ul><li>Organisation <span class="leise">(Verweis, Pflicht)</span></li><li>Name <span class="leise">(Text, Pflicht)</span></li><li>Art <span class="leise">(Auswahl)</span></li><li>Nummer <span class="leise">(Text)</span></li><li>Öffnungszeiten <span class="leise">(Langtext)</span></li><li>Beschreibung <span class="leise">(Langtext)</span></li><li>Telefon <span class="leise">(Text)</span></li><li>Fax <span class="leise">(Text)</span></li><li>E-Mail <span class="leise">(Text)</span></li><li>Internetseite <span class="leise">(Text)</span></li><li>Straße <span class="leise">(Text)</span></li><li>Hausnummer <span class="leise">(Text)</span></li><li>PLZ <span class="leise">(Text)</span></li><li>Ort <span class="leise">(Text)</span></li><li>Land <span class="leise">(Text)</span></li></ul></details><details><summary><strong>Person</strong> – 19 Felder</summary><ul><li>Anrede <span class="leise">(Auswahl)</span></li><li>Titel <span class="leise">(Text)</span></li><li>Vorname <span class="leise">(Text)</span></li><li>Nachname <span class="leise">(Text, Pflicht)</span></li><li>Beziehung <span class="leise">(Auswahl)</span></li><li>Geburtstag <span class="leise">(Datum)</span></li><li>Beschreibung <span class="leise">(Langtext)</span></li><li>Organisation <span class="leise">(Verweis)</span></li><li>Niederlassung <span class="leise">(Verweis)</span></li><li>Funktion <span class="leise">(Text)</span></li><li>Abteilung <span class="leise">(Text)</span></li><li>Telefon <span class="leise">(Text)</span></li><li>Mobil <span class="leise">(Text)</span></li><li>E-Mail <span class="leise">(Text)</span></li><li>Straße <span class="leise">(Text)</span></li><li>Hausnummer <span class="leise">(Text)</span></li><li>PLZ <span class="leise">(Text)</span></li><li>Ort <span class="leise">(Text)</span></li><li>Land <span class="leise">(Text)</span></li></ul></details>
+      <h3>Sichten</h3><ul><li>Organisationen</li><li>Versicherungen <span class="leise">(unter Organisationen)</span></li><li>Banken <span class="leise">(unter Organisationen)</span></li><li>Behörden <span class="leise">(unter Organisationen)</span></li><li>Ärzte und Praxen <span class="leise">(unter Organisationen)</span></li><li>Niederlassungen <span class="leise">(unter Organisationen)</span></li><li>Personen</li><li>Familie und Freunde <span class="leise">(unter Personen)</span></li><li>Ansprechpartner <span class="leise">(unter Personen)</span></li></ul>
+      <p>8 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
     </section>
     <section><h2>Rechte und Netz</h2><p>Kein Code: Das Paket legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.</p></section>
-    <section class="readme"><h2>Beschreibung</h2><p>Das Basis-Paket bringt den Mappentyp <strong>Organisation</strong>: für Firmen, Behörden, Ärzte und Praxen, Versicherungen, Banken, Vereine, Vermieter und alle anderen Stellen, mit denen ein Haushalt zu tun hat. Statt den Typ Feld für Feld in der Werkbank zu bauen, installierst du ihn mit einem Klick unter <strong>Werkbank → Pakete</strong>.</p>
+    <section class="readme"><h2>Beschreibung</h2><p>Das Basis-Paket bringt die Mappentypen <strong>Organisation</strong>, <strong>Niederlassung</strong> und <strong>Person</strong>. Organisation ist für Firmen, Behörden, Ärzte und Praxen, Versicherungen, Banken, Vereine, Vermieter und alle anderen Stellen, mit denen ein Haushalt zu tun hat. Statt die Typen Feld für Feld in der Werkbank zu bauen, installierst du sie mit einem Klick unter <strong>Werkbank → Pakete</strong>.</p>
 <h3>Inhalt</h3>
 <table>
 <thead>
@@ -49,9 +49,19 @@
 <td>jede Stelle, mit der du zu tun hast</td>
 <td>Name, Art, Kundennummer, Telefon, E-Mail, Anschrift</td>
 </tr>
+<tr>
+<td>Niederlassung</td>
+<td>Filiale, Zweigstelle, Praxis oder Außenstelle einer Organisation</td>
+<td>Organisation, Name, Art, Nummer, Öffnungszeiten, Kontakt, Anschrift</td>
+</tr>
+<tr>
+<td>Person</td>
+<td>ein Mensch, mit dem du zu tun hast – <strong>kein Benutzer des DMS</strong></td>
+<td>Anrede, Titel, Vor- und Nachname, Beziehung, Geburtstag, Organisation, Niederlassung, Funktion, Kontakt, Anschrift</td>
+</tr>
 </tbody>
 </table>
-<p><strong>Register:</strong> Stammdaten, Kontakt, Anschrift, Dokumente, Protokoll.</p>
+<h4>Organisation</h4>
 <table>
 <thead>
 <tr>
@@ -72,32 +82,54 @@
 <td>Anschrift</td>
 <td>Straße, Hausnummer, PLZ, Ort, Land (Vorgabe: Deutschland)</td>
 </tr>
+<tr>
+<td>Niederlassungen</td>
+<td>alle Niederlassungen dieser Organisation (ab 1.1.0)</td>
+</tr>
+<tr>
+<td>Ansprechpartner</td>
+<td>alle Personen, die hier arbeiten bzw. Ansprechpartner sind (ab 1.1.0)</td>
+</tr>
 </tbody>
 </table>
-<p>Die <strong>Kundennummer</strong> ist <em>deine</em> Nummer bei der Organisation – Kunden-, Mitglieds-, Versicherten- oder Patientennummer. Sie steht so auf Briefen und Rechnungen und hilft beim Zuordnen.</p>
-<p><strong>Trefferliste:</strong> Name, Art, Ort, Telefon.</p>
-<p><strong>Sichten:</strong> <em>Organisationen</em> (alle) und darunter <em>Versicherungen</em>, <em>Banken</em>, <em>Behörden</em> sowie <em>Ärzte und Praxen</em> – jeweils die Organisationen mit dieser Art. Eine Organisation mit mehreren Arten erscheint in mehreren Sichten.</p>
-<p><strong>Beispiele (optional):</strong> „Stadtwerke Musterstadt“ und „Praxis Dr. Beispiel“ mit erfundenen Daten.</p>
+<p>Dazu <em>Dokumente</em> und <em>Historie</em>. Die <strong>Kundennummer</strong> ist <em>deine</em> Nummer bei der Organisation – Kunden-, Mitglieds-, Versicherten- oder Patientennummer. Sie steht so auf Briefen und Rechnungen und hilft beim Zuordnen.</p>
+<h4>Niederlassung</h4>
+<p>Eine Bank mit mehreren Filialen, eine Arztpraxis mit zwei Praxen, eine Behörde mit Außenstellen: Die Organisation gibt es <strong>einmal</strong>, ihre Niederlassungen hängen an ihr (Verweis <em>Organisation</em>, Pflicht). Der Titel zeigt beides, z. B. „Sparkasse Musterstadt – Filiale Marktplatz“. Art: Filiale, Zweigstelle, Geschäftsstelle, Praxis, Außenstelle, Werk/Lager, Büro, Sonstige. Register <em>Allgemein</em>, <em>Kontakt</em>, <em>Anschrift</em>, <em>Ansprechpartner</em>, <em>Verknüpfungen</em>, <em>Dokumente</em>, <em>Historie</em>. Andere Pakete (z. B. Haushalt) verweisen weiter auf die Organisation.</p>
+<h4>Person</h4>
+<p>Eine <strong>Person</strong> ist ein Kontakt – Ansprechpartnerin bei der Bank, Hausarzt, Vermieter, Oma. Sie ist <strong>kein Benutzer</strong> des DMS und kann sich nicht anmelden (Benutzer verwaltest du unter <em>Werkbank → Benutzer</em>). Register <em>Stammdaten</em> (mit <strong>Beziehung</strong>: Familie, Freund/in, Ansprechpartner, Arzt/Ärztin, Handwerker, Mieter/in, Vermieter/in, Nachbar/in, Sonstige), <em>Arbeit</em> (Organisation, Niederlassung, Funktion, Abteilung), <em>Kontakt</em>, <em>Anschrift</em>, <em>Verknüpfungen</em>, <em>Dokumente</em>, <em>Historie</em>. Wer an Geburtstage erinnert werden möchte, schaltet am Feld <em>Geburtstag</em> unter <em>Werkbank → Mappentypen</em> eine jährliche Erinnerung ein.</p>
+<p><strong>Sichten:</strong> <em>Organisationen</em> mit <em>Versicherungen</em>, <em>Banken</em>, <em>Behörden</em>, <em>Ärzte und Praxen</em> und <em>Niederlassungen</em>; <em>Personen</em> mit <em>Familie und Freunde</em> und <em>Ansprechpartner</em>.</p>
+<p><strong>Beispiele (optional):</strong> „Stadtwerke Musterstadt“, „Praxis Dr. Beispiel“, die „Sparkasse Musterstadt“ mit zwei Filialen, die Kundenberaterin Sabine Beraterin (Filiale Marktplatz), Hausarzt Dr. Bernd Beispiel und Oma Muster – erfundene Daten, untereinander verknüpft.</p>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS ab Version 0.63 (Paketverwaltung)</li>
+<li>DMS ab Version 0.79 (Version 1.0.0 lief ab 0.63)</li>
 <li>keine weiteren Pakete</li>
 </ul>
 <h3>Rechte und Netz</h3>
-<p>Dieses Paket enthält keinen Code. Es legt nur einen Mappentyp und Sichten an.</p>
+<p>Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.</p>
 <h3>Nach der Installation</h3>
 <ol>
-<li>Unter <strong>Ablage → Organisationen</strong> neue Organisationen anlegen.</li>
+<li>Unter <strong>Ablage → Organisationen</strong> neue Organisationen anlegen; ihre Filialen legst du als <strong>Niederlassung</strong> an.</li>
+<li>Unter <strong>Ablage → Personen</strong> die Menschen, mit denen du zu tun hast – mit Organisation und Niederlassung, wo sie arbeiten.</li>
+<li><strong>Update von 1.0.0:</strong> ergänzt nur – Niederlassung und Person kommen dazu, die Organisation bekommt die Register <em>Niederlassungen</em> und <em>Ansprechpartner</em>; vorhandene Organisationen bleiben, wie sie sind.</li>
 <li>Bei bestehenden Typen (z. B. „Vertragspartner“) ändert das Paket nichts. Wer umsteigen will, verweist in seinen Typen künftig auf „Organisation“.</li>
 </ol>
 <h3>Pflege</h3>
 <p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Basis“ im Titel.</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.1.0</h3>
+<ul>
+<li>Neu: Mappentyp <strong>Niederlassung</strong> (Filiale, Zweigstelle, Praxis, Außenstelle einer Organisation) mit eigener Anschrift, Kontakt und Ansprechpartnern.</li>
+<li>Neu: Mappentyp <strong>Person</strong> (Kontakt – kein Benutzer des DMS) mit Beziehung, Arbeit (Organisation, Niederlassung, Funktion), Kontakt und Anschrift.</li>
+<li>Organisation: neue Register <strong>Niederlassungen</strong> und <strong>Ansprechpartner</strong>; Register „Protokoll“ heißt wie im DMS „Historie“ (nur bei Neuinstallation – vorhandene hat das DMS schon umbenannt).</li>
+<li>Neue Sichten <em>Niederlassungen</em>, <em>Personen</em> mit <em>Familie und Freunde</em> und <em>Ansprechpartner</em>.</li>
+<li>Beispiele: Sparkasse Musterstadt mit zwei Filialen, eine Kundenberaterin, ein Hausarzt, Oma Muster – mit Verweisen untereinander.</li>
+<li>Braucht DMS ab 0.79.0 (Verweise zwischen Beispielen). Das Update von 1.0.0 ergänzt nur; vorhandene Organisationen bleiben unverändert.</li>
+</ul>
+<h3>1.0.0</h3>
 <ul>
 <li>Erste Fassung.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.63.0</td><td><a href="../../archive/basis-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.1.0</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/basis-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.1.0">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.63.0</td><td><a href="../../archive/basis-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>
