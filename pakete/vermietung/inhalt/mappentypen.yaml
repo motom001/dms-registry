@@ -1,0 +1,172 @@
+# Mappentypen des Pakets Vermietung. Schema: schema/inhalt.schema.json
+# Das DMS legt sie als vermietung_<schluessel> an; angezeigt wird der Name.
+# Mieter sind Personen (basis:person), Firmen Organisationen (basis:organisation),
+# das Haus selbst darf zusätzlich eine Immobilie aus dem Paket Haus sein (Wartungen, Zählerstände).
+
+- schluessel: mietobjekt
+  name: Mietobjekt
+  beschreibung: Ein vermietetes Haus oder eine vermietete Eigentumswohnung – mit allen Wohnungen, Abrechnungen und Ausgaben.
+  titelVorlage: "{bezeichnung}"
+  felder:
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Mehrfamilienhaus Lindenstraße 4“" }
+    - key: art
+      label: Art
+      typ: auswahl
+      optionen: [Mehrfamilienhaus, Einfamilienhaus, Eigentumswohnung, Gewerbe, Garage/Stellplatz, Sonstiges]
+    - { key: strasse, label: Straße, typ: text, maxLen: 120 }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10 }
+    - { key: ort, label: Ort, typ: text, maxLen: 80 }
+    - { key: baujahr, label: Baujahr, typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Vierstellig, z. B. 1965" }
+    - { key: einheiten, label: Anzahl Einheiten, typ: zahl, min: 1, nachkomma: 0 }
+    - { key: immobilie, label: Immobilie (Paket Haus), typ: referenz, ziel: "haus:immobilie", verweisart: bezug, hilfe: Falls du Wartungen und Zählerstände des Hauses im Paket Haus führst }
+    - { key: verwalter, label: Hausverwaltung, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Eigentumswohnungen die WEG-Verwaltung }
+    - { key: grundsteuer_az, label: Aktenzeichen Grundsteuer, typ: text, maxLen: 40, hilfe: Steht auf dem Grundsteuerbescheid }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Kaufvertrag, Grundbuchauszug und Teilungserklärung auf Papier liegen }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, baujahr, einheiten, immobilie, verwalter, grundsteuer_az, verbleib_original] }
+    - key: wohnungen
+      name: Wohnungen
+      art: verknuepfungen
+      quellen: [{ typ: wohnung, feld: mietobjekt }]
+    - key: abrechnungen
+      name: Nebenkosten
+      art: verknuepfungen
+      quellen: [{ typ: nebenkostenabrechnung, feld: mietobjekt }]
+    - key: ausgaben
+      name: Ausgaben
+      art: verknuepfungen
+      quellen: [{ typ: ausgabe, feld: mietobjekt }]
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [bezeichnung, art, ort, einheiten]
+
+- schluessel: wohnung
+  name: Wohnung
+  beschreibung: Eine vermietbare Einheit in einem Mietobjekt – Wohnung, Gewerbeeinheit, Garage oder Stellplatz.
+  titelVorlage: "{mietobjekt} – {bezeichnung}"
+  felder:
+    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true }
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 60, hilfe: "z. B. „EG links“ oder „Whg. 3“" }
+    - key: art
+      label: Art
+      typ: auswahl
+      optionen: [Wohnung, Gewerbe, Garage/Stellplatz, Sonstiges]
+      standard: Wohnung
+    - { key: lage, label: Lage, typ: text, maxLen: 60, hilfe: "z. B. „2. OG rechts“" }
+    - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2 }
+    - { key: zimmer, label: Zimmer, typ: zahl, min: 0, nachkomma: 1 }
+    - { key: zaehler, label: Zähler, typ: langtext, hilfe: "Zählernummern der Wohnung, z. B. „Strom 1ESY…, Wasser kalt …“" }
+    - { key: notiz, label: Notiz, typ: langtext, hilfe: Ausstattung, Schlüssel, Besonderheiten }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, bezeichnung, art, lage, wohnflaeche, zimmer, zaehler, notiz] }
+    - key: mietvertraege
+      name: Mietverträge
+      art: verknuepfungen
+      quellen: [{ typ: mietvertrag, feld: wohnung }]
+    - key: ausgaben
+      name: Ausgaben
+      art: verknuepfungen
+      quellen: [{ typ: ausgabe, feld: wohnung }]
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [mietobjekt, bezeichnung, lage, wohnflaeche, zimmer]
+
+- schluessel: mietvertrag
+  name: Mietvertrag
+  beschreibung: Ein Mietverhältnis über eine Wohnung – Mieter, Miete, Kaution und die Fristen dazu.
+  titelVorlage: "{wohnung} – {mieter}"
+  felder:
+    - { key: wohnung, label: Wohnung, typ: referenz, ziel: wohnung, verweisart: zugehoerigkeit, pflicht: true }
+    - { key: mieter, label: Mieter, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: Alle Personen, die den Vertrag unterschrieben haben }
+    - key: stand
+      label: Stand
+      typ: auswahl
+      pflicht: true
+      optionen: [läuft, gekündigt, beendet]
+      standard: läuft
+    - { key: beginn, label: Beginn, typ: datum, pflicht: true }
+    - { key: gekuendigt_am, label: Gekündigt am, typ: datum }
+    - key: ende
+      label: Ende
+      typ: datum
+      hilfe: Bei befristeten oder gekündigten Verträgen. Das DMS erinnert 60 Tage vorher – Zeit für Übergabe und Nachmieter.
+      frist: { vorlauf: 60, einheit: tage }
+    - key: mietart
+      label: Mietart
+      typ: auswahl
+      optionen: [Festmiete, Staffelmiete, Indexmiete]
+      standard: Festmiete
+    - { key: kaltmiete, label: Kaltmiete (monatlich), typ: betrag, waehrung: EUR, min: 0 }
+    - { key: vorauszahlung, label: Nebenkosten-Vorauszahlung (monatlich), typ: betrag, waehrung: EUR, min: 0 }
+    - { key: sonstiges, label: Sonstiges (monatlich), typ: betrag, waehrung: EUR, min: 0, hilfe: Stellplatz, Garage, Möblierung }
+    - key: mieterhoehung_ab
+      label: Nächste Mieterhöhung möglich ab
+      typ: datum
+      hilfe: Je nach Vertrag nächste Staffel, nächste Indexanpassung oder frühester Termin für eine Erhöhung. Das DMS erinnert 30 Tage vorher.
+      frist: { vorlauf: 30, einheit: tage }
+    - { key: kaution, label: Kaution, typ: betrag, waehrung: EUR, min: 0 }
+    - { key: kaution_konto, label: Kaution angelegt bei, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank des Kautionskontos }
+    - { key: kaution_zurueck_am, label: Kaution zurückgezahlt am, typ: datum }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der unterschriebene Mietvertrag und das Übergabeprotokoll liegen }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [wohnung, mieter, stand, beginn, gekuendigt_am, ende, verbleib_original] }
+    - { key: miete, name: Miete, art: felder, felder: [mietart, kaltmiete, vorauszahlung, sonstiges, mieterhoehung_ab] }
+    - { key: kaution, name: Kaution, art: felder, felder: [kaution, kaution_konto, kaution_zurueck_am] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [wohnung, mieter, stand, beginn, kaltmiete, vorauszahlung]
+
+- schluessel: nebenkostenabrechnung
+  name: Nebenkostenabrechnung
+  beschreibung: Die Betriebskostenabrechnung eines Jahres für ein Mietobjekt – mit Frist für den Versand an die Mieter.
+  titelVorlage: "Nebenkosten {jahr} – {mietobjekt}"
+  felder:
+    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true }
+    - { key: jahr, label: Abrechnungsjahr, typ: text, pflicht: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025" }
+    - { key: von, label: Zeitraum von, typ: datum }
+    - { key: bis, label: Zeitraum bis, typ: datum }
+    - key: versenden_bis
+      label: Versenden bis
+      typ: datum
+      hilfe: Ende des Abrechnungszeitraums plus zwölf Monate – danach sind Nachforderungen in der Regel ausgeschlossen. Das DMS erinnert 60 Tage vorher.
+      frist: { vorlauf: 60, einheit: tage }
+    - { key: versendet_am, label: Versendet am, typ: datum }
+    - { key: kosten, label: Umlagefähige Kosten gesamt, typ: betrag, waehrung: EUR }
+    - { key: ergebnis, label: Nachzahlungen/Guthaben gesamt, typ: betrag, waehrung: EUR, hilfe: Summe über alle Mieter – Nachzahlungen positiv, Guthaben negativ. Die Abrechnung je Wohnung liegt als Dokument dabei. }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "haushalt:steuerjahr", verweisart: bezug, hilfe: Für die Anlage V }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, jahr, von, bis, versenden_bis, versendet_am, kosten, ergebnis, steuerjahr] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [mietobjekt, jahr, versenden_bis, versendet_am, ergebnis]
+
+- schluessel: ausgabe
+  name: Ausgabe Mietobjekt
+  beschreibung: Eine Rechnung oder Kosten zu einem Mietobjekt – Handwerker, Versicherung, Grundsteuer, Verwaltung – für die Anlage V und die Nebenkostenabrechnung.
+  titelVorlage: "{art} {datum} – {mietobjekt}"
+  felder:
+    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true }
+    - { key: wohnung, label: Wohnung, typ: referenz, ziel: wohnung, verweisart: bezug, hilfe: Nur wenn die Ausgabe eine einzelne Wohnung betrifft }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Reparatur/Instandhaltung, Modernisierung, Versicherung, Grundsteuer, Wasser/Abwasser, Müll, Strom Allgemein, Heizung, Hausmeister/Reinigung, Verwaltung, Finanzierung/Zinsen, Sonstiges]
+    - { key: datum, label: Rechnungsdatum, typ: datum, pflicht: true }
+    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, pflicht: true }
+    - { key: umlagefaehig, label: Auf Mieter umlegbar, typ: janein, hilfe: Gehört in die Nebenkostenabrechnung }
+    - { key: firma, label: Firma, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "haushalt:steuerjahr", verweisart: bezug, hilfe: Für die Anlage V }
+    - { key: notiz, label: Notiz, typ: langtext }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, wohnung, art, datum, betrag, umlagefaehig, firma, steuerjahr, notiz, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [datum, mietobjekt, art, betrag, umlagefaehig, firma]
