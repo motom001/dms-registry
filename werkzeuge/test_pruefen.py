@@ -127,6 +127,17 @@ class Inhalt(unittest.TestCase):
     def test_fremdes_paket_weiter_nur_mit_abhaengigkeit(self):
         self.assertTrue(any('nicht unter abhaengigkeiten' in f for f in self.paket('basis:organisation')))
 
+    def test_beispiel_verweise(self):
+        f = pruefen.pruefe_beispiel_verweise
+        ok = [{'typ': 'vertrag', 'schluessel': 'strom', 'werte': {'nr': 'S'}},
+              {'typ': 'zahlung', 'werte': {'vertrag': {'beispiel': 'strom'}, 'partner': {'beispiel': 'basis:stadtwerke'}}}]
+        self.assertEqual(f(ok, 'probe', {'basis'}), [])
+        self.assertTrue(any('nicht unter abhaengigkeiten' in x for x in f(ok, 'probe', set())))
+        self.assertTrue(any('nicht gibt' in x for x in f([{'typ': 'a', 'werte': {'x': {'beispiel': 'fehlt'}}}], 'probe', set())))
+        self.assertTrue(any('doppelt' in x for x in f([{'typ': 'a', 'schluessel': 'a', 'werte': {}}, {'typ': 'a', 'schluessel': 'a', 'werte': {}}], 'probe', set())))
+        kreis = [{'typ': 'a', 'schluessel': 'a', 'werte': {'x': {'beispiel': 'b'}}}, {'typ': 'a', 'schluessel': 'b', 'werte': {'x': [{'beispiel': 'probe:a'}]}}]
+        self.assertTrue(any('Kreis' in x for x in f(kreis, 'probe', set())))
+
     def test_id_dms_ist_reserviert(self):
         self.assertTrue(any('reserviert' in f for f in self.paket('beispiel', 'dms')))
 

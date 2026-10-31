@@ -67,6 +67,49 @@ def dms_fehler(v: str, wo: str) -> str | None:
     return f'{wo}: Mappentyp „{v}“ bringt das DMS nicht mit (erlaubt: ' + ', '.join(f'dms:{t}' for t in sorted(DMS_TYPEN)) + ')'
 
 
+def beispiel_verweise(werte: dict) -> list[str]:
+    """Verweise auf andere Beispiele in den Werten (#347 im DMS): { beispiel: x } oder Listen davon."""
+    erg = []
+    for w in (werte or {}).values():
+        for x in (w if isinstance(w, list) else [w]):
+            if isinstance(x, dict) and set(x) == {'beispiel'} and isinstance(x['beispiel'], str):
+                erg.append(x['beispiel'])
+    return erg
+
+
+def pruefe_beispiel_verweise(beispiele: list, paket_id: str, abh: set) -> list[str]:
+    """Schlüssel eindeutig, Ziele vorhanden bzw. aus einer Abhängigkeit, keine Kreise (braucht DMS ab 0.79.0)."""
+    fehler: list[str] = []
+    bsp = [b for b in beispiele if isinstance(b, dict)]
+    schl = [b['schluessel'] for b in bsp if b.get('schluessel')]
+    for s in sorted({s for s in schl if schl.count(s) > 1}):
+        fehler.append(f'beispiele: Schlüssel „{s}“ doppelt')
+    eigene = set(schl)
+    kanten: dict[str, list[str]] = {}
+    for i, b in enumerate(bsp, 1):
+        for z in beispiel_verweise(b.get('werte')):
+            paket, s = (z.split(':', 1) if ':' in z else (paket_id, z))
+            if paket == paket_id:
+                if s not in eigene:
+                    fehler.append(f'beispiele[{i}]: Verweis auf das Beispiel „{s}“, das es im Paket nicht gibt')
+                elif b.get('schluessel'):
+                    kanten.setdefault(b['schluessel'], []).append(s)
+            elif paket == 'dms' or paket not in abh:
+                fehler.append(f'beispiele[{i}]: Verweis „{z}“ – das Paket „{paket}“ steht nicht unter abhaengigkeiten')
+    # Kreise nur zwischen Beispielen mit Schlüssel möglich (ohne Schlüssel zeigt niemand darauf).
+    farbe: dict[str, int] = {}
+    def kreis(k: str) -> bool:
+        farbe[k] = 1
+        for z in kanten.get(k, []):
+            if farbe.get(z) == 1 or (farbe.get(z) is None and kreis(z)):
+                return True
+        farbe[k] = 2
+        return False
+    if any(farbe.get(k) is None and kreis(k) for k in list(kanten)):
+        fehler.append('beispiele: Die Verweise zwischen den Beispielen bilden einen Kreis – ein Verweis muss weg')
+    return fehler
+
+
 def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> list[str]:
     """Einstellungen und Aktionen im Manifest (code.einstellungen, code.aktionen) über das Schema hinaus."""
     fehler: list[str] = []
@@ -258,6 +301,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     for b in geladen.get('beispiele', []):
         if isinstance(b, dict) and b.get('typ'):
             verweis_ok(b['typ'], 'beispiele')
+    fehler += pruefe_beispiel_verweise(geladen.get('beispiele', []) or [], str(m.get('id')), abh)
 
     # tests/erwartung.yaml stimmt mit dem Inhalt überein.
     erw_pfad = ordner / 'tests' / 'erwartung.yaml'

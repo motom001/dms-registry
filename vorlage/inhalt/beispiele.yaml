@@ -1,6 +1,9 @@
 # Beispiel-Mappen (optional). Bei der Installation fragt das DMS, ob sie angelegt werden sollen.
 # Keine echten Daten!
+# Verweise zwischen Beispielen (ab DMS 0.79.0): einem Beispiel einen schluessel geben und in einem
+# Verweisfeld eines anderen  feld: { beispiel: erstes }  schreiben – auf Abhängigkeiten: { beispiel: "basis:stadtwerke" }.
 - typ: beispiel
+  schluessel: erstes
   werte:
     bezeichnung: Erstes Beispiel
     art: Eins
