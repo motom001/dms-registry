@@ -1,0 +1,268 @@
+# Mappentypen des Pakets Haushalt. Schema: schema/inhalt.schema.json
+# Das DMS legt sie als haushalt_<schluessel> an; angezeigt wird der Name.
+#
+# Gemeinsame Felder (gleicher Schlüssel in allen Typen, damit Ansichten über mehrere Typen gehen):
+#   art                Auswahl je Typ
+#   person             wer im Haushalt (vorerst Text)
+#   verbleib_original  „Verbleib Originaldokumente“, Verweis auf den Ablageort des DMS
+#   kuendigen_bis      Frist bei Vertrag und Versicherung
+#   steuerjahr         Verweis auf das Steuerjahr; das Steuerjahr zeigt diese Mappen unter „Belege“
+
+- schluessel: konto
+  name: Konto
+  beschreibung: Girokonto, Sparkonto, Depot, Kreditkarte, Kredit oder Bausparvertrag.
+  titelVorlage: "{art} – {bank} – {inhaber}"
+  felder:
+    - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Girokonto, Sparkonto, Depot, Kreditkarte, Kredit, Bausparvertrag]
+    - { key: inhaber, label: Inhaber, typ: text, maxLen: 120, hilfe: "Wem das Konto gehört, z. B. „Erika Muster“ oder „gemeinsam“" }
+    - key: iban
+      label: IBAN
+      typ: text
+      maxLen: 42
+      muster: "[A-Z]{2}[0-9]{2}( ?[A-Z0-9]){11,30}"
+      hilfe: Großbuchstaben und Ziffern, Leerzeichen erlaubt, z. B. DE12 3456 7890 1234 5678 90
+    - { key: online_zugang, label: Online-Zugang, typ: passwort, hilfe: Zugangsdaten zum Online-Banking; nur wer die Mappe bearbeiten darf, sieht sie }
+    - { key: eroeffnet_am, label: Eröffnet am, typ: datum }
+    - { key: gekuendigt_am, label: Gekündigt am, typ: datum }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kontovertrag auf Papier liegt }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bank, art, inhaber, iban, online_zugang, eroeffnet_am, gekuendigt_am, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [art, bank, inhaber, iban]
+
+- schluessel: vertrag
+  name: Vertrag
+  beschreibung: Strom, Gas, Internet, Mobilfunk, Streaming, Miete, Mitgliedschaft und andere laufende Verträge.
+  titelVorlage: "{art} – {vertragspartner}"
+  felder:
+    - { key: vertragspartner, label: Vertragspartner, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Strom, Gas, Wasser, Internet, Mobilfunk, Streaming, Zeitschrift, Mitgliedschaft, Miete, Sonstiges]
+    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60 }
+    - { key: beginn, label: Beginn, typ: datum }
+    - { key: mindestlaufzeit_bis, label: Mindestlaufzeit bis, typ: datum }
+    - { key: kuendigungsfrist, label: Kündigungsfrist, typ: text, maxLen: 120, hilfe: "Wie im Vertrag, z. B. „3 Monate zum Ende der Laufzeit“" }
+    - key: kuendigen_bis
+      label: Kündigen bis
+      typ: datum
+      hilfe: Letzter Tag, an dem die Kündigung ankommen muss. Das DMS erinnert 30 Tage vorher.
+      frist: { vorlauf: 30, einheit: tage }
+    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR }
+    - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig] }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [vertragspartner, art, vertragsnummer, beginn, mindestlaufzeit_bis, kuendigungsfrist, kuendigen_bis, betrag, zahlweise, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [art, vertragspartner, betrag, kuendigen_bis]
+
+- schluessel: versicherung
+  name: Versicherung
+  beschreibung: Haftpflicht, Hausrat, Kfz, Berufsunfähigkeit und alle anderen Versicherungen.
+  titelVorlage: "{art} – {versicherer}"
+  felder:
+    - { key: versicherer, label: Versicherer, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz, Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall, Sonstige]
+    - { key: versicherungsnummer, label: Versicherungsnummer, typ: text, maxLen: 60 }
+    - { key: versichert, label: Versichert, typ: text, maxLen: 120, hilfe: "Wer oder was versichert ist, z. B. „Familie“ oder „Auto MU-ST 123“" }
+    - { key: beitrag, label: Beitrag, typ: betrag, min: 0, waehrung: EUR }
+    - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig] }
+    - key: hauptfaelligkeit
+      label: Hauptfälligkeit
+      typ: datum
+      hilfe: Tag, an dem das Versicherungsjahr beginnt. Das DMS erinnert jedes Jahr 6 Wochen vorher.
+      frist: { vorlauf: 6, einheit: wochen, wiederholung: 12 }
+    - key: kuendigen_bis
+      label: Kündigen bis
+      typ: datum
+      hilfe: Meist 3 Monate vor der Hauptfälligkeit. Das DMS erinnert 30 Tage vorher.
+      frist: { vorlauf: 30, einheit: tage }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Versicherungsschein auf Papier liegt }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [versicherer, art, versicherungsnummer, versichert, beitrag, zahlweise, hauptfaelligkeit, kuendigen_bis, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [art, versicherer, versichert, beitrag, kuendigen_bis]
+
+- schluessel: steuerjahr
+  name: Steuerjahr
+  beschreibung: Einkommensteuer eines Jahres – Erklärung, Bescheid und die Belege dazu.
+  titelVorlage: "Steuerjahr {jahr}"
+  felder:
+    - { key: jahr, label: Jahr, typ: text, pflicht: true, eindeutig: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025" }
+    - { key: abgegeben_am, label: Abgegeben am, typ: datum }
+    - { key: bescheid_vom, label: Bescheid vom, typ: datum }
+    - { key: ergebnis, label: Erstattung/Nachzahlung, typ: betrag, waehrung: EUR, hilfe: Erstattung positiv, Nachzahlung negativ }
+    - key: einspruch_bis
+      label: Einspruch bis
+      typ: datum
+      hilfe: Ein Monat nach dem Bescheid (Bescheid vom + 1 Monat). Das DMS erinnert 7 Tage vorher.
+      frist: { vorlauf: 7, einheit: tage }
+    - { key: steuerberater, label: Steuerberater, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis, steuerberater] }
+    - key: belege
+      name: Belege
+      art: verknuepfungen
+      quellen:
+        - { typ: anschaffung, feld: steuerjahr }
+        - { typ: gesundheit, feld: steuerjahr }
+        - { typ: bildung, feld: steuerjahr }
+        - { typ: arbeitsverhaeltnis, feld: steuerjahr }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis]
+
+- schluessel: arbeitsverhaeltnis
+  name: Arbeitsverhältnis
+  beschreibung: Anstellung, Minijob oder Ausbildung – mit Arbeitsvertrag, Gehaltsabrechnungen und Zeugnis.
+  titelVorlage: "{person} – {arbeitgeber}"
+  felder:
+    - { key: arbeitgeber, label: Arbeitgeber, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: person, label: Person, typ: text, pflicht: true, maxLen: 120 }
+    - { key: taetigkeit, label: Tätigkeit, typ: text, maxLen: 120 }
+    - { key: beginn, label: Beginn, typ: datum }
+    - { key: ende, label: Ende, typ: datum }
+    - { key: steuerjahr, label: Steuerjahre, typ: referenz, ziel: steuerjahr, mehrfach: true, verweisart: bezug, hilfe: In welchen Steuerjahren es zählt; dort erscheint es unter „Belege“ }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Arbeitsvertrag auf Papier liegt }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [arbeitgeber, person, taetigkeit, beginn, ende, steuerjahr, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [person, arbeitgeber, taetigkeit, beginn, ende]
+
+- schluessel: vorsorge
+  name: Vorsorge
+  beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester, Rürup und Bausparen.
+  titelVorlage: "{art} – {person} – {anbieter}"
+  felder:
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [gesetzliche Rente, betriebliche Altersvorsorge, Riester, Rürup, private Rente, Bausparen, Sonstige]
+    - { key: anbieter, label: Anbieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, hilfe: Bei der gesetzlichen Rente die Versicherungsnummer }
+    - { key: person, label: Person, typ: text, maxLen: 120 }
+    - { key: beginn, label: Beginn, typ: datum }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, anbieter, vertragsnummer, person, beginn, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [art, person, anbieter, vertragsnummer]
+
+- schluessel: ausweis
+  name: Ausweis & Urkunde
+  beschreibung: Personalausweis, Reisepass, Führerschein, Geburts- und Heiratsurkunde, Zeugnisse.
+  titelVorlage: "{art} – {person}"
+  felder:
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Personalausweis, Reisepass, Führerschein, Geburtsurkunde, Heiratsurkunde, Zeugnis, Sonstige]
+    - { key: person, label: Person, typ: text, pflicht: true, maxLen: 120 }
+    - { key: nummer, label: Nummer, typ: text, maxLen: 60 }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum }
+    - key: gueltig_bis
+      label: Gültig bis
+      typ: datum
+      hilfe: Das DMS erinnert 90 Tage vorher – Zeit genug für einen Termin beim Bürgeramt.
+      frist: { vorlauf: 90, einheit: tage }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, person, nummer, ausgestellt_am, gueltig_bis, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [art, person, gueltig_bis, verbleib_original]
+
+- schluessel: gesundheit
+  name: Gesundheit
+  beschreibung: Arztbriefe, Befunde, Impfungen, Rezepte und Rechnungen.
+  titelVorlage: "{art} – {person} – {praxis}"
+  felder:
+    - { key: person, label: Person, typ: text, pflicht: true, maxLen: 120 }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Arztbrief, Befund, Impfung, Rezept, Rechnung, Sonstiges]
+    - { key: datum, label: Datum, typ: datum }
+    - { key: praxis, label: Praxis, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Arztpraxis, Krankenhaus oder Apotheke }
+    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, hilfe: Bei Rechnungen }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du die Kosten in der Steuererklärung angibst }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person, art, datum, praxis, betrag, steuerjahr] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [person, art, datum, praxis]
+
+- schluessel: anschaffung
+  name: Anschaffung
+  beschreibung: Gekaufte Geräte und Möbel – mit Kassenbon, Garantie und Seriennummer.
+  titelVorlage: "{gegenstand}"
+  felder:
+    - { key: gegenstand, label: Gegenstand, typ: text, pflicht: true, maxLen: 120 }
+    - { key: haendler, label: Händler, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: kaufdatum, label: Kaufdatum, typ: datum }
+    - { key: preis, label: Preis, typ: betrag, min: 0, waehrung: EUR }
+    - { key: seriennummer, label: Seriennummer, typ: text, maxLen: 80 }
+    - key: garantie_bis
+      label: Garantie bis
+      typ: datum
+      hilfe: Gewährleistung oder Herstellergarantie. Das DMS erinnert 30 Tage vorher.
+      frist: { vorlauf: 30, einheit: tage }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel" }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [gegenstand, haendler, kaufdatum, preis, seriennummer, garantie_bis, steuerjahr, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [gegenstand, haendler, kaufdatum, preis, garantie_bis]
+
+- schluessel: bildung
+  name: Bildung
+  beschreibung: Schule, Ausbildung, Studium und Kurse – mit Zeugnissen und Bescheinigungen.
+  titelVorlage: "{art} – {person} – {einrichtung}"
+  felder:
+    - { key: person, label: Person, typ: text, pflicht: true, maxLen: 120 }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Schule, Ausbildung, Studium, Kurs, Sonstige]
+    - { key: einrichtung, label: Einrichtung, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: von, label: Von, typ: datum }
+    - { key: bis, label: Bis, typ: datum }
+    - { key: abschluss, label: Abschluss, typ: text, maxLen: 120, hilfe: "z. B. „Abitur“ oder „Bachelor of Arts“" }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Zeugnisse und Urkunden auf Papier liegen }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person, art, einrichtung, von, bis, abschluss, steuerjahr, verbleib_original] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: protokoll, name: Historie, art: protokoll }
+  trefferliste: [person, art, einrichtung, abschluss]
