@@ -1,5 +1,6 @@
 # Veröffentlicht den Katalog (katalog.json und Archive) auf dem Branch gh-pages,
-# erreichbar über GitHub Pages: https://motom001.github.io/dms-registry/katalog.json
+# erreichbar unter https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json
+# (und über GitHub Pages, sobald es für den Branch gh-pages eingeschaltet ist).
 name: Katalog veröffentlichen
 
 on:

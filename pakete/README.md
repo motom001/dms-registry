@@ -4,4 +4,4 @@ Ein Ordner je Paket, benannt nach der Paket-Id. Neue Pakete legst du mit `werkze
 
 | Paket | Inhalt | Pfleger |
 | --- | --- | --- |
-| *(noch keine)* | | |
+| [basis](basis) | Mappentyp Organisation mit Sichten nach Art | @motom001 |
