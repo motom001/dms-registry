@@ -1,0 +1,20 @@
+# Paket Vermietung. Schema: schema/manifest.schema.json
+schema: 1
+id: vermietung
+name: Vermietung
+version: 1.0.0
+beschreibung: Mietobjekte, Wohnungen, Mietverträge, Nebenkostenabrechnungen und Ausgaben – für Vermieter mit wenigen Wohnungen, mit Fristen für Abrechnung, Mieterhöhung und Vertragsende.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: MIT
+# 0.79.0: Beispiele verweisen auf Beispiele ({ beispiel: … }), Verweis auf den Ablageort des DMS
+dms: ">=0.79.0"
+abhaengigkeiten:
+  basis: ">=1.1.0"
+  haushalt: ">=1.0.0"
+  haus: ">=1.0.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  beispiele: inhalt/beispiele.yaml

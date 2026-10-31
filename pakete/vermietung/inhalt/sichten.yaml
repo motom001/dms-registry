@@ -1,0 +1,63 @@
+# Ansichten des Pakets Vermietung. Schema: schema/inhalt.schema.json
+- schluessel: vermietung
+  name: Vermietung
+  beschreibung: Mietobjekte, Wohnungen, Mietverträge, Nebenkosten und Ausgaben
+  typen: [mietobjekt, wohnung, mietvertrag, nebenkostenabrechnung, ausgabe]
+- { schluessel: mietobjekte, name: Mietobjekte, eltern: vermietung, typen: [mietobjekt] }
+- { schluessel: wohnungen, name: Wohnungen, eltern: vermietung, typen: [wohnung] }
+- { schluessel: mietvertraege, name: Mietverträge, eltern: vermietung, typen: [mietvertrag] }
+- schluessel: mietvertraege_laufend
+  name: Laufende Mietverträge
+  beschreibung: Verträge, die laufen oder gekündigt sind – ohne beendete
+  eltern: mietvertraege
+  typen: [mietvertrag]
+  bedingungen:
+    - { feld: stand, operator: einerVon, wert: [läuft, gekündigt] }
+- { schluessel: nebenkosten, name: Nebenkostenabrechnungen, eltern: vermietung, typen: [nebenkostenabrechnung] }
+- schluessel: ausgaben
+  name: Ausgaben
+  eltern: vermietung
+  typen: [ausgabe]
+- schluessel: ausgaben_dieses_jahr
+  name: Ausgaben dieses Jahr
+  eltern: ausgaben
+  typen: [ausgabe]
+  bedingungen:
+    - { feld: datum, operator: imZeitraum, wert: { art: jahr } }
+- schluessel: ausgaben_letztes_jahr
+  name: Ausgaben letztes Jahr
+  beschreibung: Für die Anlage V der letzten Steuererklärung
+  eltern: ausgaben
+  typen: [ausgabe]
+  bedingungen:
+    - { feld: datum, operator: imZeitraum, wert: { art: jahr, versatz: -1 } }
+- schluessel: ausgaben_umlagefaehig
+  name: Umlagefähig letztes Jahr
+  beschreibung: Was in die nächste Nebenkostenabrechnung gehört
+  eltern: ausgaben
+  typen: [ausgabe]
+  bedingungen:
+    - { feld: umlagefaehig, operator: ja }
+    - { feld: datum, operator: imZeitraum, wert: { art: jahr, versatz: -1 } }
+- schluessel: abrechnung_offen
+  name: Abrechnung offen
+  beschreibung: Nebenkostenabrechnungen, die noch nicht versendet sind
+  eltern: vermietung
+  typen: [nebenkostenabrechnung]
+  bedingungen:
+    - { feld: versendet_am, operator: leer }
+- schluessel: mieterhoehung
+  name: Mieterhöhung möglich
+  beschreibung: Laufende Verträge, bei denen in den nächsten 3 Monaten eine Erhöhung möglich ist oder schon möglich war
+  eltern: vermietung
+  typen: [mietvertrag]
+  bedingungen:
+    - { feld: stand, operator: einerVon, wert: [läuft] }
+    - { feld: mieterhoehung_ab, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }
+- schluessel: vertrag_endet
+  name: Vertrag endet bald
+  beschreibung: Mietverträge, die in den nächsten 3 Monaten enden
+  eltern: vermietung
+  typen: [mietvertrag]
+  bedingungen:
+    - { feld: ende, operator: zwischen, wert: [{ art: heute }, { art: heute, versatz: 3, einheit: monate }] }
