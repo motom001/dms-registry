@@ -1,0 +1,28 @@
+# Ansichten des Pakets Haus. Schema: schema/inhalt.schema.json
+- schluessel: haus
+  name: Haus
+  beschreibung: Immobilien, Wartungen und Zählerstände
+  typen: [immobilie, wartung, zaehlerstand]
+- { schluessel: immobilien, name: Immobilien, eltern: haus, typen: [immobilie] }
+- { schluessel: wartungen, name: Wartungen, eltern: haus, typen: [wartung] }
+- { schluessel: zaehlerstaende, name: Zählerstände, eltern: haus, typen: [zaehlerstand] }
+- schluessel: wartung_faellig
+  name: Wartung fällig
+  beschreibung: Wartungen, die in den nächsten 3 Monaten fällig sind oder schon überfällig
+  eltern: haus
+  typen: [wartung]
+  bedingungen:
+    - { feld: naechste_faellig, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }
+- schluessel: zaehler_dieses_jahr
+  name: Zählerstände dieses Jahr
+  eltern: zaehlerstaende
+  typen: [zaehlerstand]
+  bedingungen:
+    - { feld: abgelesen_am, operator: imZeitraum, wert: { art: jahr } }
+- schluessel: zaehler_letztes_jahr
+  name: Zählerstände letztes Jahr
+  beschreibung: Zum Vergleich mit diesem Jahr
+  eltern: zaehlerstaende
+  typen: [zaehlerstand]
+  bedingungen:
+    - { feld: abgelesen_am, operator: imZeitraum, wert: { art: jahr, versatz: -1 } }

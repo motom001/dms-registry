@@ -1,0 +1,87 @@
+# Mappentypen des Pakets Haus. Schema: schema/inhalt.schema.json
+# Das DMS legt sie als haus_<schluessel> an; angezeigt wird der Name.
+# Gemeinsame Felder wie im Paket Haushalt: art, verbleib_original (→ Ablageort des DMS).
+
+- schluessel: immobilie
+  name: Immobilie
+  beschreibung: Haus, Wohnung, Ferienwohnung, Garage oder Grundstück – gekauft oder gemietet.
+  titelVorlage: "{bezeichnung}"
+  felder:
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Einfamilienhaus Musterweg 1“" }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Eigentum, Miete, Ferienwohnung, Garage, Grundstück]
+    - { key: strasse, label: Straße, typ: text, maxLen: 120 }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10 }
+    - { key: ort, label: Ort, typ: text, maxLen: 80 }
+    - { key: baujahr, label: Baujahr, typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Vierstellig, z. B. 1998" }
+    - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2 }
+    - { key: grundstueck, label: Grundstücksgröße (m²), typ: zahl, min: 0, nachkomma: 0 }
+    - { key: eigentuemer, label: Eigentümer/Vermieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Miete der Vermieter oder die Hausverwaltung }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Grundbuchauszug, Kauf- oder Mietvertrag auf Papier liegen }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, baujahr, wohnflaeche, grundstueck, eigentuemer, verbleib_original] }
+    - key: wartungen
+      name: Wartungen
+      art: verknuepfungen
+      quellen: [{ typ: wartung, feld: immobilie }]
+    - key: zaehlerstaende
+      name: Zählerstände
+      art: verknuepfungen
+      quellen: [{ typ: zaehlerstand, feld: immobilie }]
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [bezeichnung, art, ort, wohnflaeche]
+
+- schluessel: wartung
+  name: Wartung
+  beschreibung: Regelmäßige Wartung oder Prüfung – Heizung, Schornstein, Rauchmelder, Photovoltaik und mehr.
+  titelVorlage: "{gegenstand} – {immobilie}"
+  felder:
+    - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit }
+    - key: gegenstand
+      label: Gegenstand
+      typ: auswahl
+      pflicht: true
+      optionen: [Heizung, Schornstein, Rauchmelder, Dach, Lüftung, Photovoltaik, Aufzug, Sonstiges]
+    - { key: fachbetrieb, label: Fachbetrieb, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: wartungsvertrag, label: Wartungsvertrag, typ: referenz, ziel: "haushalt:vertrag", verweisart: bezug, hilfe: Falls es einen Wartungsvertrag gibt – ein Vertrag aus dem Paket Haushalt }
+    - { key: zuletzt_am, label: Zuletzt am, typ: datum }
+    - { key: turnus, label: Turnus (Monate), typ: zahl, min: 1, max: 120, nachkomma: 0, hilfe: "Alle wie viele Monate, z. B. 12 für jährlich" }
+    - key: naechste_faellig
+      label: Nächste fällig
+      typ: datum
+      hilfe: "„Zuletzt am“ plus Turnus. Nach jeder Wartung neu eintragen. Das DMS erinnert 30 Tage vorher."
+      frist: { vorlauf: 30, einheit: tage }
+    - { key: notiz, label: Notiz, typ: langtext, hilfe: "Was gemacht wurde, Auffälliges, Ersatzteile" }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [immobilie, gegenstand, fachbetrieb, wartungsvertrag, zuletzt_am, turnus, naechste_faellig, notiz] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [gegenstand, immobilie, fachbetrieb, zuletzt_am, naechste_faellig]
+
+- schluessel: zaehlerstand
+  name: Zählerstand
+  beschreibung: Eine Ablesung eines Strom-, Gas-, Wasser- oder Wärmezählers.
+  titelVorlage: "{zaehlerart} {zaehlernummer} – {stand} {einheit}"
+  felder:
+    - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit }
+    - key: zaehlerart
+      label: Zählerart
+      typ: auswahl
+      pflicht: true
+      optionen: [Strom, Gas, Wasser, Wärme, Einspeisung]
+    - { key: zaehlernummer, label: Zählernummer, typ: text, maxLen: 40 }
+    - { key: abgelesen_am, label: Abgelesen am, typ: datum, pflicht: true }
+    - { key: stand, label: Stand, typ: zahl, pflicht: true, min: 0, nachkomma: 3 }
+    - { key: einheit, label: Einheit, typ: auswahl, optionen: [kWh, m³, MWh] }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [immobilie, zaehlerart, zaehlernummer, abgelesen_am, stand, einheit] }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [zaehlerart, zaehlernummer, abgelesen_am, stand, einheit]
