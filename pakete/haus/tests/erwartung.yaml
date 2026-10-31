@@ -1,0 +1,4 @@
+# Was nach der Installation im DMS vorhanden sein muss.
+mappentypen: [immobilie, wartung, zaehlerstand]
+sichten: [haus, immobilien, wartungen, zaehlerstaende, wartung_faellig, zaehler_dieses_jahr, zaehler_letztes_jahr]
+beispiele: 7
