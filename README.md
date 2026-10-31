@@ -15,7 +15,7 @@ Im DMS installierst du Pakete unter **Werkbank → Pakete**. Die Paketverwaltung
 pakete/<paket>/        ein Ordner je Paket, Name = Paket-Id
 vorlage/               Vorlage für ein neues Paket – kopieren und loslegen
 schema/                JSON-Schemas für manifest.yaml und die Inhalte
-werkzeuge/             neues-paket.sh, pruefen.py, katalog.py (laufen auch in der CI)
+werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, webseite.py (laufen auch in der CI)
 REGELN.md              was erlaubt ist, was nicht, welche Lizenzen
 CONTRIBUTING.md        wie ein Paket hierher kommt
 ```
@@ -39,7 +39,9 @@ Bei jedem Merge auf `main` baut die CI den **Katalog** und legt ihn auf den Bran
 - **`https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json`** – die Standard-Katalogadresse im DMS
 - `…/gh-pages/archive/<id>-<version>.zip` – je Paketversion ein Archiv mit genau den Dateien des Paketordners (ohne Ordner davor)
 
-Ist GitHub Pages für das Repository eingeschaltet (Quelle: Branch `gh-pages`), ist derselbe Inhalt auch unter `https://motom001.github.io/dms-registry/` erreichbar.
+Auf demselben Branch liegt die **Katalog-Webseite** (`werkzeuge/webseite.py`): Pakete ansehen wie im App Store – Übersicht mit Suche und Filter, je Paket eine Seite mit Beschreibung, was angelegt wird, Rechten, Änderungen und älteren Versionen. **„In meinem DMS installieren“** fragt beim ersten Mal nach der Adresse deines DMS (nur im Browser gemerkt, änderbar) und öffnet dort `/werkbank/pakete?installieren=<id>@<version>`; installiert wird erst nach deiner Bestätigung im DMS. Die Webseite sendet nichts an dein DMS.
+
+Mit GitHub Pages (Quelle: Branch `gh-pages`) ist die Webseite unter **`https://motom001.github.io/dms-registry/`** erreichbar, der Katalog dann auch unter `…/katalog.json`.
 
 `katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige DMS-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele), ob das Paket Code hat, Adresse des Archivs (relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
 
