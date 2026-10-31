@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Haus – DMS-Pakete</title>
+  <meta name="description" content="Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">H</span>
+      <div><h1>Haus</h1><p class="leise">Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="haus@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/haus">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 31.10.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>MIT</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.75.0</dd>
+      <dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.0.0, <a href="../haushalt/">haushalt</a> &gt;=1.0.0</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><details><summary><strong>Immobilie</strong> – 11 Felder</summary><ul><li>Bezeichnung <span class="leise">(Text, Pflicht)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Straße <span class="leise">(Text)</span></li><li>Hausnummer <span class="leise">(Text)</span></li><li>PLZ <span class="leise">(Text)</span></li><li>Ort <span class="leise">(Text)</span></li><li>Baujahr <span class="leise">(Text)</span></li><li>Wohnfläche (m²) <span class="leise">(Zahl)</span></li><li>Grundstücksgröße (m²) <span class="leise">(Zahl)</span></li><li>Eigentümer/Vermieter <span class="leise">(Verweis)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Wartung</strong> – 8 Felder</summary><ul><li>Immobilie <span class="leise">(Verweis)</span></li><li>Gegenstand <span class="leise">(Auswahl, Pflicht)</span></li><li>Fachbetrieb <span class="leise">(Verweis)</span></li><li>Wartungsvertrag <span class="leise">(Verweis)</span></li><li>Zuletzt am <span class="leise">(Datum)</span></li><li>Turnus (Monate) <span class="leise">(Zahl)</span></li><li>Nächste fällig <span class="leise">(Datum)</span></li><li>Notiz <span class="leise">(Langtext)</span></li></ul></details><details><summary><strong>Zählerstand</strong> – 6 Felder</summary><ul><li>Immobilie <span class="leise">(Verweis)</span></li><li>Zählerart <span class="leise">(Auswahl, Pflicht)</span></li><li>Zählernummer <span class="leise">(Text)</span></li><li>Abgelesen am <span class="leise">(Datum, Pflicht)</span></li><li>Stand <span class="leise">(Zahl, Pflicht)</span></li><li>Einheit <span class="leise">(Auswahl)</span></li></ul></details>
+      <h3>Sichten</h3><ul><li>Haus</li><li>Immobilien <span class="leise">(unter Haus)</span></li><li>Wartungen <span class="leise">(unter Haus)</span></li><li>Zählerstände <span class="leise">(unter Haus)</span></li><li>Wartung fällig <span class="leise">(unter Haus)</span></li><li>Zählerstände dieses Jahr <span class="leise">(unter Zählerstände)</span></li><li>Zählerstände letztes Jahr <span class="leise">(unter Zählerstände)</span></li></ul>
+      <p>7 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netz</h2><p>Kein Code: Das Paket legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.</p></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Das Paket <strong>Haus</strong> bringt die Mappentypen <strong>Immobilie</strong>, <strong>Wartung</strong> und <strong>Zählerstand</strong>. Damit weißt du, wann die Heizung gewartet werden muss, wer sie zuletzt gewartet hat und wie sich der Verbrauch entwickelt – im Eigenheim genauso wie als Mieter. Installiert wird es unter <strong>Werkbank → Pakete</strong>; die Pakete <strong>Basis</strong> und <strong>Haushalt</strong> kommen dabei automatisch mit.</p>
+<p><img alt="Die drei Mappentypen des Pakets mit ihren Feldern, Fristen und Beispielen" src="https://raw.githubusercontent.com/motom001/dms-registry/main/pakete/haus/bilder/ueberblick.png"></p>
+<h3>Inhalt</h3>
+<table>
+<thead>
+<tr>
+<th>Mappentyp</th>
+<th>wofür</th>
+<th>wichtige Felder</th>
+<th>Frist</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Immobilie</td>
+<td>Haus, Wohnung, Ferienwohnung, Garage, Grundstück</td>
+<td>Bezeichnung (eindeutig), Art (Eigentum, Miete …), Anschrift, Baujahr, Wohnfläche, Grundstücksgröße, Eigentümer/Vermieter</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Wartung</td>
+<td>Heizung, Schornstein, Rauchmelder, Dach, Lüftung, Photovoltaik, Aufzug</td>
+<td>Immobilie, Gegenstand, Fachbetrieb, Wartungsvertrag, zuletzt am, Turnus (Monate), Notiz</td>
+<td><strong>Nächste fällig</strong> (30 Tage vorher)</td>
+</tr>
+<tr>
+<td>Zählerstand</td>
+<td>eine Ablesung</td>
+<td>Immobilie, Zählerart (Strom, Gas, Wasser, Wärme, Einspeisung), Zählernummer, abgelesen am, Stand, Einheit</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Register:</strong> Die <strong>Immobilie</strong> zeigt unter <em>Wartungen</em> und <em>Zählerstände</em> alle Mappen, die auf sie verweisen; dazu <em>Dokumente</em>, <em>Verknüpfungen</em> und <em>Historie</em>. Wartung und Zählerstand gehören zu ihrer Immobilie.</p>
+<p><strong>Verweise:</strong></p>
+<ul>
+<li><strong>Eigentümer/Vermieter</strong> und <strong>Fachbetrieb</strong> sind <strong>Organisationen</strong> aus dem Paket Basis.</li>
+<li><strong>Wartungsvertrag</strong> ist ein <strong>Vertrag</strong> aus dem Paket Haushalt (Art z. B. „Sonstiges“).</li>
+<li><strong>Verbleib Originaldokumente</strong> zeigt auf einen <strong>Ablageort</strong> des DMS – wo Grundbuchauszug, Kauf- oder Mietvertrag liegen.</li>
+</ul>
+<p><strong>Fristen:</strong> Trag nach jeder Wartung <em>Zuletzt am</em> und <em>Nächste fällig</em> ein („Zuletzt am“ plus Turnus). Das DMS erinnert 30 Tage vorher unter <strong>Zu erledigen</strong> und in der Ansicht <strong>Anstehend</strong>.</p>
+<p><strong>Ansichten:</strong> <em>Haus</em> mit allem und darunter <em>Immobilien</em>, <em>Wartungen</em>, <em>Zählerstände</em> (darunter <em>dieses Jahr</em> und <em>letztes Jahr</em> zum Vergleich) sowie <em>Wartung fällig</em> – Wartungen, die in den nächsten drei Monaten fällig oder schon überfällig sind.</p>
+<p><strong>Beispiele (optional):</strong> das Einfamilienhaus Musterweg 1 der Familie Muster mit Heizungs- und Rauchmelderwartung sowie je zwei Ablesungen von Strom- und Gaszähler. Die Verweise (Immobilie, Fachbetrieb, Wartungsvertrag, Ablageort) setzt du selbst – Beispiele können noch nicht auf andere Mappen zeigen.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS ab Version 0.75 (Verweis auf den Ablageort des DMS)</li>
+<li>Pakete <strong>Basis</strong> ab 1.0.0 und <strong>Haushalt</strong> ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert</li>
+</ul>
+<h3>Rechte und Netz</h3>
+<p>Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Ansichten und auf Wunsch Beispiel-Mappen an.</p>
+<h3>Nach der Installation</h3>
+<ol>
+<li>Die eigene <strong>Immobilie</strong> anlegen.</li>
+<li>Fachbetriebe (Heizungsbauer, Schornsteinfeger) als <strong>Organisation</strong> anlegen.</li>
+<li>Je Wartung eine Mappe <strong>Wartung</strong> mit <em>Nächste fällig</em> anlegen; Rechnungen und Prüfprotokolle als Dokumente dazulegen.</li>
+<li>Zählerstände beim Ablesen eintragen – am besten mit einem Foto des Zählers als Dokument.</li>
+</ol>
+<p>Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.</p>
+<h3>Pflege</h3>
+<p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Haus“ im Titel.</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung.</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/haus-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haus@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>

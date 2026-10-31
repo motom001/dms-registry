@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-10-31T19:26:30Z",
+  "erstellt": "2026-10-31T19:29:43Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -54,6 +54,82 @@
       ],
       "name": "Basis",
       "beschreibung": "Mappentyp Organisation für Firmen, Behörden, Ärzte, Versicherungen und andere Stellen – mit Kontakt, Anschrift und Sichten nach Art.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "MIT",
+      "aktuell": "1.0.0"
+    },
+    {
+      "id": "haus",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.75.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.0.0",
+            "haushalt": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "immobilie",
+                "name": "Immobilie"
+              },
+              {
+                "schluessel": "wartung",
+                "name": "Wartung"
+              },
+              {
+                "schluessel": "zaehlerstand",
+                "name": "Zählerstand"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haus",
+                "name": "Haus"
+              },
+              {
+                "schluessel": "immobilien",
+                "name": "Immobilien"
+              },
+              {
+                "schluessel": "wartungen",
+                "name": "Wartungen"
+              },
+              {
+                "schluessel": "zaehlerstaende",
+                "name": "Zählerstände"
+              },
+              {
+                "schluessel": "wartung_faellig",
+                "name": "Wartung fällig"
+              },
+              {
+                "schluessel": "zaehler_dieses_jahr",
+                "name": "Zählerstände dieses Jahr"
+              },
+              {
+                "schluessel": "zaehler_letztes_jahr",
+                "name": "Zählerstände letztes Jahr"
+              }
+            ],
+            "beispiele": 7
+          },
+          "code": false,
+          "archiv": "archive/haus-1.0.0.zip",
+          "sha256": "20ed052b68cfd820747b731a3dd3b0677fa347afbebde23357e0ed41ea222495",
+          "groesse": 151717,
+          "veroeffentlicht": "2026-10-31T19:29:43Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haus",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/CHANGELOG.md"
+        }
+      ],
+      "name": "Haus",
+      "beschreibung": "Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
