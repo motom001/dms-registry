@@ -31,3 +31,28 @@
   typen: [organisation]
   bedingungen:
     - { feld: art, operator: einerVon, wert: [Arzt/Praxis] }
+
+# Ab 1.1.0: Niederlassungen und Personen.
+- schluessel: niederlassungen
+  name: Niederlassungen
+  eltern: organisationen
+  typen: [niederlassung]
+
+- schluessel: personen
+  name: Personen
+  beschreibung: Kontakte – keine Benutzer des DMS
+  typen: [person]
+
+- schluessel: familie
+  name: Familie und Freunde
+  eltern: personen
+  typen: [person]
+  bedingungen:
+    - { feld: beziehung, operator: einerVon, wert: [Familie, Freund/in] }
+
+- schluessel: ansprechpartner
+  name: Ansprechpartner
+  eltern: personen
+  typen: [person]
+  bedingungen:
+    - { feld: beziehung, operator: einerVon, wert: [Ansprechpartner, Handwerker, Arzt/Ärztin] }

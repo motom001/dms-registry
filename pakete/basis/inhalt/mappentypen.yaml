@@ -85,10 +85,128 @@
       name: Anschrift
       art: felder
       felder: [strasse, hausnummer, plz, ort, land]
+    # Ab 1.1.0: Niederlassungen und Ansprechpartner, die auf diese Organisation verweisen.
+    - key: niederlassungen
+      name: Niederlassungen
+      art: verknuepfungen
+      quellen: [{ typ: niederlassung, feld: organisation }]
+    - key: ansprechpartner
+      name: Ansprechpartner
+      art: verknuepfungen
+      quellen: [{ typ: person, feld: organisation }]
     - key: dokumente
       name: Dokumente
       art: dokumente
+    # Im DMS seit 0.73 „Historie“ (vorhandene Installationen hat die Migration 036 schon umbenannt).
     - key: protokoll
-      name: Protokoll
+      name: Historie
       art: protokoll
   trefferliste: [name, art, ort, telefon]
+
+# Mappentyp Niederlassung (ab 1.1.0): Filiale, Zweigstelle, Praxis oder Außenstelle einer Organisation.
+- schluessel: niederlassung
+  name: Niederlassung
+  beschreibung: Filiale, Zweigstelle, Praxis oder Außenstelle einer Organisation – mit eigener Anschrift und eigenem Telefon.
+  titelVorlage: "{organisation} – {name}"
+  felder:
+    - key: organisation
+      label: Organisation
+      typ: referenz
+      ziel: organisation
+      verweisart: zugehoerigkeit
+      pflicht: true
+    - key: name
+      label: Name
+      typ: text
+      pflicht: true
+      maxLen: 120
+      hilfe: "z. B. „Filiale Marktplatz“ oder „Praxis Nord“"
+    - key: art
+      label: Art
+      typ: auswahl
+      optionen: [Filiale, Zweigstelle, Geschäftsstelle, Praxis, Außenstelle, Werk/Lager, Büro, Sonstige]
+      hilfe: z. B. Filiale, Zweigstelle, Praxis
+    - key: nummer
+      label: Nummer
+      typ: text
+      maxLen: 40
+      hilfe: Filial- oder Stellennummer, z. B. Betriebsstättennummer
+    - key: oeffnungszeiten
+      label: Öffnungszeiten
+      typ: langtext
+    - key: beschreibung
+      label: Beschreibung
+      typ: langtext
+    - { key: telefon, label: Telefon, typ: text, maxLen: 40 }
+    - { key: fax, label: Fax, typ: text, maxLen: 40 }
+    - key: email
+      label: E-Mail
+      typ: text
+      maxLen: 200
+      muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
+      hilfe: z. B. filiale@beispiel.de
+    - { key: internet, label: Internetseite, typ: text, maxLen: 200 }
+    - { key: strasse, label: Straße, typ: text, maxLen: 120 }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10 }
+    - { key: ort, label: Ort, typ: text, maxLen: 80 }
+    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [organisation, name, art, nummer, oeffnungszeiten, beschreibung] }
+    - { key: kontakt, name: Kontakt, art: felder, felder: [telefon, fax, email, internet] }
+    - { key: anschrift, name: Anschrift, art: felder, felder: [strasse, hausnummer, plz, ort, land] }
+    - key: ansprechpartner
+      name: Ansprechpartner
+      art: verknuepfungen
+      quellen: [{ typ: person, feld: niederlassung }]
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [organisation, name, art, ort, telefon]
+
+# Mappentyp Person (ab 1.1.0): ein Kontakt – kein Benutzer des DMS.
+- schluessel: person
+  name: Person
+  beschreibung: Ein Mensch, mit dem du zu tun hast – Ansprechpartner, Ärztin, Vermieter, Verwandte. Eine Person ist kein Benutzer des DMS und kann sich nicht anmelden.
+  titelVorlage: "{titel} {vorname} {nachname}"
+  felder:
+    - { key: anrede, label: Anrede, typ: auswahl, optionen: [Frau, Herr, divers/keine] }
+    - { key: titel, label: Titel, typ: text, maxLen: 40, hilfe: z. B. Dr. }
+    - { key: vorname, label: Vorname, typ: text, maxLen: 80 }
+    - { key: nachname, label: Nachname, typ: text, pflicht: true, maxLen: 80 }
+    - key: beziehung
+      label: Beziehung
+      typ: auswahl
+      mehrfach: true
+      optionen: [Familie, Freund/in, Ansprechpartner, Arzt/Ärztin, Handwerker, Mieter/in, Vermieter/in, Nachbar/in, Sonstige]
+    - key: geburtstag
+      label: Geburtstag
+      typ: datum
+      hilfe: Wer erinnert werden möchte, schaltet am Feld in der Werkbank eine jährliche Erinnerung ein.
+    - { key: beschreibung, label: Beschreibung, typ: langtext }
+    - { key: organisation, label: Organisation, typ: referenz, ziel: organisation, verweisart: bezug, hilfe: Wo die Person arbeitet bzw. wofür sie Ansprechpartner ist }
+    - { key: niederlassung, label: Niederlassung, typ: referenz, ziel: niederlassung, verweisart: bezug }
+    - { key: funktion, label: Funktion, typ: text, maxLen: 80, hilfe: z. B. Kundenberaterin }
+    - { key: abteilung, label: Abteilung, typ: text, maxLen: 80 }
+    - { key: telefon, label: Telefon, typ: text, maxLen: 40 }
+    - { key: mobil, label: Mobil, typ: text, maxLen: 40 }
+    - key: email
+      label: E-Mail
+      typ: text
+      maxLen: 200
+      muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
+      hilfe: z. B. name@beispiel.de
+    - { key: strasse, label: Straße, typ: text, maxLen: 120 }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10 }
+    - { key: ort, label: Ort, typ: text, maxLen: 80 }
+    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
+  register:
+    - { key: stammdaten, name: Stammdaten, art: felder, felder: [anrede, titel, vorname, nachname, beziehung, geburtstag, beschreibung] }
+    - { key: arbeit, name: Arbeit, art: felder, felder: [organisation, niederlassung, funktion, abteilung] }
+    - { key: kontakt, name: Kontakt, art: felder, felder: [telefon, mobil, email] }
+    - { key: anschrift, name: Anschrift, art: felder, felder: [strasse, hausnummer, plz, ort, land] }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
+    - { key: dokumente, name: Dokumente, art: dokumente }
+    - { key: historie, name: Historie, art: protokoll }
+  trefferliste: [nachname, vorname, beziehung, organisation, telefon]
