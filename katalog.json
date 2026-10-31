@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-10-31T19:29:43Z",
+  "erstellt": "2026-10-31T19:30:58Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -54,6 +54,66 @@
       ],
       "name": "Basis",
       "beschreibung": "Mappentyp Organisation für Firmen, Behörden, Ärzte, Versicherungen und andere Stellen – mit Kontakt, Anschrift und Sichten nach Art.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "MIT",
+      "aktuell": "1.0.0"
+    },
+    {
+      "id": "fahrzeuge",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.75.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.0.0",
+            "haushalt": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "fahrzeug",
+                "name": "Fahrzeug"
+              },
+              {
+                "schluessel": "werkstattrechnung",
+                "name": "Werkstattrechnung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "fahrzeuge",
+                "name": "Fahrzeuge"
+              },
+              {
+                "schluessel": "alle_fahrzeuge",
+                "name": "Alle Fahrzeuge"
+              },
+              {
+                "schluessel": "werkstattrechnungen",
+                "name": "Werkstattrechnungen"
+              },
+              {
+                "schluessel": "hu_faellig",
+                "name": "HU fällig"
+              }
+            ],
+            "beispiele": 3
+          },
+          "code": false,
+          "archiv": "archive/fahrzeuge-1.0.0.zip",
+          "sha256": "7d63288eb3bde45e485dcd95254c66afd67554bb4b02f3cf694ab9c9caffe34f",
+          "groesse": 114214,
+          "veroeffentlicht": "2026-10-31T19:30:58Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/CHANGELOG.md"
+        }
+      ],
+      "name": "Fahrzeuge",
+      "beschreibung": "Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
