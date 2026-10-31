@@ -18,13 +18,13 @@
       <span class="symbol gross" aria-hidden="true">F</span>
       <div><h1>Fahrzeuge</h1><p class="leise">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="fahrzeuge@1.0.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="fahrzeuge@1.0.1">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.0.0 vom 31.10.2026</dd>
+      <dt>Version</dt><dd>1.0.1 vom 31.10.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>MIT</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.75.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.79.0</dd>
       <dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.0.0, <a href="../haushalt/">haushalt</a> &gt;=1.0.0</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
@@ -68,10 +68,10 @@
 <li><strong>Verbleib Originaldokumente</strong> zeigt auf einen <strong>Ablageort</strong> des DMS – beim Fahrzeug der Fahrzeugbrief (Zulassungsbescheinigung Teil II), z. B. im Safe.</li>
 </ul>
 <p><strong>Ansichten:</strong> <em>Fahrzeuge</em> mit allem und darunter <em>Alle Fahrzeuge</em>, <em>Werkstattrechnungen</em> und <em>HU fällig</em> – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist.</p>
-<p><strong>Beispiele (optional):</strong> das Familienauto der Familie Muster und zwei Werkstattrechnungen. Die Verweise (Fahrzeug, Werkstatt, Versicherung, Ablageort „Safe“) setzt du selbst – Beispiele können noch nicht auf andere Mappen zeigen.</p>
+<p><strong>Beispiele (optional):</strong> das Familienauto der Familie Muster und zwei Werkstattrechnungen. Die Rechnungen hängen am Auto, das Auto zeigt auf die Kfz-Versicherung aus Haushalt (wenn deren Beispiele installiert sind). Werkstatt und Ablageort „Safe“ setzt du selbst.</p>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS ab Version 0.75 (Verweis auf den Ablageort des DMS)</li>
+<li>DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)</li>
 <li>Pakete <strong>Basis</strong> ab 1.0.0 und <strong>Haushalt</strong> ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert</li>
 </ul>
 <h3>Rechte und Netz</h3>
@@ -86,12 +86,17 @@
 <p>Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.</p>
 <h3>Pflege</h3>
 <p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Fahrzeuge“ im Titel.</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.1</h3>
+<ul>
+<li>Beispiele zeigen jetzt aufeinander: Werkstattrechnungen → Familienauto, Familienauto → Kfz-Versicherung aus Haushalt.</li>
+<li>Braucht DMS ab 0.79.0 (Verweise zwischen Beispielen).</li>
+</ul>
+<h3>1.0.0</h3>
 <ul>
 <li>Erste Fassung.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/fahrzeuge-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.1</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/fahrzeuge-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>

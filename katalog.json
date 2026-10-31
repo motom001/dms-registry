@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-10-31T22:06:51Z",
+  "erstellt": "2026-10-31T22:12:07Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -133,6 +133,53 @@
       "id": "fahrzeuge",
       "versionen": [
         {
+          "version": "1.0.1",
+          "dms": ">=0.79.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.0.0",
+            "haushalt": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "fahrzeug",
+                "name": "Fahrzeug"
+              },
+              {
+                "schluessel": "werkstattrechnung",
+                "name": "Werkstattrechnung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "fahrzeuge",
+                "name": "Fahrzeuge"
+              },
+              {
+                "schluessel": "alle_fahrzeuge",
+                "name": "Alle Fahrzeuge"
+              },
+              {
+                "schluessel": "werkstattrechnungen",
+                "name": "Werkstattrechnungen"
+              },
+              {
+                "schluessel": "hu_faellig",
+                "name": "HU fällig"
+              }
+            ],
+            "beispiele": 3
+          },
+          "code": false,
+          "archiv": "archive/fahrzeuge-1.0.1.zip",
+          "sha256": "fba5404386952683e5c5f6e7149f4e80771b92a748c57842d93018d6a87f6644",
+          "groesse": 114430,
+          "veroeffentlicht": "2026-10-31T22:12:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/CHANGELOG.md"
+        },
+        {
           "version": "1.0.0",
           "dms": ">=0.75.0",
           "abhaengigkeiten": {
@@ -187,11 +234,74 @@
         "github": "motom001"
       },
       "lizenz": "MIT",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.1"
     },
     {
       "id": "haus",
       "versionen": [
+        {
+          "version": "1.0.1",
+          "dms": ">=0.79.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.0.0",
+            "haushalt": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "immobilie",
+                "name": "Immobilie"
+              },
+              {
+                "schluessel": "wartung",
+                "name": "Wartung"
+              },
+              {
+                "schluessel": "zaehlerstand",
+                "name": "Zählerstand"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haus",
+                "name": "Haus"
+              },
+              {
+                "schluessel": "immobilien",
+                "name": "Immobilien"
+              },
+              {
+                "schluessel": "wartungen",
+                "name": "Wartungen"
+              },
+              {
+                "schluessel": "zaehlerstaende",
+                "name": "Zählerstände"
+              },
+              {
+                "schluessel": "wartung_faellig",
+                "name": "Wartung fällig"
+              },
+              {
+                "schluessel": "zaehler_dieses_jahr",
+                "name": "Zählerstände dieses Jahr"
+              },
+              {
+                "schluessel": "zaehler_letztes_jahr",
+                "name": "Zählerstände letztes Jahr"
+              }
+            ],
+            "beispiele": 7
+          },
+          "code": false,
+          "archiv": "archive/haus-1.0.1.zip",
+          "sha256": "fc0ee6b5984782199b61715d4b30cc5b4ecca344dd75ddc8b508ada6a5a89e6f",
+          "groesse": 151896,
+          "veroeffentlicht": "2026-10-31T22:12:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haus",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/CHANGELOG.md"
+        },
         {
           "version": "1.0.0",
           "dms": ">=0.75.0",
@@ -263,11 +373,137 @@
         "github": "motom001"
       },
       "lizenz": "MIT",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.1"
     },
     {
       "id": "haushalt",
       "versionen": [
+        {
+          "version": "1.0.1",
+          "dms": ">=0.79.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "konto",
+                "name": "Konto"
+              },
+              {
+                "schluessel": "vertrag",
+                "name": "Vertrag"
+              },
+              {
+                "schluessel": "versicherung",
+                "name": "Versicherung"
+              },
+              {
+                "schluessel": "steuerjahr",
+                "name": "Steuerjahr"
+              },
+              {
+                "schluessel": "arbeitsverhaeltnis",
+                "name": "Arbeitsverhältnis"
+              },
+              {
+                "schluessel": "vorsorge",
+                "name": "Vorsorge"
+              },
+              {
+                "schluessel": "ausweis",
+                "name": "Ausweis & Urkunde"
+              },
+              {
+                "schluessel": "gesundheit",
+                "name": "Gesundheit"
+              },
+              {
+                "schluessel": "anschaffung",
+                "name": "Anschaffung"
+              },
+              {
+                "schluessel": "bildung",
+                "name": "Bildung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haushalt",
+                "name": "Haushalt"
+              },
+              {
+                "schluessel": "konten",
+                "name": "Konten"
+              },
+              {
+                "schluessel": "vertraege",
+                "name": "Verträge"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "steuerjahre",
+                "name": "Steuerjahre"
+              },
+              {
+                "schluessel": "arbeit",
+                "name": "Arbeitsverhältnisse"
+              },
+              {
+                "schluessel": "vorsorge",
+                "name": "Vorsorge"
+              },
+              {
+                "schluessel": "ausweise",
+                "name": "Ausweise & Urkunden"
+              },
+              {
+                "schluessel": "gesundheit",
+                "name": "Gesundheit"
+              },
+              {
+                "schluessel": "anschaffungen",
+                "name": "Anschaffungen"
+              },
+              {
+                "schluessel": "bildung",
+                "name": "Bildung"
+              },
+              {
+                "schluessel": "sachversicherungen",
+                "name": "Sachversicherungen"
+              },
+              {
+                "schluessel": "personenversicherungen",
+                "name": "Personenversicherungen"
+              },
+              {
+                "schluessel": "kuendigung_bald",
+                "name": "Kündigung in den nächsten 3 Monaten"
+              },
+              {
+                "schluessel": "laeuft_ab",
+                "name": "Läuft bald ab"
+              },
+              {
+                "schluessel": "garantie_bald",
+                "name": "Garantie läuft ab"
+              }
+            ],
+            "beispiele": 15
+          },
+          "code": false,
+          "archiv": "archive/haushalt-1.0.1.zip",
+          "sha256": "816776b80928330dca69f339729a443910917907c1716a9fd3c9b4736935cfff",
+          "groesse": 368492,
+          "veroeffentlicht": "2026-10-31T22:12:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haushalt",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haushalt/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haushalt/CHANGELOG.md"
+        },
         {
           "version": "1.0.0",
           "dms": ">=0.75.0",
@@ -402,7 +638,7 @@
         "github": "motom001"
       },
       "lizenz": "MIT",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.1"
     }
   ]
 }
