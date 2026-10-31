@@ -25,6 +25,10 @@ jobs:
           basis=""
           if [ "${{ github.event_name }}" = pull_request ]; then basis="--basis origin/${{ github.base_ref }}"; fi
           python3 werkzeuge/pruefen.py $basis
+      - name: Katalog lässt sich bauen (ohne veröffentlichte Version zu ändern)
+        run: |
+          if git fetch --depth 1 origin gh-pages; then git worktree add site FETCH_HEAD; else mkdir site; fi
+          python3 werkzeuge/katalog.py --probe site
       - name: Neues Paket aus der Vorlage lässt sich anlegen
         run: |
           werkzeuge/neues-paket.sh probe_paket "Probe"

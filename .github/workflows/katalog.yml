@@ -1,0 +1,44 @@
+# Veröffentlicht den Katalog (katalog.json und Archive) auf dem Branch gh-pages,
+# erreichbar über GitHub Pages: https://motom001.github.io/dms-registry/katalog.json
+name: Katalog veröffentlichen
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: katalog
+  cancel-in-progress: false
+
+jobs:
+  katalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet pyyaml jsonschema
+      - name: Bisherigen Stand holen
+        run: |
+          if git fetch --depth 1 origin gh-pages; then
+            git worktree add site FETCH_HEAD
+          else
+            git worktree add --detach site
+            git -C site checkout --orphan gh-pages
+            git -C site rm -rf --quiet .
+          fi
+      - name: Katalog bauen
+        run: python3 werkzeuge/katalog.py site
+      - name: Veröffentlichen
+        run: |
+          cd site
+          touch .nojekyll
+          git add -A
+          if git diff --cached --quiet; then echo "Keine Änderung."; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Katalog ${GITHUB_SHA::7}"
+          git push origin HEAD:gh-pages
