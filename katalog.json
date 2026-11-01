@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-01T15:57:39Z",
+  "erstellt": "2026-11-01T16:21:13Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1028,6 +1028,24 @@
       "id": "trennblatt",
       "versionen": [
         {
+          "version": "1.0.1",
+          "dms": ">=0.94.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/trennblatt-1.0.1.zip",
+          "sha256": "61f6a73a1f8a5ce6afa3ced6033e20271a4593b6a5d8c1b440971c9f34fcedde",
+          "groesse": 68955,
+          "veroeffentlicht": "2026-11-01T16:21:13Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/trennblatt",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/trennblatt/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/trennblatt/CHANGELOG.md"
+        },
+        {
           "version": "1.0.0",
           "dms": ">=0.88.0",
           "abhaengigkeiten": {},
@@ -1053,7 +1071,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.1"
     },
     {
       "id": "vermietung",

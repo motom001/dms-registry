@@ -18,13 +18,13 @@
       <span class="symbol gross" aria-hidden="true">T</span>
       <div><h1>Trennblatt</h1><p class="leise">Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="trennblatt@1.0.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="trennblatt@1.0.1">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/trennblatt">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.0.0 vom 01.11.2026</dd>
+      <dt>Version</dt><dd>1.0.1 vom 01.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>Apache-2.0</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.88.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.94.0</dd>
       <dt>Abhängigkeiten</dt><dd>keine</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
@@ -32,7 +32,7 @@
       <h3>Sichten</h3><ul></ul>
       <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
     </section>
-    <section><h2>Rechte und Netz</h2><ul><li>darf Mappen vom Typ <code>*</code> lesen</li><li>darf Mappen vom Typ <code>*</code> ändern</li><li>darf Dokumente lesen und ändern</li><li>verbindet sich mit keiner Adresse im Internet</li><li>reagiert auf <code>dokument.hochgeladen</code></li></ul></section>
+    <section><h2>Rechte und Netz</h2><ul><li>darf Mappen vom Typ <code>dms:post</code> lesen</li><li>darf Mappen vom Typ <code>dms:post</code> ändern</li><li>darf Dokumente lesen und ändern</li><li>verbindet sich mit keiner Adresse im Internet</li><li>reagiert auf <code>dokument.hochgeladen</code></li></ul></section>
     <section class="readme"><h2>Beschreibung</h2><p>Mit dem Paket <strong>Trennblatt</strong> scannst du einen ganzen Stapel Briefe auf einmal, und im DMS wird trotzdem <strong>jeder Brief eine eigene Post</strong>. Du legst zwischen zwei Briefe ein Trennblatt mit Barcode. Der Sammelscan kommt wie gewohnt als eine Post ins DMS. Das Paket findet die Trennblätter, teilt den Scan dort und lässt die Trennblätter weg.</p>
 <p>Klebt auf einem Brief ein <strong>Archivnummer-Aufkleber</strong> des DMS, bekommt das Dokument der neuen Post gleich diese Archivnummer.</p>
 <p>Das Paket läuft im <strong>Paket-Läufer</strong> des DMS: abgeschottet als WebAssembly, ohne Netz.</p>
@@ -64,7 +64,7 @@
 <h3>Was das Paket darf</h3>
 <p>Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:</p>
 <ul>
-<li><strong>Mappen lesen, anlegen und ändern: alle Mappentypen.</strong> Das Paket liest nur die Post, in die der Scan kam, und legt beim Teilen neue Posts an. Andere Mappen fasst es nicht an. Die Post ist ein Mappentyp des DMS, den ein Paket heute nur über „alle Mappentypen“ erreicht. Löschen kann ein Paket nie.</li>
+<li><strong>Mappen lesen, anlegen und ändern: Post.</strong> Das Paket liest die Post, in die der Scan kam, und legt beim Teilen neue Posts an. Andere Mappen sieht es nicht. Löschen kann ein Paket nie.</li>
 <li><strong>Dokumente schreiben.</strong> Das Paket holt die Seiten als Graustufenbild, teilt das PDF und setzt die Archivnummer.</li>
 <li><strong>Kein Netz.</strong></li>
 <li>Es reagiert auf <strong>Dokument hochgeladen</strong>.</li>
@@ -155,7 +155,7 @@
 </ul>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS <strong>0.88.0</strong> oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API).</li>
+<li>DMS <strong>0.94.0</strong> oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API, Recht nur für Post).</li>
 </ul>
 <h3>Für Entwickler</h3>
 <table>
@@ -210,7 +210,11 @@ pakete/trennblatt/tests/pruefen.sh                                              
 <p>Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/">Pakete mit Code</a>.</p>
 <h3>Lizenz</h3>
 <p>Apache-2.0 (siehe <code>LICENSE</code>). Das Paket enthält keinen fremden Code.</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.1</h3>
+<ul>
+<li>Rechte: nur noch <strong>Post</strong> lesen, anlegen und ändern (<code>dms:post</code>) statt aller Mappentypen (<code>"*"</code>). Andere Mappen sieht das Paket nicht mehr. Braucht DMS <strong>0.94.0</strong> oder neuer. Verhalten sonst unverändert.</li>
+</ul>
+<h3>1.0.0</h3>
 <ul>
 <li>Erste Fassung: teilt einen Sammelscan in einer neuen Post an Trennblättern mit Code-128-Barcode (<code>DMS-TRENNEN</code>) in mehrere Posts; Trennblätter und ihre leeren Rückseiten fallen weg.</li>
 <li>Archivnummer-Aufkleber (<code>DMS-ASN:&lt;nummer&gt;</code>) setzen die Archivnummer am Dokument der neuen Post.</li>
@@ -218,7 +222,7 @@ pakete/trennblatt/tests/pruefen.sh                                              
 <li>Eigener Code-128-Leser ohne fremde Bibliotheken; Trennblatt zum Ausdrucken (<code>vorlage/trennblatt.pdf</code>).</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/trennblatt-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="trennblatt@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.1</td><td>01.11.2026</td><td>&gt;=0.94.0</td><td><a href="../../archive/trennblatt-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="trennblatt@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/trennblatt-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="trennblatt@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>
