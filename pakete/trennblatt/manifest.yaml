@@ -1,0 +1,71 @@
+# Paket Trennblatt – Sammelscan per Barcode in mehrere Posts teilen (#16). Schema: schema/manifest.schema.json
+schema: 1
+id: trennblatt
+name: Trennblatt
+version: 1.0.0
+beschreibung: Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# 0.88.0: Paket-Läufer, Seite als Graustufenbild, PDF teilen per API (Post teilen), Archivnummer per API
+dms: ">=0.88.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: [dokument.hochgeladen]
+  rechte:
+    # Post ist ein Mappentyp des DMS, den code.rechte nur über „*“ erreicht. Das Paket liest nur die Post,
+    # in die das Dokument hochgeladen wurde, und legt nur Posts an (beim Teilen).
+    lesen: ["*"]
+    schreiben: ["*"]
+    dokumente: schreiben  # Seiten als Bild lesen, PDF teilen, Archivnummer setzen
+  netz: []
+  einstellungen:
+    - abschnitt: Trennblatt
+      felder:
+        - schluessel: barcode
+          name: Barcode auf dem Trennblatt
+          typ: text
+          pflicht: true
+          standard: DMS-TRENNEN
+          hilfe: Inhalt des Barcodes (Code 128), an dem das Paket teilt. Groß- und Kleinschreibung zählen nicht. Ein Trennblatt mit eigenem Inhalt erzeugt vorlage/trennblatt.py.
+        - schluessel: behalten
+          name: Trennblatt behalten
+          typ: janein
+          standard: false
+          hilfe: Nein – die Trennblätter fallen weg. Ja – jedes Trennblatt bleibt als erste Seite der neuen Post.
+        - schluessel: rueckseite
+          name: Leere Rückseite mit entfernen
+          typ: janein
+          standard: true
+          hilfe: Beim beidseitigen Scan folgt auf jedes Trennblatt seine leere Rückseite. Ja – eine leere Seite direkt nach einem Trennblatt fällt mit weg.
+        - schluessel: kanaele
+          name: Nur Post aus diesen Kanälen
+          typ: mehrfachauswahl
+          optionen: [Eingangsordner, E-Mail-Postfach, Hochgeladen, Scan, WebDAV, API, Import]
+          hilfe: Leer – Post aus allen Kanälen. Geteilt wird nur neue Post mit genau einem PDF.
+    - abschnitt: Archivnummer
+      felder:
+        - schluessel: archivnummer
+          name: Archivnummer aus dem Aufkleber übernehmen
+          typ: janein
+          standard: true
+          hilfe: Klebt auf einem Brief ein Archivnummer-Aufkleber des DMS (Barcode „DMS-ASN:…“), bekommt das Dokument der neuen Post diese Archivnummer.
+    - abschnitt: Erkennung
+      felder:
+        - schluessel: dpi
+          name: Auflösung (dpi)
+          typ: zahl
+          min: 150
+          max: 400
+          standard: 300
+          hilfe: Für Trennblätter reichen 150 dpi; kleine Archivnummer-Aufkleber brauchen 300.
+        - schluessel: max_seiten
+          name: Höchstens so viele Seiten
+          typ: zahl
+          min: 1
+          max: 200
+          standard: 60
+          hilfe: Längere Scans prüft das Paket nicht (Zeitgrenze des Paket-Läufers).
