@@ -89,7 +89,7 @@ Ein **Feld** hat `schluessel`, `name`, `typ` und optional `hilfe`, `pflicht`, `s
 - **Alles ist Open Source.** Jedes Paket hier steht unter einer freien Lizenz und wird aus seinem Quellcode gebaut. Fertige Programmdateien nimmt die Registry nicht an.
 - **So wenig Rechte wie nötig.** Ein Paket sagt vorher, was es lesen, schreiben und wohin es sich verbinden will. Das DMS zeigt das vor der Installation an.
 - **Pakete ergänzen, sie zerstören nichts.** Ein Update fügt hinzu, es löscht keine Felder oder Mappen.
-- **Freigabe durch den Maintainer.** Wie im DMS gilt: Erst ein Issue, und umgesetzt bzw. aufgenommen wird, was [@motom001](https://github.com/motom001) freigegeben hat.
+- **Freigabe durch den Maintainer.** Wie im DMS gilt: Erst ein Issue, und umgesetzt bzw. aufgenommen wird, was [@motom001](https://github.com/motom001) freigegeben hat. In welcher Reihenfolge, steht im [Fahrplan](ROADMAP.md).
 
 ## Lizenz
 
