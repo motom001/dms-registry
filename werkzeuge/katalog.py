@@ -4,6 +4,9 @@ Baut den Katalog der Registry: je Paket ein Archiv <id>-<version>.zip und katalo
 
     python3 werkzeuge/katalog.py <ausgabe>              # Ausgabeordner = bisheriger Stand (z. B. gh-pages)
     python3 werkzeuge/katalog.py --probe <ausgabe>      # nur prüfen, nichts schreiben
+    python3 werkzeuge/katalog.py --ohne-bau <ausgabe>   # Probe-Katalog, Pakete mit Code ohne gebautes Modul
+
+Pakete mit Code (code/bauen.sh) baut vorher werkzeuge/bauen.py; ohne code/modul.wasm gibt es kein Archiv.
 
 Im Ausgabeordner liegen danach:
 
@@ -26,6 +29,8 @@ WURZEL = Path(__file__).resolve().parent.parent
 REPO = 'https://github.com/motom001/dms-registry'
 FORMAT = 1
 ZEIT = (1980, 1, 1, 0, 0, 0)
+# Nur zum Ausprobieren (Webseite): Pakete mit Code auch ohne gebautes Modul.
+OHNE_BAU = False
 
 
 def dateien(ordner: Path) -> dict[str, bytes]:
@@ -44,6 +49,11 @@ def archiv(inhalt: dict[str, bytes]) -> bytes:
             info.create_system = 3
             z.writestr(info, inhalt[name], compresslevel=9)
     return puffer.getvalue()
+
+
+def ohne_erzeugtes(inhalt: dict[str, bytes]) -> dict[str, bytes]:
+    """Ohne das, was beim Bau entsteht (code/modul.wasm, code/daten/): Ob sich ein Paket geändert hat, entscheidet der Quellcode."""
+    return {n: d for n, d in inhalt.items() if n != 'code/modul.wasm' and not n.startswith('code/daten/')}
 
 
 def inhalt_von(daten: bytes) -> dict[str, bytes]:
@@ -106,10 +116,13 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         bekannt = next((v for v in p['versionen'] if v['version'] == version), None)
         if vorhanden.exists():
             daten = vorhanden.read_bytes()
-            if inhalt_von(daten) != inhalt:
+            if ohne_erzeugtes(inhalt_von(daten)) != ohne_erzeugtes(inhalt):
                 fehler.append(f'{pid}: Inhalt geändert, aber Version {version} ist schon veröffentlicht – Version erhöhen')
                 continue
         else:
+            if (ordner / 'code' / 'bauen.sh').exists() and 'code/modul.wasm' not in inhalt and not probe and not OHNE_BAU:
+                fehler.append(f'{pid}: code/modul.wasm fehlt – vorher bauen (python3 werkzeuge/bauen.py --unveroeffentlicht <ausgabe>)')
+                continue
             daten = archiv(inhalt)
             neu.append((name, daten))
         v = eintrag(ordner, m, name, daten, bekannt['veroeffentlicht'] if bekannt else jetzt)
@@ -143,6 +156,9 @@ def main():
     probe = args[:1] == ['--probe']
     if probe:
         args = args[1:]
+    global OHNE_BAU
+    if args[:1] == ['--ohne-bau']:
+        OHNE_BAU, args = True, args[1:]
     if len(args) != 1:
         print(__doc__)
         sys.exit(2)

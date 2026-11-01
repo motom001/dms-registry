@@ -1,0 +1,4 @@
+__pycache__/
+# Entsteht beim Bau (werkzeuge/bauen.py), gehört nicht ins Repository.
+pakete/*/code/modul.wasm
+pakete/*/code/daten/

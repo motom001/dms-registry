@@ -14,6 +14,9 @@ from pathlib import Path
 import yaml
 from jsonschema import Draft202012Validator
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import wasm  # noqa: E402
+
 WURZEL = Path(__file__).resolve().parent.parent
 SCHEMA_MANIFEST = json.loads((WURZEL / 'schema/manifest.schema.json').read_text())
 SCHEMA_INHALT = json.loads((WURZEL / 'schema/inhalt.schema.json').read_text())
@@ -193,9 +196,11 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             fehler.append(f'{name} fehlt')
     for datei in ordner.rglob('*'):
         if datei.is_file():
-            if VERBOTEN.search(datei.name):
+            # code/modul.wasm baut die CI selbst (werkzeuge/bauen.py); eingecheckt wäre es verboten (siehe unten).
+            if VERBOTEN.search(datei.name) and datei.relative_to(ordner).as_posix() != 'code/modul.wasm':
                 fehler.append(f'{datei.relative_to(ordner)}: fertige Programmdateien sind nicht erlaubt (REGELN.md)')
-            if datei.stat().st_size > MAX_GROESSE:
+            erzeugt = datei.relative_to(ordner).as_posix() == 'code/modul.wasm' or datei.relative_to(ordner).as_posix().startswith('code/daten/')
+            if datei.stat().st_size > MAX_GROESSE and not erzeugt:
                 fehler.append(f'{datei.relative_to(ordner)}: größer als 2 MB')
 
     m_pfad = ordner / 'manifest.yaml'
@@ -322,6 +327,15 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         quelle = ordner / str(m['code'].get('quelle', ''))
         if not quelle.is_dir() or not any(p.is_file() and p.name != 'README.md' for p in quelle.rglob('*')):
             fehler.append('code.quelle: kein Quellcode gefunden')
+        if not (ordner / 'code' / 'bauen.sh').exists():
+            fehler.append('code/bauen.sh fehlt – die CI baut das Modul aus dem Quellcode (siehe vorlage/code/README.md)')
+        # Gebaute Module nie einchecken: Die CI baut sie selbst (werkzeuge/bauen.py).
+        r = subprocess.run(['git', 'ls-files', '--', 'code/modul.wasm', 'code/daten'], cwd=ordner, capture_output=True, text=True)
+        if r.returncode == 0 and r.stdout.strip():
+            fehler.append('code/modul.wasm und code/daten/ entstehen beim Bau und gehören nicht ins Repository')
+        modul = ordner / 'code' / 'modul.wasm'
+        if modul.exists():
+            fehler += wasm.pruefe(modul.read_bytes())
 
     if basis and not vorlage and geaendert(basis, ordner):
         alt = version_von(basis, m_pfad)

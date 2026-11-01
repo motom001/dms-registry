@@ -1,0 +1,53 @@
+# Paket Texterkennung – Tesseract als WebAssembly, Referenzpaket für den Paket-Läufer. Schema: schema/manifest.schema.json
+schema: 1
+id: texterkennung
+name: Texterkennung
+version: 1.0.0
+beschreibung: Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# 0.88.0: Paket-Läufer, Volltext schreiben, Seite als Graustufenbild
+dms: ">=0.88.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: [dokument.hochgeladen, texterkennung.fertig]
+  rechte:
+    lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen; Lesen der Mappe nur für „Nur diese Mappentypen“
+    dokumente: schreiben  # Seiten als Bild lesen und den Volltext schreiben
+  netz: []
+  einstellungen:
+    - abschnitt: Texterkennung
+      felder:
+        - schluessel: sprache
+          name: Sprache
+          typ: auswahl
+          optionen: [Deutsch, Englisch, Deutsch und Englisch]
+          standard: Deutsch
+          hilfe: Bei „Deutsch und Englisch“ erkennt das Paket jede Seite zweimal und nimmt die sicherere Erkennung – das dauert doppelt so lang.
+        - schluessel: nur_ohne_text
+          name: Nur Dokumente ohne Text
+          typ: janein
+          standard: true
+          hilfe: Ja – das Paket wartet, bis die Texterkennung des DMS fertig ist, und erkennt nur, wenn sie keinen Text gefunden hat (z. B. bei schwierigen Scans). Nein – das Paket erkennt jedes neue PDF und Bild und ersetzt den Volltext.
+        - schluessel: max_seiten
+          name: Höchstens so viele Seiten
+          typ: zahl
+          min: 1
+          max: 200
+          standard: 30
+        - schluessel: dpi
+          name: Auflösung (dpi)
+          typ: zahl
+          min: 150
+          max: 400
+          standard: 300
+    - liste: typen
+      name: Nur diese Mappentypen
+      eintrag: Mappentyp
+      hilfe: Leer – Dokumente in allen Mappen.
+      felder:
+        - { schluessel: typ, name: Mappentyp, typ: mappentyp, pflicht: true }

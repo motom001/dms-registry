@@ -33,6 +33,14 @@ jobs:
             git -C site checkout --orphan gh-pages
             git -C site rm -rf --quiet .
           fi
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/dms-registry
+          key: wasm-${{ hashFiles('werkzeuge/wasi-sdk.sh', 'pakete/*/code/bauen.sh') }}
+          restore-keys: wasm-
+      # Nur Versionen, die noch nicht im Katalog stehen: Veröffentlichte Archive ändern sich nie.
+      - name: Pakete mit Code bauen
+        run: python3 werkzeuge/bauen.py --unveroeffentlicht site
       - name: Katalog bauen
         run: python3 werkzeuge/katalog.py site
       - name: Webseite bauen

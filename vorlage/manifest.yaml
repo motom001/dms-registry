@@ -25,7 +25,7 @@ inhalt:
   sichten: inhalt/sichten.yaml
   beispiele: inhalt/beispiele.yaml   # optional: Beispiel-Mappen, auf Wunsch bei der Installation
 
-# Nur für Pakete mit Code – sonst weglassen. Noch nicht verfügbar, siehe code/README.md.
+# Nur für Pakete mit Code (DMS ab 0.88.0) – sonst weglassen, dazu den Ordner code/. Siehe code/README.md.
 # code:
 #   sprache: rust                    # rust, go, c, assemblyscript, javascript
 #   quelle: code/

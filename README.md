@@ -5,7 +5,7 @@ Die zentrale Ablage für **Pakete** zum [DMS](https://github.com/motom001/dms), 
 Ein Paket erweitert das DMS, ohne dass jemand die Werkbank Feld für Feld durchklicken muss:
 
 - **Konfiguration:** Mappentypen mit Feldern, Registern und Trefferlisten, Sichten, Beispiel-Mappen. Beispiele sind ein Basis-Paket mit Organisation und Person oder die Pakete „Haushalt“, „Haus“ und „Fahrzeuge“.
-- **Code (geplant):** Ein Paket reagiert auf Ereignisse im DMS, etwa „Dokument hochgeladen“, und arbeitet über die [API](https://motom001.github.io/dms/admin/aktuell/api/) mit eigenen, bei der Installation bestätigten Rechten. Beispiele: ein Bild in PDF/A umwandeln, ein Dokument einordnen. Der Code läuft als WebAssembly abgeschottet im Container des DMS, nie im DMS-Prozess selbst.
+- **Code (ab DMS 0.88.0):** Ein Paket reagiert auf Ereignisse im DMS, etwa „Dokument hochgeladen“, und arbeitet über die [API](https://motom001.github.io/dms/admin/aktuell/api/) mit eigenen, bei der Installation bestätigten Rechten. Beispiele: [Texterkennung](pakete/texterkennung/) (Tesseract als WebAssembly) und das kleine [Hallo Post](pakete/hallo_post/). Der Code läuft als WebAssembly abgeschottet im Paket-Läufer des DMS, nie im DMS-Prozess selbst; die CI baut ihn aus dem Quellcode (`code/bauen.sh`, [`werkzeuge/bauen.py`](werkzeuge/bauen.py)).
 
 Im DMS installierst du Pakete unter **Werkbank → Pakete**. Die Paketverwaltung ist in Arbeit; bis dahin sammelt dieses Repository die Pakete und legt die Regeln fest.
 
