@@ -14,9 +14,6 @@ from pathlib import Path
 import yaml
 from jsonschema import Draft202012Validator
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import wasm  # noqa: E402
-
 WURZEL = Path(__file__).resolve().parent.parent
 SCHEMA_MANIFEST = json.loads((WURZEL / 'schema/manifest.schema.json').read_text())
 SCHEMA_INHALT = json.loads((WURZEL / 'schema/inhalt.schema.json').read_text())
@@ -335,6 +332,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             fehler.append('code/modul.wasm und code/daten/ entstehen beim Bau und gehören nicht ins Repository')
         modul = ordner / 'code' / 'modul.wasm'
         if modul.exists():
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+            import wasm  # erst hier: pruefen.py läuft auch allein (z. B. kopiert im Test des DMS)
             fehler += wasm.pruefe(modul.read_bytes())
 
     if basis and not vorlage and geaendert(basis, ordner):
