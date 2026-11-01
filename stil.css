@@ -9,6 +9,8 @@ a { color: var(--a); }
 main { max-width: 980px; margin: 0 auto; padding: 16px 16px 40px; }
 h1 { font-size: 1.9rem; margin: 0 0 4px; }
 .leise { color: var(--leise); }
+a.hilfe { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; margin-left: .3em; border: 1px solid var(--linie); border-radius: 50%; font-size: .8em; font-weight: 700; line-height: 1; color: var(--leise); text-decoration: none; vertical-align: .1em; }
+a.hilfe:hover, a.hilfe:focus-visible { color: var(--a); border-color: var(--a); }
 .werkzeuge { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
 .werkzeuge input, .werkzeuge select, dialog input { font: inherit; padding: 8px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); min-width: 0; }
 .werkzeuge input { flex: 1 1 240px; }
