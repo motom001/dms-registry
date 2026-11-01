@@ -15,11 +15,11 @@
 - DMS ab Version 0.41
 - keine weiteren Pakete
 
-## Rechte und Netz
+## Rechte und Netzwerkzugriff
 
 Dieses Paket enthält keinen Code. Es legt nur Mappentypen und Sichten an.
 
-<!-- Bei Paketen mit Code: welche Rechte, warum; welche Adressen, wozu. -->
+<!-- Bei Paketen mit Code: welche Rechte, warum; „kein Zugriff auf Netzwerk und Internet“ oder welche Adressen, wozu. -->
 
 ## Nach der Installation
 
