@@ -106,6 +106,41 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
     return fehler
 
 
+# Feld-Eigenschaft „für die Erkennung nutzen“ (DMS #336/#391, ab 0.113.0): welche Arten zu welcher Feldart passen
+# – wie artenFuer im DMS (shared/src/erkennung.ts). Passwort, Ja/Nein und formatierter Text nie.
+DMS_ERKENNUNG_AB = (0, 113, 0)
+_TEXTARTEN = {'name', 'vorname', 'nachname', 'funktion', 'nummer', 'iban', 'ustid', 'email', 'internet', 'telefon', 'mobil', 'fax',
+              'strasse', 'hausnummer', 'plz', 'ort'}
+ERKENNUNG_ARTEN = {
+    'text': _TEXTARTEN, 'langtext': _TEXTARTEN, 'zahl': {'nummer', 'plz', 'hausnummer', 'betrag'},
+    'betrag': {'betrag'}, 'datum': {'datum'}, 'auswahl': {'auswahl'}, 'referenz': {'verweis'},
+}
+
+
+def pruefe_erkennung(typen: list, dms_bereich: str) -> list[str]:
+    """erkennung an Feldern: nur bei geeigneten Feldarten, Art passend zur Feldart; braucht dms: ">=0.113.0"."""
+    fehler: list[str] = []
+    benutzt = False
+    for t in typen:
+        if not isinstance(t, dict):
+            continue
+        for f in t.get('felder') or []:
+            if not isinstance(f, dict) or 'erkennung' not in f:
+                continue
+            wo = f'mappentypen/{t.get("schluessel")}/{f.get("key")}'
+            e, typ = f['erkennung'], f.get('typ')
+            benutzt = True
+            if typ not in ERKENNUNG_ARTEN:
+                fehler.append(f'{wo}: erkennung gibt es nicht bei Feldart „{typ}“ (nur {", ".join(sorted(ERKENNUNG_ARTEN))})')
+            elif isinstance(e, dict) and e.get('art') is not None and e['art'] not in ERKENNUNG_ARTEN[typ]:
+                fehler.append(f'{wo}: erkennung.art „{e["art"]}“ passt nicht zur Feldart „{typ}“ (möglich: {", ".join(sorted(ERKENNUNG_ARTEN[typ]))})')
+    if benutzt:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_ERKENNUNG_AB:
+            fehler.append('mappentypen: erkennung kennt das DMS erst ab 0.113.0 – bitte dms: ">=0.113.0" angeben')
+    return fehler
+
+
 def beispiel_verweise(werte: dict) -> list[str]:
     """Verweise auf andere Beispiele in den Werten (#347 im DMS): { beispiel: x } oder Listen davon."""
     erg = []
@@ -330,6 +365,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         for k in t.get('trefferliste', []) or []:
             if k not in felder and not k.startswith('_'):
                 fehler.append(f'mappentypen/{s}: Trefferliste nennt unbekanntes Feld „{k}“')
+
+    fehler += pruefe_erkennung(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
 
     sichten = {s.get('schluessel') for s in geladen.get('sichten', []) if isinstance(s, dict)}
     for s in geladen.get('sichten', []):

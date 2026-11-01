@@ -21,7 +21,8 @@
     - { key: einheiten, label: Anzahl Einheiten, typ: zahl, min: 1, nachkomma: 0 }
     - { key: immobilie, label: Immobilie (Paket Haus), typ: referenz, ziel: "haus:immobilie", verweisart: bezug, hilfe: Falls du Wartungen und Zählerstände des Hauses im Paket Haus führst }
     - { key: verwalter, label: Hausverwaltung, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Eigentumswohnungen die WEG-Verwaltung }
-    - { key: grundsteuer_az, label: Aktenzeichen Grundsteuer, typ: text, maxLen: 40, hilfe: Steht auf dem Grundsteuerbescheid }
+    # Für die Erkennung (DMS 0.113): Post mit diesem Aktenzeichen gehört zu diesem Mietobjekt.
+    - { key: grundsteuer_az, label: Aktenzeichen Grundsteuer, typ: text, maxLen: 40, hilfe: Steht auf dem Grundsteuerbescheid, erkennung: { art: nummer } }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Kaufvertrag, Grundbuchauszug und Teilungserklärung auf Papier liegen }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, baujahr, einheiten, immobilie, verwalter, grundsteuer_az, verbleib_original] }
@@ -157,10 +158,11 @@
       typ: auswahl
       pflicht: true
       optionen: [Reparatur/Instandhaltung, Modernisierung, Versicherung, Grundsteuer, Wasser/Abwasser, Müll, Strom Allgemein, Heizung, Hausmeister/Reinigung, Verwaltung, Finanzierung/Zinsen, Sonstiges]
-    - { key: datum, label: Rechnungsdatum, typ: datum, pflicht: true }
-    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, pflicht: true }
+    # Für die Erkennung: „Aus Dokument ausfüllen“ nimmt Datum, Betrag und Firma aus der Rechnung.
+    - { key: datum, label: Rechnungsdatum, typ: datum, pflicht: true, erkennung: {} }
+    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, pflicht: true, erkennung: {} }
     - { key: umlagefaehig, label: Auf Mieter umlegbar, typ: janein, hilfe: Gehört in die Nebenkostenabrechnung }
-    - { key: firma, label: Firma, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: firma, label: Firma, typ: referenz, ziel: "basis:organisation", verweisart: bezug, erkennung: {} }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "haushalt:steuerjahr", verweisart: bezug, hilfe: Für die Anlage V }
     - { key: notiz, label: Notiz, typ: langtext }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
