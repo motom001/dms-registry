@@ -95,22 +95,62 @@ def kachel(p: dict) -> str:
       </a>'''
 
 
-def rechte_text(code: dict) -> str:
-    """Rechte und Netzadressen eines Pakets mit Code, verständlich formuliert."""
+# Wie im DMS (shared/src/pakete.ts, #449): dieselben Formulierungen in der Rechte-Vorschau vor der Installation.
+HANDBUCH_PAKETE = 'https://motom001.github.io/dms/admin/aktuell/pakete/'
+DMS_TYPEN = {'dms:ablageort': 'Ablageort', 'dms:rolle': 'Rolle', 'dms:post': 'Post'}
+EREIGNISSE = {
+    'post.angelegt': ('Neue Post ist angelegt', 'ereignis-post-angelegt'),
+    'dokument.hochgeladen': ('Ein Dokument wurde hochgeladen', 'ereignis-dokument-hochgeladen'),
+    'texterkennung.fertig': ('Die Texterkennung eines Dokuments ist fertig', 'ereignis-texterkennung-fertig'),
+    'paket.einstellungen_geaendert': ('Die Einstellungen des Pakets wurden geändert', 'ereignis-einstellungen-geandert'),
+}
+DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und Volltext schreiben'}
+
+
+def netz_text(netz: list) -> str:
+    """Netzwerkzugriff wie im DMS (#449), Adressen als Code."""
+    if not netz:
+        return 'kein Zugriff auf Netzwerk und Internet'
+    return 'Zugriff auf Netzwerk/Internet nur zu: ' + ', '.join(f'<code>{e(n)}</code>' for n in netz)
+
+
+def hilfe(anker: str, titel: str) -> str:
+    """„?“ zur Erklärung im Administratorhandbuch des DMS."""
+    return f' <a class="hilfe" href="{HANDBUCH_PAKETE}#{anker}" title="Erklärung: {e(titel)}" aria-label="Erklärung: {e(titel)} (Administratorhandbuch)">?</a>'
+
+
+def rechte_text(code: dict, typen: dict | None = None) -> str:
+    """Rechte und Netzwerkzugriff eines Pakets mit Code – so formuliert wie die Vorschau im DMS (#449)."""
+    typen = typen or {}
+
+    def name(t: str) -> str:
+        if t == '*':
+            return 'alle Mappentypen'
+        if t in DMS_TYPEN:
+            return DMS_TYPEN[t]
+        if t in typen:
+            return e(typen[t])
+        return f'<code>{e(t)}</code>'
+
     r = code.get('rechte') or {}
+    schreiben = list(dict.fromkeys(r.get('schreiben') or []))
+    lesen = list(dict.fromkeys((r.get('lesen') or []) + schreiben))  # Schreiben setzt Lesen voraus (wie im DMS).
     zeilen = []
-    for t in r.get('lesen') or []:
-        zeilen.append(f'darf Mappen vom Typ <code>{e(t)}</code> lesen')
-    for t in r.get('schreiben') or []:
-        zeilen.append(f'darf Mappen vom Typ <code>{e(t)}</code> ändern')
+    if lesen:
+        zeilen.append('Mappen lesen: ' + ', '.join(name(t) for t in lesen) + hilfe('recht-mappen-lesen', 'Mappen lesen'))
+    if schreiben:
+        zeilen.append('Mappen anlegen und ändern: ' + ', '.join(name(t) for t in schreiben) + hilfe('recht-mappen-anlegen-und-andern', 'Mappen anlegen und ändern'))
     dok = r.get('dokumente', 'keine')
-    zeilen.append({'keine': 'sieht keine Dokumente', 'lesen': 'darf Dokumente lesen', 'schreiben': 'darf Dokumente lesen und ändern'}.get(dok, dok))
-    netz = code.get('netz') or []
-    zeilen.append('verbindet sich mit ' + ', '.join(f'<code>{e(n)}</code>' for n in netz) if netz else 'verbindet sich mit keiner Adresse im Internet')
+    if dok in DOKUMENT_RECHTE:
+        zeilen.append(DOKUMENT_RECHTE[dok] + hilfe('recht-dokumente', DOKUMENT_RECHTE[dok]))
+    zeilen.append(netz_text(code.get('netz') or []) + hilfe('recht-netzwerk-und-internet', 'Zugriff auf Netzwerk und Internet'))
     ereignisse = code.get('ereignisse') or []
     if ereignisse:
-        zeilen.append('reagiert auf ' + ', '.join(f'<code>{e(x)}</code>' for x in ereignisse))
-    return '<ul>' + ''.join(f'<li>{z}</li>' for z in zeilen) + '</ul>'
+        unter = ''.join(
+            f'<li>{e(EREIGNISSE[x][0])}{hilfe(EREIGNISSE[x][1], EREIGNISSE[x][0])}</li>' if x in EREIGNISSE else f'<li><code>{e(x)}</code></li>'
+            for x in ereignisse)
+        zeilen.append(f'Reagiert auf diese Ereignisse:{hilfe("ereignisse", "Ereignisse")}<ul>{unter}</ul>')
+    return '<ul class="rechte">' + ''.join(f'<li>{z}</li>' for z in zeilen) + '</ul>'
 
 
 def detail(p: dict) -> str:
@@ -137,7 +177,7 @@ def detail(p: dict) -> str:
         f'<tr><td>{e(x["version"])}</td><td>{datum(x["veroeffentlicht"])}</td><td>{e(x["dms"])}</td>'
         f'<td><a href="../../{e(x["archiv"])}">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="{e(p["id"])}@{e(x["version"])}">installieren</button></td></tr>'
         for x in p['versionen'])
-    rechte = rechte_text(m['code']) if vorhanden and m.get('code') else '<p>Kein Code: Das Paket legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.</p>'
+    rechte = rechte_text(m['code'], {t['schluessel']: t['name'] for t in typen if 'schluessel' in t}) if vorhanden and m.get('code') else '<p>Kein Code: Das Paket legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.</p>'
     inhalt = f'''    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
     <div class="paketkopf">
       <span class="symbol gross" aria-hidden="true">{e(p['name'][:1].upper())}</span>
@@ -157,7 +197,7 @@ def detail(p: dict) -> str:
       <h3>Sichten</h3>{sicht_html}
       <p>{v['inhalt']['beispiele']} Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
     </section>
-    <section><h2>Rechte und Netz</h2>{rechte}</section>
+    <section><h2>Rechte und Netzwerkzugriff</h2>{rechte}</section>
     <section class="readme"><h2>Beschreibung</h2>{readme}</section>
     {f'<section class="changelog"><h2>Änderungen</h2>{changelog}</section>' if changelog else ''}
     <section><h2>Versionen</h2>
@@ -179,6 +219,8 @@ a { color: var(--a); }
 main { max-width: 980px; margin: 0 auto; padding: 16px 16px 40px; }
 h1 { font-size: 1.9rem; margin: 0 0 4px; }
 .leise { color: var(--leise); }
+a.hilfe { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; margin-left: .3em; border: 1px solid var(--linie); border-radius: 50%; font-size: .8em; font-weight: 700; line-height: 1; color: var(--leise); text-decoration: none; vertical-align: .1em; }
+a.hilfe:hover, a.hilfe:focus-visible { color: var(--a); border-color: var(--a); }
 .werkzeuge { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
 .werkzeuge input, .werkzeuge select, dialog input { font: inherit; padding: 8px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); min-width: 0; }
 .werkzeuge input { flex: 1 1 240px; }

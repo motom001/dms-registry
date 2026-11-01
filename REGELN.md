@@ -12,17 +12,27 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 
 - Mappentypen, Sichten, Rollen, Beispiel-Mappen
 - Code, der über die API des DMS arbeitet (sobald der Paket-Läufer verfügbar ist)
-- Netzzugriff auf Adressen, die im Manifest stehen und deren Zweck das README erklärt
+- Zugriff auf Netzwerk/Internet nur zu Adressen, die im Manifest stehen (`code.netz`) und deren Zweck das README erklärt. Ohne `code.netz` hat ein Paket keinen Zugriff auf Netzwerk und Internet.
 
 ## Verboten
 
 - **Fertige Programmdateien** jeder Art (`.wasm`, `.so`, `.dll`, `.exe`, `.jar`, `.bin` …). Gebaut wird in der CI aus dem Quellcode.
 - Verschleierter oder minifizierter Quellcode
 - Telemetrie, Tracking, Werbung
-- Netzzugriff auf Adressen, die nicht im Manifest stehen
+- Zugriff auf Netzwerk/Internet zu Adressen, die nicht im Manifest stehen
 - Mehr Rechte als nötig, z. B. Schreibrecht, wo Lesen reicht
 - Echte persönliche Daten in Beispielen, Tests oder Screenshots
 - Löschen von Feldern, Registern oder Mappen bei einem Update
+
+## So sehen Administratoren die Rechte
+
+Vor der Installation zeigt das DMS die Rechte eines Pakets mit Code, die Katalog-Webseite genauso:
+
+- „Mappen lesen: …“, „Mappen anlegen und ändern: …“, „Dokumente lesen“ bzw. „Dokumente lesen und Volltext schreiben“
+- „kein Zugriff auf Netzwerk und Internet“ bzw. „Zugriff auf Netzwerk/Internet nur zu: …“
+- „Reagiert auf diese Ereignisse:“ mit einem Ereignis je Zeile
+
+Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://motom001.github.io/dms/admin/aktuell/pakete/#rechte-eines-pakets). Schreibe im README eines Pakets mit Code im Abschnitt „Rechte und Netzwerkzugriff“ (wie in der [Vorlage](vorlage/README.md)) mit denselben Worten, was das Paket darf und wozu.
 
 ## Pflicht
 
