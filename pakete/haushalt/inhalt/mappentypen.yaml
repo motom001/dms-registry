@@ -48,7 +48,8 @@
       typ: auswahl
       pflicht: true
       optionen: [Strom, Gas, Wasser, Internet, Mobilfunk, Streaming, Zeitschrift, Mitgliedschaft, Miete, Sonstiges]
-    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60 }
+    # Für die Erkennung (DMS 0.113): Post mit dieser Nummer gehört zu diesem Vertrag.
+    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, erkennung: { art: nummer } }
     - { key: beginn, label: Beginn, typ: datum }
     - { key: mindestlaufzeit_bis, label: Mindestlaufzeit bis, typ: datum }
     - { key: kuendigungsfrist, label: Kündigungsfrist, typ: text, maxLen: 120, hilfe: "Wie im Vertrag, z. B. „3 Monate zum Ende der Laufzeit“" }
@@ -78,7 +79,7 @@
       typ: auswahl
       pflicht: true
       optionen: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz, Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall, Sonstige]
-    - { key: versicherungsnummer, label: Versicherungsnummer, typ: text, maxLen: 60 }
+    - { key: versicherungsnummer, label: Versicherungsnummer, typ: text, maxLen: 60, erkennung: { art: nummer } }
     - { key: versichert, label: Versichert, typ: text, maxLen: 120, hilfe: "Wer oder was versichert ist, z. B. „Familie“ oder „Auto MU-ST 123“" }
     - { key: beitrag, label: Beitrag, typ: betrag, min: 0, waehrung: EUR }
     - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig] }
@@ -160,7 +161,7 @@
       pflicht: true
       optionen: [gesetzliche Rente, betriebliche Altersvorsorge, Riester, Rürup, private Rente, Bausparen, Sonstige]
     - { key: anbieter, label: Anbieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
-    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, hilfe: Bei der gesetzlichen Rente die Versicherungsnummer }
+    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, hilfe: Bei der gesetzlichen Rente die Versicherungsnummer, erkennung: { art: nummer } }
     - { key: person, label: Person, typ: text, maxLen: 120 }
     - { key: beginn, label: Beginn, typ: datum }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }

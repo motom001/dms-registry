@@ -166,6 +166,51 @@ class Inhalt(unittest.TestCase):
         self.assertTrue(any('reserviert' in f for f in self.paket('beispiel', 'dms')))
 
 
+class Erkennung(unittest.TestCase):
+    """Feld-Eigenschaft „für die Erkennung nutzen“ (dms-registry #49, DMS #336/#391)."""
+
+    def paket(self, erkennung_je_feld: dict, dms: str = '>=0.113.0') -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m['dms'] = dms
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            typen = yaml.safe_load((ziel / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+            typen[0]['felder'].append({'key': 'kennwort', 'label': 'Kennwort', 'typ': 'passwort'})
+            typen[0]['register'][0]['felder'].append('kennwort')
+            for f in typen[0]['felder']:
+                if f['key'] in erkennung_je_feld:
+                    f['erkennung'] = erkennung_je_feld[f['key']]
+            (ziel / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump(typen, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_gueltig(self):
+        self.assertEqual(self.paket({'bezeichnung': {}, 'datum': {'art': 'datum'}, 'betrag': {'hinweis': 'Gesamtbetrag unten rechts'}, 'art': {}}), [])
+        self.assertEqual(self.paket({'bezeichnung': {'art': 'nummer', 'hinweis': 'Muster 100-####'}}), [])
+
+    def test_nur_geeignete_feldarten(self):
+        self.assertTrue(any('nicht bei Feldart „passwort“' in f for f in self.paket({'kennwort': {}})))
+
+    def test_art_passt_zur_feldart(self):
+        self.assertTrue(any('passt nicht zur Feldart „datum“' in f for f in self.paket({'datum': {'art': 'iban'}})))
+        self.assertTrue(any('erkennung' in f for f in self.paket({'bezeichnung': {'art': 'unbekannt'}})), 'Schema kennt die Art nicht')
+        self.assertTrue(any('erkennung' in f for f in self.paket({'bezeichnung': {'hinweis': 'x' * 301}})), 'Hinweis zu lang')
+        self.assertTrue(any('erkennung' in f for f in self.paket({'bezeichnung': {'feld': 1}})), 'unbekannte Angabe')
+
+    def test_braucht_dms_0_110(self):
+        self.assertTrue(any('erst ab 0.113.0' in f for f in self.paket({'bezeichnung': {}}, dms='>=0.79.0')))
+        self.assertEqual(self.paket({}, dms='>=0.79.0'), [], 'ohne erkennung reicht die alte Version')
+
+    def test_pakete_der_registry(self):
+        for p in ('basis', 'vermietung', 'fahrzeuge', 'haushalt'):
+            self.assertEqual(pruefen.pruefe(WURZEL / 'pakete' / p, None), [], p)
+
+
 if __name__ == '__main__':
     unittest.main()
 

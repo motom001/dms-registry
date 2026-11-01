@@ -2,14 +2,15 @@
 schema: 1
 id: haushalt
 name: Haushalt
-version: 1.0.2
+version: 1.0.3
 beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Verträge, Versicherungen, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
 # 0.75.0: Verweise auf den Ablageort des DMS (dms:ablageort); 0.79.0: Verweise zwischen Beispielen
-dms: ">=0.79.0"
+# 0.113.0: Feld-Eigenschaft „für die Erkennung nutzen“ (erkennung, DMS #336/#391)
+dms: ">=0.113.0"
 abhaengigkeiten:
   basis: ">=1.0.0"
 inhalt:

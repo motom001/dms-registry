@@ -28,6 +28,10 @@
       typ: betrag
       min: 0
       waehrung: EUR
+    # Für die Erkennung nutzen (braucht dms: ">=0.113.0", siehe REGELN.md): z. B. an einer Vertragsnummer
+    #   erkennung: { art: nummer, hinweis: "Steht oben rechts, Muster VN-######" }
+    # oder ohne Art – das DMS schließt sie aus Feldart und Bezeichnung:
+    #   erkennung: {}
     # Verweis auf einen Typ dieses Pakets: ziel: beispiel
     # Verweis auf ein anderes Paket:      ziel: basis:organisation (dann unter abhaengigkeiten nennen)
     # Verweis auf einen Typ des DMS:      ziel: dms:ablageort (auch dms:benutzer, dms:rolle; braucht dms: ">=0.75.0")

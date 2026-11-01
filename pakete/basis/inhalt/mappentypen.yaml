@@ -11,11 +11,14 @@
       pflicht: true
       eindeutig: true
       maxLen: 120
+      # Für die Erkennung (DMS 0.113): Post wird an diesem Namen wiedererkannt (schwaches Merkmal).
+      erkennung: {}
     - key: kuerzel
       label: Kürzel
       typ: text
       maxLen: 20
       hilfe: Kurzname, z. B. „SWM“ für Stadtwerke Musterstadt
+      erkennung: { art: name }
     - key: art
       label: Art
       typ: auswahl
@@ -26,6 +29,22 @@
       typ: text
       maxLen: 60
       hilfe: Deine eigene Nummer bei dieser Organisation (Kunden-, Mitglieds-, Versicherten- oder Patientennummer)
+      # Starkes Merkmal: steht die Nummer im Brief, ist der Absender eindeutig (Leerzeichen und Bindestriche zählen nicht).
+      erkennung: { art: nummer, hinweis: "Steht meist oben rechts im Brief, z. B. „Kundennummer 100-4711“" }
+    # Ab 1.2.0: IBAN und Umsatzsteuer-Id der Organisation – starke Merkmale für die Erkennung.
+    - key: iban
+      label: IBAN
+      typ: text
+      maxLen: 42
+      muster: "[A-Z]{2}[0-9]{2}( ?[A-Z0-9]){11,30}"
+      hilfe: Konto der Organisation, z. B. aus dem Briefkopf oder der Rechnung (DE12 3456 7890 1234 5678 90)
+      erkennung: { art: iban }
+    - key: ustid
+      label: Umsatzsteuer-Id
+      typ: text
+      maxLen: 20
+      hilfe: z. B. DE123456789 – steht auf Rechnungen von Firmen
+      erkennung: { art: ustid }
     - key: beschreibung
       label: Beschreibung
       typ: langtext
@@ -34,39 +53,48 @@
       label: Telefon
       typ: text
       maxLen: 40
+      erkennung: {}
     - key: fax
       label: Fax
       typ: text
       maxLen: 40
+      erkennung: {}
     - key: email
       label: E-Mail
       typ: text
       maxLen: 200
       muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
       hilfe: z. B. kontakt@beispiel.de
+      erkennung: {}
     - key: internet
       label: Internetseite
       typ: text
       maxLen: 200
       hilfe: z. B. https://www.beispiel.de
+      # Auch die Domain einer E-Mail-Adresse im Brief zählt (…@beispiel.de).
+      erkennung: {}
     # Anschrift
     - key: strasse
       label: Straße
       typ: text
       maxLen: 120
+      erkennung: {}
     - key: hausnummer
       label: Hausnummer
       typ: text
       maxLen: 10
+      erkennung: {}
     - key: plz
       label: PLZ
       typ: text
       maxLen: 10
       hilfe: In Deutschland fünfstellig
+      erkennung: {}
     - key: ort
       label: Ort
       typ: text
       maxLen: 80
+      erkennung: {}
     - key: land
       label: Land
       typ: text
@@ -76,7 +104,7 @@
     - key: stammdaten
       name: Stammdaten
       art: felder
-      felder: [name, kuerzel, art, kundennummer, beschreibung]
+      felder: [name, kuerzel, art, kundennummer, iban, ustid, beschreibung]
     - key: kontakt
       name: Kontakt
       art: felder
@@ -115,12 +143,14 @@
       ziel: organisation
       verweisart: zugehoerigkeit
       pflicht: true
+      erkennung: {}
     - key: name
       label: Name
       typ: text
       pflicht: true
       maxLen: 120
       hilfe: "z. B. „Filiale Marktplatz“ oder „Praxis Nord“"
+      erkennung: {}
     - key: art
       label: Art
       typ: auswahl
@@ -131,25 +161,27 @@
       typ: text
       maxLen: 40
       hilfe: Filial- oder Stellennummer, z. B. Betriebsstättennummer
+      erkennung: { art: nummer }
     - key: oeffnungszeiten
       label: Öffnungszeiten
       typ: langtext
     - key: beschreibung
       label: Beschreibung
       typ: langtext
-    - { key: telefon, label: Telefon, typ: text, maxLen: 40 }
-    - { key: fax, label: Fax, typ: text, maxLen: 40 }
+    - { key: telefon, label: Telefon, typ: text, maxLen: 40, erkennung: {} }
+    - { key: fax, label: Fax, typ: text, maxLen: 40, erkennung: {} }
     - key: email
       label: E-Mail
       typ: text
       maxLen: 200
       muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
       hilfe: z. B. filiale@beispiel.de
-    - { key: internet, label: Internetseite, typ: text, maxLen: 200 }
-    - { key: strasse, label: Straße, typ: text, maxLen: 120 }
-    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
-    - { key: plz, label: PLZ, typ: text, maxLen: 10 }
-    - { key: ort, label: Ort, typ: text, maxLen: 80 }
+      erkennung: {}
+    - { key: internet, label: Internetseite, typ: text, maxLen: 200, erkennung: {} }
+    - { key: strasse, label: Straße, typ: text, maxLen: 120, erkennung: {} }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10, erkennung: {} }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10, erkennung: {} }
+    - { key: ort, label: Ort, typ: text, maxLen: 80, erkennung: {} }
     - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [organisation, name, art, nummer, oeffnungszeiten, beschreibung] }
@@ -172,8 +204,9 @@
   felder:
     - { key: anrede, label: Anrede, typ: auswahl, optionen: [Frau, Herr, divers/keine] }
     - { key: titel, label: Titel, typ: text, maxLen: 40, hilfe: z. B. Dr. }
-    - { key: vorname, label: Vorname, typ: text, maxLen: 80 }
-    - { key: nachname, label: Nachname, typ: text, pflicht: true, maxLen: 80 }
+    # Für die Erkennung (DMS 0.113): „Visitenkarte scannen“ füllt die markierten Felder.
+    - { key: vorname, label: Vorname, typ: text, maxLen: 80, erkennung: {} }
+    - { key: nachname, label: Nachname, typ: text, pflicht: true, maxLen: 80, erkennung: {} }
     - key: beziehung
       label: Beziehung
       typ: auswahl
@@ -184,22 +217,23 @@
       typ: datum
       hilfe: Wer erinnert werden möchte, schaltet am Feld in der Werkbank eine jährliche Erinnerung ein.
     - { key: beschreibung, label: Beschreibung, typ: langtext }
-    - { key: organisation, label: Organisation, typ: referenz, ziel: organisation, verweisart: bezug, hilfe: Wo die Person arbeitet bzw. wofür sie Ansprechpartner ist }
+    - { key: organisation, label: Organisation, typ: referenz, ziel: organisation, verweisart: bezug, hilfe: Wo die Person arbeitet bzw. wofür sie Ansprechpartner ist, erkennung: {} }
     - { key: niederlassung, label: Niederlassung, typ: referenz, ziel: niederlassung, verweisart: bezug }
-    - { key: funktion, label: Funktion, typ: text, maxLen: 80, hilfe: z. B. Kundenberaterin }
+    - { key: funktion, label: Funktion, typ: text, maxLen: 80, hilfe: z. B. Kundenberaterin, erkennung: {} }
     - { key: abteilung, label: Abteilung, typ: text, maxLen: 80 }
-    - { key: telefon, label: Telefon, typ: text, maxLen: 40 }
-    - { key: mobil, label: Mobil, typ: text, maxLen: 40 }
+    - { key: telefon, label: Telefon, typ: text, maxLen: 40, erkennung: {} }
+    - { key: mobil, label: Mobil, typ: text, maxLen: 40, erkennung: {} }
     - key: email
       label: E-Mail
       typ: text
       maxLen: 200
       muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
       hilfe: z. B. name@beispiel.de
-    - { key: strasse, label: Straße, typ: text, maxLen: 120 }
-    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
-    - { key: plz, label: PLZ, typ: text, maxLen: 10 }
-    - { key: ort, label: Ort, typ: text, maxLen: 80 }
+      erkennung: {}
+    - { key: strasse, label: Straße, typ: text, maxLen: 120, erkennung: {} }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10, erkennung: {} }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10, erkennung: {} }
+    - { key: ort, label: Ort, typ: text, maxLen: 80, erkennung: {} }
     - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
   register:
     - { key: stammdaten, name: Stammdaten, art: felder, felder: [anrede, titel, vorname, nachname, beziehung, geburtstag, beschreibung] }
