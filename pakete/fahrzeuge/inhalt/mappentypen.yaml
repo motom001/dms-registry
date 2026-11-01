@@ -13,8 +13,9 @@
       typ: auswahl
       pflicht: true
       optionen: [Pkw, Motorrad, Wohnmobil, Anhänger, E-Bike, Sonstige]
-    - { key: kennzeichen, label: Kennzeichen, typ: text, eindeutig: true, maxLen: 20, hilfe: "z. B. MU-ST 123" }
-    - { key: fin, label: Fahrzeug-Identnummer, typ: text, maxLen: 17, muster: "[A-HJ-NPR-Z0-9]{17}", hilfe: 17 Zeichen ohne I, O und Q – steht im Fahrzeugschein unter E }
+    # Für die Erkennung (DMS 0.113): Post mit Kennzeichen oder Fahrzeug-Identnummer gehört zu diesem Fahrzeug.
+    - { key: kennzeichen, label: Kennzeichen, typ: text, eindeutig: true, maxLen: 20, hilfe: "z. B. MU-ST 123", erkennung: { art: nummer, hinweis: "Leerzeichen und Bindestriche zählen nicht: MU-ST 123 = MU ST123" } }
+    - { key: fin, label: Fahrzeug-Identnummer, typ: text, maxLen: 17, muster: "[A-HJ-NPR-Z0-9]{17}", hilfe: "17 Zeichen ohne I, O und Q – steht im Fahrzeugschein unter E", erkennung: { art: nummer } }
     - { key: erstzulassung, label: Erstzulassung, typ: datum }
     - { key: halter, label: Halter, typ: text, maxLen: 120, hilfe: Wer im Fahrzeugschein steht }
     - key: hu_faellig
@@ -42,11 +43,12 @@
   titelVorlage: "{datum} – {fahrzeug} – {werkstatt}"
   felder:
     - { key: fahrzeug, label: Fahrzeug, typ: referenz, ziel: fahrzeug, verweisart: zugehoerigkeit }
-    - { key: werkstatt, label: Werkstatt, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
-    - { key: datum, label: Datum, typ: datum, pflicht: true }
+    # Für die Erkennung: „Aus Dokument ausfüllen“ nimmt Werkstatt, Datum und Betrag aus der Rechnung.
+    - { key: werkstatt, label: Werkstatt, typ: referenz, ziel: "basis:organisation", verweisart: bezug, erkennung: {} }
+    - { key: datum, label: Datum, typ: datum, pflicht: true, erkennung: {} }
     - { key: kilometerstand, label: Kilometerstand, typ: zahl, min: 0, nachkomma: 0 }
     - { key: arbeiten, label: Arbeiten, typ: langtext, hilfe: "z. B. „Inspektion, Bremsbeläge vorn, Ölwechsel“" }
-    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR }
+    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, erkennung: {} }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo die Rechnung auf Papier liegt }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, werkstatt, datum, kilometerstand, arbeiten, betrag, verbleib_original] }

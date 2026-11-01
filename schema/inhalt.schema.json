@@ -18,7 +18,15 @@
         "mehrfach": { "type": "boolean" },
         "ziel": { "$ref": "#/$defs/typverweis" },
         "verweisart": { "enum": ["zugehoerigkeit", "bezug"] },
-        "frist": { "type": "object", "required": ["vorlauf", "einheit"], "properties": { "vorlauf": { "type": "integer", "minimum": 0 }, "einheit": { "enum": ["tage", "wochen", "monate"] }, "wiederholung": { "type": "integer" } } }
+        "frist": { "type": "object", "required": ["vorlauf", "einheit"], "properties": { "vorlauf": { "type": "integer", "minimum": 0 }, "einheit": { "enum": ["tage", "wochen", "monate"] }, "wiederholung": { "type": "integer" } } },
+        "erkennung": {
+          "description": "Für die Erkennung nutzen (DMS ab 0.113.0, #336/#391): {} markiert das Feld; art sagt, was darin steht (fehlt: aus Feldart und Bezeichnung); hinweis ist der Erkennungshinweis.",
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "art": { "enum": ["name", "vorname", "nachname", "funktion", "nummer", "iban", "ustid", "email", "internet", "telefon", "mobil", "fax", "strasse", "hausnummer", "plz", "ort", "datum", "betrag", "verweis", "auswahl"] },
+            "hinweis": { "type": "string", "maxLength": 300 }
+          }
+        }
       },
       "allOf": [
         { "if": { "properties": { "typ": { "const": "auswahl" } } }, "then": { "required": ["optionen"] } },
