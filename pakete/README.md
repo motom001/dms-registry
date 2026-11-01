@@ -9,3 +9,4 @@ Ein Ordner je Paket, benannt nach der Paket-Id. Neue Pakete legst du mit `werkze
 | [haus](haus) | Immobilie, Wartung und Zählerstand – mit Fristen für fällige Wartungen | @motom001 |
 | [fahrzeuge](fahrzeuge) | Fahrzeug und Werkstattrechnung – mit HU-Frist | @motom001 |
 | [vermietung](vermietung) | Mietobjekt, Wohnung, Mietvertrag, Nebenkostenabrechnung und Ausgaben – mit Fristen für Abrechnung, Mieterhöhung und Vertragsende | @motom001 |
+| [trennblatt](trennblatt) | Sammelscan per Barcode-Trennblatt in mehrere Posts teilen, Archivnummer aus dem Aufkleber (mit Code) | @motom001 |
