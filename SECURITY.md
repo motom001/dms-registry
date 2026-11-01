@@ -1,5 +1,7 @@
 # Sicherheit
 
+**Deutsch** · [English](SECURITY.en.md)
+
 Dieses Repository gehört zum DMS ([motom001/dms](https://github.com/motom001/dms)) und enthält: Pakete, Katalog und Prüfwerkzeuge.
 
 ## Eine Sicherheitslücke melden
@@ -18,3 +20,5 @@ Betrifft die Lücke das DMS selbst, melde sie bitte direkt im Repository [motom0
 | Geheimnisse (Tokens, Passwörter) | Secret Scanning mit Push-Schutz | jeder Push |
 
 Die Funde stehen unter **Security** in diesem Repository.
+
+Meldungen auf Deutsch oder Englisch sind willkommen. Bei Abweichungen zwischen deutscher und englischer Fassung gilt die deutsche.
