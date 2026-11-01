@@ -7,11 +7,16 @@ Baut die Katalog-Webseite aus katalog.json und den Paketordnern – Pakete anseh
 Im Ausgabeordner entstehen:
 
     index.html                   Übersicht: Kacheln je Paket, Suche, Filter (Konfiguration / mit Code)
+    en/index.html                dieselbe Übersicht auf Englisch (Umschalter „Deutsch · English“ oben)
     paket/<id>/index.html        Detailseite: README, was angelegt wird, Rechte, Changelog, Versionen
     stil.css, dms.js             Aussehen wie die Handbücher; „In meinem DMS installieren“
 
 Die Adresse des eigenen DMS merkt sich die Seite nur im Browser (localStorage); sie sendet nichts an
 das DMS und speichert keine Zugangsdaten. Der Knopf öffnet <dms>/werkbank/pakete?installieren=<id>@<version>.
+
+Sprachen (#54): Die festen Texte von Übersicht und Seitenrahmen stehen gebündelt in TEXTE (deutsch und englisch).
+Paketseiten und Pakettexte aus den Manifesten bleiben vorerst deutsch (Mehrsprachigkeit: dms #357). Ohne
+JavaScript lesbar: Jede Sprache ist eine eigene erzeugte Seite, der Umschalter ist ein normaler Link.
 
 Braucht: pip install pyyaml markdown
 """
@@ -36,42 +41,121 @@ def md(text: str) -> str:
     return markdown.markdown(text, extensions=['tables', 'fenced_code'], output_format='html')
 
 
-def datum(iso: str) -> str:
+# Feste Texte der Übersicht und des Seitenrahmens, je Sprache an einer Stelle (#54). Werte mit HTML sind als
+# solches markiert (*_html); alle anderen werden beim Einsetzen maskiert. Deutsch ist führend.
+REGISTRY = 'https://github.com/motom001/dms-registry'
+SPRACHEN = {'de': '', 'en': 'en/'}  # Sprache → Ordner ihrer Übersicht (relativ zur Wurzel der Webseite)
+TEXTE = {
+    'de': {
+        'name': 'Deutsch',
+        'sprachwahl': 'Sprache',
+        'marke': 'DMS-Pakete',
+        'beschreibung': 'Pakete für das DMS: fertige Mappentypen und Sichten',
+        'handbuecher': 'Handbücher',
+        'registry': 'Registry',
+        'registry_url': REGISTRY,
+        'dms_adresse': 'DMS-Adresse',
+        'dialog_titel': 'Adresse deines DMS',
+        'dialog_html': 'Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.',
+        'dialog_fehler': 'Bitte eine Adresse mit http:// oder https:// angeben.',
+        'speichern': 'Speichern und öffnen',
+        'abbrechen': 'Abbrechen',
+        'regeln': 'Regeln für Pakete',
+        'regeln_url': f'{REGISTRY}/blob/main/REGELN.md',
+        'titel': 'Pakete für das DMS',
+        'einleitung_html': 'Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">DMS</a> – Open Source und vom DMS-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.',
+        'hinweis_html': '',
+        'suche': 'Paket suchen …',
+        'suche_label': 'Pakete durchsuchen',
+        'art': 'Art',
+        'alle': 'Alle Pakete',
+        'konfiguration': 'Konfiguration',
+        'mit_code': 'Mit Code',
+        'kachel_code': 'mit Code',
+        'keine': 'Kein Paket gefunden.',
+        'stand': 'Stand',
+        'anzahl': ('Paket', 'Pakete'),
+        'datum': '%d.%m.%Y',
+    },
+    'en': {
+        'name': 'English',
+        'sprachwahl': 'Language',
+        'marke': 'DMS packages',
+        'beschreibung': 'Packages for the DMS: ready-made Mappe types and views',
+        'handbuecher': 'Manuals',
+        'registry': 'Registry',
+        'registry_url': f'{REGISTRY}/blob/main/README.en.md',
+        'dms_adresse': 'DMS address',
+        'dialog_titel': 'Address of your DMS',
+        'dialog_html': 'For example <code>https://dms.example.com</code> or <code>http://192.168.1.20:3000</code>. The address stays in this browser only; this page sends nothing to your DMS.',
+        'dialog_fehler': 'Please enter an address starting with http:// or https://.',
+        'speichern': 'Save and open',
+        'abbrechen': 'Cancel',
+        'regeln': 'Rules for packages',
+        'regeln_url': f'{REGISTRY}/blob/main/REGELN.en.md',
+        'titel': 'Packages for the DMS',
+        'einleitung_html': 'Ready-made Mappe types and views for your <a href="https://github.com/motom001/dms">DMS</a> – open source and approved by the DMS project. Install them in the DMS under <strong>Werkbank → Pakete</strong> (Workbench → Packages) or right from here.',
+        'hinweis_html': '<strong>Note:</strong> Package names and descriptions come from the packages themselves and are in German for now, as are the package pages (multilingual package content will follow). Where the German and English wording differ, the German one applies.',
+        'suche': 'Search packages …',
+        'suche_label': 'Search packages',
+        'art': 'Type',
+        'alle': 'All packages',
+        'konfiguration': 'Configuration',
+        'mit_code': 'With code',
+        'kachel_code': 'with code',
+        'keine': 'No package found.',
+        'stand': 'As of',
+        'anzahl': ('package', 'packages'),
+        'datum': '%Y-%m-%d',
+    },
+}
+
+
+def datum(iso: str, sprache: str = 'de') -> str:
     try:
-        return datetime.fromisoformat(iso.replace('Z', '+00:00')).strftime('%d.%m.%Y')
+        return datetime.fromisoformat(iso.replace('Z', '+00:00')).strftime(TEXTE[sprache]['datum'])
     except ValueError:
         return iso
 
 
-def seite(titel: str, inhalt: str, tiefe: int, beschreibung: str = '') -> str:
+def seite(titel: str, inhalt: str, tiefe: int, beschreibung: str = '', sprache: str = 'de', umschalter: bool = False) -> str:
+    """Seitenrahmen. Mit umschalter=True gibt es die Seite in allen SPRACHEN (die Übersicht): Links „Deutsch · English“."""
     vor = '../' * tiefe
+    t = TEXTE[sprache]
+    alternativ = wahl = ''
+    if umschalter:
+        alternativ = ''.join(f'\n  <link rel="alternate" hreflang="{s}" href="{vor}{o}index.html">' for s, o in SPRACHEN.items())
+        wahl = (f'\n  <nav class="sprachen" aria-label="{e(t["sprachwahl"])}">' + ' · '.join(
+            f'<a href="{vor}{o}index.html" lang="{s}" hreflang="{s}"' + (' aria-current="page"' if s == sprache else '') + f'>{e(TEXTE[s]["name"])}</a>'
+            for s, o in SPRACHEN.items()) + '</nav>')
+    start = f'{vor}{SPRACHEN[sprache]}index.html'
     return f'''<!doctype html>
-<html lang="de">
+<html lang="{sprache}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{e(titel)}</title>
-  <meta name="description" content="{e(beschreibung or 'Pakete für das DMS: fertige Mappentypen und Sichten')}">
+  <meta name="description" content="{e(beschreibung or t['beschreibung'])}">{alternativ}
   <link rel="stylesheet" href="{vor}stil.css">
   <script src="{vor}dms.js" defer></script>
 </head>
 <body>
-  <header class="kopf"><a href="{vor}index.html" class="marke">DMS-Pakete</a>
-    <nav><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
-    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <header class="kopf"><a href="{start}" class="marke">{e(t['marke'])}</a>
+    <nav><a href="https://motom001.github.io/dms/">{e(t['handbuecher'])}</a><a href="{t['registry_url']}">{e(t['registry'])}</a>
+    <button type="button" class="textknopf" data-dms-adresse>{e(t['dms_adresse'])}</button></nav>{wahl}</header>
   <main>
 {inhalt}
   </main>
   <dialog id="dms-dialog">
     <form method="dialog" class="stapel">
-      <h2>Adresse deines DMS</h2>
-      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <h2>{e(t['dialog_titel'])}</h2>
+      <p class="leise">{t['dialog_html']}</p>
       <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
-      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
-      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+      <p class="fehler" id="dms-fehler" hidden>{e(t['dialog_fehler'])}</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">{e(t['speichern'])}</button><button value="abbruch" class="textknopf" formnovalidate>{e(t['abbrechen'])}</button></div>
     </form>
   </dialog>
-  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="{vor}katalog.json">katalog.json</a></footer>
+  <footer><a href="{t['regeln_url']}">{e(t['regeln'])}</a> · <a href="{vor}katalog.json">katalog.json</a></footer>
 </body>
 </html>
 '''
@@ -83,16 +167,40 @@ def lies_yaml(ordner: Path, rel: str | None):
     return yaml.safe_load((ordner / rel).read_text(encoding='utf-8')) or []
 
 
-def kachel(p: dict) -> str:
+def kachel(p: dict, sprache: str = 'de') -> str:
     v = p['versionen'][0]
     code = 'code' if v['code'] else 'konfiguration'
     suche = ' '.join([p['id'], p['name'], p['beschreibung'], p['autor']['name']]).lower()
-    return f'''      <a class="kachel" href="paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}">
+    vor = '../' * SPRACHEN[sprache].count('/')
+    # Pakettexte sind deutsch – auch auf der englischen Übersicht als lang="de" ausgezeichnet (Vorlesen, Silbentrennung).
+    de = '' if sprache == 'de' else ' lang="de"'
+    mit_code = f' · {e(TEXTE[sprache]["kachel_code"])}' if v['code'] else ''
+    return f'''      <a class="kachel" href="{vor}paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}">
         <span class="symbol" aria-hidden="true">{e(p['name'][:1].upper())}</span>
-        <span class="name">{e(p['name'])}</span>
-        <span class="text">{e(p['beschreibung'])}</span>
-        <span class="unter">{e(p['aktuell'])} · {e(p['autor']['name'])}{' · mit Code' if v['code'] else ''}</span>
+        <span class="name"{de}>{e(p['name'])}</span>
+        <span class="text"{de}>{e(p['beschreibung'])}</span>
+        <span class="unter">{e(p['aktuell'])} · {e(p['autor']['name'])}{mit_code}</span>
       </a>'''
+
+
+def uebersicht(katalog: dict, pakete: list, sprache: str) -> str:
+    """Startseite (Übersicht) in einer Sprache; Texte aus TEXTE."""
+    t = TEXTE[sprache]
+    kacheln = '\n'.join(kachel(p, sprache) for p in pakete)
+    hinweis = f'\n    <p class="hinweis">{t["hinweis_html"]}</p>' if t['hinweis_html'] else ''
+    inhalt = f'''    <h1>{e(t['titel'])}</h1>
+    <p class="leise">{t['einleitung_html']}</p>{hinweis}
+    <div class="werkzeuge">
+      <input type="search" id="suche" placeholder="{e(t['suche'])}" aria-label="{e(t['suche_label'])}">
+      <select id="art" aria-label="{e(t['art'])}"><option value="">{e(t['alle'])}</option><option value="konfiguration">{e(t['konfiguration'])}</option><option value="code">{e(t['mit_code'])}</option></select>
+    </div>
+    <div class="kacheln">
+{kacheln}
+    </div>
+    <p id="keine" class="leerhinweis" {'hidden' if pakete else ''}>{e(t['keine'])}</p>
+    <p class="leise">{e(t['stand'])}: {datum(katalog.get('erstellt', ''), sprache)} · {len(pakete)} {e(t['anzahl'][0 if len(pakete) == 1 else 1])}</p>
+'''
+    return seite(t['marke'], inhalt, SPRACHEN[sprache].count('/'), sprache=sprache, umschalter=True)
 
 
 # Wie im DMS (shared/src/pakete.ts, #449): dieselben Formulierungen in der Rechte-Vorschau vor der Installation.
@@ -216,6 +324,9 @@ a { color: var(--a); }
 .kopf { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; max-width: 980px; margin: 0 auto; padding: 14px 16px; }
 .kopf nav { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
 .marke { font-weight: 700; font-size: 1.1rem; color: var(--tinte); text-decoration: none; }
+.sprachen { flex-basis: 100%; color: var(--leise); font-size: .92rem; }
+.sprachen a[aria-current] { color: var(--tinte); font-weight: 600; text-decoration: none; }
+.hinweis { background: var(--flaeche); border: 1px solid var(--linie); border-left: 4px solid var(--a); border-radius: 8px; padding: 10px 14px; }
 main { max-width: 980px; margin: 0 auto; padding: 16px 16px 40px; }
 h1 { font-size: 1.9rem; margin: 0 0 4px; }
 .leise { color: var(--leise); }
@@ -308,20 +419,9 @@ def main():
     ausgabe = Path(sys.argv[1]).resolve()
     katalog = json.loads((ausgabe / 'katalog.json').read_text(encoding='utf-8'))
     pakete = sorted(katalog['pakete'], key=lambda p: p['name'].lower())
-    kacheln = '\n'.join(kachel(p) for p in pakete)
-    index = f'''    <h1>Pakete für das DMS</h1>
-    <p class="leise">Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">DMS</a> – Open Source und vom DMS-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.</p>
-    <div class="werkzeuge">
-      <input type="search" id="suche" placeholder="Paket suchen …" aria-label="Pakete durchsuchen">
-      <select id="art" aria-label="Art"><option value="">Alle Pakete</option><option value="konfiguration">Konfiguration</option><option value="code">Mit Code</option></select>
-    </div>
-    <div class="kacheln">
-{kacheln}
-    </div>
-    <p id="keine" class="leerhinweis" {'hidden' if pakete else ''}>Kein Paket gefunden.</p>
-    <p class="leise">Stand: {datum(katalog.get('erstellt', ''))} · {len(pakete)} {'Paket' if len(pakete) == 1 else 'Pakete'}</p>
-'''
-    (ausgabe / 'index.html').write_text(seite('DMS-Pakete', index, 0), encoding='utf-8')
+    for sprache, ordner in SPRACHEN.items():
+        (ausgabe / ordner).mkdir(parents=True, exist_ok=True)
+        (ausgabe / ordner / 'index.html').write_text(uebersicht(katalog, pakete, sprache), encoding='utf-8')
     for p in pakete:
         ziel = ausgabe / 'paket' / p['id']
         ziel.mkdir(parents=True, exist_ok=True)
