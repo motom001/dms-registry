@@ -9,3 +9,5 @@
 7. **Pflege:** Trage dich in `.github/CODEOWNERS` für dein Paket ein. Du kümmerst dich um Fehler und neue DMS-Versionen; der Maintainer gibt frei und mergt.
 
 Fragen gern im Issue. Wie die Arbeit am DMS selbst läuft, steht im [Entwicklerhandbuch](https://motom001.github.io/dms/entwickler/aktuell/).
+
+Für den Umgang miteinander gilt unser [Verhaltenskodex](CODE_OF_CONDUCT.md).
