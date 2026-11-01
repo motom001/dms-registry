@@ -22,6 +22,20 @@ jobs:
       - run: pip install --quiet pyyaml jsonschema markdown
       - name: Tests der Prüfung
         run: python3 -m unittest werkzeuge/test_pruefen.py
+      # Pakete mit Code: aus dem Quellcode bauen (WASI-SDK und Bibliotheken bleiben im Cache), danach prüft
+      # pruefen.py das Modul gegen die DMS-Paket-ABI.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/dms-registry
+          key: wasm-${{ hashFiles('werkzeuge/wasi-sdk.sh', 'pakete/*/code/bauen.sh') }}
+          restore-keys: wasm-
+      - name: Pakete mit Code bauen
+        run: |
+          if [ "${{ github.event_name }}" = pull_request ]; then
+            python3 werkzeuge/bauen.py --geaendert origin/${{ github.base_ref }}
+          else
+            python3 werkzeuge/bauen.py --alle
+          fi
       - name: Vorlage und Pakete prüfen
         run: |
           basis=""
@@ -33,7 +47,7 @@ jobs:
           python3 werkzeuge/katalog.py --probe site
       - name: Webseite lässt sich bauen
         run: |
-          mkdir -p /tmp/probe && python3 werkzeuge/katalog.py /tmp/probe && python3 werkzeuge/webseite.py /tmp/probe
+          mkdir -p /tmp/probe && python3 werkzeuge/katalog.py --ohne-bau /tmp/probe && python3 werkzeuge/webseite.py /tmp/probe
       - name: Neues Paket aus der Vorlage lässt sich anlegen
         run: |
           werkzeuge/neues-paket.sh probe_paket "Probe"

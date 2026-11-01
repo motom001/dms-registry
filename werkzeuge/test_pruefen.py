@@ -144,3 +144,54 @@ class Inhalt(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def _leb(n: int) -> bytes:
+    b = bytearray()
+    while True:
+        x = n & 0x7f; n >>= 7
+        b.append(x | (0x80 if n else 0))
+        if not n:
+            return bytes(b)
+
+
+def _name(t: str) -> bytes:
+    return _leb(len(t.encode())) + t.encode()
+
+
+def _modul(importe, exporte) -> bytes:
+    """Kleines Modul nur mit Import- und Exportabschnitt (für wasm.pruefe)."""
+    imp = _leb(len(importe))
+    for modul, name, art in importe:
+        imp += _name(modul) + _name(name) + {'function': b'\x00\x00', 'memory': b'\x02\x00\x01'}[art]
+    exp = _leb(len(exporte))
+    for name in exporte:
+        exp += _name(name) + b'\x00\x00'
+    return b'\0asm\x01\0\0\0' + b'\x02' + _leb(len(imp)) + imp + b'\x07' + _leb(len(exp)) + exp
+
+
+class Modul(unittest.TestCase):
+    def test_abi(self):
+        import wasm
+        gut = _modul([('env', 'memory', 'memory'), ('dms', 'log', 'function'), ('wasi_snapshot_preview1', 'fd_write', 'function')], ['dms_puffer', 'dms_ereignis'])
+        self.assertEqual(wasm.pruefe(gut), [])
+        self.assertTrue(any('unbekannte Importe env.system' in f for f in wasm.pruefe(_modul([('env', 'memory', 'memory'), ('env', 'system', 'function')], ['dms_puffer', 'dms_ereignis']))))
+        self.assertTrue(any('importiert keinen Speicher' in f for f in wasm.pruefe(_modul([('dms', 'log', 'function')], ['dms_puffer', 'dms_ereignis']))))
+        self.assertTrue(any('dms_ereignis fehlt' in f for f in wasm.pruefe(_modul([('env', 'memory', 'memory')], ['dms_puffer']))))
+        self.assertTrue(any('kein WebAssembly' in f for f in wasm.pruefe(b'kein wasm')))
+
+    def test_bauen_sh_pflicht(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m['code'] = {'sprache': 'c', 'quelle': 'code/', 'rechte': {}}
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            (ziel / 'code' / 'a.c').write_text('int x;\n', encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            self.assertEqual(pruefen.pruefe(ziel, None), [])
+            (ziel / 'code' / 'bauen.sh').unlink()
+            self.assertTrue(any('bauen.sh fehlt' in f for f in pruefen.pruefe(ziel, None)))
+            (ziel / 'code' / 'modul.wasm').write_bytes(b'kein wasm')
+            self.assertTrue(any('kein WebAssembly' in f for f in pruefen.pruefe(ziel, None)))
