@@ -58,6 +58,26 @@ Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versich
 
 Sample Mappen may refer to each other (from DMS 0.79.0): a sample gets a `schluessel`, a reference field of another sample gets the value `{ beispiel: strom }` – or `{ beispiel: "basis:stadtwerke" }` for a sample from a dependency. The manifest must then contain `dms: ">=0.79.0"`.
 
+## Fields for recognition
+
+The DMS recognises incoming post and fills Mappen from documents (DMS #336, #391) – without AI, using patterns and matching against existing Mappen. Which fields it uses for this is stated by the package with the field property `erkennung`:
+
+```yaml
+- key: kundennummer
+  label: Kundennummer
+  typ: text
+  erkennung: { art: nummer, hinweis: "Steht meist oben rechts im Brief" }
+- { key: email, label: E-Mail, typ: text, erkennung: {} }   # art follows from the label
+```
+
+- **Mark what clearly assigns a letter:** customer, contract, policy or file numbers, licence plates, IBAN, VAT id, e-mail address, website, phone, name. If a type has marked names or contact details (`name`, `iban`, `ustid`, `email`, `internet`, `telefon`, `mobil`, `fax`), it counts as a possible **sender** (organisation, person); if it only marks numbers, as a possible **target Mappe**.
+- **Mark what "Fill from document" should fill:** date, amount, address, first/last name, role, references (e.g. the garage of an invoice). If a type has marked fields, the DMS fills only these.
+- **Do not mark** what appears in other people's letters all the time and assigns nothing – e.g. the IBAN of your own account (it is in every direct debit) or a number many Mappen share.
+- Only for the field types `text`, `langtext`, `zahl`, `betrag`, `datum`, `auswahl` and `referenz`; never for `passwort`. `art` (optional) must match the field type: `name`, `vorname`, `nachname`, `funktion`, `nummer`, `iban`, `ustid`, `email`, `internet`, `telefon`, `mobil`, `fax`, `strasse`, `hausnummer`, `plz`, `ort` for text; `nummer`, `plz`, `hausnummer`, `betrag` for numbers; `datum`, `betrag`, `auswahl`, `verweis` for the field type of the same name. `hinweis` has at most 300 characters; a pattern after the word *Muster* (`#` = digit, `A` = capital letter, e.g. "Muster 100-####") is searched for specifically.
+- If you use `erkennung`, write `dms: ">=0.113.0"` in the manifest. A package update applies the marking to installed fields where the administrator has not set anything for recognition; that is a patch version (with new fields a minor version).
+
+`werkzeuge/pruefen.py` checks field type, `art` and DMS version.
+
 ## Orphaned packages
 
 If the maintainer of a package does not respond to bugs or necessary adjustments for three months, the package is marked as *orphaned* and can be taken over by someone else.
