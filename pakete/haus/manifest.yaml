@@ -2,12 +2,12 @@
 schema: 1
 id: haus
 name: Haus
-version: 1.0.1
+version: 1.0.2
 beschreibung: Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.
 autor:
   name: Thomas Meissner
   github: motom001
-lizenz: MIT
+lizenz: Apache-2.0
 # 0.75.0: Verweise auf den Ablageort des DMS (dms:ablageort); 0.79.0: Verweise zwischen Beispielen
 dms: ">=0.79.0"
 abhaengigkeiten:

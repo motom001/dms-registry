@@ -93,4 +93,4 @@ Ein **Feld** hat `schluessel`, `name`, `typ` und optional `hilfe`, `pflicht`, `s
 
 ## Lizenz
 
-Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen unter der [Apache-2.0](LICENSE) (bis 01.11.2026: AGPL-3.0, siehe [NOTICE](NOTICE)). **Jedes Paket hat seine eigene Lizenz** in seinem Ordner – erlaubt sind die Lizenzen aus [REGELN.md](REGELN.md).
+Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen unter der [Apache-2.0](LICENSE) (bis 01.11.2026: AGPL-3.0, siehe [NOTICE](NOTICE)). **Jedes Paket hat seine eigene Lizenz** in seinem Ordner – erlaubt sind die Lizenzen aus [REGELN.md](REGELN.md). Die Pakete, die wir selbst (motom001) veröffentlichen, stehen unter **Apache-2.0**.
