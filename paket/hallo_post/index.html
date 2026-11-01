@@ -18,12 +18,12 @@
       <span class="symbol gross" aria-hidden="true">H</span>
       <div><h1>Hallo Post</h1><p class="leise">Beispiel für Pakete mit Code – zählt neue Post und meldet die Zahl auf Knopfdruck. Zum Ausprobieren und als Vorlage für eigene Pakete.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="hallo_post@1.0.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="hallo_post@1.0.1">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/hallo_post">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.0.0 vom 01.11.2026</dd>
+      <dt>Version</dt><dd>1.0.1 vom 01.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
-      <dt>Lizenz</dt><dd>MIT</dd>
+      <dt>Lizenz</dt><dd>Apache-2.0</dd>
       <dt>Nötige DMS-Version</dt><dd>&gt;=0.88.0</dd>
       <dt>Abhängigkeiten</dt><dd>keine</dd>
     </dl>
@@ -49,12 +49,16 @@
 <p>Der Code steht in <a href="code/hallo.c"><code>code/hallo.c</code></a>, gebaut wird er mit <a href="code/bauen.sh"><code>code/bauen.sh</code></a> (WASI-SDK, Clang). Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/">Pakete mit Code</a>. Lokal bauen:</p>
 <pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/hallo_post
 </code></pre></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.1</h3>
+<ul>
+<li>Lizenz: ab dieser Version <strong>Apache-2.0</strong> (vorher MIT), wie alle Pakete von motom001. Inhalt unverändert.</li>
+</ul>
+<h3>1.0.0</h3>
 <ul>
 <li>Erste Fassung: zählt neue Post, Aktion „Wie viel Post kam bisher?“.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/hallo_post-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="hallo_post@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.1</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/hallo_post-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="hallo_post@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/hallo_post-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="hallo_post@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>
