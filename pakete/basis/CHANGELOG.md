@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.1
+
+- Lizenz: ab dieser Version **Apache-2.0** (vorher MIT), wie alle Pakete von motom001. Inhalt unverändert.
+
 ## 1.1.0
 
 - Neu: Mappentyp **Niederlassung** (Filiale, Zweigstelle, Praxis, Außenstelle einer Organisation) mit eigener Anschrift, Kontakt und Ansprechpartnern.

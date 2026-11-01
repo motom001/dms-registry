@@ -2,12 +2,12 @@
 schema: 1
 id: hallo_post
 name: Hallo Post
-version: 1.0.0
+version: 1.0.1
 beschreibung: Beispiel für Pakete mit Code – zählt neue Post und meldet die Zahl auf Knopfdruck. Zum Ausprobieren und als Vorlage für eigene Pakete.
 autor:
   name: Thomas Meissner
   github: motom001
-lizenz: MIT
+lizenz: Apache-2.0
 # 0.88.0: Paket-Läufer (Pakete mit Code)
 dms: ">=0.88.0"
 inhalt: {}
