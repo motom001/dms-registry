@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-01T10:55:37Z",
+  "erstellt": "2026-11-01T12:28:11Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -235,6 +235,37 @@
       },
       "lizenz": "MIT",
       "aktuell": "1.0.1"
+    },
+    {
+      "id": "hallo_post",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.88.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/hallo_post-1.0.0.zip",
+          "sha256": "0817ccd11d9634f309aedd46a8c81d7b2cf314d3f5f48252a525e7e5d56dd87c",
+          "groesse": 16271,
+          "veroeffentlicht": "2026-11-01T12:28:11Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/hallo_post",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/hallo_post/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/hallo_post/CHANGELOG.md"
+        }
+      ],
+      "name": "Hallo Post",
+      "beschreibung": "Beispiel für Pakete mit Code – zählt neue Post und meldet die Zahl auf Knopfdruck. Zum Ausprobieren und als Vorlage für eigene Pakete.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "MIT",
+      "aktuell": "1.0.0"
     },
     {
       "id": "haus",
@@ -639,6 +670,37 @@
       },
       "lizenz": "MIT",
       "aktuell": "1.0.1"
+    },
+    {
+      "id": "texterkennung",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.88.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung-1.0.0.zip",
+          "sha256": "5c66db6c099cb67a067437208773d0c294a4ceb98d20a6b2de19d55bda78a83a",
+          "groesse": 3800050,
+          "veroeffentlicht": "2026-11-01T12:28:11Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung",
+      "beschreibung": "Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0"
     },
     {
       "id": "vermietung",

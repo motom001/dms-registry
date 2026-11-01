@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hallo Post – DMS-Pakete</title>
+  <meta name="description" content="Beispiel für Pakete mit Code – zählt neue Post und meldet die Zahl auf Knopfdruck. Zum Ausprobieren und als Vorlage für eigene Pakete.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">H</span>
+      <div><h1>Hallo Post</h1><p class="leise">Beispiel für Pakete mit Code – zählt neue Post und meldet die Zahl auf Knopfdruck. Zum Ausprobieren und als Vorlage für eigene Pakete.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="hallo_post@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/hallo_post">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 01.11.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>MIT</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.88.0</dd>
+      <dt>Abhängigkeiten</dt><dd>keine</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><ul></ul>
+      <h3>Sichten</h3><ul></ul>
+      <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netz</h2><ul><li>sieht keine Dokumente</li><li>verbindet sich mit keiner Adresse im Internet</li><li>reagiert auf <code>post.angelegt</code></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p><strong>Hallo Post</strong> ist das kleinste Beispiel für ein Paket mit Code: Es zählt jede neue Post und nennt die Zahl, wenn du in <strong>Werkbank → Pakete → Hallo Post → Einstellungen</strong> auf <strong>Wie viel Post kam bisher?</strong> klickst. Im Alltag brauchst du es nicht – es zeigt, wie der <strong>Paket-Läufer</strong> des DMS arbeitet, und dient als Vorlage für eigene Pakete.</p>
+<h3>Was das Paket darf</h3>
+<ul>
+<li>Es reagiert auf <strong>neue Post</strong> und bekommt dabei nur die Id der Post und den Kanal.</li>
+<li>Es liest und ändert <strong>keine Mappen und keine Dokumente</strong> und hat <strong>kein Netz</strong>.</li>
+<li>Es merkt sich nur eine Zahl im eigenen Speicher des Pakets.</li>
+</ul>
+<p>Bei der Installation zeigt das DMS genau das und lässt es dich bestätigen.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS <strong>0.88.0</strong> oder neuer (Paket-Läufer).</li>
+</ul>
+<h3>Für Entwickler</h3>
+<p>Der Code steht in <a href="code/hallo.c"><code>code/hallo.c</code></a>, gebaut wird er mit <a href="code/bauen.sh"><code>code/bauen.sh</code></a> (WASI-SDK, Clang). Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/">Pakete mit Code</a>. Lokal bauen:</p>
+<pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/hallo_post
+</code></pre></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: zählt neue Post, Aktion „Wie viel Post kam bisher?“.</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/hallo_post-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="hallo_post@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Texterkennung – DMS-Pakete</title>
+  <meta name="description" content="Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">T</span>
+      <div><h1>Texterkennung</h1><p class="leise">Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="texterkennung@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 01.11.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>Apache-2.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.88.0</dd>
+      <dt>Abhängigkeiten</dt><dd>keine</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><ul></ul>
+      <h3>Sichten</h3><ul></ul>
+      <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netz</h2><ul><li>darf Mappen vom Typ <code>*</code> lesen</li><li>darf Dokumente lesen und ändern</li><li>verbindet sich mit keiner Adresse im Internet</li><li>reagiert auf <code>dokument.hochgeladen</code>, <code>texterkennung.fertig</code></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Das Paket <strong>Texterkennung</strong> erkennt Text in gescannten PDFs und Bildern und schreibt ihn als <strong>Volltext</strong> ins DMS – damit findet die Suche auch Wörter aus Scans. Es nutzt <a href="https://github.com/tesseract-ocr/tesseract">Tesseract</a> 5.5.1 als WebAssembly und läuft im <strong>Paket-Läufer</strong> des DMS: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit.</p>
+<p>Das DMS hat schon eine eingebaute Texterkennung, und die bleibt: Sie ist schneller. Dieses Paket ist das <strong>Referenzpaket für Pakete mit Code</strong> – es zeigt, dass auch eine rechenintensive Aufgabe sicher als Paket läuft – und hilft, wo die eingebaute Erkennung keinen Text findet.</p>
+<h3>Was das Paket darf</h3>
+<p>Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Mappen lesen: alle Mappentypen</strong> – Dokumente liegen in Mappen beliebiger Typen; die Mappe selbst liest das Paket nur, wenn du unter „Nur diese Mappentypen“ etwas einträgst.</li>
+<li><strong>Dokumente schreiben</strong> – es holt Seiten als Graustufenbild und setzt den Volltext. Dateien ändert oder löscht es nicht.</li>
+<li><strong>Kein Netz.</strong> Die Sprachdaten liegen im Paket.</li>
+<li>Es reagiert auf <strong>Dokument hochgeladen</strong> und <strong>Texterkennung fertig</strong>.</li>
+</ul>
+<p>Den Volltext eines Pakets erkennst du an der Historie („Volltext von einem Paket“) und am Hinweis „Texterkennung durch Paket Texterkennung 1.0.0“ am Dokument. Die eingebaute Texterkennung überschreibt ihn nicht.</p>
+<h3>Einstellungen</h3>
+<p>Unter <strong>Werkbank → Pakete → Texterkennung → Einstellungen</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Standard</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sprache</td>
+<td>Deutsch</td>
+<td>Deutsch, Englisch oder beide (je Seite die sicherere Erkennung; dauert doppelt so lang)</td>
+</tr>
+<tr>
+<td>Nur Dokumente ohne Text</td>
+<td>Ja</td>
+<td>Ja: Das Paket wartet auf die Texterkennung des DMS und erkennt nur, wenn sie keinen Text fand. Nein: Es erkennt jedes neue PDF und Bild und ersetzt den Volltext.</td>
+</tr>
+<tr>
+<td>Höchstens so viele Seiten</td>
+<td>30</td>
+<td>Längere Dokumente erkennt es bis zu dieser Seite; die Übersicht meldet „Grenze erreicht“.</td>
+</tr>
+<tr>
+<td>Auflösung (dpi)</td>
+<td>300</td>
+<td>150–400; höher erkennt kleine Schrift besser, braucht aber mehr Zeit und Speicher.</td>
+</tr>
+<tr>
+<td>Nur diese Mappentypen</td>
+<td>leer (alle)</td>
+<td>Dokumente nur in Mappen dieser Typen</td>
+</tr>
+</tbody>
+</table>
+<h3>Messung</h3>
+<p>Brief mit gemischtem Text, A4 quer gescannt mit 300 dpi; DMS 0.88.0 mit Standardgrenzen des Läufers (256 MB, 120 s). Gemessen auf amd64 (2 Kerne):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Paket (WebAssembly)</th>
+<th>eingebaute Texterkennung (Tesseract nativ, ein Thread)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10 Seiten</td>
+<td>14,3 s</td>
+<td>6,5 s</td>
+</tr>
+<tr>
+<td>Speicher je Aufruf</td>
+<td>etwa 30 MB</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<p>Das Paket ist also gut doppelt so langsam wie die eingebaute Erkennung; bei den Standardgrenzen schafft ein Aufruf rund 80 Seiten. Eine Messung auf arm64 folgt.</p>
+<h3>Grenzen</h3>
+<ul>
+<li>Ein Dokument mit mehr Seiten als eingestellt wird nur bis zu dieser Seite erkannt.</li>
+<li>Dauert ein Aufruf länger als die Zeitgrenze des Läufers (2 Minuten), bricht das DMS ihn ab, versucht es später erneut (1, 5, 30, 120, 360 Minuten) und zeigt das unter <strong>Werkbank → Pakete → Texterkennung → Paket-Läufer</strong>. Dann die Seitenzahl oder Auflösung senken.</li>
+<li>Office-Dateien und E-Mails erkennt es nicht – nur PDFs und Bilder.</li>
+</ul>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS <strong>0.88.0</strong> oder neuer (Paket-Läufer, Volltext schreiben, Seite als Graustufenbild).</li>
+</ul>
+<h3>Für Entwickler</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/texterkennung.cpp"><code>code/texterkennung.cpp</code></a></td>
+<td>das Modul (DMS-Paket-ABI 1): Ereignis → Seiten über die API → Tesseract → Volltext</td>
+</tr>
+<tr>
+<td><a href="code/json.h"><code>code/json.h</code></a></td>
+<td>kleiner JSON-Leser ohne Ausnahmen</td>
+</tr>
+<tr>
+<td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
+<td>Bau: Leptonica 1.85.0 und Tesseract 5.5.1 aus den Quellen (feste Commits), Sprachdaten aus tessdata_fast (feste Prüfsummen)</td>
+</tr>
+<tr>
+<td><a href="code/wasi-compat.c"><code>code/wasi-compat.c</code></a>, <a href="code/wasi-thread-shim.h"><code>code/wasi-thread-shim.h</code></a>, <a href="code/stub/"><code>code/stub/</code></a></td>
+<td>was WASI nicht hat (Threads, temporäre Dateien, C++-Ausnahmen)</td>
+</tr>
+<tr>
+<td><a href="code/lizenzen/"><code>code/lizenzen/</code></a></td>
+<td>Lizenzen von Leptonica und Herkunft der Sprachdaten</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/texterkennung   # beim ersten Mal einige Minuten
+</code></pre>
+<p>Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/">Pakete mit Code</a>.</p>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>). Im Modul stecken Tesseract (Apache-2.0) und Leptonica (BSD-artig, Text in <a href="code/lizenzen/leptonica.txt"><code>code/lizenzen/leptonica.txt</code></a>); die Sprachdaten stammen aus <a href="https://github.com/tesseract-ocr/tessdata_fast">tessdata_fast</a> (Apache-2.0).</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: Tesseract 5.5.1 und Leptonica 1.85.0 als WebAssembly, Sprachen Deutsch und Englisch (tessdata_fast), Einstellungen für Sprache, „Nur Dokumente ohne Text“, Seitenzahl, Auflösung und Mappentypen.</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/texterkennung-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="texterkennung@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>
