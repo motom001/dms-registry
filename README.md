@@ -17,7 +17,7 @@ Im DMS installierst du Pakete unter **Werkbank → Pakete**. Die Paketverwaltung
 pakete/<paket>/        ein Ordner je Paket, Name = Paket-Id
 vorlage/               Vorlage für ein neues Paket – kopieren und loslegen
 schema/                JSON-Schemas für manifest.yaml und die Inhalte
-werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, webseite.py (laufen auch in der CI)
+werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, webseite.py, sammeldatei.py (laufen auch in der CI)
 REGELN.md              was erlaubt ist, was nicht, welche Lizenzen
 CONTRIBUTING.md        wie ein Paket hierher kommt
 *.en.md                englische Fassungen von README, REGELN, CONTRIBUTING, SECURITY
@@ -43,6 +43,8 @@ Bei jedem Merge auf `main` baut die CI den **Katalog** und legt ihn auf den Bran
 - `…/gh-pages/archive/<id>-<version>.zip` – je Paketversion ein Archiv mit genau den Dateien des Paketordners (ohne Ordner davor)
 
 Auf demselben Branch liegt die **Katalog-Webseite** (`werkzeuge/webseite.py`): Pakete ansehen wie im App Store – Übersicht mit Suche und Filter, je Paket eine Seite mit Beschreibung, was angelegt wird, Rechten, Änderungen und älteren Versionen. **„In meinem DMS installieren“** fragt beim ersten Mal nach der Adresse deines DMS (nur im Browser gemerkt, änderbar) und öffnet dort `/werkbank/pakete?installieren=<id>@<version>`; installiert wird erst nach deiner Bestätigung im DMS. Die Webseite sendet nichts an dein DMS. Die Übersicht gibt es deutsch und englisch (`en/index.html`, oben der Umschalter „Deutsch · English“, auch ohne JavaScript); Paketseiten und Paketbeschreibungen bleiben vorerst deutsch.
+
+**Pakete ohne Internet** (`sammeldatei.html`, motom001/dms#461): Pakete ankreuzen, DMS-Version wählen (Vorgabe: die neueste; aus dem DMS kommt der Link mit `?dms=<version>`), Abhängigkeiten kommen automatisch mit. Der Browser lädt die Archive, prüft jedes gegen SHA-256 und Größe aus `katalog.json` und packt sie mit dem Verzeichnis `sammeldatei.json` (Format: [`schema/sammeldatei.schema.json`](schema/sammeldatei.schema.json)) in **eine Sammeldatei** – nichts wird hochgeladen. Das DMS prüft beim Hochladen jedes Archiv gegen Größe und Prüfsumme im Verzeichnis (und gegen den offiziellen Katalog, wenn es ihn schon abgerufen hat), lehnt fremde Dateien ab und installiert dann Paket für Paket mit Bestätigung je Paket. `werkzeuge/sammeldatei.py` erzeugt dieselbe Datei auf der Kommandozeile und prüft eine Sammeldatei wie das DMS (`--pruefen <datei> [--katalog katalog.json]`).
 
 Mit GitHub Pages (Quelle: Branch `gh-pages`) ist die Webseite unter **`https://motom001.github.io/dms-registry/`** erreichbar, der Katalog dann auch unter `…/katalog.json`.
 

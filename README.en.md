@@ -19,7 +19,7 @@ In the DMS you install packages under **Werkbank → Pakete**. Package managemen
 pakete/<paket>/        one folder per package, name = package id
 vorlage/               template for a new package – copy it and get started
 schema/                JSON schemas for manifest.yaml and the contents
-werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, webseite.py (also run in the CI)
+werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, webseite.py, sammeldatei.py (also run in the CI)
 REGELN.md              what is allowed, what is not, which licences (English: REGELN.en.md)
 CONTRIBUTING.md        how a package gets here (English: CONTRIBUTING.en.md)
 ```
@@ -46,6 +46,8 @@ With every merge to `main`, the CI builds the **catalogue** and puts it on the b
 - `…/gh-pages/archive/<id>-<version>.zip` – one archive per package version containing exactly the files of the package folder (without a folder in front)
 
 The same branch holds the **catalogue website** (`werkzeuge/webseite.py`): browse packages like in an app store – an overview with search and filters, and one page per package with description, what gets created, permissions, changes and older versions. **"In meinem DMS installieren"** (install in my DMS) asks for the address of your DMS the first time (remembered only in your browser, changeable) and opens `/werkbank/pakete?installieren=<id>@<version>` there; nothing is installed until you confirm it in the DMS. The website sends nothing to your DMS. The overview is available in German and English (`en/index.html`, switch "Deutsch · English" at the top, works without JavaScript); package pages and package descriptions are in German for now.
+
+**Packages without internet** (`sammeldatei.html`, motom001/dms#461; page in German for now): tick packages, choose the DMS version (default: the newest; the DMS links here with `?dms=<version>`), dependencies are added automatically. The browser downloads the archives, checks each against SHA-256 and size from `katalog.json` and packs them together with the index `sammeldatei.json` (format: [`schema/sammeldatei.schema.json`](schema/sammeldatei.schema.json)) into **one bundle file** – nothing is uploaded. When uploading, the DMS checks every archive against size and checksum in the index (and against the official catalogue if it has already fetched it), rejects unknown files and then installs package by package with a confirmation for each. `werkzeuge/sammeldatei.py` creates the same file on the command line and checks a bundle the way the DMS does (`--pruefen <file> [--katalog katalog.json]`).
 
 With GitHub Pages (source: branch `gh-pages`), the website is available at **`https://motom001.github.io/dms-registry/`**, and the catalogue also at `…/katalog.json`.
 
