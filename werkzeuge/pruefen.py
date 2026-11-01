@@ -68,6 +68,44 @@ def dms_fehler(v: str, wo: str) -> str | None:
     return f'{wo}: Mappentyp „{v}“ bringt das DMS nicht mit (erlaubt: ' + ', '.join(f'dms:{t}' for t in sorted(DMS_TYPEN)) + ')'
 
 
+# Mappentypen des DMS, die code.rechte nennen darf (DMS #435): ablageort, rolle und – nur hier, nicht in
+# Verweisen – post (ab DMS 0.94.0). dms:benutzer ist verboten: Pakete sehen keine Benutzer.
+DMS_RECHTE_TYPEN = {'ablageort', 'rolle', 'post'}
+DMS_POST_RECHT_AB = (0, 94, 0)
+
+
+def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
+    """Kleinste DMS-Version, die ein Bereich wie „>=0.94.0“ oder „^0.94.0 <1.0.0“ zulässt; None bei „<“ allein."""
+    t = re.match(r'^(>=|>|=|\^|~)?(\d+)\.(\d+)\.(\d+)', str(bereich or '').strip())
+    if not t:
+        return None
+    v = tuple(int(x) for x in t.group(2, 3, 4))
+    return (v[0], v[1], v[2] + 1) if t.group(1) == '>' else v
+
+
+def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
+    """code.rechte: Kennungen dms:<…> (das Schema prüft nur die Form)."""
+    rechte = code.get('rechte') if isinstance(code.get('rechte'), dict) else {}
+    fehler: list[str] = []
+    post = False
+    for art in ('lesen', 'schreiben'):
+        for v in rechte.get(art) or []:
+            if not isinstance(v, str) or not v.startswith('dms:'):
+                continue
+            k = v.split(':', 1)[1]
+            if k == 'benutzer':
+                fehler.append(f'code.rechte.{art}: dms:benutzer ist für Pakete nicht erlaubt – Pakete sehen keine Benutzer')
+            elif k not in DMS_RECHTE_TYPEN:
+                fehler.append(f'code.rechte.{art}: Mappentyp „{v}“ bringt das DMS nicht mit (erlaubt: ' + ', '.join(f'dms:{t}' for t in sorted(DMS_RECHTE_TYPEN)) + ')')
+            elif k == 'post':
+                post = True
+    if post:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_POST_RECHT_AB:
+            fehler.append('code.rechte: dms:post kennt das DMS erst ab 0.94.0 – bitte dms: ">=0.94.0" angeben')
+    return fehler
+
+
 def beispiel_verweise(werte: dict) -> list[str]:
     """Verweise auf andere Beispiele in den Werten (#347 im DMS): { beispiel: x } oder Listen davon."""
     erg = []
@@ -321,6 +359,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
 
     if isinstance(m.get('code'), dict):
         fehler += pruefe_einstellungen(m['code'], str(m.get('id')), typen, abh)
+        fehler += pruefe_rechte(m['code'], str(m.get('dms', '')))
     if 'code' in m:
         quelle = ordner / str(m['code'].get('quelle', ''))
         if not quelle.is_dir() or not any(p.is_file() and p.name != 'README.md' for p in quelle.rglob('*')):

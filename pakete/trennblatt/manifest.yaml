@@ -2,24 +2,25 @@
 schema: 1
 id: trennblatt
 name: Trennblatt
-version: 1.0.0
+version: 1.0.1
 beschreibung: Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
 # 0.88.0: Paket-Läufer, Seite als Graustufenbild, PDF teilen per API (Post teilen), Archivnummer per API
-dms: ">=0.88.0"
+# 0.94.0: Recht nur für Post (dms:post in code.rechte)
+dms: ">=0.94.0"
 inhalt: {}
 code:
   sprache: c
   quelle: code/
   ereignisse: [dokument.hochgeladen]
   rechte:
-    # Post ist ein Mappentyp des DMS, den code.rechte nur über „*“ erreicht. Das Paket liest nur die Post,
-    # in die das Dokument hochgeladen wurde, und legt nur Posts an (beim Teilen).
-    lesen: ["*"]
-    schreiben: ["*"]
+    # Nur Post (dms:post, DMS #435): Das Paket liest die Post, in die das Dokument hochgeladen wurde,
+    # und legt beim Teilen neue Posts an. Andere Mappen sieht es nicht.
+    lesen: ["dms:post"]
+    schreiben: ["dms:post"]
     dokumente: schreiben  # Seiten als Bild lesen, PDF teilen, Archivnummer setzen
   netz: []
   einstellungen:
