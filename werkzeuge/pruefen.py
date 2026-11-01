@@ -20,6 +20,7 @@ SCHEMA_INHALT = json.loads((WURZEL / 'schema/inhalt.schema.json').read_text())
 PFLICHT = ['manifest.yaml', 'README.md', 'LICENSE', 'CHANGELOG.md', 'tests']
 VERBOTEN = re.compile(r'\.(wasm|so|dll|dylib|exe|jar|class|bin|o|a|pyc|node)$', re.I)
 MAX_GROESSE = 2 * 1024 * 1024  # je Datei; Bilder fürs README gern kleiner
+CODE_MAX = 32 * 1024 * 1024  # alle Dateien unter code/ zusammen, wie im DMS (ab 0.91.2, #403)
 
 
 def inhalt_validator(art: str) -> Draft202012Validator:
@@ -330,6 +331,12 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         r = subprocess.run(['git', 'ls-files', '--', 'code/modul.wasm', 'code/daten'], cwd=ordner, capture_output=True, text=True)
         if r.returncode == 0 and r.stdout.strip():
             fehler.append('code/modul.wasm und code/daten/ entstehen beim Bau und gehören nicht ins Repository')
+        # Grenze des DMS: code/ zusammen höchstens 32 MB (nach dem Bau sinnvoll, mit modul.wasm und daten/).
+        code_ordner = ordner / 'code'
+        if code_ordner.is_dir():
+            summe = sum(p.stat().st_size for p in code_ordner.rglob('*') if p.is_file())
+            if summe > CODE_MAX:
+                fehler.append(f'code/: zusammen {summe / 1024 / 1024:.1f} MB – höchstens 32 MB je Paket')
         modul = ordner / 'code' / 'modul.wasm'
         if modul.exists():
             sys.path.insert(0, str(Path(__file__).resolve().parent))
