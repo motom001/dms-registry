@@ -195,3 +195,18 @@ class Modul(unittest.TestCase):
             self.assertTrue(any('bauen.sh fehlt' in f for f in pruefen.pruefe(ziel, None)))
             (ziel / 'code' / 'modul.wasm').write_bytes(b'kein wasm')
             self.assertTrue(any('kein WebAssembly' in f for f in pruefen.pruefe(ziel, None)))
+
+    def test_code_groessengrenze(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m['code'] = {'sprache': 'c', 'quelle': 'code/', 'rechte': {}}
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            (ziel / 'code' / 'a.c').write_text('int x;\n', encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            (ziel / 'code' / 'daten').mkdir()
+            with open(ziel / 'code' / 'daten' / 'gross.bin', 'wb') as f:
+                f.truncate(pruefen.CODE_MAX + 1)
+            self.assertTrue(any('höchstens 32 MB' in f for f in pruefen.pruefe(ziel, None)))
