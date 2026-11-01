@@ -42,7 +42,7 @@ Bei jedem Merge auf `main` baut die CI den **Katalog** und legt ihn auf den Bran
 - **`https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json`** – die Standard-Katalogadresse im DMS
 - `…/gh-pages/archive/<id>-<version>.zip` – je Paketversion ein Archiv mit genau den Dateien des Paketordners (ohne Ordner davor)
 
-Auf demselben Branch liegt die **Katalog-Webseite** (`werkzeuge/webseite.py`): Pakete ansehen wie im App Store – Übersicht mit Suche und Filter, je Paket eine Seite mit Beschreibung, was angelegt wird, Rechten, Änderungen und älteren Versionen. **„In meinem DMS installieren“** fragt beim ersten Mal nach der Adresse deines DMS (nur im Browser gemerkt, änderbar) und öffnet dort `/werkbank/pakete?installieren=<id>@<version>`; installiert wird erst nach deiner Bestätigung im DMS. Die Webseite sendet nichts an dein DMS.
+Auf demselben Branch liegt die **Katalog-Webseite** (`werkzeuge/webseite.py`): Pakete ansehen wie im App Store – Übersicht mit Suche und Filter, je Paket eine Seite mit Beschreibung, was angelegt wird, Rechten, Änderungen und älteren Versionen. **„In meinem DMS installieren“** fragt beim ersten Mal nach der Adresse deines DMS (nur im Browser gemerkt, änderbar) und öffnet dort `/werkbank/pakete?installieren=<id>@<version>`; installiert wird erst nach deiner Bestätigung im DMS. Die Webseite sendet nichts an dein DMS. Die Übersicht gibt es deutsch und englisch (`en/index.html`, oben der Umschalter „Deutsch · English“, auch ohne JavaScript); Paketseiten und Paketbeschreibungen bleiben vorerst deutsch.
 
 Mit GitHub Pages (Quelle: Branch `gh-pages`) ist die Webseite unter **`https://motom001.github.io/dms-registry/`** erreichbar, der Katalog dann auch unter `…/katalog.json`.
 
