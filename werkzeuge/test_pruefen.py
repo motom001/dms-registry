@@ -36,13 +36,15 @@ GUELTIG = {
 
 
 class Einstellungen(unittest.TestCase):
-    def paket(self, code: dict) -> list[str]:
+    def paket(self, code: dict, dms: str | None = None) -> list[str]:
         with tempfile.TemporaryDirectory() as tmp:
             ziel = Path(tmp) / 'probe'
             shutil.copytree(WURZEL / 'vorlage', ziel)
             m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
             m['id'] = 'probe'
             m['code'] = code
+            if dms:
+                m['dms'] = dms
             (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
             (ziel / 'code' / 'main.rs').write_text('fn main() {}\n', encoding='utf-8')
             (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
@@ -91,6 +93,28 @@ class Einstellungen(unittest.TestCase):
     def test_verweise_auf_typen_des_dms(self):
         self.assertEqual(self.paket(self.mit(**{'0__6__mappentyp': 'dms:ablageort'})), [])
         self.assertTrue(any('bringt das DMS nicht mit' in f for f in self.paket(self.mit(**{'0__6__mappentyp': 'dms:post'}))))
+
+    def test_rechte_mit_typen_des_dms(self):
+        def mit_rechte(lesen: list, schreiben: list | None = None) -> dict:
+            import copy
+            c = copy.deepcopy(GUELTIG)
+            c['rechte'] = {'lesen': lesen, **({'schreiben': schreiben} if schreiben is not None else {})}
+            return c
+        self.assertEqual(self.paket(mit_rechte(['dms:ablageort', 'dms:rolle'])), [])
+        self.assertTrue(any('„dms:brief“ bringt das DMS nicht mit' in f for f in self.paket(mit_rechte(['dms:brief']))))
+        self.assertTrue(any('dms:benutzer ist für Pakete nicht erlaubt' in f for f in self.paket(mit_rechte([], ['dms:benutzer']))))
+        # dms:post (DMS #435): nur in code.rechte und erst ab DMS 0.94.0.
+        post = mit_rechte(['dms:post'], ['dms:post'])
+        self.assertTrue(any('erst ab 0.94.0' in f for f in self.paket(post)), 'Vorlage verlangt nur >=0.41.0')
+        self.assertEqual(self.paket(post, dms='>=0.94.0'), [])
+        self.assertEqual(self.paket(post, dms='^0.95.1'), [])
+        self.assertTrue(any('erst ab 0.94.0' in f for f in self.paket(post, dms='>=0.93.9')))
+
+    def test_dms_untergrenze(self):
+        self.assertEqual(pruefen.dms_untergrenze('>=0.94.0'), (0, 94, 0))
+        self.assertEqual(pruefen.dms_untergrenze('>0.93.0 <1.0.0'), (0, 93, 1))
+        self.assertEqual(pruefen.dms_untergrenze('0.94.2'), (0, 94, 2))
+        self.assertIsNone(pruefen.dms_untergrenze(''))
 
     def test_mehr_als_zwei_ebenen_geht_nicht(self):
         c = self.mit()

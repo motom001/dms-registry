@@ -42,7 +42,7 @@ Findet es kein Trennblatt oder nur einen Brief, ändert es nichts.
 
 Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:
 
-- **Mappen lesen, anlegen und ändern: alle Mappentypen.** Das Paket liest nur die Post, in die der Scan kam, und legt beim Teilen neue Posts an. Andere Mappen fasst es nicht an. Die Post ist ein Mappentyp des DMS, den ein Paket heute nur über „alle Mappentypen“ erreicht. Löschen kann ein Paket nie.
+- **Mappen lesen, anlegen und ändern: Post.** Das Paket liest die Post, in die der Scan kam, und legt beim Teilen neue Posts an. Andere Mappen sieht es nicht. Löschen kann ein Paket nie.
 - **Dokumente schreiben.** Das Paket holt die Seiten als Graustufenbild, teilt das PDF und setzt die Archivnummer.
 - **Kein Netz.**
 - Es reagiert auf **Dokument hochgeladen**.
@@ -92,7 +92,7 @@ Den größten Teil der Zeit braucht das DMS, um die Seiten zu rastern. Mit dem S
 
 ## Voraussetzungen
 
-- DMS **0.88.0** oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API).
+- DMS **0.94.0** oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API, Recht nur für Post).
 
 ## Für Entwickler
 
