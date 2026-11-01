@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DMS packages</title>
+  <meta name="description" content="Packages for the DMS: ready-made Mappe types and views">
+  <link rel="alternate" hreflang="de" href="../index.html">
+  <link rel="alternate" hreflang="en" href="../en/index.html">
+  <link rel="stylesheet" href="../stil.css">
+  <script src="../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../en/index.html" class="marke">DMS packages</a>
+    <nav><a href="https://motom001.github.io/dms/">Manuals</a><a href="https://github.com/motom001/dms-registry/blob/main/README.en.md">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS address</button></nav>
+  <nav class="sprachen" aria-label="Language"><a href="../index.html" lang="de" hreflang="de">Deutsch</a> · <a href="../en/index.html" lang="en" hreflang="en" aria-current="page">English</a></nav></header>
+  <main>
+    <h1>Packages for the DMS</h1>
+    <p class="leise">Ready-made Mappe types and views for your <a href="https://github.com/motom001/dms">DMS</a> – open source and approved by the DMS project. Install them in the DMS under <strong>Werkbank → Pakete</strong> (Workbench → Packages) or right from here.</p>
+    <p class="hinweis"><strong>Note:</strong> Package names and descriptions come from the packages themselves and are in German for now, as are the package pages (multilingual package content will follow). Where the German and English wording differ, the German one applies.</p>
+    <div class="werkzeuge">
+      <input type="search" id="suche" placeholder="Search packages …" aria-label="Search packages">
+      <select id="art" aria-label="Type"><option value="">All packages</option><option value="konfiguration">Configuration</option><option value="code">With code</option></select>
+    </div>
+    <div class="kacheln">
+      <a class="kachel" href="../paket/basis/" data-art="konfiguration" data-suche="basis basis mappentypen organisation, niederlassung und person – für firmen, behörden, ärzte, banken mit ihren filialen und die menschen, mit denen du zu tun hast. thomas meissner">
+        <span class="symbol" aria-hidden="true">B</span>
+        <span class="name" lang="de">Basis</span>
+        <span class="text" lang="de">Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.</span>
+        <span class="unter">1.1.1 · Thomas Meissner</span>
+      </a>
+      <a class="kachel" href="../paket/fahrzeuge/" data-art="konfiguration" data-suche="fahrzeuge fahrzeuge auto, motorrad, wohnmobil und anhänger mit hu-termin, fahrzeugbrief, versicherung und allen werkstattrechnungen. thomas meissner">
+        <span class="symbol" aria-hidden="true">F</span>
+        <span class="name" lang="de">Fahrzeuge</span>
+        <span class="text" lang="de">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.</span>
+        <span class="unter">1.0.2 · Thomas Meissner</span>
+      </a>
+      <a class="kachel" href="../paket/hallo_post/" data-art="code" data-suche="hallo_post hallo post beispiel für pakete mit code – zählt neue post und meldet die zahl auf knopfdruck. zum ausprobieren und als vorlage für eigene pakete. thomas meissner">
+        <span class="symbol" aria-hidden="true">H</span>
+        <span class="name" lang="de">Hallo Post</span>
+        <span class="text" lang="de">Beispiel für Pakete mit Code – zählt neue Post und meldet die Zahl auf Knopfdruck. Zum Ausprobieren und als Vorlage für eigene Pakete.</span>
+        <span class="unter">1.0.1 · Thomas Meissner · with code</span>
+      </a>
+      <a class="kachel" href="../paket/haus/" data-art="konfiguration" data-suche="haus haus immobilie, wartungen und zählerstände – damit heizung, schornstein und rauchmelder rechtzeitig gewartet werden und der verbrauch im blick bleibt. thomas meissner">
+        <span class="symbol" aria-hidden="true">H</span>
+        <span class="name" lang="de">Haus</span>
+        <span class="text" lang="de">Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.</span>
+        <span class="unter">1.0.2 · Thomas Meissner</span>
+      </a>
+      <a class="kachel" href="../paket/haushalt/" data-art="konfiguration" data-suche="haushalt haushalt die typischen unterlagen eines haushalts – konten, verträge, versicherungen, steuerjahre, ausweise und urkunden, gesundheit, anschaffungen und mehr – mit fristen, ansichten und beispielen. thomas meissner">
+        <span class="symbol" aria-hidden="true">H</span>
+        <span class="name" lang="de">Haushalt</span>
+        <span class="text" lang="de">Die typischen Unterlagen eines Haushalts – Konten, Verträge, Versicherungen, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen.</span>
+        <span class="unter">1.0.2 · Thomas Meissner</span>
+      </a>
+      <a class="kachel" href="../paket/texterkennung/" data-art="code" data-suche="texterkennung texterkennung erkennt text in gescannten pdfs und bildern mit tesseract als webassembly und schreibt ihn als volltext ins dms – abgeschottet im paket-läufer, ohne netz. thomas meissner">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name" lang="de">Texterkennung</span>
+        <span class="text" lang="de">Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · with code</span>
+      </a>
+      <a class="kachel" href="../paket/trennblatt/" data-art="code" data-suche="trennblatt trennblatt teilt einen sammelscan an trennblättern mit barcode in mehrere posts und lässt die trennblätter weg. ein archivnummer-aufkleber auf einem brief setzt gleich dessen archivnummer. läuft abgeschottet im paket-läufer, ohne netz. thomas meissner">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name" lang="de">Trennblatt</span>
+        <span class="text" lang="de">Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.</span>
+        <span class="unter">1.0.1 · Thomas Meissner · with code</span>
+      </a>
+      <a class="kachel" href="../paket/vermietung/" data-art="konfiguration" data-suche="vermietung vermietung mietobjekte, wohnungen, mietverträge, nebenkostenabrechnungen und ausgaben – für vermieter mit wenigen wohnungen, mit fristen für abrechnung, mieterhöhung und vertragsende. thomas meissner">
+        <span class="symbol" aria-hidden="true">V</span>
+        <span class="name" lang="de">Vermietung</span>
+        <span class="text" lang="de">Mietobjekte, Wohnungen, Mietverträge, Nebenkostenabrechnungen und Ausgaben – für Vermieter mit wenigen Wohnungen, mit Fristen für Abrechnung, Mieterhöhung und Vertragsende.</span>
+        <span class="unter">1.0.1 · Thomas Meissner</span>
+      </a>
+    </div>
+    <p id="keine" class="leerhinweis" hidden>No package found.</p>
+    <p class="leise">As of: 2026-11-01 · 8 packages</p>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Address of your DMS</h2>
+      <p class="leise">For example <code>https://dms.example.com</code> or <code>http://192.168.1.20:3000</code>. The address stays in this browser only; this page sends nothing to your DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Please enter an address starting with http:// or https://.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Save and open</button><button value="abbruch" class="textknopf" formnovalidate>Cancel</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.en.md">Rules for packages</a> · <a href="../katalog.json">katalog.json</a></footer>
+</body>
+</html>
