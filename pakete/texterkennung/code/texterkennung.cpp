@@ -128,7 +128,10 @@ int verarbeite(const Json &e) {
     if (d["volltextGeplant"].wahr() && nurOhneText) { ergebnis("wartet auf die Texterkennung des DMS"); return 0; }
     const std::string mime = d["mime"].text();
     if (mime != "application/pdf" && mime.rfind("image/", 0) != 0) { ergebnis("kein PDF und kein Bild"); return 0; }
-  } else if (art != "texterkennung.fertig") {
+  } else if (art == "texterkennung.fertig") {
+    // Ohne „Nur Dokumente ohne Text“ hat das Paket schon beim Hochladen erkannt.
+    if (!nurOhneText) { ergebnis("schon beim Hochladen erkannt"); return 0; }
+  } else {
     return 0;
   }
   if (!typErlaubt(einst, d["mappe"].text())) { ergebnis("Mappentyp nicht gewählt"); return 0; }
