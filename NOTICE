@@ -1,0 +1,7 @@
+DMS Registry
+Copyright 2026 Thomas Meissner
+
+Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen ab dem
+01.11.2026 unter der Apache License, Version 2.0 (siehe LICENSE); vorher unter
+der GNU Affero General Public License v3.0. Jedes Paket unter pakete/ steht
+unter der Lizenz in seinem eigenen Ordner (LICENSE, manifest.yaml).
