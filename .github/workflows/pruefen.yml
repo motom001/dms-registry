@@ -21,7 +21,7 @@ jobs:
           python-version: '3.12'
       - run: pip install --quiet pyyaml jsonschema markdown
       - name: Tests der Prüfung
-        run: python3 -m unittest werkzeuge/test_pruefen.py
+        run: python3 -m unittest werkzeuge/test_pruefen.py werkzeuge/test_sammeldatei.py
       # Pakete mit Code: aus dem Quellcode bauen (WASI-SDK und Bibliotheken bleiben im Cache), danach prüft
       # pruefen.py das Modul gegen die DMS-Paket-ABI.
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
@@ -48,6 +48,7 @@ jobs:
       - name: Webseite lässt sich bauen
         run: |
           mkdir -p /tmp/probe && python3 werkzeuge/katalog.py --ohne-bau /tmp/probe && python3 werkzeuge/webseite.py /tmp/probe
+          node --check /tmp/probe/sammeldatei.js
       - name: Neues Paket aus der Vorlage lässt sich anlegen
         run: |
           werkzeuge/neues-paket.sh probe_paket "Probe"
