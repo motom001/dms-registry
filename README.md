@@ -1,5 +1,7 @@
 # DMS Registry
 
+**Deutsch** · [English](README.en.md)
+
 Die zentrale Ablage für **Pakete** zum [DMS](https://github.com/motom001/dms), dem selbst gehosteten Dokumentenmanagement für Haushalte und Familien.
 
 Ein Paket erweitert das DMS, ohne dass jemand die Werkbank Feld für Feld durchklicken muss:
@@ -18,6 +20,7 @@ schema/                JSON-Schemas für manifest.yaml und die Inhalte
 werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, webseite.py (laufen auch in der CI)
 REGELN.md              was erlaubt ist, was nicht, welche Lizenzen
 CONTRIBUTING.md        wie ein Paket hierher kommt
+*.en.md                englische Fassungen von README, REGELN, CONTRIBUTING, SECURITY
 ```
 
 Jedes Paket enthält mindestens:
@@ -93,4 +96,10 @@ Ein **Feld** hat `schluessel`, `name`, `typ` und optional `hilfe`, `pflicht`, `s
 
 ## Lizenz
 
-Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen unter der [Apache-2.0](LICENSE) (bis 01.11.2026: AGPL-3.0, siehe [NOTICE](NOTICE)). **Jedes Paket hat seine eigene Lizenz** in seinem Ordner – erlaubt sind die Lizenzen aus [REGELN.md](REGELN.md). Die Pakete, die wir selbst (motom001) veröffentlichen, stehen unter **Apache-2.0**.
+Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen unter der [Apache-2.0](LICENSE), Hinweise in [NOTICE](NOTICE) (bis 01.11.2026: AGPL-3.0). **Jedes Paket hat seine eigene Lizenz** in seinem Ordner – erlaubt sind die Lizenzen aus [REGELN.md](REGELN.md). Die Pakete, die wir selbst (motom001) veröffentlichen, stehen unter **Apache-2.0**.
+
+Was unter Apache-2.0 steht, darf jeder nutzen, verändern und weitergeben – auch in eigenen Produkten. Wer es weitergibt, legt die Lizenz und die Hinweise aus NOTICE bei und kennzeichnet geänderte Dateien. Den Quellcode einer veränderten Fassung offenzulegen ist nicht Pflicht.
+
+## Sprachen
+
+README, [REGELN](REGELN.md), [CONTRIBUTING](CONTRIBUTING.md) und [SECURITY](SECURITY.md) gibt es auch auf Englisch ([README.en.md](README.en.md), [REGELN.en.md](REGELN.en.md), [CONTRIBUTING.en.md](CONTRIBUTING.en.md), [SECURITY.en.md](SECURITY.en.md)). **Bei Abweichungen gilt die deutsche Fassung.** Issues und Pull Requests sind auf Deutsch oder Englisch willkommen. Die Meldungen von `pruefen.py` und die Paketinhalte bleiben vorerst deutsch.

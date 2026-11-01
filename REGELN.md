@@ -1,5 +1,9 @@
 # Regeln für Pakete
 
+**Deutsch** · [English](REGELN.en.md)
+
+> Bei Abweichungen zwischen deutscher und englischer Fassung gilt die deutsche.
+
 ## Lizenzen
 
 Jedes Paket steht unter einer dieser Open-Source-Lizenzen (Kennung nach [SPDX](https://spdx.org/licenses/), so in `manifest.yaml` unter `lizenz`):
