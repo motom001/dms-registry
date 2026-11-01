@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-01T15:06:03Z",
+  "erstellt": "2026-11-01T15:10:58Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -695,6 +695,37 @@
       ],
       "name": "Texterkennung",
       "beschreibung": "Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0"
+    },
+    {
+      "id": "trennblatt",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.88.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/trennblatt-1.0.0.zip",
+          "sha256": "c801d14b12200146417940b3038119e53ff11c22494d5ba8ef436f61d44359ac",
+          "groesse": 68850,
+          "veroeffentlicht": "2026-11-01T15:10:58Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/trennblatt",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/trennblatt/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/trennblatt/CHANGELOG.md"
+        }
+      ],
+      "name": "Trennblatt",
+      "beschreibung": "Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"

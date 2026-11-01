@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trennblatt – DMS-Pakete</title>
+  <meta name="description" content="Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">T</span>
+      <div><h1>Trennblatt</h1><p class="leise">Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="trennblatt@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/trennblatt">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 01.11.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>Apache-2.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.88.0</dd>
+      <dt>Abhängigkeiten</dt><dd>keine</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><ul></ul>
+      <h3>Sichten</h3><ul></ul>
+      <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netz</h2><ul><li>darf Mappen vom Typ <code>*</code> lesen</li><li>darf Mappen vom Typ <code>*</code> ändern</li><li>darf Dokumente lesen und ändern</li><li>verbindet sich mit keiner Adresse im Internet</li><li>reagiert auf <code>dokument.hochgeladen</code></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Mit dem Paket <strong>Trennblatt</strong> scannst du einen ganzen Stapel Briefe auf einmal, und im DMS wird trotzdem <strong>jeder Brief eine eigene Post</strong>. Du legst zwischen zwei Briefe ein Trennblatt mit Barcode. Der Sammelscan kommt wie gewohnt als eine Post ins DMS. Das Paket findet die Trennblätter, teilt den Scan dort und lässt die Trennblätter weg.</p>
+<p>Klebt auf einem Brief ein <strong>Archivnummer-Aufkleber</strong> des DMS, bekommt das Dokument der neuen Post gleich diese Archivnummer.</p>
+<p>Das Paket läuft im <strong>Paket-Läufer</strong> des DMS: abgeschottet als WebAssembly, ohne Netz.</p>
+<h3>So geht’s</h3>
+<ol>
+<li><strong>Trennblatt drucken:</strong> <a href="vorlage/trennblatt.pdf"><code>vorlage/trennblatt.pdf</code></a> (A4, mit 100 % drucken). Ein paar Blätter reichen, du kannst sie immer wieder verwenden.</li>
+<li><strong>Stapel vorbereiten:</strong> Lege zwischen je zwei Briefe ein Trennblatt. Vor den ersten Brief brauchst du keins, schadet aber auch nicht.</li>
+<li><strong>Scannen:</strong> Scanne den ganzen Stapel in ein PDF. Scannst du beidseitig, ist das kein Problem: Die leere Rückseite eines Trennblatts fällt mit weg.</li>
+<li><strong>Ins DMS:</strong> Das PDF kommt wie jede andere Post ins DMS, über den Eingangsordner, das E-Mail-Postfach oder <strong>+ Post</strong>.</li>
+<li><strong>Fertig:</strong> Nach ein paar Sekunden siehst du unter <strong>Post</strong> für jeden Brief eine neue Post „<em>Betreff</em> (Teil 1)“, „(Teil 2)“ … mit Stand <strong>Neu</strong>. Die ursprüngliche Post hat danach Stand <strong>Erledigt</strong>, behält den ganzen Scan und verweist auf die neuen Posts. Es geht also nichts verloren.</li>
+</ol>
+<pre><code>Brief A · Trennblatt · Brief B · Trennblatt · Brief C (2 Seiten)
+   → Post „Scan (Teil 1)“: Brief A
+   → Post „Scan (Teil 2)“: Brief B
+   → Post „Scan (Teil 3)“: Brief C, beide Seiten
+</code></pre>
+<h4>Archivnummer gleich mit</h4>
+<p>Hast du in der Werkbank unter <strong>Nummernkreise</strong> Archivnummer-Aufkleber gedruckt (Barcode <code>DMS-ASN:&lt;nummer&gt;</code>), dann klebe einen davon auf den Brief, bevor du scannst. Das Paket liest den Aufkleber und setzt die Nummer am Dokument der neuen Post. Später findest du das Papieroriginal über diese Nummer, und ein Handscanner springt im Suchfeld direkt zum Dokument. Ein Aufkleber auf dem Trennblatt selbst gilt für den Brief danach.</p>
+<p>Liegt kein Trennblatt im Scan, setzt das Paket nur die Archivnummer am Dokument (ein Brief, ein Aufkleber). Gibt es die Nummer schon an einem anderen Dokument, lässt das Paket sie weg und schreibt eine Warnung ins Protokoll.</p>
+<h3>Wann das Paket teilt</h3>
+<p>Das Paket schaut sich ein hochgeladenes PDF an, wenn alles davon stimmt:</p>
+<ul>
+<li>Es liegt in einer <strong>Post</strong> mit Stand <strong>Neu</strong>, die <strong>eingeht</strong> (keine versendete E-Mail).</li>
+<li>Die Post hat <strong>genau dieses eine Dokument</strong>, also einen Sammelscan. Eine E-Mail mit mehreren Anhängen bleibt, wie sie ist.</li>
+<li>Der <strong>Kanal</strong> der Post ist unter „Nur Post aus diesen Kanälen“ gewählt, oder dort ist nichts gewählt.</li>
+<li>Das PDF hat höchstens so viele Seiten wie eingestellt.</li>
+</ul>
+<p>Findet es kein Trennblatt oder nur einen Brief, ändert es nichts.</p>
+<h3>Was das Paket darf</h3>
+<p>Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Mappen lesen, anlegen und ändern: alle Mappentypen.</strong> Das Paket liest nur die Post, in die der Scan kam, und legt beim Teilen neue Posts an. Andere Mappen fasst es nicht an. Die Post ist ein Mappentyp des DMS, den ein Paket heute nur über „alle Mappentypen“ erreicht. Löschen kann ein Paket nie.</li>
+<li><strong>Dokumente schreiben.</strong> Das Paket holt die Seiten als Graustufenbild, teilt das PDF und setzt die Archivnummer.</li>
+<li><strong>Kein Netz.</strong></li>
+<li>Es reagiert auf <strong>Dokument hochgeladen</strong>.</li>
+</ul>
+<p>In der Historie der Posts steht „Paket Trennblatt“ als Urheber.</p>
+<h3>Einstellungen</h3>
+<p>Unter <strong>Werkbank → Pakete → Trennblatt → Einstellungen</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Standard</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Barcode auf dem Trennblatt</td>
+<td><code>DMS-TRENNEN</code></td>
+<td>Inhalt des Barcodes, an dem das Paket teilt. Groß- und Kleinschreibung zählen nicht.</td>
+</tr>
+<tr>
+<td>Trennblatt behalten</td>
+<td>Nein</td>
+<td>Ja: Jedes Trennblatt bleibt als erste Seite der neuen Post.</td>
+</tr>
+<tr>
+<td>Leere Rückseite mit entfernen</td>
+<td>Ja</td>
+<td>Eine leere Seite direkt nach einem Trennblatt (beidseitiger Scan) fällt mit weg.</td>
+</tr>
+<tr>
+<td>Nur Post aus diesen Kanälen</td>
+<td>leer (alle)</td>
+<td>Eingangsordner, E-Mail-Postfach, Hochgeladen, Scan, WebDAV, API, Import</td>
+</tr>
+<tr>
+<td>Archivnummer aus dem Aufkleber übernehmen</td>
+<td>Ja</td>
+<td>Barcode <code>DMS-ASN:&lt;nummer&gt;</code> auf einer Seite setzt die Archivnummer.</td>
+</tr>
+<tr>
+<td>Auflösung (dpi)</td>
+<td>300</td>
+<td>150–400. Für Trennblätter reichen 150 dpi, kleine Archivnummer-Aufkleber brauchen 300.</td>
+</tr>
+<tr>
+<td>Höchstens so viele Seiten</td>
+<td>60</td>
+<td>Längere Scans prüft das Paket nicht.</td>
+</tr>
+</tbody>
+</table>
+<h4>Eigener Barcode</h4>
+<p>Du willst einen anderen Inhalt als <code>DMS-TRENNEN</code>, zum Beispiel weil ein anderes Programm schon so ein Trennblatt nutzt? Dann trag ihn in den Einstellungen ein und erzeuge dein Trennblatt so:</p>
+<pre><code class="language-sh">python3 vorlage/trennblatt.py --text MEIN-TRENNBLATT mein-trennblatt.pdf
+</code></pre>
+<p>Das Skript braucht nur Python 3, keine weiteren Pakete. Jedes Trennblatt mit einem Code-128-Barcode dieses Inhalts funktioniert.</p>
+<h3>Messung</h3>
+<p>Im DMS 0.91 (Paket-Läufer mit Standardgrenzen: 256 MB, 120 s) auf amd64 mit 300 dpi:</p>
+<table>
+<thead>
+<tr>
+<th>Scan</th>
+<th>Dauer eines Aufrufs</th>
+<th>Speicher</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5 Seiten (3 Briefe, 2 Trennblätter)</td>
+<td>1,8 s</td>
+<td>9 MB</td>
+</tr>
+<tr>
+<td>8 Seiten, beidseitig und schief gescannt</td>
+<td>etwa 6 s</td>
+<td>9 MB</td>
+</tr>
+</tbody>
+</table>
+<p>Den größten Teil der Zeit braucht das DMS, um die Seiten zu rastern. Mit dem Standard von 60 Seiten bleibt ein Aufruf deutlich unter der Zeitgrenze. Willst du längere Stapel teilen, setz die Auflösung auf 150 dpi (Archivnummer-Aufkleber werden dann oft nicht mehr gelesen).</p>
+<h3>Grenzen</h3>
+<ul>
+<li>Das Paket liest <strong>Code 128</strong>, so wie das DMS seine Aufkleber druckt. QR-Codes liest es nicht.</li>
+<li>Barcodes auf stark schiefen Seiten (mehr als etwa 15°) oder auf sehr kleinen Aufklebern bei niedriger Auflösung findet es unter Umständen nicht. Dann bleibt der Scan ungeteilt, und du kannst ihn im DMS von Hand teilen (<strong>Post → Dokument → Seiten bearbeiten</strong>).</li>
+<li>Eine Post mit mehreren Dokumenten teilt das Paket nicht.</li>
+</ul>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS <strong>0.88.0</strong> oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API).</li>
+</ul>
+<h3>Für Entwickler</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/trennblatt.cpp"><code>code/trennblatt.cpp</code></a></td>
+<td>das Modul (DMS-Paket-ABI 1): Ereignis → Seiten über die API → Barcodes → Post teilen, Archivnummer setzen</td>
+</tr>
+<tr>
+<td><a href="code/barcode.c"><code>code/barcode.c</code></a>, <a href="code/barcode.h"><code>code/barcode.h</code></a></td>
+<td>eigener, kleiner Code-128-Leser (Zeichensätze A, B, C) für Graustufenbilder: tastet Zeilen und Spalten ab, örtliche Schwelle, Kanten auf Bruchteile eines Bildpunkts, liest in beide Richtungen, Prüfziffer</td>
+</tr>
+<tr>
+<td><a href="code/json.h"><code>code/json.h</code></a></td>
+<td>kleiner JSON-Leser (aus dem Paket Texterkennung)</td>
+</tr>
+<tr>
+<td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
+<td>Bau mit dem WASI-SDK, ohne fremde Bibliotheken; danach der Test des Barcode-Lesers, wenn ein C-Compiler da ist</td>
+</tr>
+<tr>
+<td><a href="vorlage/trennblatt.py"><code>vorlage/trennblatt.py</code></a>, <a href="vorlage/pdf.py"><code>vorlage/pdf.py</code></a></td>
+<td>erzeugen <a href="vorlage/trennblatt.pdf"><code>vorlage/trennblatt.pdf</code></a>, nur mit der Standardbibliothek</td>
+</tr>
+<tr>
+<td><a href="tests/barcode_test.c"><code>tests/barcode_test.c</code></a></td>
+<td>künstliche Scans: schief, verrauscht, unscharf, verlaufene Tinte, auf dem Kopf, quer, kleinste Aufkleber; Textseiten ohne Fehllesung</td>
+</tr>
+<tr>
+<td><a href="tests/beispiel.py"><code>tests/beispiel.py</code></a></td>
+<td>Beispiel-PDFs: 3 Briefe mit 2 Trennblättern, dasselbe beidseitig und schief „gescannt“, ein Scan ohne Trennblatt</td>
+</tr>
+<tr>
+<td><a href="tests/modul_test.mjs"><code>tests/modul_test.mjs</code></a></td>
+<td>das gebaute Modul in Node mit einer Nachbildung der DMS-Importe und der API</td>
+</tr>
+<tr>
+<td><a href="tests/pruefen.sh"><code>tests/pruefen.sh</code></a></td>
+<td>alles zusammen</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/trennblatt   # Modul und Test des Barcode-Lesers
+pakete/trennblatt/tests/pruefen.sh                                                # alle Tests (braucht node und Poppler)
+</code></pre>
+<p>Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/">Pakete mit Code</a>.</p>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>). Das Paket enthält keinen fremden Code.</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: teilt einen Sammelscan in einer neuen Post an Trennblättern mit Code-128-Barcode (<code>DMS-TRENNEN</code>) in mehrere Posts; Trennblätter und ihre leeren Rückseiten fallen weg.</li>
+<li>Archivnummer-Aufkleber (<code>DMS-ASN:&lt;nummer&gt;</code>) setzen die Archivnummer am Dokument der neuen Post.</li>
+<li>Einstellungen: Barcode-Inhalt, Trennblatt behalten, leere Rückseite, Kanäle, Archivnummer, Auflösung, Seitenzahl.</li>
+<li>Eigener Code-128-Leser ohne fremde Bibliotheken; Trennblatt zum Ausdrucken (<code>vorlage/trennblatt.pdf</code>).</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/trennblatt-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="trennblatt@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>
