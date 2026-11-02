@@ -3,7 +3,7 @@
 schema: 1
 id: ki_assistent
 name: KI-Assistent
-version: 1.1.1
+version: 1.2.0
 beschreibung: Beantwortet Fragen an die Ablage („Frag deine Ablage“) und füllt Felder aus Dokumenten („Aus Dokument ausfüllen“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.
 autor:
   name: Thomas Meissner
@@ -11,7 +11,8 @@ autor:
 lizenz: Apache-2.0
 # 0.124.0: Schnittstelle dms:antworten, Einstellung vom Typ adresse, netz_strom/netz_weiter/teil (DMS #444)
 # 0.125.0: Schnittstelle dms:erkennen – „Aus Dokument ausfüllen“ per Paket (DMS #511)
-dms: ">=0.125.0"
+# 0.138.0: Kürzen sichtbar („6 von 9 Ausschnitten (gekürzt)“, „Dokumenttext gekürzt“), „hat nichts Brauchbares geliefert“ (DMS #564)
+dms: ">=0.138.0"
 inhalt: {}
 code:
   sprache: c
@@ -49,6 +50,13 @@ code:
           max: 4096
           standard: 800
           hilfe: Obergrenze für die Länge einer Antwort. Kleiner heißt schneller, gerade auf einem NAS ohne Grafikkarte.
+        - schluessel: kontext
+          name: Kontextlänge (Tokens)
+          typ: zahl
+          min: 2048
+          max: 131072
+          standard: 8192
+          hilfe: So viel liest das Modell auf einmal – Anfrage und Antwort zusammen. Ist eine Anfrage länger, kürzt das Paket selbst und sagt es dem Benutzer („6 von 9 Ausschnitten (gekürzt)“, „Dokumenttext gekürzt“). Nie größer als beim Dienst einstellen – bei Ollama OLLAMA_CONTEXT_LENGTH (im Beispiel des DMS 8192, ohne Grafikkarte sonst 4096) –, sonst schneidet der Dienst still ab.
     - abschnitt: Aus Dokument ausfüllen
       hilfe: Ob der KI-Dienst beim Knopf „Aus Dokument ausfüllen“ die Felder vorschlägt, wählst du unter Werkbank → Pakete → KI-Assistent → Aus Dokument ausfüllen (Standard für alle Mappentypen) oder in der Erkennung des Mappentyps. Antwortet der Dienst nicht rechtzeitig oder unbrauchbar, übernimmt die eingebaute Erkennung des DMS.
       felder:

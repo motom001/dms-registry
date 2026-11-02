@@ -7,13 +7,26 @@
 // Mit response_format (Aus Dokument ausfüllen) antwortet sie mit JSON nach dem Schema: E-Mail-Adressen, Datum
 // (TT.MM.JJJJ) und Zeilen „Feldname: Wert“ aus dem Text in <dokument>. Modell „alt:1b“ kennt json_schema nicht
 // (HTTP 400) wie ältere Dienste. "reasoning_effort" nimmt sie nur mit dem Wert "none" an; Modell „streng:1b“ lehnt
-// das Feld ab (HTTP 400) wie Dienste, die es nicht kennen. Schreibt nichts mit außer der Anzahl der Anfragen.
+// das Feld ab (HTTP 400) wie Dienste, die es nicht kennen. Modell „kurz:1b“ liest wie Ollama ohne Grafikkarte nur
+// 2048 Token (grob 3 Zeichen je Token): Ist die Anfrage mit max_tokens länger, lässt es vorne still Nachrichten weg
+// (nach der Systemnachricht) – im Paket die Kontextlänge 2048 eintragen, dann kürzt das Paket vorher selbst.
+// Schreibt nichts mit außer der Anzahl der Anfragen.
 import { createServer } from 'node:http';
 
 const MODELL = 'attrappe:1b';
 const ALT = 'alt:1b';
 const STRENG = 'streng:1b';
-const MODELLE = [MODELL, ALT, STRENG];
+const KURZ = 'kurz:1b';
+const MODELLE = [MODELL, ALT, STRENG, KURZ];
+const KURZ_KONTEXT = 2048;
+
+/** Wie Ollama bei zu langer Anfrage: Nachrichten nach der Systemnachricht still weglassen, bis es passt. */
+function abschneiden(nachrichten, maxTokens) {
+  const m = [...nachrichten];
+  const token = () => m.reduce((s, x) => s + Math.ceil(String(x.content ?? '').length / 3) + 8, 0) + (maxTokens ?? 0);
+  while (token() > KURZ_KONTEXT && m.length > 2) m.splice(m[0]?.role === 'system' ? 1 : 0, 1);
+  return m;
+}
 const port = Number(process.argv[2] ?? 11434);
 let anfragen = 0;
 
@@ -58,6 +71,7 @@ const server = createServer((q, a) => {
     if (!MODELLE.includes(j.model)) { a.writeHead(404, { 'content-type': 'application/json' }).end(JSON.stringify({ error: { message: `model "${j.model}" not found, try pulling it first` } })); return; }
     const fehler = (meldung) => a.writeHead(400, { 'content-type': 'application/json' }).end(JSON.stringify({ error: { message: meldung } }));
     if ('reasoning_effort' in j && (j.model === STRENG || j.reasoning_effort !== 'none')) { fehler("Unrecognized request argument supplied: reasoning_effort"); return; }
+    if (j.model === KURZ) j.messages = abschneiden(j.messages ?? [], j.max_tokens);
     const format = j.response_format?.type;
     if (format === 'json_schema' && j.model === ALT) { fehler("invalid response_format type 'json_schema'"); return; }
     const text = format === 'json_schema' || format === 'json_object' ? felderFuer(j.messages ?? [], j.response_format.json_schema?.schema) : antwortFuer(j.messages ?? []);
