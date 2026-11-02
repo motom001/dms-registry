@@ -20,7 +20,7 @@ pakete:
   bildformate: [dateiformate]
   office_email: [dateiformate, volltext]
   texterkennung: [volltext]
-  texterkennung_fra: [sprachen]
+  texterkennung_fra: [sprachen, volltext]
   ki_aehnlich: [ki]
   ki_assistent: [ki]
   trennblatt: [post]
