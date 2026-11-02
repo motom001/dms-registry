@@ -15,6 +15,7 @@ The full licence text is in the package folder as `LICENSE`. Third-party code in
 ## Allowed
 
 - Mappe types, views, roles, sample Mappen
+- Word lists: synonyms for the search (see [Word lists](#word-lists))
 - Code that works through the DMS API (as soon as the package runner is available)
 - Access to the network/internet only to addresses listed in the manifest (`code.netz`) whose purpose the README explains. Without `code.netz`, a package has no access to the network or the internet.
 
@@ -123,6 +124,20 @@ The DMS checks values in text fields against a **format** and date fields agains
 - If you use `format`, `landFeld` or date limits, write `dms: ">=0.121.0"` in the manifest.
 
 `werkzeuge/pruefen.py` checks field type, country field, limits, the samples and the DMS version.
+
+## Word lists
+
+A package can bring **synonyms** for the search (from DMS 0.127.0): whoever searches for one word also finds the others. The manifest contains `inhalt.wortlisten: inhalt/wortlisten.yaml` and `dms: ">=0.127.0"` – older DMS versions silently skip the section. The file is a list of groups:
+
+```yaml
+- woerter: [Kfz, Auto, PKW, Fahrzeug]
+- woerter: [Nebenkosten, Betriebskosten]
+```
+
+- 2 to 20 different words per group, 2 to 60 characters each; upper/lower case and umlauts do not count when comparing ("Gebühr" and "gebuhr" are the same word). At most 1000 groups per package.
+- Only words that really mean the same in everyday use and belong to the topic of the package – no generic terms ("Vertrag" for everything) and no names of companies or people.
+- `tests/erwartung.yaml` states the number of groups: `wortlisten: 5`.
+- The DMS creates the groups on installation, replaces them with those of the package on an update and removes them together with the package.
 
 ## Orphaned packages
 

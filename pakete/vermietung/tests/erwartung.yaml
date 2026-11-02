@@ -2,3 +2,4 @@
 mappentypen: [mietobjekt, wohnung, mietvertrag, nebenkostenabrechnung, ausgabe]
 sichten: [vermietung, mietobjekte, wohnungen, mietvertraege, mietvertraege_laufend, nebenkosten, ausgaben, ausgaben_dieses_jahr, ausgaben_letztes_jahr, ausgaben_umlagefaehig, abrechnung_offen, mieterhoehung, vertrag_endet]
 beispiele: 11
+wortlisten: 5

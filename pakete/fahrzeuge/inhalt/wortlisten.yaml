@@ -1,0 +1,7 @@
+# Gleichbedeutende Wörter für die Suche (ab DMS 0.127.0): Wer eines sucht, findet auch die anderen.
+# Schema: schema/inhalt.schema.json (wortlisten)
+- woerter: [Kfz, Auto, PKW, Fahrzeug]
+- woerter: [HU, Hauptuntersuchung, TÜV]
+- woerter: [Fahrzeugbrief, Zulassungsbescheinigung Teil II]
+- woerter: [Fahrzeugschein, Zulassungsbescheinigung Teil I]
+- woerter: [Werkstattrechnung, Reparaturrechnung]
