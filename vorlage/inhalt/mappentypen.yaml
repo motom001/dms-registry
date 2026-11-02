@@ -40,6 +40,9 @@
     #   typ: referenz
     #   ziel: basis:organisation
     #   verweisart: bezug
+    # War ein Feld bisher Text und wird jetzt ein Verweis (braucht dms: ">=0.120.0", siehe REGELN.md): neues Feld mit
+    # eigener Kennung, keine Pflicht, und aus_text mit der Kennung des alten Textfelds – das alte Feld fällt aus dem Paket.
+    #   aus_text: organisation_text
   register:
     - key: daten
       name: Daten

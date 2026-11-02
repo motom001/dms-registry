@@ -1,6 +1,6 @@
 # Haushalt
 
-Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mit: Konten, Verträge, Versicherungen, Steuerjahre, Arbeitsverhältnisse, Vorsorge, Ausweise und Urkunden, Gesundheit, Anschaffungen und Bildung. Statt die Werkbank selbst einzurichten, installierst du es mit einem Klick unter **Werkbank → Pakete** und kannst sofort ablegen. Das Paket **Basis** (Organisation) kommt dabei automatisch mit.
+Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mit: Konten, Verträge, Versicherungen, Steuerjahre, Arbeitsverhältnisse, Vorsorge, Ausweise und Urkunden, Gesundheit, Anschaffungen und Bildung. Statt die Werkbank selbst einzurichten, installierst du es mit einem Klick unter **Werkbank → Pakete** und kannst sofort ablegen. Das Paket **Basis** (Organisation und Person) kommt dabei automatisch mit.
 
 ![Die zehn Mappentypen des Pakets mit ihren Feldern, Fristen und Beispielen](https://raw.githubusercontent.com/motom001/dms-registry/main/pakete/haushalt/bilder/ueberblick.png)
 
@@ -8,9 +8,9 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
-| Konto | Girokonto, Sparkonto, Depot, Kreditkarte, Kredit, Bausparvertrag | Bank, Art, Inhaber, IBAN, Online-Zugang (Passwort), eröffnet/gekündigt am | – |
+| Konto | Girokonto, Sparkonto, Depot, Kreditkarte, Kredit, Bausparvertrag | Bank, Art, Inhaber (Personen), IBAN, Online-Zugang (Passwort), eröffnet/gekündigt am | – |
 | Vertrag | Strom, Gas, Internet, Mobilfunk, Streaming, Miete, Mitgliedschaft … | Vertragspartner, Art, Vertragsnummer, Beginn, Mindestlaufzeit, Kündigungsfrist, Betrag, Zahlweise | **Kündigen bis** (30 Tage vorher) |
-| Versicherung | Haftpflicht, Hausrat, Kfz, Berufsunfähigkeit … | Versicherer, Art, Versicherungsnummer, Versichert, Beitrag, Zahlweise | **Hauptfälligkeit** (jährlich, 6 Wochen vorher), **Kündigen bis** (30 Tage vorher) |
+| Versicherung | Haftpflicht, Hausrat, Kfz, Berufsunfähigkeit … | Versicherer, Art, Versicherungsnummer, Versichert (Personen), Beitrag, Zahlweise | **Hauptfälligkeit** (jährlich, 6 Wochen vorher), **Kündigen bis** (30 Tage vorher) |
 | Steuerjahr | Einkommensteuer eines Jahres | Jahr (eindeutig), abgegeben am, Bescheid vom, Erstattung/Nachzahlung, Steuerberater | **Einspruch bis** (7 Tage vorher) |
 | Arbeitsverhältnis | Anstellung, Minijob, Ausbildung | Arbeitgeber, Person, Tätigkeit, Beginn, Ende, Steuerjahre | – |
 | Vorsorge | Rente, Riester, Rürup, Bausparen … | Art, Anbieter, Vertragsnummer, Person, Beginn | – |
@@ -25,7 +25,7 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 - Bank, Vertragspartner, Versicherer, Arbeitgeber, Anbieter, Praxis, Händler, Einrichtung und Steuerberater sind **Organisationen** aus dem Paket Basis. Eine Organisation legst du einmal an und wählst sie danach überall aus.
 - **Verbleib Originaldokumente** zeigt auf einen **Ablageort** des DMS (z. B. „Arbeitszimmer › Schrank › roter Ordner“). So findest du das Papier, wenn du das Original brauchst. Das Feld heißt in allen Typen gleich (`verbleib_original`), deshalb funktionieren gemeinsame Ansichten wie „Originale nach Ort“.
-- **Person** ist vorerst ein Textfeld („Erika Muster“). Ein eigener Mappentyp für Personen kommt später mit dem Paket Basis.
+- **Inhaber**, **Versichert** und **Person** sind **Personen** aus dem Paket Basis (Verweisart Bezug). An einer Person siehst du unter *Verknüpfungen* alles, was zu ihr gehört: Konten, Versicherungen, Arbeitsverhältnis, Ausweise, Arztbriefe, Zeugnisse – mit dem Paket Fahrzeuge auch ihre Fahrzeuge. Sachen wie das Auto verweisen selbst auf ihre Versicherung und stehen dort unter *Verknüpfungen*.
 
 **Fristen:** An den Datumsfeldern mit Frist erinnert das DMS rechtzeitig unter **Zu erledigen** und in der Ansicht **Anstehend** – bei der Hauptfälligkeit einer Versicherung jedes Jahr wieder.
 
@@ -36,12 +36,12 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 - *Läuft bald ab* – Ausweise, die in den nächsten sechs Monaten ablaufen oder schon abgelaufen sind,
 - *Garantie läuft ab* – Anschaffungen, deren Garantie in den nächsten drei Monaten endet.
 
-**Beispiele (optional):** 15 Mappen der erfundenen Familie Muster (Erika, Max und Lena) – je Typ ein bis zwei, dazu die Kfz-Versicherung fürs Paket Fahrzeuge. Sie hängen zusammen: Das Girokonto zeigt auf die Sparkasse, der Stromvertrag auf die Stadtwerke, die Impfung auf die Praxis Dr. Beispiel (alle aus dem Paket Basis), Max’ Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
+**Beispiele (optional):** 18 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas als **Personen**, je Typ ein bis zwei Mappen, dazu die Kfz-Versicherung fürs Paket Fahrzeuge. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, der Stromvertrag auf die Stadtwerke, Jonas’ Impfung auf die Praxis Dr. Beispiel (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
 
 ## Voraussetzungen
 
-- DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)
-- Paket **Basis** ab 1.0.0 – wird bei der Installation aus dem Katalog mitinstalliert
+- DMS ab Version 0.120 (Personen als Verweis, Umwandlung von Text in Verweise nach dem Update)
+- Paket **Basis** ab 1.1.0 (Person) – wird bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
 
@@ -51,10 +51,10 @@ Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Ansichten und auf Wu
 
 Nicht alles gehört vor alle Augen: Gesundheitsunterlagen und Konten (mit den Zugangsdaten zum Online-Banking) sollen meist nur die Eltern sehen. Das Paket schreibt dafür nichts vor – du richtest es nach der Installation selbst ein. Berechtigungen pflegst du am **Mappentyp** (Werkbank → Mappentypen → *Gesundheit* bzw. *Konto*, Abschnitt **Berechtigungen**). Ein Beispiel:
 
-1. Unter **Werkbank → Benutzer** eine Rolle **Eltern** anlegen und Erika und Max geben.
+1. Unter **Werkbank → Benutzer** eine Rolle **Eltern** anlegen und Lena und Tom geben.
 2. Am Mappentyp **Gesundheit** eine Regel anlegen: **Nur Eltern** – wenn *Benutzer hat nicht Rolle Eltern* → **✗ C R U D P**.
 3. Dieselbe Regel mit **Regel in andere Mappentypen kopieren** auch an den Mappentyp **Konto** geben und **Mappentyp speichern**.
-4. Im **Testlauf** darunter mit Lenas Benutzer prüfen: Sie darf keine Gesundheits- oder Kontomappe lesen.
+4. Im **Testlauf** darunter mit dem Benutzer von Jonas prüfen: Er darf keine Gesundheits- oder Kontomappe lesen.
 
 Wer nur die Passwörter schützen will, entzieht statt **R** nur **P** (Passwörter sehen). Mehr dazu im Administratorhandbuch unter „Berechtigungen“.
 
@@ -66,6 +66,8 @@ Wer nur die Passwörter schützen will, entzieht statt **R** nur **P** (Passwör
 4. Die Beispiel-Mappen löschen, sobald du sie nicht mehr brauchst.
 
 Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.
+
+**Update von 1.0.x:** Inhaber, Versichert und Person waren bis 1.0.x Textfelder. Das Update legt die Verweise dazu, die Texte bleiben. Unter **Werkbank → Pakete → Haushalt → Text in Verweise umwandeln** siehst du je Feld in einer Vorschau, welche Person das DMS je Name vorschlägt oder neu anlegt („Lena und Tom Muster“ wird zu zwei Personen); „Familie“ oder „gemeinsam“ überspringst du. Erst dann wird umgewandelt, und es lässt sich rückgängig machen.
 
 ## Pflege
 

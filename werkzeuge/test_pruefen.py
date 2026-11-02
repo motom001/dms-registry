@@ -211,6 +211,47 @@ class Erkennung(unittest.TestCase):
             self.assertEqual(pruefen.pruefe(WURZEL / 'pakete' / p, None), [], p)
 
 
+class AusText(unittest.TestCase):
+    """Text → Verweis: aus_text an Verweisfeldern (dms-registry #52, DMS #534)."""
+
+    def paket(self, felder: list, dms: str = '>=0.120.0') -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m['dms'] = dms
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            typen = yaml.safe_load((ziel / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+            typen[0]['felder'] += felder
+            typen[0]['register'][0]['felder'] += [f['key'] for f in felder]
+            (ziel / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump(typen, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    VERWEIS = {'key': 'halter_verweis', 'label': 'Halter', 'typ': 'referenz', 'ziel': 'beispiel', 'verweisart': 'bezug', 'aus_text': 'halter'}
+
+    def test_gueltig(self):
+        self.assertEqual(self.paket([self.VERWEIS]), [], 'das alte Textfeld steht nicht mehr im Paket')
+        self.assertEqual(self.paket([{'key': 'halter', 'label': 'Halter (Text)', 'typ': 'text'}, self.VERWEIS]), [], 'oder noch als Text')
+
+    def test_nur_an_verweisen(self):
+        self.assertTrue(any('aus_text' in f for f in self.paket([{'key': 'x', 'label': 'X', 'typ': 'text', 'aus_text': 'halter'}])))
+
+    def test_quelle_ist_text(self):
+        self.assertTrue(any('kein Textfeld' in f for f in self.paket([{**self.VERWEIS, 'aus_text': 'datum'}])))
+        self.assertTrue(any('anderes Feld' in f for f in self.paket([{**self.VERWEIS, 'aus_text': 'halter_verweis'}])))
+        self.assertTrue(any('aus_text' in f for f in self.paket([{**self.VERWEIS, 'aus_text': 'Halter Text'}])), 'Schema: nur Kennungen')
+
+    def test_keine_pflicht(self):
+        self.assertTrue(any('keine Pflicht' in f for f in self.paket([{**self.VERWEIS, 'pflicht': True}])))
+
+    def test_braucht_dms_0_120(self):
+        self.assertTrue(any('erst ab 0.120.0' in f for f in self.paket([self.VERWEIS], dms='>=0.113.0')))
+
+
 if __name__ == '__main__':
     unittest.main()
 

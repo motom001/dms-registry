@@ -2,18 +2,20 @@
 schema: 1
 id: fahrzeuge
 name: Fahrzeuge
-version: 1.0.3
-beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.
+version: 1.1.0
+beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
 # 0.75.0: Verweise auf den Ablageort des DMS (dms:ablageort); 0.79.0: Verweise zwischen Beispielen
 # 0.113.0: Feld-Eigenschaft „für die Erkennung nutzen“ (erkennung, DMS #336/#391)
-dms: ">=0.113.0"
+# 0.120.0: Text in Verweis umwandeln (aus_text, DMS #534) – Halter als Verweis auf eine Person
+dms: ">=0.120.0"
 abhaengigkeiten:
-  basis: ">=1.0.0"
-  haushalt: ">=1.0.0"
+  # Person gibt es ab Basis 1.1.0; das Beispiel „Tom“ (Halter) ab Haushalt 1.1.0.
+  basis: ">=1.1.0"
+  haushalt: ">=1.1.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

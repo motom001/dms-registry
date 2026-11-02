@@ -19,6 +19,10 @@
         "ziel": { "$ref": "#/$defs/typverweis" },
         "verweisart": { "enum": ["zugehoerigkeit", "bezug"] },
         "frist": { "type": "object", "required": ["vorlauf", "einheit"], "properties": { "vorlauf": { "type": "integer", "minimum": 0 }, "einheit": { "enum": ["tage", "wochen", "monate"] }, "wiederholung": { "type": "integer" } } },
+        "aus_text": {
+          "description": "Text → Verweis (DMS ab 0.120.0, DMS #534): Kennung des bisherigen Textfelds, aus dem sich dieses Verweisfeld nach einem Update füllen lässt. Das DMS legt den Verweis zusätzlich an; umgewandelt wird erst nach einer Vorschau in der Werkbank.",
+          "$ref": "#/$defs/schluessel"
+        },
         "erkennung": {
           "description": "Für die Erkennung nutzen (DMS ab 0.113.0, #336/#391): {} markiert das Feld; art sagt, was darin steht (fehlt: aus Feldart und Bezeichnung); hinweis ist der Erkennungshinweis.",
           "type": "object", "additionalProperties": false,
@@ -30,7 +34,8 @@
       },
       "allOf": [
         { "if": { "properties": { "typ": { "const": "auswahl" } } }, "then": { "required": ["optionen"] } },
-        { "if": { "properties": { "typ": { "const": "referenz" } } }, "then": { "required": ["ziel"] } }
+        { "if": { "properties": { "typ": { "const": "referenz" } } }, "then": { "required": ["ziel"] } },
+        { "if": { "required": ["aus_text"] }, "then": { "properties": { "typ": { "const": "referenz" } } } }
       ]
     },
     "register": {
