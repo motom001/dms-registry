@@ -49,6 +49,8 @@ jobs:
           basis=""
           if [ "${{ github.event_name }}" = pull_request ]; then basis="--basis origin/${{ github.base_ref }}"; fi
           python3 werkzeuge/pruefen.py $basis
+      - name: Kategorien und Issue-Vorlage aktuell (#84, #86)
+        run: python3 werkzeuge/vorlagen.py --pruefen
       - name: Katalog lässt sich bauen (ohne veröffentlichte Version zu ändern)
         run: |
           if git fetch --depth 1 origin gh-pages; then git worktree add site FETCH_HEAD; else mkdir site; fi

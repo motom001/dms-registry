@@ -61,6 +61,10 @@ They are explained in the administrator manual under [Pakete mit Code](https://m
 - **Service address** (from DMS 0.124.0, `dms: ">=0.124.0"`): If a package needs a service that every household runs somewhere else (e.g. an AI service), it asks for the address as a setting of type `adresse` instead of a fixed address in `code.netz`. At most one per package, only in a section, **without** `standard` – at most a `beispiel` (example) for a service in the own network (e.g. `http://ollama:11434/v1`). The administrator confirms the address when saving; the package runner lets the package reach only this address. The README explains what is sent there and when.
 - Changing settings is the job of the DMS. A package does not store its settings anywhere else itself and does not bring its own user interface for them.
 
+## Categories
+
+Every package belongs to **one or two categories** from a fixed list in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml). The catalog website filters by them, and “Similar packages” shows packages of the same category. Add a new package there under `pakete:`; CI checks it (`python3 werkzeuge/vorlagen.py --pruefen`). New categories only via an issue; there are no free tags. Categories are not (yet) part of the manifest; the DMS does not need them.
+
 ## Names
 
 Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versicherung`. The DMS creates them with the package id in front (`haushalt_versicherung`) so that two packages do not get in each other's way. Only the name ("Versicherung") is displayed. You write references to types of other packages as `<paket>:<schluessel>`, e.g. `basis:organisation`. The other package must then be listed under `abhaengigkeiten` (dependencies). To Mappe types that the DMS brings itself, you refer with `dms:` – without a dependency: `dms:ablageort` (where an original is kept), `dms:benutzer` (user) and `dms:rolle` (role). This requires `dms: ">=0.75.0"` in the manifest. The package id `dms` is therefore taken.

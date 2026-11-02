@@ -4,7 +4,7 @@
 
 **Issues and pull requests are welcome in German or English.** This is a translation; if the German and English versions differ, the German version ([CONTRIBUTING.md](CONTRIBUTING.md)) applies.
 
-1. **Open an issue** – as a user story: "As a … I want a package …, so that …", with acceptance criteria. For a change to an existing package, name the package.
+1. **Open an issue** – as a user story: "As a … I want a package …, so that …", with acceptance criteria. For a **bug or wish for an existing package**, use the template “Fehler oder Wunsch zu einem Paket · Bug or wish for a package” – you pick the package there (every package page on the catalog website links to it).
 2. **Wait for approval.** Only what carries the label `freigegeben` (approved) is accepted; this label is set by the maintainer alone.
 3. **Fork, create the package:** `werkzeuge/neues-paket.sh <id> "<Name>"` copies the template to `pakete/<id>/`.
 4. **Fill it in:** `manifest.yaml`, `README.md`, `LICENSE` (year and name), `CHANGELOG.md`, contents under `inhalt/`, expectations under `tests/`. Examples are given as comments in the template.

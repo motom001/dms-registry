@@ -1,0 +1,28 @@
+# Kategorien der Pakete (dms-registry #84, Stufe 1) – feste Liste, keine freien Schlagwörter.
+# Jedes Paket in pakete/ steht unten unter „pakete“ mit 1–2 Kategorien; die CI prüft das
+# (python3 werkzeuge/vorlagen.py --pruefen). Neue Kategorie nur über ein Issue.
+# Später (Stufe 2) setzt der Autor die Kategorien im Manifest selbst.
+kategorien:
+  - { kennung: vorlagen, de: Vorlagen für die Ablage, en: Filing templates }
+  - { kennung: dateiformate, de: Dateiformate, en: File formats }
+  - { kennung: volltext, de: Texterkennung und Volltext, en: Text recognition and full text }
+  - { kennung: sprachen, de: Sprachen, en: Languages }
+  - { kennung: ki, de: KI, en: AI }
+  - { kennung: post, de: Post und Scannen, en: Mail and scanning }
+  - { kennung: sicherung, de: Sicherung, en: Backup }
+  - { kennung: entwickler, de: Für Entwickler, en: For developers }
+pakete:
+  basis: [vorlagen]
+  fahrzeuge: [vorlagen]
+  haus: [vorlagen]
+  haushalt: [vorlagen]
+  vermietung: [vorlagen]
+  bildformate: [dateiformate]
+  office_email: [dateiformate, volltext]
+  texterkennung: [volltext]
+  texterkennung_fra: [sprachen]
+  ki_aehnlich: [ki]
+  ki_assistent: [ki]
+  trennblatt: [post]
+  sicherung_webdav: [sicherung]
+  hallo_post: [entwickler]

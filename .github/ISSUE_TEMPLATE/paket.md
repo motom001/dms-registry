@@ -1,6 +1,6 @@
 ---
-name: Paket / Package (User Story)
-about: Ein neues Paket oder eine Änderung an einem Paket vorschlagen · Suggest a new package or a change to a package
+name: Neues Paket / New package (User Story)
+about: Ein neues Paket vorschlagen – für Fehler oder Wünsche zu vorhandenen Paketen gibt es eine eigene Vorlage · Suggest a new package – bugs or wishes for existing packages have their own template
 labels: paket
 ---
 

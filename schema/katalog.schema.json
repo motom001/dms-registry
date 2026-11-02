@@ -51,7 +51,8 @@
         },
         "lizenz": { "type": "string" },
         "aktuell": { "$ref": "#/$defs/version" },
-        "versionen": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/paketversion" }, "description": "neueste zuerst" }
+        "versionen": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/paketversion" }, "description": "neueste zuerst" },
+        "kategorien": { "type": "array", "maxItems": 2, "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" }, "description": "Kategorien aus werkzeuge/kategorien.yaml (#84); ältere DMS-Versionen ignorieren das Feld" }
       }
     }
   },
