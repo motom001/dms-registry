@@ -18,13 +18,13 @@
       <span class="symbol gross" aria-hidden="true">B</span>
       <div><h1>Basis</h1><p class="leise">Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="basis@1.3.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="basis@1.4.0">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/basis">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.3.0 vom 02.11.2026</dd>
+      <dt>Version</dt><dd>1.4.0 vom 02.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>Apache-2.0</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.121.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.127.0</dd>
       <dt>Abhängigkeiten</dt><dd>keine</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
@@ -98,14 +98,15 @@
 <h4>Person</h4>
 <p>Eine <strong>Person</strong> ist ein Kontakt – Ansprechpartnerin bei der Bank, Hausarzt, Vermieter, Oma. Sie ist <strong>kein Benutzer</strong> des DMS und kann sich nicht anmelden (Benutzer verwaltest du unter <em>Werkbank → Benutzer</em>). Register <em>Stammdaten</em> (mit <strong>Beziehung</strong>: Familie, Freund/in, Ansprechpartner, Arzt/Ärztin, Handwerker, Mieter/in, Vermieter/in, Nachbar/in, Sonstige), <em>Arbeit</em> (Organisation, Niederlassung, Funktion, Abteilung), <em>Kontakt</em>, <em>Anschrift</em>, <em>Verknüpfungen</em>, <em>Dokumente</em>, <em>Historie</em>. Wer an Geburtstage erinnert werden möchte, schaltet am Feld <em>Geburtstag</em> unter <em>Werkbank → Mappentypen</em> eine jährliche Erinnerung ein.</p>
 <p><strong>Sichten:</strong> <em>Organisationen</em> mit <em>Versicherungen</em>, <em>Banken</em>, <em>Behörden</em>, <em>Ärzte und Praxen</em> und <em>Niederlassungen</em>; <em>Personen</em> mit <em>Familie und Freunde</em> und <em>Ansprechpartner</em>.</p>
+<p><strong>Gleichbedeutende Wörter für die Suche:</strong> <em>Rechnung, Beleg</em> · <em>Quittung, Kassenbon, Kassenzettel</em> · <em>Vertrag, Vereinbarung</em> · <em>Kündigung, Beendigung</em> · <em>Police, Versicherungsschein, Versicherungspolice</em> · <em>Mahnung, Zahlungserinnerung</em> · <em>Gutschrift, Erstattung, Rückerstattung</em> · <em>Lastschrift, Abbuchung</em> · <em>Anschrift, Adresse</em>. Wer eines sucht, findet auch die anderen. Das sind nur allgemeine Wörter, die in jeder Ablage vorkommen; fachliche Wörter bringen die Fachpakete mit (z. B. Kfz/Auto in Fahrzeuge). Sie stehen im DMS unter Werkbank → Suche; eigene Gruppen kannst du dort ergänzen.</p>
 <p><strong>Beispiele (optional):</strong> „Stadtwerke Musterstadt“, „Praxis Dr. Beispiel“, die „Sparkasse Musterstadt“ mit zwei Filialen, die Kundenberaterin Sabine Beraterin (Filiale Marktplatz), Hausarzt Dr. Bernd Beispiel und Oma Muster – erfundene Daten, untereinander verknüpft.</p>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS ab Version 0.121 (Feldformate und Datumsgrenzen; Version 1.0.0 lief ab 0.63)</li>
+<li>DMS ab Version 0.127 (Wortlisten für die Suche; vorher 0.121 für Feldformate und Datumsgrenzen; Version 1.0.0 lief ab 0.63)</li>
 <li>keine weiteren Pakete</li>
 </ul>
 <h3>Rechte und Netz</h3>
-<p>Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.</p>
+<p>Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Sichten, gleichbedeutende Wörter für die Suche und auf Wunsch Beispiele an.</p>
 <h3>Nach der Installation</h3>
 <ol>
 <li>Unter <strong>Ablage → Organisationen</strong> neue Organisationen anlegen; ihre Filialen legst du als <strong>Niederlassung</strong> an.</li>
@@ -115,7 +116,12 @@
 </ol>
 <h3>Pflege</h3>
 <p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Basis“ im Titel.</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.3.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.4.0</h3>
+<ul>
+<li>Neu: <strong>gleichbedeutende Wörter</strong> für die Suche (DMS #356) – wer „Rechnung“ sucht, findet auch „Beleg“; dazu Quittung/Kassenbon/Kassenzettel, Vertrag/Vereinbarung, Kündigung/Beendigung, Police/Versicherungsschein, Mahnung/Zahlungserinnerung, Gutschrift/Erstattung, Lastschrift/Abbuchung und Anschrift/Adresse. Nur allgemeine Wörter; fachliche bringen die Fachpakete mit (z. B. Fahrzeuge, Vermietung).</li>
+<li>Braucht DMS ab 0.127.0 (Wortlisten). Mappentypen, Sichten und Beispiele sind unverändert.</li>
+</ul>
+<h3>1.3.0</h3>
 <ul>
 <li><strong>Formate</strong> (dms-registry #55, DMS #535): Telefon, Fax und Mobil prüft das DMS als Telefonnummer, E-Mail als E-Mail-Adresse, Internetseite als Internetseite und die IBAN der Organisation mit Länge und Prüfziffer. Die PLZ hat in Deutschland genau 5 Ziffern; steht im Feld <em>Land</em> ein anderes Land, ist sie frei. Am Handy erscheint die passende Tastatur, Telefon und E-Mail lassen sich antippen.</li>
 <li>Person: Der <strong>Geburtstag</strong> darf nicht in der Zukunft liegen.</li>
@@ -147,7 +153,7 @@
 <li>Erste Fassung.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.3.0</td><td>02.11.2026</td><td>&gt;=0.121.0</td><td><a href="../../archive/basis-1.3.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.3.0">installieren</button></td></tr><tr><td>1.2.0</td><td>02.11.2026</td><td>&gt;=0.113.0</td><td><a href="../../archive/basis-1.2.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.2.0">installieren</button></td></tr><tr><td>1.1.1</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/basis-1.1.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.1.1">installieren</button></td></tr><tr><td>1.1.0</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/basis-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.1.0">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.63.0</td><td><a href="../../archive/basis-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.4.0</td><td>02.11.2026</td><td>&gt;=0.127.0</td><td><a href="../../archive/basis-1.4.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.4.0">installieren</button></td></tr><tr><td>1.3.0</td><td>02.11.2026</td><td>&gt;=0.121.0</td><td><a href="../../archive/basis-1.3.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.3.0">installieren</button></td></tr><tr><td>1.2.0</td><td>02.11.2026</td><td>&gt;=0.113.0</td><td><a href="../../archive/basis-1.2.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.2.0">installieren</button></td></tr><tr><td>1.1.1</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/basis-1.1.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.1.1">installieren</button></td></tr><tr><td>1.1.0</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/basis-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.1.0">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.63.0</td><td><a href="../../archive/basis-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="basis@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>
