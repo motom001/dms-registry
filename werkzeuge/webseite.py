@@ -92,7 +92,6 @@ TEXTE = {
         'dms_version_hilfe': 'Steht im DMS unter „Über das DMS“. Bleibt nur in diesem Browser.',
         'nur_passend': 'Nur Pakete, die zu meinem DMS passen',
         'nur_lokal': 'Nur Pakete, die alles lokal machen',
-        'netz': {'lokal': 'läuft nur lokal', 'dienst': 'verbindet sich mit deinem Dienst', 'internet': 'nutzt das Internet'},
         'stand': 'Stand',
         'anzahl': ('Paket', 'Pakete'),
         'datum': '%d.%m.%Y',
@@ -134,7 +133,6 @@ TEXTE = {
         'dms_version_hilfe': 'Shown in the DMS under “About the DMS”. Stays in this browser only.',
         'nur_passend': 'Only packages that fit my DMS',
         'nur_lokal': 'Only packages that work fully locally',
-        'netz': {'lokal': 'runs locally only', 'dienst': 'connects to your service', 'internet': 'uses the internet'},
         'stand': 'As of',
         'anzahl': ('package', 'packages'),
         'datum': '%Y-%m-%d',
@@ -209,7 +207,6 @@ def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
     de = '' if sprache == 'de' else ' lang="de"'
     mit_code = f' · {e(TEXTE[sprache]["kachel_code"])}' if v['code'] else ''
     netz = netz_art(p['id'])
-    mit_code += f' · <span class="netz {netz}">{e(TEXTE[sprache]["netz"][netz])}</span>'
     kats = p.get('kategorien') or []
     chips = ''.join(f'<span class="chip">{e(KATEGORIEN[k][sprache])}</span>' for k in kats if k in KATEGORIEN)
     return f'''      <a class="kachel" href="{vor}paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}" data-kategorien="{e(' '.join(kats))}" data-autor="{e(p['autor']['github'])}" data-netz="{netz}" data-versionen="{e(versionen_daten(p))}">
@@ -598,8 +595,7 @@ def detail(p: dict, pakete: list) -> str:
               f'      <div class="titel"><h1>{e(p["name"])}</h1>\n'
               f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
               f'        <p class="kurztext">{e(p["beschreibung"])}</p>\n'
-              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")} · '
-              f'<span class="netz {netz_art(p["id"])}">{e(TEXTE["de"]["netz"][netz_art(p["id"])])}</span></p>\n'
+              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p>\n'
               f'        <p class="chips">{kats}</p></div>\n'
               f'    </div>\n'
               f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
@@ -703,11 +699,6 @@ a.chip:hover, a.chip:focus-visible { border-color: var(--a); color: var(--a); }
 .dmsversion { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: -8px 0 18px; }
 .dmsversion input#dms-version { font: inherit; padding: 6px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); width: 9em; }
 .dmsversion .haken { display: inline-flex; gap: 6px; align-items: center; }
-.netz::before { content: ""; display: inline-block; width: .7em; height: .7em; margin-right: 4px; border-radius: 2px; vertical-align: -1px; border: 1.5px solid currentColor; }
-.netz.lokal::before { background: currentColor; }
-.netz.dienst::before { border-radius: 50%; }
-.netz.internet { color: var(--warn); }
-.netz.internet::before { border-radius: 50%; background: currentColor; }
 .dms-passt:empty { display: none; }
 .dms-passt { margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--linie); background: var(--flaeche); }
 .dms-passt.ja { padding: 6px 12px; font-size: .92rem; }
