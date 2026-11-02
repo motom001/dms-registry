@@ -33,11 +33,13 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 
 **Ansichten:** *Vermietung* mit allem und darunter *Mietobjekte*, *Wohnungen*, *Mietverträge* (darunter *Laufende Mietverträge*), *Nebenkostenabrechnungen*, *Ausgaben* (darunter *dieses Jahr*, *letztes Jahr* für die Anlage V und *Umlagefähig letztes Jahr* für die nächste Abrechnung) sowie *Abrechnung offen*, *Mieterhöhung möglich* und *Vertrag endet bald*.
 
+**Gleichbedeutende Wörter für die Suche:** *Nebenkosten, Betriebskosten* · *Nebenkostenabrechnung, Betriebskostenabrechnung* · *Kaltmiete, Nettokaltmiete, Grundmiete* · *Kaution, Mietkaution, Mietsicherheit* · *Mieter, Mietpartei*. Sie stehen im DMS unter Werkbank → Suche.
+
 **Beispiele (optional):** das Zweifamilienhaus Gartenstraße 8 der Familie Muster mit zwei Wohnungen, zwei Mietern (einer hat gekündigt), der noch offenen Nebenkostenabrechnung 2025 und drei Ausgaben. Mieter und Verträge hängen schon zusammen; Kautionskonto und Steuerjahr zeigen auf die Beispiele aus Basis und Haushalt, wenn du sie mitinstallierst.
 
 ## Voraussetzungen
 
-- DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)
+- DMS ab Version 0.127 (Wortlisten für die Suche; vorher 0.79 für Ablageort und Verweise zwischen Beispielen)
 - Pakete **Basis** ab 1.1.0 (Person), **Haushalt** ab 1.0.0 und **Haus** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz

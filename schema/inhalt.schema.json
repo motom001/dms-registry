@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/motom001/dms-registry/schema/inhalt.schema.json",
-  "title": "Inhalte eines DMS-Pakets (mappentypen.yaml, sichten.yaml, beispiele.yaml)",
+  "title": "Inhalte eines DMS-Pakets (mappentypen.yaml, sichten.yaml, beispiele.yaml, wortlisten.yaml)",
   "$defs": {
     "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
     "typverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$" },
@@ -62,5 +62,15 @@
   },
   "mappentypen": { "type": "array", "items": { "$ref": "#/$defs/mappentyp" } },
   "sichten": { "type": "array", "items": { "$ref": "#/$defs/sicht" } },
-  "beispiele": { "type": "array", "items": { "$ref": "#/$defs/beispiel" } }
+  "beispiele": { "type": "array", "items": { "$ref": "#/$defs/beispiel" } },
+  "wortlisten": {
+    "description": "Gruppen gleichbedeutender Wörter für die Suche (DMS #356, ab 0.127.0): Wer eines sucht, findet auch die anderen.",
+    "type": "array", "maxItems": 1000,
+    "items": {
+      "type": "object", "required": ["woerter"], "additionalProperties": false,
+      "properties": {
+        "woerter": { "type": "array", "minItems": 2, "maxItems": 20, "items": { "type": "string", "minLength": 2, "maxLength": 60 } }
+      }
+    }
+  }
 }

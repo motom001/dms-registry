@@ -166,6 +166,45 @@ class Inhalt(unittest.TestCase):
         self.assertTrue(any('reserviert' in f for f in self.paket('beispiel', 'dms')))
 
 
+class Wortlisten(unittest.TestCase):
+    """inhalt.wortlisten (DMS #356): gleichbedeutende Wörter für die Suche, ab DMS 0.127.0."""
+
+    def paket(self, gruppen, dms: str = '>=0.127.0', erwartung: int | None = None) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m['dms'] = dms
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            m['inhalt']['wortlisten'] = 'inhalt/wortlisten.yaml'
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            (ziel / 'inhalt' / 'wortlisten.yaml').write_text(yaml.safe_dump(gruppen, allow_unicode=True), encoding='utf-8')
+            erw = yaml.safe_load((ziel / 'tests' / 'erwartung.yaml').read_text(encoding='utf-8')) or {}
+            erw['wortlisten'] = len(gruppen) if erwartung is None else erwartung
+            (ziel / 'tests' / 'erwartung.yaml').write_text(yaml.safe_dump(erw, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_gueltig(self):
+        self.assertEqual(self.paket([{'woerter': ['Kfz', 'Auto', 'PKW']}, {'woerter': ['Nebenkosten', 'Betriebskosten']}]), [])
+
+    def test_schema(self):
+        self.assertTrue(any('wortlisten.yaml' in f for f in self.paket([{'woerter': ['Kfz']}])))
+        self.assertTrue(any('wortlisten.yaml' in f for f in self.paket([{'woerter': ['Kfz', 'Auto'], 'art': 'x'}])))
+        self.assertTrue(any('wortlisten.yaml' in f for f in self.paket([{'woerter': ['Kfz', 'A']}])))
+
+    def test_doppelte_woerter_gefaltet(self):
+        self.assertTrue(any('doppelt' in f for f in self.paket([{'woerter': ['Gebühr', 'gebuhr', 'Abgabe']}])))
+
+    def test_dms_version(self):
+        self.assertTrue(any('0.127.0' in f for f in self.paket([{'woerter': ['Kfz', 'Auto']}], dms='>=0.79.0')))
+
+    def test_erwartung(self):
+        self.assertTrue(any('Anzahl wortlisten' in f for f in self.paket([{'woerter': ['Kfz', 'Auto']}], erwartung=2)))
+
+
 if __name__ == '__main__':
     unittest.main()
 
