@@ -197,6 +197,41 @@ class Einstellungen(unittest.TestCase):
         kern['umwandeln'] = ['TIFF']
         self.assertTrue(self.paket(kern, dms='>=0.137.0'))
 
+    def test_schnittstelle_volltext(self):
+        # dms:volltext (DMS #614): ab DMS 0.145.0, nur mit code.volltext, dem Ereignis datei.volltext und Lesen.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen', 'schnittstellen': ['dms:volltext']}
+        c['ereignisse'] = ['datei.volltext']
+        c['volltext'] = ['message/rfc822', 'text/plain', 'application/octet-stream']
+        self.assertEqual(self.paket(c, dms='>=0.145.0'), [])
+        alt = self.paket(c, dms='>=0.144.2')
+        self.assertTrue(any('dms:volltext kennt das DMS erst ab 0.145.0' in f for f in alt), alt)
+        ohne = copy.deepcopy(c)
+        del ohne['volltext']
+        self.assertTrue(any('braucht code.volltext' in f for f in self.paket(ohne, dms='>=0.145.0')))
+        ohne = copy.deepcopy(c)
+        ohne['ereignisse'] = []
+        self.assertTrue(any('braucht das Ereignis datei.volltext' in f for f in self.paket(ohne, dms='>=0.145.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte']['dokumente'] = 'keine'
+        self.assertTrue(any('dms:volltext braucht auch code.rechte.dokumente: lesen' in f for f in self.paket(ohne, dms='>=0.145.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen'}
+        self.assertTrue(any('code.volltext: braucht' in f for f in self.paket(ohne, dms='>=0.145.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen'}
+        del ohne['volltext']
+        self.assertTrue(any('datei.volltext gibt es nur mit' in f for f in self.paket(ohne, dms='>=0.145.0')))
+        # PDF, JPEG und PNG liest das DMS selbst (Schema); höchstens 40 Dateitypen.
+        kern = copy.deepcopy(c)
+        kern['volltext'] = ['application/pdf']
+        self.assertTrue(self.paket(kern, dms='>=0.145.0'))
+        kern['volltext'] = ['Word']
+        self.assertTrue(self.paket(kern, dms='>=0.145.0'))
+        kern['volltext'] = [f'application/x-{i}' for i in range(41)]
+        self.assertTrue(self.paket(kern, dms='>=0.145.0'))
+
     def test_schnittstelle_sicherung(self):
         # dms:sicherung-lesen (DMS #585): ab DMS 0.142.0, nur zusammen mit dem Ereignis sicherung.fertig; keine Mappen nötig.
         import copy

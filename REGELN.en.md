@@ -40,6 +40,7 @@ Before installation, the DMS shows the permissions of a package with code, and t
 - „Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)“ (suggest fields from documents for “fill from document”, only from the text the DMS passes along) – only with `code.rechte.schnittstellen` and `dms: ">=0.125.0"`
 - „Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)“ (take over text recognition for scans and images – the DMS reports documents without text and shows „waiting for text recognition“ until the package writes the full text) – only with `code.rechte.schnittstellen`, `dokumente: schreiben` and `dms: ">=0.133.0"`
 - „Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln): TIFF, WebP, …“ (convert files the DMS cannot read itself – the package reads the original file and returns a version as PDF, PNG or JPEG for thumbnail and full text; the original stays unchanged) – only with `code.rechte.schnittstellen`, `code.umwandeln`, the event `datei.umwandeln`, `dokumente: lesen` and `dms: ">=0.137.0"` (see [Converting files](#converting-files))
+- „Volltext für Dateien liefern, die das DMS nicht selbst lesen kann – das Paket liest die Datei und schreibt nur ihren Volltext; Dokumente ändern, ersetzen oder löschen kann es nicht (dms:volltext): Word, E-Mail, …“ (deliver the full text of files the DMS cannot read itself – the package reads the file and writes only its full text; it cannot change, replace or delete documents) – only with `code.rechte.schnittstellen`, `code.volltext`, the event `datei.volltext`, `dokumente: lesen` and `dms: ">=0.145.0"` (see [Text only](#text-only))
 - „Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)“ (read the encrypted backup to copy it off-site – cannot open it: no key, no contents) – only with `code.rechte.schnittstellen`, the event `sicherung.fertig` and `dms: ">=0.142.0"` (see [Off-site backup](#off-site-backup))
 - „kein Zugriff auf Netzwerk und Internet“ (no access to network and internet) or „Zugriff auf Netzwerk/Internet nur zu: …“ (access to network/internet only to: …); with a service address as a setting additionally „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“ (the address from the setting „…“, which you enter and confirm)
 - „Reagiert auf diese Ereignisse:“ (reacts to these events) with one event per line
@@ -168,10 +169,27 @@ code:
 - **Third-party libraries** (decoders, encoders) need a suitable licence (see [Licences](#licences)), are built from fixed commits, with their licence texts under `code/lizenzen/` and a note in the README. Formats whose decoders require patent licences (e.g. HEVC in HEIC) only go into the catalogue after consulting the maintainers; the README says so openly.
 - The interface (flow, event, formats, limits, responses) is described in the DMS developer manual under [Dateien umwandeln](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#dateien-umwandeln) (German).
 
-**Text only** (e.g. [Office und E-Mail](pakete/office_email/) for Word, Excel, e-mails): if a file type needs no thumbnail but only the full text, the package reads the file on the event `dokument.hochgeladen` and writes the text with `PUT /dokumente/{id}/volltext` (`dokumente: schreiben`). The following applies:
+### Text only
+
+If a file type needs no thumbnail but only the full text (e.g. [Office und E-Mail](pakete/office_email/) for Word, Excel, e-mails), the package uses the permission `dms:volltext` (DMS #614, from 0.145.0) – **no** write access to documents. The DMS reports every file of its types with the event `datei.volltext` (on upload, for new versions, for existing files and on “Volltext neu erzeugen”); the package reads it and writes the text with `PUT /dokumente/{id}/volltext` (up to 5 million characters):
+
+```yaml
+dms: ">=0.145.0"
+code:
+  ereignisse: [datei.volltext]
+  volltext: [message/rfc822, text/plain]   # file types (MIME) the package handles; not PDF, JPEG or PNG
+  rechte:
+    lesen: ["*"]
+    dokumente: lesen                       # read the file – no write access needed
+    schnittstellen: ["dms:volltext"]
+```
+
+The following applies:
 
 - **Run nothing:** macros, scripts and embedded objects are neither started nor evaluated; only read the parts of Office files that hold the text, XML without DTD and external entities, limits against ZIP bombs.
 - **No network**, as with converting. The file type is determined by the content, not the name; files the DMS reads itself (PDF, JPEG, PNG) are left alone.
+- **Give a reason:** if the package cannot read a file, it ends with code `0` and a short sentence as its result (e.g. „Word lässt sich nicht lesen: mit einem Passwort verschlüsselt“) – the DMS shows it on the document.
+- Flow, event and limits are described in the DMS developer manual under [Volltext liefern](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#volltext-liefern) (German).
 
 ## Signed catalogue
 

@@ -1,9 +1,11 @@
 // Paket Office und E-Mail (dms-registry #30, Stufe 1): Volltext für Word, Excel, PowerPoint, OpenDocument, RTF,
 // Textdateien und E-Mails (.eml, .msg), die das DMS nicht selbst liest.
 //
-// Ablauf: Ereignis „Dokument hochgeladen“ (dokument.hochgeladen) → passt Dateityp oder Endung, die Datei über die API
-// holen → Typ am Inhalt erkennen → Text herauslösen (nur XML bzw. Text lesen; Makros und eingebettete Objekte werden
-// nie ausgeführt) → PUT /dokumente/{id}/volltext. Kein Netz, kein Dateisystem; das Original bleibt unverändert.
+// Ablauf: Ereignis „Datei braucht Volltext“ (datei.volltext, Recht dms:volltext, ab DMS 0.145.0: beim Hochladen, bei
+// neuen Versionen, für den Bestand und bei „Volltext neu erzeugen“) → passt Dateityp oder Endung, die Datei über die
+// API holen → Typ am Inhalt erkennen → Text herauslösen (nur XML bzw. Text lesen; Makros und eingebettete Objekte
+// werden nie ausgeführt) → PUT /dokumente/{id}/volltext. Kein Netz, kein Dateisystem; das Original bleibt unverändert.
+// „Dokument hochgeladen“ (dokument.hochgeladen, bis 1.0.0) versteht der Code weiter.
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -29,9 +31,10 @@ enum Stufe { DEBUG = 0, INFO = 1, WARNUNG = 2, FEHLER = 3 };
 
 // Größere Dateien holt das Paket nicht (Speicher je Aufruf 256 MB; entpackte Teile kommen dazu).
 constexpr double DATEI_MAX = 50.0 * 1024 * 1024;
-// Die API nimmt höchstens 2 MB JSON je Anfrage: so viel Text (UTF-8) schreibt das Paket höchstens.
-constexpr size_t TEXT_MAX = 1800u * 1000u;
-constexpr size_t KOERPER_MAX = 2u * 1024u * 1024u - 4096u;
+// Das DMS nimmt höchstens 5 Millionen Zeichen Volltext; PUT /dokumente/{id}/volltext darf dafür bis 32 MB groß sein
+// (ab DMS 0.145.0). 5 Millionen Bytes UTF-8 sind nie mehr als 5 Millionen Zeichen.
+constexpr size_t TEXT_MAX = 5u * 1000u * 1000u;
+constexpr size_t KOERPER_MAX = 32u * 1024u * 1024u - 4096u;
 
 // Dateitypen (wie das DMS sie meldet) und Endungen, bei denen das Paket die Datei holt. Ob es wirklich eine solche
 // Datei ist, entscheidet danach der Inhalt.
@@ -95,11 +98,16 @@ size_t zeichenzahl(const std::string &t) {
 }
 
 int verarbeite(const Json &e) {
-  if (e["art"].text() != "dokument.hochgeladen") return 0;  // z. B. paket.einstellungen_geaendert
+  const std::string art = e["art"].text();
+  if (art != "datei.volltext" && art != "dokument.hochgeladen") return 0;  // z. B. paket.einstellungen_geaendert
   const Json &d = e["daten"];
   const std::string dok = d["dokument"].text();
   if (!sichereId(dok)) { ergebnis("Ereignis ohne gültiges Dokument"); return 0; }
-  if (!zustaendig(d["mime"].text(), d["name"].text())) return 0;  // PDF, Fotos … liest das DMS selbst
+  if (!zustaendig(d["mime"].text(), d["name"].text())) {
+    // Bei „Datei braucht Volltext“ steht das Ergebnis am Dokument (z. B. unbekannter Typ mit fremder Endung).
+    if (art == "datei.volltext") ergebnis("Weder Office-Dokument noch E-Mail oder Text (Dateityp und Endung) – nichts zu tun");
+    return 0;  // PDF, Fotos … liest das DMS selbst
+  }
   if (d["groesse"].zahl(0) > DATEI_MAX) { ergebnis("Größer als 50 MB – kein Volltext"); return 0; }
 
   std::string q = "{\"methode\":\"GET\",\"pfad\":\"/dokumente/" + dok + "/inhalt\"}";

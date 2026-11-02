@@ -40,6 +40,7 @@ Vor der Installation zeigt das DMS die Rechte eines Pakets mit Code, die Katalog
 - „Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)“ – nur mit `code.rechte.schnittstellen` und `dms: ">=0.125.0"`
 - „Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)“ – nur mit `code.rechte.schnittstellen`, `dokumente: schreiben` und `dms: ">=0.133.0"`
 - „Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln): TIFF, WebP, …“ – nur mit `code.rechte.schnittstellen`, `code.umwandeln`, dem Ereignis `datei.umwandeln`, `dokumente: lesen` und `dms: ">=0.137.0"` (siehe [Dateien umwandeln](#dateien-umwandeln))
+- „Volltext für Dateien liefern, die das DMS nicht selbst lesen kann – das Paket liest die Datei und schreibt nur ihren Volltext; Dokumente ändern, ersetzen oder löschen kann es nicht (dms:volltext): Word, E-Mail, …“ – nur mit `code.rechte.schnittstellen`, `code.volltext`, dem Ereignis `datei.volltext`, `dokumente: lesen` und `dms: ">=0.145.0"` (siehe [Nur Text aus Dokumenten](#nur-text-aus-dokumenten))
 - „Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)“ – nur mit `code.rechte.schnittstellen`, dem Ereignis `sicherung.fertig` und `dms: ">=0.142.0"` (siehe [Sicherung außer Haus](#sicherung-außer-haus))
 - „kein Zugriff auf Netzwerk und Internet“ bzw. „Zugriff auf Netzwerk/Internet nur zu: …“; mit einer Dienst-Adresse als Einstellung zusätzlich „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“
 - „Reagiert auf diese Ereignisse:“ mit einem Ereignis je Zeile
@@ -168,10 +169,27 @@ code:
 - **Fremde Bibliotheken** (Decoder, Encoder) mit passender Lizenz (siehe [Lizenzen](#lizenzen)), auf feste Commits gebaut, mit ihren Lizenztexten unter `code/lizenzen/` und einem Hinweis im README. Formate, für deren Decoder Patentlizenzen verlangt werden (z. B. HEVC in HEIC), kommen erst nach Rücksprache mit den Pflegern in den Katalog; das README nennt das offen.
 - Die Schnittstelle (Ablauf, Ereignis, Formate, Grenzen, Antworten) beschreibt das Entwicklerhandbuch des DMS unter [Dateien umwandeln](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#dateien-umwandeln).
 
-**Nur Text aus Dokumenten** (z. B. [Office und E-Mail](pakete/office_email/) für Word, Excel, E-Mails): Braucht ein Dateityp kein Vorschaubild, sondern nur den Volltext, liest das Paket die Datei beim Ereignis `dokument.hochgeladen` und schreibt den Text mit `PUT /dokumente/{id}/volltext` (`dokumente: schreiben`). Dabei gilt:
+### Nur Text aus Dokumenten
+
+Braucht ein Dateityp kein Vorschaubild, sondern nur den Volltext (z. B. [Office und E-Mail](pakete/office_email/) für Word, Excel, E-Mails), nimmt das Paket das Recht `dms:volltext` (DMS #614, ab 0.145.0) – **kein** Schreibrecht auf Dokumente. Das DMS meldet ihm jede Datei seiner Typen mit dem Ereignis `datei.volltext` (beim Hochladen, bei neuen Versionen, für den Bestand und bei „Volltext neu erzeugen“); das Paket liest sie und schreibt den Text mit `PUT /dokumente/{id}/volltext` (bis 5 Millionen Zeichen):
+
+```yaml
+dms: ">=0.145.0"
+code:
+  ereignisse: [datei.volltext]
+  volltext: [message/rfc822, text/plain]   # zuständige Dateitypen (MIME); PDF, JPEG und PNG nicht
+  rechte:
+    lesen: ["*"]
+    dokumente: lesen                       # die Datei lesen – Schreibrecht braucht es nicht
+    schnittstellen: ["dms:volltext"]
+```
+
+Dabei gilt:
 
 - **Nichts ausführen:** Makros, Skripte und eingebettete Objekte werden weder gestartet noch ausgewertet; aus Office-Dateien nur die Teile mit dem Text lesen, XML ohne DTD und externe Entitäten, Grenzen gegen ZIP-Bomben.
 - **Kein Netz**, wie beim Umwandeln. Der Typ zählt am Inhalt, nicht am Namen; Dateien, die das DMS selbst liest (PDF, JPEG, PNG), lässt das Paket aus.
+- **Grund nennen:** Kann das Paket eine Datei nicht lesen, endet es mit Code `0` und einem kurzen Satz als Ergebnis (z. B. „Word lässt sich nicht lesen: mit einem Passwort verschlüsselt“) – den zeigt das DMS am Dokument.
+- Ablauf, Ereignis und Grenzen beschreibt das Entwicklerhandbuch des DMS unter [Volltext liefern](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#volltext-liefern).
 
 ## Signierter Katalog
 

@@ -263,7 +263,8 @@
               "volltext.fertig",
               "paket.einstellungen_geaendert",
               "datei.umwandeln",
-              "sicherung.fertig"
+              "sicherung.fertig",
+              "datei.volltext"
             ]
           },
           "uniqueItems": true
@@ -295,7 +296,7 @@
             },
             "schnittstellen": {
               "type": "array",
-              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0. dms:erkennen (DMS #511) – Felder für „Aus Dokument ausfüllen“ aus Text und JSON Schema des Kerns vorschlagen; braucht dms: >=0.125.0. dms:texterkennung (DMS #458) – Texterkennung für Scans und Bilder übernehmen; braucht dokumente: schreiben und dms: >=0.133.0. dms:umwandeln (DMS #577) – Dateien, die das DMS nicht selbst liest, in eine Fassung (PDF, PNG, JPEG) umwandeln; braucht dokumente: lesen, code.umwandeln, das Ereignis datei.umwandeln und dms: >=0.137.0. dms:sicherung-lesen (DMS #585) – die verschlüsselte Sicherung in Stücken lesen, außer Haus kopieren und je Sicherung zurückmelden; braucht das Ereignis sicherung.fertig und dms: >=0.142.0",
+              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0. dms:erkennen (DMS #511) – Felder für „Aus Dokument ausfüllen“ aus Text und JSON Schema des Kerns vorschlagen; braucht dms: >=0.125.0. dms:texterkennung (DMS #458) – Texterkennung für Scans und Bilder übernehmen; braucht dokumente: schreiben und dms: >=0.133.0. dms:umwandeln (DMS #577) – Dateien, die das DMS nicht selbst liest, in eine Fassung (PDF, PNG, JPEG) umwandeln; braucht dokumente: lesen, code.umwandeln, das Ereignis datei.umwandeln und dms: >=0.137.0. dms:sicherung-lesen (DMS #585) – die verschlüsselte Sicherung in Stücken lesen, außer Haus kopieren und je Sicherung zurückmelden; braucht das Ereignis sicherung.fertig und dms: >=0.142.0. dms:volltext (DMS #614) – den Volltext für Dateien liefern, die das DMS nicht selbst liest, ohne Schreibrecht auf Dokumente; braucht dokumente: lesen, code.volltext, das Ereignis datei.volltext und dms: >=0.145.0",
               "items": {
                 "enum": [
                   "dms:vektoren",
@@ -303,7 +304,8 @@
                   "dms:erkennen",
                   "dms:texterkennung",
                   "dms:umwandeln",
-                  "dms:sicherung-lesen"
+                  "dms:sicherung-lesen",
+                  "dms:volltext"
                 ]
               },
               "uniqueItems": true
@@ -334,6 +336,24 @@
           },
           "minItems": 1,
           "maxItems": 20,
+          "uniqueItems": true
+        },
+        "volltext": {
+          "type": "array",
+          "description": "Volltext aus Paketen (DMS #614, nur mit dms:volltext): die Dateitypen (MIME), für die das Paket den Volltext liefert, z. B. message/rfc822. PDF, JPEG und PNG liest das DMS selbst und sind nicht erlaubt.",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]{0,62}/[a-z0-9][a-z0-9!#$&^_.+-]{0,62}$",
+            "not": {
+              "enum": [
+                "application/pdf",
+                "image/jpeg",
+                "image/png"
+              ]
+            }
+          },
+          "minItems": 1,
+          "maxItems": 40,
           "uniqueItems": true
         },
         "einstellungen": {
