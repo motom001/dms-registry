@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T22:08:51Z",
+  "erstellt": "2026-11-02T22:23:00Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -405,6 +405,24 @@
       "id": "bildformate",
       "versionen": [
         {
+          "version": "1.0.1",
+          "dms": ">=0.137.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/bildformate-1.0.1.zip",
+          "sha256": "fd2b016f338285073785aa5b194d9c98a0aecb1623b122b2cbbf69068487400c",
+          "groesse": 364703,
+          "veroeffentlicht": "2026-11-02T22:23:00Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/bildformate",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/bildformate/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/bildformate/CHANGELOG.md"
+        },
+        {
           "version": "1.0.0",
           "dms": ">=0.137.0",
           "abhaengigkeiten": {},
@@ -424,13 +442,13 @@
         }
       ],
       "name": "Bildformate",
-      "beschreibung": "Vorschaubild und Volltext für TIFF-Scans (auch mehrseitig), WebP, GIF und BMP – das Paket wandelt sie in ein PDF, JPEG oder PNG, das das DMS liest. Das Original bleibt das Dokument. Abgeschottet im Paket-Läufer, ohne Netz.",
+      "beschreibung": "Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP im DMS sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.1"
     },
     {
       "id": "fahrzeuge",

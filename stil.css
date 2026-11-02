@@ -25,7 +25,30 @@ a.kachel:hover, a.kachel:focus-visible { border-color: var(--a); }
 .kachel .text, .kachel .unter { grid-column: 2; color: var(--leise); font-size: .92rem; }
 .symbol { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--a); color: #fff; font-weight: 700; font-size: 1.3rem; }
 .symbol.gross { width: 64px; height: 64px; font-size: 1.8rem; border-radius: 16px; flex: none; }
-.paketkopf { display: flex; gap: 16px; align-items: center; margin: 8px 0 16px; }
+.paketkopf { display: flex; gap: 16px; align-items: flex-start; margin: 8px 0 20px; }
+.paketkopf .titel { flex: 1; min-width: 0; }
+.paketkopf .kurztext { font-size: 1.08rem; margin: 4px 0; }
+.paketkopf .installieren { flex: none; margin-top: 6px; }
+p.klein { font-size: .9rem; margin: 2px 0; }
+a.gh { color: var(--leise); font-size: .9em; text-decoration: none; }
+a.gh:hover, a.gh:focus-visible { color: var(--a); text-decoration: underline; }
+details.bereich { padding: 0; margin: 10px 0; border-radius: 12px; }
+details.bereich > summary { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 12px 16px; cursor: pointer; list-style: none; }
+details.bereich > summary::-webkit-details-marker { display: none; }
+details.bereich > summary::before { content: "›"; display: inline-block; width: .8em; transition: transform .15s; color: var(--leise); font-weight: 700; }
+details.bereich[open] > summary::before { transform: rotate(90deg); }
+details.bereich > summary h2 { display: inline; font-size: 1.15rem; border: 0; margin: 0; padding: 0; }
+details.bereich .kurz { font-size: .92rem; }
+details.bereich > .innen { padding: 4px 16px 14px; border-top: 1px solid var(--linie); }
+details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
+.spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.passt h3 { font-size: 1rem; margin: 16px 0 8px; }
+.minis { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+a.mini { display: flex; gap: 10px; align-items: flex-start; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 10px; padding: 10px 12px; color: inherit; text-decoration: none; font-size: .92rem; }
+a.mini:hover, a.mini:focus-visible { border-color: var(--a); }
+.kurzfassung { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.symbol.klein { width: 32px; height: 32px; font-size: 1rem; border-radius: 8px; flex: none; }
+@media (max-width: 640px) { .paketkopf { flex-wrap: wrap; } .paketkopf .installieren { width: 100%; order: 3; } .spalten { grid-template-columns: 1fr; } }
 .knoepfe { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
 .knopf { display: inline-block; font: inherit; font-weight: 600; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--linie); background: var(--flaeche); color: var(--tinte); text-decoration: none; cursor: pointer; }
 .knopf.primaer { background: var(--a); border-color: var(--a); color: #fff; }
