@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T09:55:33Z",
+  "erstellt": "2026-11-02T12:33:59Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -400,6 +400,37 @@
       },
       "lizenz": "Apache-2.0",
       "aktuell": "1.4.0"
+    },
+    {
+      "id": "bildformate",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.137.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/bildformate-1.0.0.zip",
+          "sha256": "e7e2326871de73a8eaf1c4fb7d98d7966a886db60ee08fe192117c4f9cc2c67a",
+          "groesse": 364559,
+          "veroeffentlicht": "2026-11-02T12:33:59Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/bildformate",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/bildformate/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/bildformate/CHANGELOG.md"
+        }
+      ],
+      "name": "Bildformate",
+      "beschreibung": "Vorschaubild und Volltext für TIFF-Scans (auch mehrseitig), WebP, GIF und BMP – das Paket wandelt sie in ein PDF, JPEG oder PNG, das das DMS liest. Das Original bleibt das Dokument. Abgeschottet im Paket-Läufer, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0"
     },
     {
       "id": "fahrzeuge",
