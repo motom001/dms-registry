@@ -1,0 +1,53 @@
+# Paket KI-Assistent (Stufe 2 des KI-Pakets, #31/#45): Adapter zu einem OpenAI-kompatiblen KI-Dienst.
+# Schema: schema/manifest.schema.json
+schema: 1
+id: ki_assistent
+name: KI-Assistent
+version: 1.0.0
+beschreibung: Beantwortet Fragen an die Ablage („Frag deine Ablage“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# 0.124.0: Schnittstelle dms:antworten, Einstellung vom Typ adresse, netz_strom/netz_weiter/teil (DMS #444)
+dms: ">=0.124.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  rechte:
+    # Nur Fragen beantworten: Das DMS gibt je Frage wenige Ausschnitte mit (mit den Rechten des Fragenden).
+    # Keine Mappen, keine Dokumente – das Paket liest nichts selbst aus der Ablage.
+    schnittstellen: ["dms:antworten"]
+  # Keine feste Adresse: Netz nur zur Dienst-Adresse, die der Administrator einträgt und bestätigt.
+  netz: []
+  einstellungen:
+    - abschnitt: KI-Dienst
+      hilfe: Ein Dienst mit OpenAI-kompatibler Schnittstelle, z. B. Ollama, LocalAI oder der Server von llama.cpp. Betrieb und Hosting des Dienstes liegen außerhalb des DMS – im eigenen Netz verlässt nichts das Haus, bei einem anderen Anbieter ist es eine Vertrauensbeziehung zu diesem Dienstleister.
+      felder:
+        - schluessel: dienst
+          name: Dienst-Adresse
+          typ: adresse
+          pflicht: true
+          beispiel: "http://ollama:11434/v1"
+          hilfe: Adresse der Schnittstelle, endet meist auf /v1 – bei Ollama im selben Docker-Netz z. B. http://ollama:11434/v1, auf einem anderen Rechner http://192.168.1.20:11434/v1.
+        - schluessel: modell
+          name: Modell
+          typ: text
+          pflicht: true
+          hilfe: Name des Modells beim Dienst, z. B. qwen2.5:3b oder llama3.2:3b (bei Ollama vorher mit „ollama pull …“ holen). „Verbindung testen“ zeigt, welche Modelle der Dienst kennt.
+        - schluessel: schluessel
+          name: Schlüssel (API-Key)
+          typ: geheim
+          hilfe: Nur für Dienste mit Anmeldung. Ollama im Heimnetz braucht keinen.
+        - schluessel: antwortlaenge
+          name: Antwort höchstens (Tokens)
+          typ: zahl
+          min: 64
+          max: 4096
+          standard: 800
+          hilfe: Obergrenze für die Länge einer Antwort. Kleiner heißt schneller, gerade auf einem NAS ohne Grafikkarte.
+  aktionen:
+    - schluessel: verbindung_testen
+      name: Verbindung testen
+      hilfe: Fragt den Dienst nach seinen Modellen und stellt eine kurze Probefrage – ob er erreichbar ist, ob das Modell da ist und wie lange eine Antwort dauert.
