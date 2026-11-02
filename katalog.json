@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T07:14:51Z",
+  "erstellt": "2026-11-02T07:24:31Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1861,6 +1861,24 @@
       "id": "ki_assistent",
       "versionen": [
         {
+          "version": "1.1.0",
+          "dms": ">=0.125.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/ki_assistent-1.1.0.zip",
+          "sha256": "ddcff1b633b6485b0748f3729889ca001fc799164de9ec7a8cbe69ae8be2b6d7",
+          "groesse": 65608,
+          "veroeffentlicht": "2026-11-02T07:24:31Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/ki_assistent",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_assistent/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_assistent/CHANGELOG.md"
+        },
+        {
           "version": "1.0.0",
           "dms": ">=0.124.0",
           "abhaengigkeiten": {},
@@ -1880,13 +1898,13 @@
         }
       ],
       "name": "KI-Assistent",
-      "beschreibung": "Beantwortet Fragen an die Ablage („Frag deine Ablage“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.",
+      "beschreibung": "Beantwortet Fragen an die Ablage („Frag deine Ablage“) und füllt Felder aus Dokumenten („Aus Dokument ausfüllen“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0"
+      "aktuell": "1.1.0"
     },
     {
       "id": "texterkennung",
