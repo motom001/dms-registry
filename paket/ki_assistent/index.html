@@ -18,10 +18,10 @@
       <span class="symbol gross" aria-hidden="true">K</span>
       <div><h1>KI-Assistent</h1><p class="leise">Beantwortet Fragen an die Ablage („Frag deine Ablage“) und füllt Felder aus Dokumenten („Aus Dokument ausfüllen“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="ki_assistent@1.1.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="ki_assistent@1.1.1">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/ki_assistent">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.1.0 vom 02.11.2026</dd>
+      <dt>Version</dt><dd>1.1.1 vom 02.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>Apache-2.0</dd>
       <dt>Nötige DMS-Version</dt><dd>&gt;=0.125.0</dd>
@@ -69,13 +69,14 @@
 <li>Es reagiert auf <strong>keine Ereignisse</strong> – es läuft nur, wenn jemand fragt, <em>Aus Dokument ausfüllen</em> drückt oder du „Verbindung testen“ drückst.</li>
 </ul>
 <h3>Einrichten</h3>
+<p>Eine ausführliche Anleitung mit einem fertigen Beispiel für Ollama per Docker Compose – auch für ein NAS ohne Grafikkarte, mit Modellwahl, Speicher, Geschwindigkeit und Fehlersuche – steht im Administratorhandbuch des DMS unter <strong><a href="https://motom001.github.io/dms/admin/aktuell/ki-lokal/">KI lokal betreiben</a></strong>.</p>
 <h4>1. Einen KI-Dienst bereitstellen</h4>
 <p><strong>Ollama aus dem App-Store deines Heimservers</strong> – am einfachsten:</p>
 <ul>
 <li><strong>Umbrel:</strong> App Store → <em>Ollama</em> installieren. Adresse für das DMS meist <code>http://&lt;umbrel&gt;:11434/v1</code>.</li>
 <li><strong>CasaOS / ZimaOS:</strong> App Store → <em>Ollama</em> installieren. Adresse <code>http://&lt;rechner&gt;:11434/v1</code>.</li>
 </ul>
-<p>Danach ein Modell holen, z. B. im Terminal des Ollama-Containers: <code>ollama pull qwen2.5:3b</code>.</p>
+<p>Danach ein Modell holen, z. B. im Terminal des Ollama-Containers: <code>ollama pull ministral-3:3b</code>.</p>
 <p><strong>Docker Compose neben dem DMS</strong> – dann erreicht das DMS Ollama im selben Netz unter <code>http://ollama:11434/v1</code>:</p>
 <pre><code class="language-yaml">services:
   ollama:
@@ -86,14 +87,14 @@
     # Mit NVIDIA-Grafikkarte zusätzlich:
     # deploy: { resources: { reservations: { devices: [{ driver: nvidia, count: all, capabilities: [gpu] }] } } }
 </code></pre>
-<p>Ins Compose-Projekt des DMS eintragen (oder beide Projekte in ein gemeinsames Netzwerk hängen), dann <code>docker compose exec ollama ollama pull qwen2.5:3b</code>. Einen Port nach außen braucht Ollama dafür nicht.</p>
+<p>Ins Compose-Projekt des DMS eintragen (oder beide Projekte in ein gemeinsames Netzwerk hängen), dann <code>docker compose exec ollama ollama pull ministral-3:3b</code>. Einen Port nach außen braucht Ollama dafür nicht.</p>
 <p><strong>Ein anderer Rechner mit Grafikkarte</strong> im Heimnetz ist oft deutlich schneller als ein NAS: Ollama dort installieren, mit <code>OLLAMA_HOST=0.0.0.0</code> starten und im DMS <code>http://&lt;ip-des-rechners&gt;:11434/v1</code> eintragen. Die Verbindung im Heimnetz ist dann unverschlüsselt (<code>http://</code>) – das ist bei einem eigenen Netz üblich; über das Internet nimm immer <code>https://</code>.</p>
 <h4>2. Paket installieren und einstellen</h4>
 <ol>
 <li><em>Werkbank → Pakete → KI-Assistent → Installieren</em> und die Rechte bestätigen.</li>
 <li>Reiter <strong>Einstellungen</strong>:</li>
 <li><strong>Dienst-Adresse</strong>, z. B. <code>http://ollama:11434/v1</code> – im leeren Feld steht das nur als Beispiel.</li>
-<li><strong>Modell</strong>, z. B. <code>qwen2.5:3b</code>.</li>
+<li><strong>Modell</strong>, z. B. <code>ministral-3:3b</code>.</li>
 <li><strong>Schlüssel (API-Key)</strong> nur, wenn der Dienst eine Anmeldung verlangt (Ollama nicht). Das DMS speichert ihn verschlüsselt.</li>
 <li><strong>Antwort höchstens (Tokens)</strong>, Standard 800 – kleiner ist schneller (gilt für „Frag deine Ablage“).</li>
 <li>Abschnitt <strong>Aus Dokument ausfüllen</strong>: an/aus und <strong>Zeitgrenze</strong> (Standard 50 Sekunden).</li>
@@ -102,8 +103,46 @@
 </ol>
 <p>Unter <em>Werkbank → Pakete → KI-Assistent</em> stellst du außerdem die <strong>Höchstmenge je Frage</strong> ein.</p>
 <h3>Welches Modell?</h3>
-<p>Kleine Modelle mit 1–4 Milliarden Parametern (quantisiert, z. B. Q4) laufen auch ohne Grafikkarte; gute Kandidaten für deutsche Fragen sind <code>qwen2.5:3b</code>, <code>llama3.2:3b</code> und <code>gemma2:2b</code>. Größere Modelle (7–8 Milliarden) antworten besser, brauchen aber eine Grafikkarte oder viel Geduld.</p>
-<p>Für <strong>Aus Dokument ausfüllen</strong> muss der Dienst <strong>strukturierte Ausgabe nach JSON Schema</strong> können (<code>response_format</code> vom Typ <code>json_schema</code>): Ollama ab Version 0.5, der Server von llama.cpp, LocalAI und vLLM können das. Ältere Dienste bekommen einen zweiten Versuch mit „nur JSON“; dann hängt es mehr vom Modell ab. Geeignet sind Modelle, die gut Anweisungen folgen, z. B. <code>qwen2.5:3b</code> oder <code>qwen2.5:7b</code>; ganz kleine Modelle (unter 2 Milliarden) erfinden eher Werte. Die Antwort ist kurz, aber der ganze Text muss gelesen werden – auf einem NAS ohne Grafikkarte kann eine lange Seite die Zeitgrenze überschreiten. Dann übernimmt die eingebaute Erkennung.</p>
+<p>Kleine Modelle mit etwa 3 Milliarden Parametern laufen auch ohne Grafikkarte. Mit offener Lizenz (Stand 11/2026, Einzelheiten im Handbuch unter <a href="https://motom001.github.io/dms/admin/aktuell/ki-lokal/#modell">Welches Modell?</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Modell (Name bei Ollama)</th>
+<th>Größe</th>
+<th>Lizenz</th>
+<th>wofür</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>ministral-3:3b</code></strong> (Mistral AI)</td>
+<td>3 Mrd.</td>
+<td>Apache-2.0</td>
+<td><strong>Empfehlung ohne Grafikkarte</strong> – „Frag deine Ablage“ und „Aus Dokument ausfüllen“; spricht gut Deutsch</td>
+</tr>
+<tr>
+<td><code>granite4.1:3b</code> (IBM)</td>
+<td>3 Mrd.</td>
+<td>Apache-2.0</td>
+<td>Alternative ohne Grafikkarte</td>
+</tr>
+<tr>
+<td><code>ministral-3:8b</code> (Mistral AI)</td>
+<td>8 Mrd.</td>
+<td>Apache-2.0</td>
+<td>mit Grafikkarte (8 GB); ohne Grafik nur für Hintergrundarbeit wie „Aus Dokument ausfüllen“</td>
+</tr>
+<tr>
+<td><code>qwen2.5:7b</code> (Alibaba)</td>
+<td>7 Mrd.</td>
+<td>Apache-2.0</td>
+<td>mit Grafikkarte; bewährt bei strukturierter Ausgabe</td>
+</tr>
+</tbody>
+</table>
+<p>Das Paket hat <strong>ein</strong> Feld <em>Modell</em> – „Frag deine Ablage“ und „Aus Dokument ausfüllen“ nutzen dasselbe Modell. <code>qwen2.5:3b</code> (bis 1.1.0 hier als Beispiel genannt) steht unter der <em>Qwen Research License</em> – keine offene Lizenz, nur für nicht-kommerzielle Nutzung; <code>llama3.2:3b</code> unter der <em>Llama 3.2 Community License</em> mit Nutzungsbedingungen. Beide laufen technisch gut; prüfe die Lizenz, wenn du das DMS nicht nur privat nutzt.</p>
+<p>Modelle, die vor der Antwort <strong>„nachdenken“</strong> (etwa <code>qwen3</code> oder Modelle mit <em>thinking</em> im Namen), lassen auf einem NAS lange auf die erste Zeile warten. Ab 1.1.1 schickt das Paket deshalb bei jeder Anfrage <code>"reasoning_effort": "none"</code> mit – Ollama schaltet damit das Nachdenken ab. Lehnt ein Dienst das Feld ab (HTTP 400), wiederholt das Paket die Anfrage einmal ohne.</p>
+<p>Für <strong>Aus Dokument ausfüllen</strong> muss der Dienst <strong>strukturierte Ausgabe nach JSON Schema</strong> können (<code>response_format</code> vom Typ <code>json_schema</code>): Ollama ab Version 0.5, der Server von llama.cpp, LocalAI und vLLM können das. Ältere Dienste bekommen einen zweiten Versuch mit „nur JSON“; dann hängt es mehr vom Modell ab. Geeignet sind z. B. <code>ministral-3:3b</code> oder mit Grafikkarte <code>qwen2.5:7b</code>; ganz kleine Modelle (unter 2 Milliarden) erfinden eher Werte. Die Antwort ist kurz, aber der ganze Text muss gelesen werden – auf einem NAS ohne Grafikkarte kann eine lange Seite die Zeitgrenze überschreiten. Dann übernimmt die eingebaute Erkennung.</p>
 <h3>Messung</h3>
 <p>Gemessen im <strong>Paket-Läufer des DMS</strong> (DMS 0.124.0, Standardgrenzen) auf <strong>amd64 mit 2 Kernen</strong>, mit der Attrappe eines Dienstes (<code>tests/attrappe.mjs</code>), die ihre Antwort in Stücken alle 20 ms schickt:</p>
 <table>
@@ -146,7 +185,7 @@
 <tbody>
 <tr>
 <td><a href="code/assistent.cpp"><code>code/assistent.cpp</code></a></td>
-<td>das Modul (DMS-Paket-ABI 1): Aktionen <code>dms:antworten</code> (Chat Completions mit <code>"stream": true</code> über <code>netz_strom</code>/<code>netz_weiter</code>, Stücke mit <code>teil</code>), <code>dms:erkennen</code> (Chat Completions mit <code>response_format</code> <code>json_schema</code>, Prüfung der Antwort gegen das Schema) und <code>verbindung_testen</code></td>
+<td>das Modul (DMS-Paket-ABI 1): Aktionen <code>dms:antworten</code> (Chat Completions mit <code>"stream": true</code> über <code>netz_strom</code>/<code>netz_weiter</code>, Stücke mit <code>teil</code>), <code>dms:erkennen</code> (Chat Completions mit <code>response_format</code> <code>json_schema</code>, Prüfung der Antwort gegen das Schema) und <code>verbindung_testen</code>; jede Anfrage mit <code>"reasoning_effort": "none"</code>, bei HTTP 400 einmal ohne</td>
 </tr>
 <tr>
 <td><a href="code/json.h"><code>code/json.h</code></a></td>
@@ -158,11 +197,11 @@
 </tr>
 <tr>
 <td><a href="tests/modul_test.mjs"><code>tests/modul_test.mjs</code></a></td>
-<td>Ablauf mit einer Nachbildung des DMS und eines Dienstes: Stücke, Nachrichten, Fehler, Verbindung testen, Aus Dokument ausfüllen (Schema, Prüfung der Antwort, zweiter Versuch, Zeitgrenze, Rückfall)</td>
+<td>Ablauf mit einer Nachbildung des DMS und eines Dienstes: Stücke, Nachrichten, Fehler, Verbindung testen, Aus Dokument ausfüllen (Schema, Prüfung der Antwort, zweiter Versuch, Zeitgrenze, Rückfall), Dienst ohne <code>reasoning_effort</code></td>
 </tr>
 <tr>
 <td><a href="tests/attrappe.mjs"><code>tests/attrappe.mjs</code></a></td>
-<td>Attrappe eines OpenAI-kompatiblen Dienstes zum Ausprobieren ohne Modell – beantwortet auch Anfragen mit JSON Schema (liest E-Mail, Datum und „Feld: Wert“-Zeilen)</td>
+<td>Attrappe eines OpenAI-kompatiblen Dienstes zum Ausprobieren ohne Modell – beantwortet auch Anfragen mit JSON Schema (liest E-Mail, Datum und „Feld: Wert“-Zeilen); Modell <code>alt:1b</code> kennt kein JSON Schema, <code>streng:1b</code> kein <code>reasoning_effort</code></td>
 </tr>
 </tbody>
 </table>
@@ -173,7 +212,14 @@ node pakete/ki_assistent/tests/attrappe.mjs   # Attrappe auf Port 11434 – im D
 <p><strong>Adapter für weitere Anbieter sind ausdrücklich willkommen</strong> – als eigenes Paket mit dem Recht <code>dms:antworten</code> bzw. <code>dms:erkennen</code> und einer Dienst-Adresse als Einstellung (siehe <a href="../../REGELN.md">REGELN</a>).</p>
 <h3>Lizenz</h3>
 <p>Apache-2.0 (siehe <code>LICENSE</code>).</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.1.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.1.1</h3>
+<ul>
+<li>Kein „Nachdenken“ vor der Antwort: Jede Anfrage an den KI-Dienst (Frag deine Ablage, Aus Dokument ausfüllen, Probefrage von „Verbindung testen“) schickt <code>"reasoning_effort": "none"</code> mit – Ollama schaltet damit das Nachdenken von Modellen wie <code>qwen3</code> ab, die sonst auf einem NAS lange keine sichtbare Antwort geben. Lehnt ein Dienst das Feld ab (HTTP 400), wiederholt das Paket die Anfrage einmal ohne (DMS #564).</li>
+<li>Beispielmodell jetzt <code>ministral-3:3b</code> (Apache-2.0) statt <code>qwen2.5:3b</code> (Qwen Research License, keine offene Lizenz) – in der Beschreibung, der Hilfe zum Feld <em>Modell</em> und den Einrichtungsschritten. Alternativen und Lizenzen in der Beschreibung unter „Welches Modell?“.</li>
+<li>Beschreibung verweist auf die Seite <a href="https://motom001.github.io/dms/admin/aktuell/ki-lokal/">KI lokal betreiben</a> im Administratorhandbuch des DMS (Ollama per Docker Compose, auch auf einem NAS ohne Grafikkarte).</li>
+<li>Die Attrappe kennt das Modell <code>streng:1b</code>, das <code>reasoning_effort</code> ablehnt.</li>
+</ul>
+<h3>1.1.0</h3>
 <ul>
 <li>Neu: <strong>Aus Dokument ausfüllen</strong> über den KI-Dienst (dms-registry #64, DMS #511). Das Paket beantragt dafür zusätzlich das Recht <strong>„Felder aus Dokumenten vorschlagen“ (<code>dms:erkennen</code>)</strong> – das DMS zeigt es beim Update und lässt es bestätigen. Es bekommt nur den Text des Dokuments und die Beschreibung der Felder als JSON Schema.</li>
 <li>Strukturierte Ausgabe: Anfrage mit <code>response_format</code> vom Typ <code>json_schema</code> (Ollama ab 0.5, llama.cpp-Server, LocalAI, vLLM); kennt der Dienst das nicht, ein zweiter Versuch mit „nur JSON“. Der Text geht abgegrenzt als Daten an den Dienst, getrennt von der Aufgabe.</li>
@@ -186,7 +232,7 @@ node pakete/ki_assistent/tests/attrappe.mjs   # Attrappe auf Port 11434 – im D
 <li>Erste Fassung: beantwortet Fragen an die Ablage („Frag deine Ablage“, DMS 0.124.0) über einen Dienst mit OpenAI-kompatibler Schnittstelle (Chat Completions, Antwort Stück für Stück), Netz nur zur bestätigten Dienst-Adresse, „Verbindung testen“ mit Modellliste und Antwortzeit.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.1.0</td><td>02.11.2026</td><td>&gt;=0.125.0</td><td><a href="../../archive/ki_assistent-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_assistent@1.1.0">installieren</button></td></tr><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.124.0</td><td><a href="../../archive/ki_assistent-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_assistent@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.1.1</td><td>02.11.2026</td><td>&gt;=0.125.0</td><td><a href="../../archive/ki_assistent-1.1.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_assistent@1.1.1">installieren</button></td></tr><tr><td>1.1.0</td><td>02.11.2026</td><td>&gt;=0.125.0</td><td><a href="../../archive/ki_assistent-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_assistent@1.1.0">installieren</button></td></tr><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.124.0</td><td><a href="../../archive/ki_assistent-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_assistent@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>
