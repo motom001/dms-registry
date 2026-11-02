@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Texterkennung – DMS-Pakete</title>
-  <meta name="description" content="Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.">
+  <meta name="description" content="Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache automatisch, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.">
   <link rel="stylesheet" href="../../stil.css">
   <script src="../../dms.js" defer></script>
 </head>
@@ -16,15 +16,15 @@
     <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
     <div class="paketkopf">
       <span class="symbol gross" aria-hidden="true">T</span>
-      <div><h1>Texterkennung</h1><p class="leise">Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.</p></div>
+      <div><h1>Texterkennung</h1><p class="leise">Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache automatisch, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="texterkennung@1.0.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="texterkennung@2.0.0">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.0.0 vom 01.11.2026</dd>
+      <dt>Version</dt><dd>2.0.0 vom 02.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>Apache-2.0</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.88.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.133.0</dd>
       <dt>Abhängigkeiten</dt><dd>keine</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
@@ -32,18 +32,28 @@
       <h3>Sichten</h3><ul></ul>
       <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
     </section>
-    <section><h2>Rechte und Netzwerkzugriff</h2><ul class="rechte"><li>Mappen lesen: alle Mappentypen <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Dokumente lesen und Volltext schreiben <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-dokumente" title="Erklärung: Dokumente lesen und Volltext schreiben" aria-label="Erklärung: Dokumente lesen und Volltext schreiben (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Ein Dokument wurde hochgeladen <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignis-dokument-hochgeladen" title="Erklärung: Ein Dokument wurde hochgeladen" aria-label="Erklärung: Ein Dokument wurde hochgeladen (Administratorhandbuch)">?</a></li><li>Die Texterkennung eines Dokuments ist fertig <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignis-texterkennung-fertig" title="Erklärung: Die Texterkennung eines Dokuments ist fertig" aria-label="Erklärung: Die Texterkennung eines Dokuments ist fertig (Administratorhandbuch)">?</a></li></ul></li></ul></section>
-    <section class="readme"><h2>Beschreibung</h2><p>Das Paket <strong>Texterkennung</strong> erkennt Text in gescannten PDFs und Bildern und schreibt ihn als <strong>Volltext</strong> ins DMS – damit findet die Suche auch Wörter aus Scans. Es nutzt <a href="https://github.com/tesseract-ocr/tesseract">Tesseract</a> 5.5.1 als WebAssembly und läuft im <strong>Paket-Läufer</strong> des DMS: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit.</p>
-<p>Das DMS hat schon eine eingebaute Texterkennung, und die bleibt: Sie ist schneller. Dieses Paket ist das <strong>Referenzpaket für Pakete mit Code</strong> – es zeigt, dass auch eine rechenintensive Aufgabe sicher als Paket läuft – und hilft, wo die eingebaute Erkennung keinen Text findet.</p>
-<h3>Was das Paket darf</h3>
+    <section><h2>Rechte und Netzwerkzugriff</h2><ul class="rechte"><li>Mappen lesen: alle Mappentypen <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Dokumente lesen und Volltext schreiben <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-dokumente" title="Erklärung: Dokumente lesen und Volltext schreiben" aria-label="Erklärung: Dokumente lesen und Volltext schreiben (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Der Volltext eines Dokuments ist da <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignis-volltext-fertig" title="Erklärung: Der Volltext eines Dokuments ist da" aria-label="Erklärung: Der Volltext eines Dokuments ist da (Administratorhandbuch)">?</a></li></ul></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Das Paket <strong>Texterkennung</strong> ist die Texterkennung des DMS: Es erkennt Text in gescannten PDFs und Fotos und schreibt ihn als <strong>Volltext</strong> ins DMS – damit findet die Suche auch Wörter aus Scans. Es nutzt <a href="https://github.com/tesseract-ocr/tesseract">Tesseract</a> 5.5.1 als WebAssembly und läuft im <strong>Paket-Läufer</strong> des DMS: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit.</p>
+<p>Seit DMS 0.133 liest das DMS selbst nur noch die <strong>Textebene</strong> von PDFs (poppler); seit DMS 0.134 steckt im DMS-Image keine Texterkennung mehr. Scans und Fotos bekommen ihren Text von diesem Paket. Ohne das Paket bleiben sie ohne Volltext („wartet auf Texterkennung – kein Paket installiert“).</p>
+<h3>So arbeitet es</h3>
+<ol>
+<li>Ein Dokument kommt ins DMS. Das DMS liest bei PDFs die Textebene und meldet dem Paket das Ereignis <strong>Volltext fertig</strong> – auch, wenn es keinen Text gefunden hat.</li>
+<li><strong>Ohne Text</strong> (Scan, Foto) erkennt das Paket das Dokument immer. Bis es fertig ist, steht am Dokument „wartet auf Texterkennung (Paket Texterkennung)“, bei langen Dokumenten mit Fortschritt („Seite 20 von 64“).</li>
+<li><strong>Mit Text aus dem PDF</strong> bleibt dieser Text stehen – außer „Vorhandenen Volltext verwerfen und neu erkennen“ ist an. Stecken in einem PDF neben Textseiten auch gescannte Seiten, erkennt das Paket nur diese und hängt ihren Text an.</li>
+<li><strong>Werkbank → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente</strong> erkennt immer neu, auch wenn der Haken aus ist – etwa nach einem neuen Sprach-Zusatzpaket.</li>
+</ol>
+<p>Je Seite erkennt das Paket die <strong>Lage</strong> (quer, auf dem Kopf) und die <strong>Schrift</strong> und richtet die Seite vor dem Lesen auf. Bei <strong>Sprache: Automatisch</strong> liest es zuerst Deutsch, erkennt die Sprache des Texts und liest die Seite in der erkannten Sprache ein zweites Mal, wenn es eine andere ist und ihre Sprachdaten da sind – das sicherere Ergebnis gilt. Fehlen Sprachdaten (z. B. Französisch), steht das im Ergebnis und im Protokoll des Pakets: „Sprachdaten fehlen: fra (Zusatzpaket texterkennung_fra)“.</p>
+<p>Lange Dokumente erkennt es <strong>abschnittsweise</strong>: Nach etwa einer Minute gibt es seinen Stand an den Läufer zurück, der es gleich wieder aufruft. Die Zeitgrenze des Läufers (2 Minuten je Aufruf) greift so nicht.</p>
+<h3>Rechte und Netzwerkzugriff</h3>
 <p>Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:</p>
 <ul>
 <li><strong>Mappen lesen: alle Mappentypen</strong> – Dokumente liegen in Mappen beliebiger Typen; die Mappe selbst liest das Paket nur, wenn du unter „Nur diese Mappentypen“ etwas einträgst.</li>
 <li><strong>Dokumente schreiben</strong> – es holt Seiten als Graustufenbild und setzt den Volltext. Dateien ändert oder löscht es nicht.</li>
-<li><strong>Kein Netz.</strong> Die Sprachdaten liegen im Paket.</li>
-<li>Es reagiert auf <strong>Dokument hochgeladen</strong> und <strong>Texterkennung fertig</strong>.</li>
+<li><strong>Texterkennung übernehmen (dms:texterkennung)</strong> – das DMS gibt Dokumente ohne Text an dieses Paket und zeigt „wartet auf Texterkennung“, bis es den Volltext schreibt.</li>
+<li><strong>Kein Netz.</strong> Die Sprachdaten liegen im Paket bzw. in Zusatzpaketen.</li>
+<li>Es reagiert auf <strong>Volltext fertig</strong>.</li>
 </ul>
-<p>Den Volltext eines Pakets erkennst du an der Historie („Volltext von einem Paket“) und am Hinweis „Texterkennung durch Paket Texterkennung 1.0.0“ am Dokument. Die eingebaute Texterkennung überschreibt ihn nicht.</p>
+<p>Den Volltext des Pakets erkennst du am Hinweis „Texterkennung durch Paket Texterkennung 2.0.0“ am Dokument und an der Historie („Volltext von einem Paket“).</p>
 <h3>Einstellungen</h3>
 <p>Unter <strong>Werkbank → Pakete → Texterkennung → Einstellungen</strong>:</p>
 <table>
@@ -57,23 +67,28 @@
 <tbody>
 <tr>
 <td>Sprache</td>
-<td>Deutsch</td>
-<td>Deutsch, Englisch oder beide (je Seite die sicherere Erkennung; dauert doppelt so lang)</td>
+<td>Automatisch</td>
+<td>Automatisch (siehe oben), Deutsch, Englisch oder Deutsch und Englisch (je Seite die sicherere Lesung; dauert doppelt so lang)</td>
 </tr>
 <tr>
-<td>Nur Dokumente ohne Text</td>
-<td>Ja</td>
-<td>Ja: Das Paket wartet auf die Texterkennung des DMS und erkennt nur, wenn sie keinen Text fand. Nein: Es erkennt jedes neue PDF und Bild und ersetzt den Volltext.</td>
+<td>Vorhandenen Volltext verwerfen und neu erkennen</td>
+<td>aus</td>
+<td>Aus: Text aus dem PDF bleibt, nur Dokumente ohne Text (und gescannte Seiten in PDFs) werden erkannt. An: jedes PDF und Bild wird neu erkannt und ersetzt den Text aus dem PDF.</td>
+</tr>
+<tr>
+<td>Seiten selbst aufrichten</td>
+<td>an</td>
+<td>Lage und Schrift je Seite erkennen (osd) und die Seite vor dem Lesen aufrichten</td>
 </tr>
 <tr>
 <td>Höchstens so viele Seiten</td>
-<td>30</td>
-<td>Längere Dokumente erkennt es bis zu dieser Seite; die Übersicht meldet „Grenze erreicht“.</td>
+<td>100</td>
+<td>1–1000; längere Dokumente erkennt es bis zu dieser Seite („Grenze erreicht“)</td>
 </tr>
 <tr>
 <td>Auflösung (dpi)</td>
 <td>300</td>
-<td>150–400; höher erkennt kleine Schrift besser, braucht aber mehr Zeit und Speicher.</td>
+<td>150–400; höher erkennt kleine Schrift besser, braucht aber mehr Zeit und Speicher</td>
 </tr>
 <tr>
 <td>Nur diese Mappentypen</td>
@@ -82,39 +97,103 @@
 </tr>
 </tbody>
 </table>
+<p>Wer in Version 1 „Nur Dokumente ohne Text“ ausgeschaltet hatte, schaltet nach dem Update „Vorhandenen Volltext verwerfen und neu erkennen“ ein.</p>
+<h3>Weitere Sprachen</h3>
+<p>Im Paket stecken Deutsch, Englisch und die Lageerkennung (osd). Weitere Sprachen kommen als <strong>Zusatzpakete</strong> <code>texterkennung_&lt;sprache&gt;</code> dazu, z. B. <a href="../texterkennung_fra/">Texterkennung – Französisch</a>. Ein Zusatzpaket hängt von diesem Paket ab; das DMS gibt diesem Paket seine Sprachdaten (<code>texterkennung_fra/fra.traineddata</code>). So bleibt jedes Paket weit unter der Grenze von 32 MB.</p>
 <h3>Messung</h3>
-<p>Brief mit gemischtem Text, A4 quer gescannt mit 300 dpi; DMS 0.88.0 mit Standardgrenzen des Läufers (256 MB, 120 s). Gemessen auf amd64 (2 Kerne):</p>
+<p>Vergleich mit der früheren eingebauten Texterkennung des DMS (bis 0.133: Tesseract nativ, ein Thread, erster Durchgang <code>deu+eng</code>). Gemessen am 02.11.2026 auf amd64 mit 2 Kernen (der Rechner war nebenher belastet), DMS 0.134 mit den Standardgrenzen des Läufers (256 MB, 2 Minuten je Aufruf), Paket mit Standardeinstellungen und dem Zusatzpaket Französisch. Beide mit denselben Sprachdaten (tessdata_fast). Testdokumente: erfundene Briefe, als Graustufen-Scan gerendert (300 dpi, Fotos 200 dpi) – also saubere Vorlagen. Zeit beim Paket: vom Hochladen bis „fertig“ (mit Textebene, Zustellung und Schreiben des Volltexts); eingebaut: nur das Lesen der Datei. Richtig: Anteil richtiger Zeichen bzw. gefundener Wörter (ab 4 Buchstaben).</p>
 <table>
 <thead>
 <tr>
-<th></th>
-<th>Paket (WebAssembly)</th>
-<th>eingebaute Texterkennung (Tesseract nativ, ein Thread)</th>
+<th>Dokument</th>
+<th style="text-align: right;">eingebaut: Zeit</th>
+<th style="text-align: right;">Paket: Zeit</th>
+<th style="text-align: right;">eingebaut: Zeichen / Wörter</th>
+<th style="text-align: right;">Paket: Zeichen / Wörter</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>10 Seiten</td>
-<td>14,3 s</td>
-<td>6,5 s</td>
+<td>Brief deutsch, 1 Seite</td>
+<td style="text-align: right;">2,5 s</td>
+<td style="text-align: right;">5,2 s</td>
+<td style="text-align: right;">100 % / 100 %</td>
+<td style="text-align: right;">100 % / 100 %</td>
 </tr>
 <tr>
-<td>Speicher je Aufruf</td>
-<td>etwa 30 MB</td>
-<td>–</td>
+<td>Brief englisch, 1 Seite</td>
+<td style="text-align: right;">2,6 s</td>
+<td style="text-align: right;">5,9 s</td>
+<td style="text-align: right;">100 % / 100 %</td>
+<td style="text-align: right;">100 % / 100 %</td>
+</tr>
+<tr>
+<td>Brief französisch, 1 Seite</td>
+<td style="text-align: right;">2,3 s</td>
+<td style="text-align: right;">5,0 s</td>
+<td style="text-align: right;">99,4 % / 97,7 %</td>
+<td style="text-align: right;">99,7 % / 97,7 %</td>
+</tr>
+<tr>
+<td>Brief quer eingescannt (90°)</td>
+<td style="text-align: right;">4,1 s</td>
+<td style="text-align: right;">4,4 s</td>
+<td style="text-align: right;">100 % / 100 %</td>
+<td style="text-align: right;">100 % / 100 %</td>
+</tr>
+<tr>
+<td>Brief auf dem Kopf (180°)</td>
+<td style="text-align: right;">3,6 s</td>
+<td style="text-align: right;">4,4 s</td>
+<td style="text-align: right;">100 % / 100 %</td>
+<td style="text-align: right;">100 % / 100 %</td>
+</tr>
+<tr>
+<td>Foto PNG</td>
+<td style="text-align: right;">2,1 s</td>
+<td style="text-align: right;">5,1 s</td>
+<td style="text-align: right;">100 % / 100 %</td>
+<td style="text-align: right;">100 % / 100 %</td>
+</tr>
+<tr>
+<td>Foto JPEG</td>
+<td style="text-align: right;">2,2 s</td>
+<td style="text-align: right;">4,0 s</td>
+<td style="text-align: right;">100 % / 100 %</td>
+<td style="text-align: right;">100 % / 100 %</td>
+</tr>
+<tr>
+<td>10 Seiten</td>
+<td style="text-align: right;">25,7 s</td>
+<td style="text-align: right;">34,5 s</td>
+<td style="text-align: right;">– / 100 %</td>
+<td style="text-align: right;">– / 100 %</td>
+</tr>
+<tr>
+<td>60 Seiten (Paket: 4 Abschnitte)</td>
+<td style="text-align: right;">188 s</td>
+<td style="text-align: right;">242 s</td>
+<td style="text-align: right;">– / 100 %</td>
+<td style="text-align: right;">– / 100 %</td>
 </tr>
 </tbody>
 </table>
-<p>Das Paket ist also gut doppelt so langsam wie die eingebaute Erkennung; bei den Standardgrenzen schafft ein Aufruf rund 80 Seiten. Eine Messung auf arm64 folgt.</p>
+<ul>
+<li><strong>Erkennung:</strong> gleich gut; Französisch mit dem Zusatzpaket etwas besser (zweiter Durchgang mit <code>fra</code>). Ohne das Zusatzpaket liest das Paket den französischen Brief auf Deutsch (98,3 % / 88,6 %) und meldet die fehlenden Sprachdaten.</li>
+<li><strong>Zeit:</strong> Bei langen Dokumenten braucht das Paket etwa ein Drittel länger als Tesseract nativ (ein erster Lauf ergab 31 s für 10 und 184 s für 60 Seiten); bei einer einzelnen Seite kommen 1–3 Sekunden für Textebene, Zustellung und Schreiben dazu. Abschnittsweise Erkennung: 60 Seiten in 4 Aufrufen zu je etwa einer Minute, ohne dass die Zeitgrenze greift.</li>
+<li><strong>Größe:</strong> Modul 2,7 MB, Sprachdaten 15,4 MB (deu 1,5 MB, eng 4,1 MB, osd 10,6 MB) – zusammen weit unter der Grenze von 32 MB.</li>
+<li><strong>arm64:</strong> steht noch aus (beim Bau dieser Version war kein arm64-Rechner verfügbar).</li>
+</ul>
 <h3>Grenzen</h3>
 <ul>
+<li>Bilder: JPEG und PNG. TIFF, WebP, GIF und BMP liefert das DMS nicht als Seitenbild – sie bleiben ohne Volltext.</li>
+<li>Office-Dateien und E-Mails erkennt es nicht.</li>
 <li>Ein Dokument mit mehr Seiten als eingestellt wird nur bis zu dieser Seite erkannt.</li>
-<li>Dauert ein Aufruf länger als die Zeitgrenze des Läufers (2 Minuten), bricht das DMS ihn ab, versucht es später erneut (1, 5, 30, 120, 360 Minuten) und zeigt das unter <strong>Werkbank → Pakete → Texterkennung → Paket-Läufer</strong>. Dann die Seitenzahl oder Auflösung senken.</li>
-<li>Office-Dateien und E-Mails erkennt es nicht – nur PDFs und Bilder.</li>
+<li>Schlägt ein Aufruf fehl, versucht es das DMS später erneut (1, 5, 30, 120, 360 Minuten) und zeigt das unter <strong>Werkbank → Pakete → Texterkennung → Paket-Läufer</strong>; danach steht das Dokument auf „Fehler“.</li>
 </ul>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS <strong>0.88.0</strong> oder neuer (Paket-Läufer, Volltext schreiben, Seite als Graustufenbild).</li>
+<li>DMS <strong>0.133.0</strong> oder neuer (Ereignis „Volltext fertig“ auch ohne Text, Recht „Texterkennung übernehmen“, Fortsetzung langer Aufgaben, Seitenbild für JPEG und PNG, Daten aus Zusatzpaketen).</li>
 </ul>
 <h3>Für Entwickler</h3>
 <table>
@@ -127,7 +206,11 @@
 <tbody>
 <tr>
 <td><a href="code/texterkennung.cpp"><code>code/texterkennung.cpp</code></a></td>
-<td>das Modul (DMS-Paket-ABI 1): Ereignis → Seiten über die API → Tesseract → Volltext</td>
+<td>das Modul (DMS-Paket-ABI 1): Ereignis → entscheiden → Seiten über die API → Lage (osd) → Tesseract → Volltext; Fortsetzung mit <code>weiter</code></td>
+</tr>
+<tr>
+<td><a href="code/sprache.h"><code>code/sprache.h</code></a></td>
+<td>Spracherkennung aus dem Text (wie im DMS), Sprache passend zur Schrift; Test in <a href="tests/sprache_test.cpp"><code>tests/sprache_test.cpp</code></a></td>
 </tr>
 <tr>
 <td><a href="code/json.h"><code>code/json.h</code></a></td>
@@ -135,7 +218,7 @@
 </tr>
 <tr>
 <td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
-<td>Bau: Leptonica 1.85.0 und Tesseract 5.5.1 aus den Quellen (feste Commits), Sprachdaten aus tessdata_fast (feste Prüfsummen)</td>
+<td>Bau: Leptonica 1.85.0 und Tesseract 5.5.1 aus den Quellen (feste Commits), Sprachdaten deu, eng, osd aus tessdata_fast (feste Prüfsummen)</td>
 </tr>
 <tr>
 <td><a href="code/wasi-compat.c"><code>code/wasi-compat.c</code></a>, <a href="code/wasi-thread-shim.h"><code>code/wasi-thread-shim.h</code></a>, <a href="code/stub/"><code>code/stub/</code></a></td>
@@ -149,15 +232,27 @@
 </table>
 <pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/texterkennung   # beim ersten Mal einige Minuten
 </code></pre>
-<p>Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/">Pakete mit Code</a>.</p>
+<p>Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/">Pakete mit Code</a> (Volltext fertig, Texterkennung übernehmen, Fortsetzung).</p>
 <h3>Lizenz</h3>
 <p>Apache-2.0 (siehe <code>LICENSE</code>). Im Modul stecken Tesseract (Apache-2.0) und Leptonica (BSD-artig, Text in <a href="code/lizenzen/leptonica.txt"><code>code/lizenzen/leptonica.txt</code></a>); die Sprachdaten stammen aus <a href="https://github.com/tesseract-ocr/tessdata_fast">tessdata_fast</a> (Apache-2.0).</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>2.0.0</h3>
+<p>Die Texterkennung wandert aus dem DMS in dieses Paket (DMS 0.133.0, motom001/dms#458; seit DMS 0.134.0 ohne Tesseract im Image, motom001/dms#459). Das Paket ist jetzt <strong>die</strong> Texterkennung des DMS und erkennt so gut wie die bisher eingebaute (siehe Messung im README).</p>
+<ul>
+<li><strong>Braucht DMS 0.133.0.</strong> Neues Recht „Texterkennung übernehmen“ (<code>dms:texterkennung</code>): Das DMS liest selbst nur die Textebene von PDFs; Dokumente ohne Text stehen auf „wartet auf Texterkennung (Paket Texterkennung)“, bis das Paket fertig ist. Das Paket reagiert nur noch auf <strong>Volltext fertig</strong> (statt „Dokument hochgeladen“ und „Texterkennung fertig“).</li>
+<li><strong>„Vorhandenen Volltext verwerfen und neu erkennen“</strong> (Standard: aus) ersetzt „Nur Dokumente ohne Text“. Aus: Text aus dem PDF bleibt, nur Dokumente ohne Text werden erkannt. An: jedes PDF und Bild wird neu erkannt. <strong>Volltext neu erzeugen → Für alle Dokumente</strong> in der Werkbank erkennt immer neu. Wer „Nur Dokumente ohne Text“ ausgeschaltet hatte, schaltet nach dem Update „verwerfen“ ein.</li>
+<li><strong>Sprache: Automatisch</strong> (neuer Standard): erster Durchgang Deutsch, Sprache aus dem Text erkennen, bei einer anderen Sprache die Seite in dieser ein zweites Mal lesen, die sicherere Lesung gilt (wie im DMS seit 0.90 – hier aber auch bei sicherem erstem Durchgang, sonst fehlen z. B. die Akzente). Fehlende Sprachdaten stehen im Protokoll des Pakets und im Ergebnis.</li>
+<li><strong>Seiten selbst aufrichten</strong> (osd): Lage (quer, auf dem Kopf) und Schrift (z. B. Kyrillisch) je Seite erkennen. Neu im Paket: <code>osd.traineddata</code>.</li>
+<li><strong>Lange Dokumente abschnittsweise:</strong> etwa eine Minute je Aufruf, dann setzt der Läufer gleich fort (<code>weiter</code>). Die Zeitgrenze von 2 Minuten greift nicht mehr; am Dokument steht „Seite 20 von 64“. Höchstens so viele Seiten: Standard 100 (bis 1000).</li>
+<li><strong>Gemischte PDFs</strong> (Textseiten und gescannte Seiten): erkennt nur die Seiten ohne Text und hängt ihren Text an den Text aus dem PDF an.</li>
+<li><strong>Bilder:</strong> JPEG und PNG (das DMS liefert das Seitenbild seit 0.133.0); TIFF liefert das DMS nicht.</li>
+<li><strong>Weitere Sprachen als Zusatzpakete</strong> (<code>texterkennung_&lt;sprache&gt;</code>), Muster: <a href="../texterkennung_fra/">texterkennung_fra</a>.</li>
+</ul>
+<h3>1.0.0</h3>
 <ul>
 <li>Erste Fassung: Tesseract 5.5.1 und Leptonica 1.85.0 als WebAssembly, Sprachen Deutsch und Englisch (tessdata_fast), Einstellungen für Sprache, „Nur Dokumente ohne Text“, Seitenzahl, Auflösung und Mappentypen.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/texterkennung-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="texterkennung@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>2.0.0</td><td>02.11.2026</td><td>&gt;=0.133.0</td><td><a href="../../archive/texterkennung-2.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="texterkennung@2.0.0">installieren</button></td></tr><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/texterkennung-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="texterkennung@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>

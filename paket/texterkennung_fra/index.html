@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Texterkennung – Französisch – DMS-Pakete</title>
+  <meta name="description" content="Bringt dem Paket Texterkennung Französisch bei – die Sprachdaten (tessdata_fast) liest das Paket Texterkennung bei „Sprache automatisch“ selbst. Ohne eigene Rechte, ohne Netz.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="../../sammeldatei.html">Ohne Internet</a><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">T</span>
+      <div><h1>Texterkennung – Französisch</h1><p class="leise">Bringt dem Paket Texterkennung Französisch bei – die Sprachdaten (tessdata_fast) liest das Paket Texterkennung bei „Sprache automatisch“ selbst. Ohne eigene Rechte, ohne Netz.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="texterkennung_fra@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_fra">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 02.11.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>Apache-2.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.133.0</dd>
+      <dt>Abhängigkeiten</dt><dd><a href="../texterkennung/">texterkennung</a> &gt;=2.0.0</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><ul></ul>
+      <h3>Sichten</h3><ul></ul>
+      <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netzwerkzugriff</h2><ul class="rechte"><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Dieses <strong>Zusatzpaket</strong> bringt dem Paket <a href="../texterkennung/">Texterkennung</a> Französisch bei. Es enthält nur die Sprachdaten (<code>fra.traineddata</code> aus <a href="https://github.com/tesseract-ocr/tessdata_fast">tessdata_fast</a>) und ein Modul, das nichts tut.</p>
+<p>Mit <strong>Sprache: Automatisch</strong> erkennt das Paket Texterkennung, wenn ein Brief französisch ist, und liest unsichere Seiten dann ein zweites Mal auf Französisch – das bessere Ergebnis gilt. Ohne dieses Zusatzpaket meldet es „Sprachdaten fehlen: fra (Zusatzpaket texterkennung_fra)“ im Protokoll des Pakets und am Ergebnis des Aufrufs.</p>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt das DMS:</p>
+<ul>
+<li><strong>kein Zugriff auf Netzwerk und Internet</strong></li>
+<li>keine Rechte an Mappen und Dokumenten, keine Ereignisse</li>
+</ul>
+<p>Das Paket Texterkennung liest die Sprachdaten, weil dieses Paket von ihm abhängt (DMS ab 0.133.0: ein Paket liest die Daten der Pakete, die von ihm abhängen, als <code>texterkennung_fra/fra.traineddata</code>). Wird das Zusatzpaket installiert oder entfernt, lädt der Paket-Läufer die Texterkennung neu – du musst nichts weiter tun. Dokumente, die schon ohne Französisch erkannt wurden, erkennt <strong>Werkbank → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente</strong> neu.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS <strong>0.133.0</strong> oder neuer</li>
+<li>Paket <strong>Texterkennung 2.0.0</strong> oder neuer (kommt als Abhängigkeit mit)</li>
+</ul>
+<h3>Weitere Sprachen</h3>
+<p>Dieses Paket ist das Muster. Für eine weitere Sprache den Ordner kopieren (<code>texterkennung_&lt;kennung&gt;</code>, z. B. <code>texterkennung_tur</code>), in <code>manifest.yaml</code> Id und Namen und in <code>code/bauen.sh</code> <code>SPRACHE</code> und <code>SHA256</code> ändern. Kennungen wie bei Tesseract; die Spracherkennung des Pakets kennt Französisch (<code>fra</code>), Spanisch (<code>spa</code>), Italienisch (<code>ita</code>), Niederländisch (<code>nld</code>), Türkisch (<code>tur</code>), Polnisch (<code>pol</code>), Portugiesisch (<code>por</code>), Russisch (<code>rus</code>), Ukrainisch (<code>ukr</code>) und Arabisch (<code>ara</code>). Eine Sprachdatei aus tessdata_fast ist 1–2 MB groß; die Grenze von 32 MB je Paket ist weit weg.</p>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>); die Sprachdaten stammen aus tessdata_fast (Apache-2.0).</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: Französisch (<code>fra.traineddata</code> aus tessdata_fast, derselbe Stand wie im Paket Texterkennung) für das Paket Texterkennung ab 2.0.0. Muster für weitere Sprachen.</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.133.0</td><td><a href="../../archive/texterkennung_fra-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="texterkennung_fra@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>

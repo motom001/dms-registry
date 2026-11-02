@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T07:24:31Z",
+  "erstellt": "2026-11-02T09:19:21Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1910,6 +1910,24 @@
       "id": "texterkennung",
       "versionen": [
         {
+          "version": "2.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung-2.0.0.zip",
+          "sha256": "9409079c77445a8ca1a655bb9e2f9de73c43e91ac0f579f6a5e436742a4472db",
+          "groesse": 8101028,
+          "veroeffentlicht": "2026-11-02T09:19:21Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/CHANGELOG.md"
+        },
+        {
           "version": "1.0.0",
           "dms": ">=0.88.0",
           "abhaengigkeiten": {},
@@ -1929,7 +1947,40 @@
         }
       ],
       "name": "Texterkennung",
-      "beschreibung": "Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.",
+      "beschreibung": "Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache automatisch, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "2.0.0"
+    },
+    {
+      "id": "texterkennung_fra",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_fra-1.0.0.zip",
+          "sha256": "9b9dbc14c08dea1d824f8504e734d769ece01128658add732a368ea9e0b304f1",
+          "groesse": 617955,
+          "veroeffentlicht": "2026-11-02T09:19:21Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_fra",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Französisch",
+      "beschreibung": "Bringt dem Paket Texterkennung Französisch bei – die Sprachdaten (tessdata_fast) liest das Paket Texterkennung bei „Sprache automatisch“ selbst. Ohne eigene Rechte, ohne Netz.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
