@@ -13,9 +13,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sammeldatei as s  # noqa: E402
 import signieren as g  # noqa: E402
 
-# Testschlüssel des DMS (server/src/projektschluessel.ts, Signierschlüssel): Kennung und Fingerabdruck müssen
-# hier genauso herauskommen wie im DMS.
-DMS_TEST_SIGNIER = '-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAIIKEJ/M9CeAWQgOXOLBE/G55/iPWuwjKAdkpH+XvO/o=\n-----END PUBLIC KEY-----\n'
+# Echter Signierschlüssel des Projekts (schluessel/signier.pub, im DMS server/src/projektschluessel.ts): Kennung und
+# Fingerabdruck müssen hier genauso herauskommen wie im DMS und in SECURITY.md.
+SIGNIER_PUB = (Path(__file__).resolve().parent.parent / 'schluessel' / 'signier.pub').read_text()
 
 
 def neuer_schluessel(ordner: Path, name: str) -> tuple[Path, Path]:
@@ -57,8 +57,8 @@ class Signieren(unittest.TestCase):
         self.tmp.cleanup()
 
     def test_kennung_wie_im_dms(self):
-        self.assertEqual(g.kennung(DMS_TEST_SIGNIER), 'da31d65f4a429768')
-        self.assertEqual(g.fingerabdruck(DMS_TEST_SIGNIER), 'da31 d65f 4a42 9768 db27 8f76 e67a ce99 7024 9d25 9352 e7da 5a0b 931b d85d 5ac0')
+        self.assertEqual(g.kennung(SIGNIER_PUB), '6d868387314e64df')
+        self.assertEqual(g.fingerabdruck(SIGNIER_PUB), '6d86 8387 314e 64df 715c a3bd 9856 58d5 f888 c0ea 7cab ac91 a43f 9b99 6052 e728')
         with self.assertRaises(g.Fehler):
             g.kennung('kein Schlüssel')
 
