@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T23:26:56Z",
+  "erstellt": "2026-11-02T23:31:53Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1924,7 +1924,8 @@
       "lizenz": "Apache-2.0",
       "aktuell": "1.0.0",
       "kategorien": [
-        "ki"
+        "ki",
+        "suche"
       ]
     },
     {
@@ -2012,7 +2013,8 @@
       "lizenz": "Apache-2.0",
       "aktuell": "1.2.0",
       "kategorien": [
-        "ki"
+        "ki",
+        "suche"
       ]
     },
     {
@@ -2187,7 +2189,8 @@
       "lizenz": "Apache-2.0",
       "aktuell": "2.1.1",
       "kategorien": [
-        "volltext"
+        "volltext",
+        "suche"
       ]
     },
     {

@@ -65,7 +65,8 @@
     return (EN ? 'needs DMS ' : 'braucht DMS ') + mindestens(r.neu[1]) + (EN ? '+' : ' oder neuer');
   }
   var suche = document.getElementById('suche'), art = document.getElementById('art'), kat = document.getElementById('kategorie'),
-      autor = document.getElementById('autor'), vfeld = document.getElementById('dms-version'), nur = document.getElementById('nur-passend');
+      autor = document.getElementById('autor'), vfeld = document.getElementById('dms-version'), nur = document.getElementById('nur-passend'),
+      lokal = document.getElementById('nur-lokal');
   function filtern() {
     var q = (suche.value || '').trim().toLowerCase(), a = art.value, k = kat ? kat.value : '', au = autor ? autor.value : '', n = 0;
     var dms = vfeld && VERSION.test(vfeld.value.trim()) ? vfeld.value.trim() : '';
@@ -75,7 +76,7 @@
       if (m) { m.hidden = !r; m.textContent = marke(r); m.className = 'passt-marke' + (r ? ' ' + r.fall : ''); el.classList.toggle('mit-marke', !!r); }
       var ok = (!q || el.dataset.suche.indexOf(q) >= 0) && (!a || el.dataset.art === a)
         && (!k || (' ' + el.dataset.kategorien + ' ').indexOf(' ' + k + ' ') >= 0) && (!au || el.dataset.autor === au)
-        && (!(nur && nur.checked) || (r && r.fall === 'ja'));
+        && (!(nur && nur.checked) || (r && r.fall === 'ja')) && (!(lokal && lokal.checked) || el.dataset.netz === 'lokal');
       el.hidden = !ok; if (ok) n++;
     });
     document.getElementById('keine').hidden = n > 0;
@@ -91,7 +92,7 @@
     if (kat && p.get('kategorie')) kat.value = p.get('kategorie');
     if (autor && p.get('autor')) autor.value = p.get('autor');
     if (vfeld) vfeld.value = liesVersion();
-    [suche, art, kat, autor, vfeld, nur].forEach(function (x) { if (x) x.addEventListener(x.tagName === 'INPUT' && x.type !== 'checkbox' ? 'input' : 'change', function () {
+    [suche, art, kat, autor, vfeld, nur, lokal].forEach(function (x) { if (x) x.addEventListener(x.tagName === 'INPUT' && x.type !== 'checkbox' ? 'input' : 'change', function () {
       if (x === vfeld) { var w = vfeld.value.trim(); if (!w || VERSION.test(w)) merkeVersion(w); }
       filtern();
     }); });

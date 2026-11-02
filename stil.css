@@ -83,6 +83,11 @@ a.chip:hover, a.chip:focus-visible { border-color: var(--a); color: var(--a); }
 .dmsversion { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: -8px 0 18px; }
 .dmsversion input#dms-version { font: inherit; padding: 6px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); width: 9em; }
 .dmsversion .haken { display: inline-flex; gap: 6px; align-items: center; }
+.netz::before { content: ""; display: inline-block; width: .7em; height: .7em; margin-right: 4px; border-radius: 2px; vertical-align: -1px; border: 1.5px solid currentColor; }
+.netz.lokal::before { background: currentColor; }
+.netz.dienst::before { border-radius: 50%; }
+.netz.internet { color: var(--warn); }
+.netz.internet::before { border-radius: 50%; background: currentColor; }
 .dms-passt:empty { display: none; }
 .dms-passt { margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--linie); background: var(--flaeche); }
 .dms-passt.ja { padding: 6px 12px; font-size: .92rem; }
