@@ -33,6 +33,7 @@ The full licence text is in the package folder as `LICENSE`. Third-party code in
 Before installation, the DMS shows the permissions of a package with code, and the catalogue website does the same. The wording is German:
 
 - „Mappen lesen: …“ (read Mappen), „Mappen anlegen und ändern: …“ (create and change Mappen), „Dokumente lesen“ (read documents) or „Dokumente lesen und Volltext schreiben“ (read documents and write full text)
+- „Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)“ (store vectors for documents and find similar documents) – only with `code.rechte.schnittstellen` and `dms: ">=0.122.0"`
 - „kein Zugriff auf Netzwerk und Internet“ (no access to network and internet) or „Zugriff auf Netzwerk/Internet nur zu: …“ (access to network/internet only to: …)
 - „Reagiert auf diese Ereignisse:“ (reacts to these events) with one event per line
 

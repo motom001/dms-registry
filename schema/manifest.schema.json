@@ -250,6 +250,7 @@
               "post.angelegt",
               "dokument.hochgeladen",
               "texterkennung.fertig",
+              "volltext.fertig",
               "paket.einstellungen_geaendert"
             ]
           },
@@ -279,6 +280,16 @@
                 "lesen",
                 "schreiben"
               ]
+            },
+            "schnittstellen": {
+              "type": "array",
+              "description": "Schnittstellen des Kerns (DMS #442), z. B. dms:vektoren – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0",
+              "items": {
+                "enum": [
+                  "dms:vektoren"
+                ]
+              },
+              "uniqueItems": true
             }
           }
         },
