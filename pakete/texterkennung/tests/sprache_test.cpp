@@ -17,6 +17,15 @@ int main() {
   pruefe(r.sprache == "rus", "Russischer Brief");
   pruefe(erkenneSprache("12,50 EUR 13.01.2027 4711 0815").sprache.empty(), "Nur Zahlen: keine Sprache");
   pruefe(erkenneSprache("").sprache.empty(), "Leer: keine Sprache");
+  // Sprachen je Seite (#579): Mischseite mit zwei Sprachen, kurzer fremder Satz zählt nicht.
+  const std::string deu = "Sehr geehrte Frau Petra Muster, anbei leiten wir Ihnen das Schreiben der französischen Botschaft weiter. Die Unterlagen für die Beglaubigungen liegen bei, bitte prüfen Sie diese und senden Sie uns die Formulare bis zum Monatsende zurück.";
+  const std::string fra = "Madame, nous avons bien reçu votre demande et nous vous remercions pour votre patience. Les documents demandés par les services consulaires de l'ambassade sont listés dans cette lettre et nous restons à votre disposition.";
+  pruefe(sprachenEinerSeite(deu) == std::vector<std::string>{"deu"}, "Seite deutsch");
+  pruefe(sprachenEinerSeite(fra) == std::vector<std::string>{"fra"}, "Seite französisch");
+  std::vector<std::string> m = sprachenEinerSeite(deu + "\n\n" + fra);
+  pruefe(m.size() == 2 && ((m[0] == "deu" && m[1] == "fra") || (m[0] == "fra" && m[1] == "deu")), "Mischseite: zwei Sprachen");
+  pruefe(sprachenEinerSeite(deu + "\n \nMerci beaucoup et à bientôt.") == std::vector<std::string>{"deu"}, "Kurzer fremder Satz: keine Mischseite");
+  pruefe(sprachenEinerSeite("12,50 EUR 4711").empty(), "Seite nur Zahlen: keine Sprache");
   auto da = [](const std::string &k) { return k == "rus"; };
   pruefe(spracheFuerSchrift("Cyrillic", "deu", da) == "rus", "Kyrillisch: rus dazu");
   pruefe(spracheFuerSchrift("Cyrillic", "rus+deu", da).empty(), "Kyrillisch: rus schon dabei");

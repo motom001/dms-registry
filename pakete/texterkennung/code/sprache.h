@@ -2,8 +2,10 @@
 // Buchstaben je Sprache zählen, offline und ohne fremde Dienste. Dazu die Sprache passend zu einer Schrift (osd).
 #pragma once
 #include <algorithm>
+#include <cctype>
 #include <cstdint>
 #include <cstring>
+#include <map>
 #include <set>
 #include <string>
 #include <vector>
@@ -110,6 +112,42 @@ inline ErkannteSprache erkenneSprache(const std::string &roh) {
   double abstand = (punkte[0].p - zweite) / punkte[0].p;
   double anteil = std::min(1.0, punkte[0].woerter / (double)liste.size() / 0.15);
   return {punkte[0].s, std::min(1.0, abstand * 0.7 + anteil * 0.3)};
+}
+
+// Sprachen einer Seite (#579, wie sprachenEinerSeite im DMS, shared/src/seitensprachen.ts): jeder Absatz für sich
+// (Absätze durch eine Leerzeile getrennt); eine zweite Sprache zählt, wenn sie mindestens ein Fünftel des erkannten
+// Texts ausmacht (Mischseite). Kurze Absätze (Anschrift, Beträge) zählen nicht. Ohne Ergebnis je Absatz: die Seite
+// als Ganzes. Höchstens zwei, die mit dem meisten Text zuerst; leer, wenn nichts erkannt wird.
+inline std::vector<std::string> sprachenEinerSeite(const std::string &text) {
+  std::map<std::string, size_t> anteile;
+  size_t gesamt = 0;
+  auto absatz = [&](size_t a, size_t b) {
+    while (a < b && isspace((unsigned char)text[a])) a++;
+    while (b > a && isspace((unsigned char)text[b - 1])) b--;
+    if (b <= a) return;
+    const std::string t = text.substr(a, b - a);
+    ErkannteSprache e = erkenneSprache(t);
+    if (e.sprache.empty() || e.konfidenz < 0.5) return;
+    anteile[e.sprache] += t.size();
+    gesamt += t.size();
+  };
+  size_t start = 0, i = 0;
+  while (i < text.size()) {
+    // Leerzeile: Zeilenende, nur Leerzeichen/Tabs, Zeilenende.
+    if (text[i] == '\n') {
+      size_t j = i + 1;
+      while (j < text.size() && (text[j] == ' ' || text[j] == '\t' || text[j] == '\r')) j++;
+      if (j < text.size() && text[j] == '\n') { absatz(start, i); start = j + 1; i = j + 1; continue; }
+    }
+    i++;
+  }
+  absatz(start, text.size());
+  std::vector<std::pair<std::string, size_t>> liste(anteile.begin(), anteile.end());
+  std::sort(liste.begin(), liste.end(), [](const auto &x, const auto &y) { return x.second > y.second; });
+  std::vector<std::string> r;
+  for (const auto &x : liste) if (x.second >= 150 && x.second * 5 >= gesamt && r.size() < 2) r.push_back(x.first);
+  if (r.empty()) { ErkannteSprache g = erkenneSprache(text); if (!g.sprache.empty()) r.push_back(g.sprache); }
+  return r;
 }
 
 // Erkennt osd eine Schrift, die die Sprachen nicht lesen (z. B. Kyrillisch), die erste passende verfügbare Sprache;
