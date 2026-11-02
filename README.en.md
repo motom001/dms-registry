@@ -89,7 +89,14 @@ The CI **signs** every published catalogue (#74; in the DMS: motom001/dms#594). 
 - **Without the secret** (in forks, or as long as it has not been created), the build continues **without** a signature and prints a clear warning in the run. An old `katalog.sig` is removed, because it would no longer match.
 - **Bundle files** contain the signed catalogue (`katalog.json` and `katalog.sig`, byte for byte). The DMS then no longer asks to confirm the origin. `python3 werkzeuge/sammeldatei.py --pruefen <file> --oeffentlich schluessel/signier.pub --oeffentlich schluessel/reserve.pub` verifies the signature as well.
 
-**Fingerprints:** the real keys do not exist yet. As soon as the maintainer has generated them, their fingerprints are listed here and in the [SECURITY.md of the DMS](https://github.com/motom001/dms/blob/main/SECURITY.en.md). Until then, the DMS verifies with test keys and says so in the preview.
+**Fingerprints** (SHA-256 over the 32 bytes of the public key, as shown by the DMS and `werkzeuge/signieren.py`; same as in the [SECURITY.md of the DMS](https://github.com/motom001/dms/blob/main/SECURITY.en.md)):
+
+| Key | ID | Fingerprint |
+| --- | --- | --- |
+| Signing key | `6d868387314e64df` | `6d86 8387 314e 64df 715c a3bd 9856 58d5 f888 c0ea 7cab ac91 a43f 9b99 6052 e728` |
+| Backup key | `4543c81b5ccf522d` | `4543 c81b 5ccf 522d f5a3 5e76 6660 8774 5f6c ae42 4722 3b6d 91c9 63cc 34b0 3954` |
+
+The DMS knows these keys from version 0.144.2; older versions (0.141.0–0.144.1) still verify with test keys and report “signature invalid” once the catalogue is signed.
 
 ### What only the maintainer can do (once)
 

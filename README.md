@@ -86,7 +86,14 @@ Die CI **signiert** jeden veröffentlichten Katalog (#74, im DMS: motom001/dms#5
 - **Ohne Secret** (in Forks, oder solange es noch nicht angelegt ist) läuft der Bau weiter, aber **ohne** Signatur – mit deutlicher Warnung im Lauf. Eine alte `katalog.sig` wird dann entfernt, weil sie nicht mehr passen würde.
 - **Sammeldateien** enthalten den signierten Katalog (`katalog.json` und `katalog.sig`, Byte für Byte). Das DMS fragt dann nicht mehr nach der Herkunft. `python3 werkzeuge/sammeldatei.py --pruefen <datei> --oeffentlich schluessel/signier.pub --oeffentlich schluessel/reserve.pub` prüft die Signatur auch hier.
 
-**Fingerabdrücke:** Die echten Schlüssel gibt es noch nicht. Sobald der Maintainer sie erzeugt hat, stehen ihre Fingerabdrücke hier und in der [SECURITY.md des DMS](https://github.com/motom001/dms/blob/main/SECURITY.md). Bis dahin prüft das DMS mit Testschlüsseln und sagt das in der Vorschau.
+**Fingerabdrücke** (SHA-256 über die 32 Bytes des öffentlichen Schlüssels, wie DMS und `werkzeuge/signieren.py` sie anzeigen; gleich in der [SECURITY.md des DMS](https://github.com/motom001/dms/blob/main/SECURITY.md)):
+
+| Schlüssel | Kennung | Fingerabdruck |
+| --- | --- | --- |
+| Signierschlüssel | `6d868387314e64df` | `6d86 8387 314e 64df 715c a3bd 9856 58d5 f888 c0ea 7cab ac91 a43f 9b99 6052 e728` |
+| Reserveschlüssel | `4543c81b5ccf522d` | `4543 c81b 5ccf 522d f5a3 5e76 6660 8774 5f6c ae42 4722 3b6d 91c9 63cc 34b0 3954` |
+
+Das DMS kennt diese Schlüssel ab Version 0.144.2; ältere Versionen (0.141.0–0.144.1) prüfen noch mit Testschlüsseln und melden „Signatur ungültig“, sobald der Katalog signiert ist.
 
 ### Was nur der Maintainer tun kann (einmalig)
 
