@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T23:26:15Z",
+  "erstellt": "2026-11-02T23:26:56Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -2019,6 +2019,24 @@
       "id": "office_email",
       "versionen": [
         {
+          "version": "1.1.0",
+          "dms": ">=0.145.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/office_email-1.1.0.zip",
+          "sha256": "d011f5dc1b78d13f57358b1e82315fcdd7741c0646b104228f221ec3693fa7a0",
+          "groesse": 125627,
+          "veroeffentlicht": "2026-11-02T23:26:56Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/office_email",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/office_email/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/office_email/CHANGELOG.md"
+        },
+        {
           "version": "1.0.0",
           "dms": ">=0.88.0",
           "abhaengigkeiten": {},
@@ -2044,7 +2062,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0",
+      "aktuell": "1.1.0",
       "kategorien": [
         "dateiformate",
         "volltext"
