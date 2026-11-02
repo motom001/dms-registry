@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fahrzeuge – DMS-Pakete</title>
-  <meta name="description" content="Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.">
+  <meta name="description" content="Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.">
   <link rel="stylesheet" href="../../stil.css">
   <script src="../../dms.js" defer></script>
 </head>
@@ -16,19 +16,19 @@
     <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
     <div class="paketkopf">
       <span class="symbol gross" aria-hidden="true">F</span>
-      <div><h1>Fahrzeuge</h1><p class="leise">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.</p></div>
+      <div><h1>Fahrzeuge</h1><p class="leise">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="fahrzeuge@1.0.3">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="fahrzeuge@1.1.0">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.0.3 vom 02.11.2026</dd>
+      <dt>Version</dt><dd>1.1.0 vom 02.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>Apache-2.0</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.113.0</dd>
-      <dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.0.0, <a href="../haushalt/">haushalt</a> &gt;=1.0.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.120.0</dd>
+      <dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.1.0, <a href="../haushalt/">haushalt</a> &gt;=1.1.0</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
-      <h3>Mappentypen</h3><details><summary><strong>Fahrzeug</strong> – 10 Felder</summary><ul><li>Bezeichnung <span class="leise">(Text, Pflicht)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Kennzeichen <span class="leise">(Text)</span></li><li>Fahrzeug-Identnummer <span class="leise">(Text)</span></li><li>Erstzulassung <span class="leise">(Datum)</span></li><li>Halter <span class="leise">(Text)</span></li><li>HU fällig <span class="leise">(Datum)</span></li><li>Versicherung <span class="leise">(Verweis)</span></li><li>Finanzierung/Leasing <span class="leise">(Verweis)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Werkstattrechnung</strong> – 7 Felder</summary><ul><li>Fahrzeug <span class="leise">(Verweis)</span></li><li>Werkstatt <span class="leise">(Verweis)</span></li><li>Datum <span class="leise">(Datum, Pflicht)</span></li><li>Kilometerstand <span class="leise">(Zahl)</span></li><li>Arbeiten <span class="leise">(Langtext)</span></li><li>Betrag <span class="leise">(Betrag)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details>
+      <h3>Mappentypen</h3><details><summary><strong>Fahrzeug</strong> – 10 Felder</summary><ul><li>Bezeichnung <span class="leise">(Text, Pflicht)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Kennzeichen <span class="leise">(Text)</span></li><li>Fahrzeug-Identnummer <span class="leise">(Text)</span></li><li>Erstzulassung <span class="leise">(Datum)</span></li><li>Halter <span class="leise">(Verweis)</span></li><li>HU fällig <span class="leise">(Datum)</span></li><li>Versicherung <span class="leise">(Verweis)</span></li><li>Finanzierung/Leasing <span class="leise">(Verweis)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Werkstattrechnung</strong> – 7 Felder</summary><ul><li>Fahrzeug <span class="leise">(Verweis)</span></li><li>Werkstatt <span class="leise">(Verweis)</span></li><li>Datum <span class="leise">(Datum, Pflicht)</span></li><li>Kilometerstand <span class="leise">(Zahl)</span></li><li>Arbeiten <span class="leise">(Langtext)</span></li><li>Betrag <span class="leise">(Betrag)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details>
       <h3>Sichten</h3><ul><li>Fahrzeuge</li><li>Alle Fahrzeuge <span class="leise">(unter Fahrzeuge)</span></li><li>Werkstattrechnungen <span class="leise">(unter Fahrzeuge)</span></li><li>HU fällig <span class="leise">(unter Fahrzeuge)</span></li></ul>
       <p>3 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
     </section>
@@ -49,7 +49,7 @@
 <tr>
 <td>Fahrzeug</td>
 <td>Pkw, Motorrad, Wohnmobil, Anhänger, E-Bike</td>
-<td>Bezeichnung, Art, Kennzeichen (eindeutig), Fahrzeug-Identnummer, Erstzulassung, Halter, Versicherung, Finanzierung/Leasing</td>
+<td>Bezeichnung, Art, Kennzeichen (eindeutig), Fahrzeug-Identnummer, Erstzulassung, Halter (Person), Versicherung, Finanzierung/Leasing</td>
 <td><strong>HU fällig</strong> (60 Tage vorher)</td>
 </tr>
 <tr>
@@ -65,14 +65,15 @@
 <ul>
 <li><strong>Versicherung</strong> ist eine <strong>Versicherung</strong> und <strong>Finanzierung/Leasing</strong> ein <strong>Vertrag</strong> aus dem Paket Haushalt.</li>
 <li><strong>Werkstatt</strong> ist eine <strong>Organisation</strong> aus dem Paket Basis.</li>
+<li><strong>Halter</strong> ist eine <strong>Person</strong> aus dem Paket Basis (Verweisart Bezug). An der Person und an der Versicherung siehst du unter <em>Verknüpfungen</em>, welche Fahrzeuge auf sie verweisen.</li>
 <li><strong>Verbleib Originaldokumente</strong> zeigt auf einen <strong>Ablageort</strong> des DMS – beim Fahrzeug der Fahrzeugbrief (Zulassungsbescheinigung Teil II), z. B. im Safe.</li>
 </ul>
 <p><strong>Ansichten:</strong> <em>Fahrzeuge</em> mit allem und darunter <em>Alle Fahrzeuge</em>, <em>Werkstattrechnungen</em> und <em>HU fällig</em> – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist.</p>
-<p><strong>Beispiele (optional):</strong> das Familienauto der Familie Muster und zwei Werkstattrechnungen. Die Rechnungen hängen am Auto, das Auto zeigt auf die Kfz-Versicherung aus Haushalt (wenn deren Beispiele installiert sind). Werkstatt und Ablageort „Safe“ setzt du selbst.</p>
+<p><strong>Beispiele (optional):</strong> das Familienauto der Familie Muster und zwei Werkstattrechnungen. Die Rechnungen hängen am Auto, das Auto zeigt auf die Kfz-Versicherung und den Halter Tom Muster aus Haushalt (wenn deren Beispiele installiert sind). Werkstatt und Ablageort „Safe“ setzt du selbst.</p>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)</li>
-<li>Pakete <strong>Basis</strong> ab 1.0.0 und <strong>Haushalt</strong> ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert</li>
+<li>DMS ab Version 0.120 (Halter als Verweis, Umwandlung von Text in Verweise nach dem Update)</li>
+<li>Pakete <strong>Basis</strong> ab 1.1.0 (Person) und <strong>Haushalt</strong> ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert</li>
 </ul>
 <h3>Rechte und Netz</h3>
 <p>Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Ansichten und auf Wunsch Beispiel-Mappen an.</p>
@@ -84,9 +85,17 @@
 <li>Nach der HU das neue Datum eintragen – die Erinnerung erledigt sich dann von selbst.</li>
 </ol>
 <p>Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.</p>
+<p><strong>Update von 1.0.x:</strong> Der Halter war bis 1.0.x ein Textfeld. Das Update legt den Verweis dazu, der Text bleibt. Unter <strong>Werkbank → Pakete → Fahrzeuge → Text in Verweise umwandeln</strong> siehst du in einer Vorschau je Name, welche Person das DMS vorschlägt oder neu anlegt; erst dann wird umgewandelt. Das lässt sich rückgängig machen.</p>
 <h3>Pflege</h3>
 <p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Fahrzeuge“ im Titel.</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.0.3</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.1.0</h3>
+<ul>
+<li><strong>Halter als Verweis auf eine Person</strong> (dms-registry #52, DMS #534): Am Fahrzeug ist der <strong>Halter</strong> jetzt ein Verweis auf eine <strong>Person</strong> aus dem Paket Basis (Verweisart Bezug: Wer eine Person löscht, löscht damit nicht das Auto). An der Person siehst du unter <em>Verknüpfungen</em> ihre Fahrzeuge.</li>
+<li><strong>Update:</strong> Das bisherige Textfeld <em>Halter</em> bleibt mit allen Werten; das Verweisfeld kommt dazu. Unter <strong>Werkbank → Pakete → Fahrzeuge → Text in Verweise umwandeln</strong> schlägt das DMS je Name eine vorhandene Person vor oder legt eine neue an – erst nach deiner Vorschau, rückgängig zu machen. Updates ändern nichts heimlich.</li>
+<li>Das Beispiel-Familienauto verweist auf Tom Muster aus den Beispielen von Haushalt.</li>
+<li>Braucht DMS ab 0.120.0, Basis ab 1.1.0 (Person) und Haushalt ab 1.1.0.</li>
+</ul>
+<h3>1.0.3</h3>
 <ul>
 <li><strong>Erkennung</strong> (dms-registry #49, DMS #336/#391): <strong>Kennzeichen</strong> und <strong>Fahrzeug-Identnummer</strong> sind „für die Erkennung“ markiert – Post mit einer davon (Kfz-Steuer, Versicherung, Werkstatt) gehört zu diesem Fahrzeug. Bei der Werkstattrechnung füllt „Aus Dokument ausfüllen“ Werkstatt, Datum und Betrag.</li>
 <li>Behoben: Der Hilfetext der Fahrzeug-Identnummer war nach „ohne I“ abgeschnitten (Komma in YAML ohne Anführungszeichen); er gilt für Neuinstallationen.</li>
@@ -106,7 +115,7 @@
 <li>Erste Fassung.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.3</td><td>02.11.2026</td><td>&gt;=0.113.0</td><td><a href="../../archive/fahrzeuge-1.0.3.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.3">installieren</button></td></tr><tr><td>1.0.2</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/fahrzeuge-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.1.0</td><td>02.11.2026</td><td>&gt;=0.120.0</td><td><a href="../../archive/fahrzeuge-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.1.0">installieren</button></td></tr><tr><td>1.0.3</td><td>02.11.2026</td><td>&gt;=0.113.0</td><td><a href="../../archive/fahrzeuge-1.0.3.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.3">installieren</button></td></tr><tr><td>1.0.2</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/fahrzeuge-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>
