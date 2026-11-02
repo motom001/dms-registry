@@ -1,0 +1,32 @@
+# Setzt bei Meldungen über die Vorlage „Fehler oder Wunsch zu einem Paket“ das Label „paket: <kennung>“ (#86).
+# Der Issue-Text ist fremde Eingabe: Er kommt nur über eine Umgebungsvariable ins Skript (nie per ${{ }} in run),
+# und als Label taugt nur eine Kennung, zu der es pakete/<kennung>/manifest.yaml gibt.
+name: Label je Paket
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  label:
+    if: contains(github.event.issue.body, '### Welches Paket?')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Paket aus dem Formular lesen und Label setzen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TEXT: ${{ github.event.issue.body }}
+          NUMMER: ${{ github.event.issue.number }}
+        run: |
+          kennung=$(printf '%s\n' "$TEXT" | awk '/^### Welches Paket\?/{f=1; next} f && NF {print; exit}' | sed -nE 's/.*\(([a-z][a-z0-9_]{1,19})\)[[:space:]]*$/\1/p')
+          if [ -z "$kennung" ] || [ ! -f "pakete/$kennung/manifest.yaml" ]; then
+            echo "Kein bekanntes Paket im Formular – kein Label."; exit 0
+          fi
+          label="paket: $kennung"
+          gh label create "$label" --repo "$GITHUB_REPOSITORY" --color C5DEF5 --description "Meldungen zum Paket $kennung" 2>/dev/null || true
+          gh issue edit "$NUMMER" --repo "$GITHUB_REPOSITORY" --add-label "$label"

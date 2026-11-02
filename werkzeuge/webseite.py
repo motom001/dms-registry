@@ -28,6 +28,13 @@ from pathlib import Path
 
 import markdown
 import yaml
+from urllib.parse import quote
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from vorlagen import lies_kategorien, option as vorlagen_option  # noqa: E402
+
+KATEGORIEN = {k['kennung']: k for k in lies_kategorien()['kategorien']}
+HANDBUCH_AKTUALISIEREN = 'https://motom001.github.io/dms/admin/aktuell/aktualisieren/'
 
 WURZEL = Path(__file__).resolve().parent.parent
 FELDTYPEN = {'text': 'Text', 'langtext': 'Langtext', 'formatiert': 'Formatierter Text', 'zahl': 'Zahl', 'betrag': 'Betrag', 'datum': 'Datum',
@@ -76,6 +83,14 @@ TEXTE = {
         'mit_code': 'Mit Code',
         'kachel_code': 'mit Code',
         'keine': 'Kein Paket gefunden.',
+        'kategorie': 'Kategorie',
+        'alle_kategorien': 'Alle Kategorien',
+        'autor': 'Autor',
+        'alle_autoren': 'Alle Autoren',
+        'dms_version': 'Deine DMS-Version',
+        'dms_version_platzhalter': 'z. B. 0.144.2',
+        'dms_version_hilfe': 'Steht im DMS unter „Über das DMS“. Bleibt nur in diesem Browser.',
+        'nur_passend': 'Nur Pakete, die zu meinem DMS passen',
         'stand': 'Stand',
         'anzahl': ('Paket', 'Pakete'),
         'datum': '%d.%m.%Y',
@@ -108,6 +123,14 @@ TEXTE = {
         'mit_code': 'With code',
         'kachel_code': 'with code',
         'keine': 'No package found.',
+        'kategorie': 'Category',
+        'alle_kategorien': 'All categories',
+        'autor': 'Author',
+        'alle_autoren': 'All authors',
+        'dms_version': 'Your DMS version',
+        'dms_version_platzhalter': 'e.g. 0.144.2',
+        'dms_version_hilfe': 'Shown in the DMS under “About the DMS”. Stays in this browser only.',
+        'nur_passend': 'Only packages that fit my DMS',
         'stand': 'As of',
         'anzahl': ('package', 'packages'),
         'datum': '%Y-%m-%d',
@@ -181,24 +204,44 @@ def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
     # Pakettexte sind deutsch – auch auf der englischen Übersicht als lang="de" ausgezeichnet (Vorlesen, Silbentrennung).
     de = '' if sprache == 'de' else ' lang="de"'
     mit_code = f' · {e(TEXTE[sprache]["kachel_code"])}' if v['code'] else ''
-    return f'''      <a class="kachel" href="{vor}paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}">
+    kats = p.get('kategorien') or []
+    chips = ''.join(f'<span class="chip">{e(KATEGORIEN[k][sprache])}</span>' for k in kats if k in KATEGORIEN)
+    return f'''      <a class="kachel" href="{vor}paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}" data-kategorien="{e(' '.join(kats))}" data-autor="{e(p['autor']['github'])}" data-versionen="{e(versionen_daten(p))}">
         <span class="symbol" aria-hidden="true">{e(p['name'][:1].upper())}</span>
         <span class="name"{de}>{e(p['name'])}</span>
         <span class="text"{de}>{e(p['beschreibung'])}</span>
         <span class="unter">{e(p['aktuell'])} · {e(p['autor']['name'])}{mit_code}</span>
+        <span class="chips">{chips}<span class="passt-marke" hidden></span></span>
       </a>'''
+
+
+def versionen_daten(p: dict) -> str:
+    """Versionen mit nötiger DMS-Version für den Filter „passt zu meinem DMS“ (#84), neueste zuerst."""
+    return json.dumps([[x['version'], x['dms']] for x in p['versionen']], separators=(',', ':'))
 
 
 def uebersicht(katalog: dict, pakete: list, sprache: str) -> str:
     """Startseite (Übersicht) in einer Sprache; Texte aus TEXTE."""
     t = TEXTE[sprache]
     kacheln = '\n'.join(kachel(p, sprache) for p in pakete)
+    zahl = {k: sum(1 for p in pakete if k in (p.get('kategorien') or [])) for k in KATEGORIEN}
+    kat_opt = ''.join(f'<option value="{e(k)}">{e(KATEGORIEN[k][sprache])} ({zahl[k]})</option>' for k in KATEGORIEN if zahl[k])
+    autoren = sorted({(p['autor']['github'], p['autor']['name']) for p in pakete}, key=lambda a: a[1].lower())
+    autor_opt = ''.join(f'<option value="{e(g)}">{e(n)}</option>' for g, n in autoren)
     hinweis = f'\n    <p class="hinweis">{t["hinweis_html"]}</p>' if t['hinweis_html'] else ''
     inhalt = f'''    <h1>{e(t['titel'])}</h1>
     <p class="leise">{t['einleitung_html']}</p>{hinweis}
     <div class="werkzeuge">
       <input type="search" id="suche" placeholder="{e(t['suche'])}" aria-label="{e(t['suche_label'])}">
+      <select id="kategorie" aria-label="{e(t['kategorie'])}"><option value="">{e(t['alle_kategorien'])}</option>{kat_opt}</select>
+      <select id="autor" aria-label="{e(t['autor'])}"><option value="">{e(t['alle_autoren'])}</option>{autor_opt}</select>
       <select id="art" aria-label="{e(t['art'])}"><option value="">{e(t['alle'])}</option><option value="konfiguration">{e(t['konfiguration'])}</option><option value="code">{e(t['mit_code'])}</option></select>
+    </div>
+    <div class="dmsversion">
+      <label for="dms-version">{e(t['dms_version'])}</label>
+      <input id="dms-version" inputmode="decimal" autocomplete="off" placeholder="{e(t['dms_version_platzhalter'])}" aria-describedby="dms-version-hilfe">
+      <label class="haken"><input type="checkbox" id="nur-passend" disabled> {e(t['nur_passend'])}</label>
+      <span id="dms-version-hilfe" class="leise klein">{e(t['dms_version_hilfe'])}</span>
     </div>
     <div class="kacheln">
 {kacheln}
@@ -318,13 +361,12 @@ def beziehungen(p: dict, pakete: list) -> list:
     gruppen = []
     gesehen = {p['id']}
 
-    def dazu(titel, ids, hoechstens=None, mehr=''):
+    def dazu(titel, ids, hoechstens=None, link=''):
         liste = [nach_id[i] for i in ids if i in nach_id and i not in gesehen]
-        ganz = len(liste)
         liste = liste[:hoechstens] if hoechstens else liste
         gesehen.update(x['id'] for x in liste)
         if liste:
-            gruppen.append((titel, liste, mehr if hoechstens and ganz > hoechstens else ''))
+            gruppen.append((titel, liste, link))
 
     dazu('Braucht', list(p['versionen'][0]['abhaengigkeiten']))
     if 'dms:umwandeln' in eigene:
@@ -332,11 +374,15 @@ def beziehungen(p: dict, pakete: list) -> list:
     dazu('Erweiterungen dafür', [x['id'] for x in pakete if p['id'] in x['versionen'][0]['abhaengigkeiten']])
     if 'dms:texterkennung' in eigene:
         dazu('Liest auch Dateien, die diese Pakete umwandeln', [x['id'] for x in pakete if 'dms:umwandeln' in schnittstellen(manifest(x['id']))])
-    art = p['versionen'][0]['code']
-    dazu('Ähnliche Pakete', [x['id'] for x in pakete if x['versionen'][0]['code'] == art], 3)
+    # Ähnlich = gleiche Kategorie (#84); die Überschrift führt zur gefilterten Liste (wie „Das gefällt dir vielleicht auch ›“).
+    kats = p.get('kategorien') or []
+    if kats:
+        dazu('Ähnliche Pakete', [x['id'] for x in pakete if set(kats) & set(x.get('kategorien') or [])], 3, f'../../?kategorie={quote(kats[0])}')
+    else:
+        art = p['versionen'][0]['code']
+        dazu('Ähnliche Pakete', [x['id'] for x in pakete if x['versionen'][0]['code'] == art], 3)
     g = p['autor']['github']
-    dazu(f'Weitere Pakete von {p["autor"]["name"]}', [x['id'] for x in pakete if x['autor']['github'] == g], 3,
-         f'<p><a href="../../autor/{e(g)}/">Alle Pakete von {e(p["autor"]["name"])} →</a></p>')
+    dazu(f'Weitere Pakete von {p["autor"]["name"]}', [x['id'] for x in pakete if x['autor']['github'] == g], 3, f'../../autor/{quote(g)}/')
     return gruppen
 
 
@@ -497,7 +543,13 @@ def detail(p: dict, pakete: list) -> str:
                f'<dt>Abhängigkeiten</dt><dd>{abh}</dd><dt>Quellcode</dt><dd><a href="{e(v["quelle"])}">auf GitHub ansehen</a></dd></dl>'
                f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead>'
                f'<tbody>{versionen}</tbody></table></div>')
-    passt = ''.join(f'<h3>{e(t)}</h3><div class="minis">' + ''.join(mini(x, '../../') for x in liste) + '</div>' + mehr for t, liste, mehr in beziehungen(p, pakete))
+    passt = ''.join((f'<h3><a class="weiter" href="{e(link)}">{e(t)} <span aria-hidden="true">›</span></a></h3>' if link else f'<h3>{e(t)}</h3>')
+                    + '<div class="minis">' + ''.join(mini(x, '../../') for x in liste) + '</div>' for t, liste, link in beziehungen(p, pakete))
+    melden = (f'{REGISTRY}/issues/new?template=paket-meldung.yml&title={quote("[" + p["name"] + "] ")}'
+              f'&paket={quote(vorlagen_option(p))}')
+    technik += (f'<p><a href="{e(melden)}">Fehler oder Wunsch zu diesem Paket melden</a> '
+                f'<span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p>')
+    kats = ''.join(f'<a class="chip" href="../../?kategorie={quote(k)}">{e(KATEGORIEN[k]["de"])}</a>' for k in (p.get('kategorien') or []) if k in KATEGORIEN)
     teile = [bereich('Was mitkommt', mitkommt, kurz_mit),
              bereich('Was das Paket darf', rechte, kurz_recht),
              bereich('Beschreibung', readme, 'ausführlich', 'readme')]
@@ -506,13 +558,15 @@ def detail(p: dict, pakete: list) -> str:
     teile.append(bereich('Für Fortgeschrittene und Entwickler', technik, 'Version, Lizenz, Quellcode, Downloads', 'klein'))
     passt_html = f'\n    <section class="passt"><h2>Passt dazu</h2>{passt}</section>' if passt else ''
     inhalt = (f'    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>\n'
-              f'    <div class="paketkopf">\n'
+              f'    <div class="paketkopf" data-paket="{e(p["id"])}" data-versionen="{e(versionen_daten(p))}">\n'
               f'      <span class="symbol gross" aria-hidden="true">{e(p["name"][:1].upper())}</span>\n'
               f'      <div class="titel"><h1>{e(p["name"])}</h1>\n'
               f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
               f'        <p class="kurztext">{e(p["beschreibung"])}</p>\n'
-              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p></div>\n'
-              f'    </div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
+              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p>\n'
+              f'        <p class="chips">{kats}</p></div>\n'
+              f'    </div>\n'
+              f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
     return seite(f'{p["name"]} – DMS-Pakete', inhalt, 2, p['beschreibung'])
 
 
@@ -547,8 +601,9 @@ a.hilfe:hover, a.hilfe:focus-visible { color: var(--a); border-color: var(--a); 
 .werkzeuge { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
 .werkzeuge input, .werkzeuge select, dialog input { font: inherit; padding: 8px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); min-width: 0; }
 .werkzeuge input { flex: 1 1 240px; }
+.werkzeuge select { flex: 1 1 140px; }
 .kacheln { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-a.kachel { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 12px; padding: 16px; color: inherit; text-decoration: none; }
+a.kachel { display: grid; align-content: start; grid-template-columns: auto 1fr; gap: 2px 12px; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 12px; padding: 16px; color: inherit; text-decoration: none; }
 a.kachel:hover, a.kachel:focus-visible { border-color: var(--a); }
 .kachel .symbol { grid-row: span 3; }
 .kachel .name { font-weight: 700; }
@@ -591,6 +646,30 @@ details.sicht > .filter ul { margin: 2px 0 2px 1.1em; padding: 0; }
 details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
 .spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
 .passt h3 { font-size: 1rem; margin: 16px 0 8px; }
+.passt h3 a.weiter { color: inherit; text-decoration: none; }
+.passt h3 a.weiter span { color: var(--leise); font-weight: 700; margin-left: 2px; }
+.passt h3 a.weiter:hover, .passt h3 a.weiter:focus-visible { color: var(--a); }
+.passt h3 a.weiter:hover span, .passt h3 a.weiter:focus-visible span { color: var(--a); }
+.chips { display: flex; flex-wrap: wrap; align-items: center; align-content: flex-start; gap: 6px; margin: 6px 0 0; grid-column: 2; }
+.paketkopf .titel > .chips { grid-column: 1 / -1; margin: 4px 0 0; }
+.paketkopf .titel > .chips:empty { display: none; }
+.chip { display: inline-block; font-size: .78rem; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--linie); color: var(--leise); text-decoration: none; background: var(--grund); }
+a.chip:hover, a.chip:focus-visible { border-color: var(--a); color: var(--a); }
+.passt-marke { font-size: .78rem; padding: 1px 8px; border-radius: 999px; }
+.passt-marke.ja { color: #1b5e20; background: #e8f5e9; }
+.passt-marke.aelter { color: #7a4a00; background: #fff3e0; }
+.passt-marke.nein { color: var(--leise); background: var(--grund); border: 1px solid var(--linie); }
+@media (prefers-color-scheme: dark) { .passt-marke.ja { color: #a5d6a7; background: #1b3a1e; } .passt-marke.aelter { color: #ffcc80; background: #3d2a0f; } }
+.dmsversion { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: -8px 0 18px; }
+.dmsversion input#dms-version { font: inherit; padding: 6px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); width: 9em; }
+.dmsversion .haken { display: inline-flex; gap: 6px; align-items: center; }
+.dms-passt:empty { display: none; }
+.dms-passt { margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--linie); background: var(--flaeche); }
+.dms-passt.ja { padding: 6px 12px; font-size: .92rem; }
+.dms-passt.warn { border-color: var(--warn); }
+.dms-passt p { margin: 4px 0; }
+.dms-passt .aelter-link { font-size: .9rem; }
+.dms-passt input { font: inherit; padding: 4px 8px; border: 1px solid var(--linie); border-radius: 8px; background: var(--grund); color: var(--tinte); width: 8em; }
 .minis { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
 a.mini { display: flex; gap: 10px; align-items: flex-start; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 10px; padding: 10px 12px; color: inherit; text-decoration: none; font-size: .92rem; }
 a.mini:hover, a.mini:focus-visible { border-color: var(--a); }
@@ -651,16 +730,103 @@ SKRIPT = '''
     if (b) { e.preventDefault(); oeffne(b.getAttribute('data-installieren')); return; }
     if (e.target.closest('[data-dms-adresse]')) { e.preventDefault(); frage(null); }
   });
-  var suche = document.getElementById('suche'), art = document.getElementById('art');
+  // Passt das Paket zu meinem DMS? (#84) Die Version kommt aus dem Fragment #dms=… (Link aus dem DMS,
+  // motom001/dms#622) oder wird eingetippt – sie bleibt nur in diesem Browser und geht an keinen Server.
+  var BEREICH = /^(>=|>|=|\\^|~)?(\\d+\\.\\d+\\.\\d+)( <(\\d+\\.\\d+\\.\\d+))?$/, VERSION = /^\\d+\\.\\d+\\.\\d+$/, VSCHL = 'dms-version';
+  var EN = document.documentElement.lang === 'en';
+  function teile(v) { return v.split('.').map(function (x) { return parseInt(x, 10) || 0; }); }
+  function vergleiche(a, b) { var x = teile(a), y = teile(b); for (var i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] - y[i]; return 0; }
+  function passt(v, bereich) {
+    var m = BEREICH.exec((bereich || '').trim()); if (!m) return false;
+    var op = m[1] || '=', basis = m[2], ober = m[4], c = vergleiche(v, basis), b = teile(basis), ok;
+    if (op === '>=') ok = c >= 0; else if (op === '>') ok = c > 0;
+    else if (op === '^') ok = c >= 0 && (b[0] > 0 ? vergleiche(v, (b[0] + 1) + '.0.0') < 0 : vergleiche(v, '0.' + (b[1] + 1) + '.0') < 0);
+    else if (op === '~') ok = c >= 0 && vergleiche(v, b[0] + '.' + (b[1] + 1) + '.0') < 0;
+    else ok = c === 0;
+    return ok && (!ober || vergleiche(v, ober) < 0);
+  }
+  function mindestens(bereich) { var m = BEREICH.exec((bereich || '').trim()); return m ? m[2] : bereich; }
+  function liesVersion() { try { var v = localStorage.getItem(VSCHL) || ''; return VERSION.test(v) ? v : ''; } catch (e) { return ''; } }
+  function merkeVersion(v) { try { if (v) localStorage.setItem(VSCHL, v); else localStorage.removeItem(VSCHL); } catch (e) { /* nur jetzt */ } }
+  (function ausFragment() {
+    var m = /(?:^#|&)dms=(\\d+\\.\\d+\\.\\d+)(?:&|$)/.exec(location.hash);
+    if (!m) return;
+    merkeVersion(m[1]);
+    // Fragment wieder entfernen, damit die Version nicht mit einem geteilten Link weitergegeben wird.
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* egal */ }
+  })();
+  // Ergebnis je Paket: ja (neueste Version passt) · aelter (eine ältere passt) · nein; null ohne Version.
+  function pruefe(versionen, dms) {
+    if (!dms) return null;
+    if (passt(dms, versionen[0][1])) return { fall: 'ja', version: versionen[0][0] };
+    for (var i = 1; i < versionen.length; i++) if (passt(dms, versionen[i][1])) return { fall: 'aelter', version: versionen[i][0], neu: versionen[0] };
+    return { fall: 'nein', neu: versionen[0] };
+  }
+  function marke(r) {
+    if (!r) return '';
+    if (r.fall === 'ja') return EN ? 'fits your DMS' : 'passt zu deinem DMS';
+    if (r.fall === 'aelter') return EN ? 'DMS update recommended' : 'DMS-Update empfohlen';
+    return (EN ? 'needs DMS ' : 'braucht DMS ') + mindestens(r.neu[1]) + (EN ? '+' : ' oder neuer');
+  }
+  var suche = document.getElementById('suche'), art = document.getElementById('art'), kat = document.getElementById('kategorie'),
+      autor = document.getElementById('autor'), vfeld = document.getElementById('dms-version'), nur = document.getElementById('nur-passend');
   function filtern() {
-    var q = (suche.value || '').trim().toLowerCase(), a = art.value, n = 0;
-    document.querySelectorAll('.kachel').forEach(function (k) {
-      var ok = (!q || k.dataset.suche.indexOf(q) >= 0) && (!a || k.dataset.art === a);
-      k.hidden = !ok; if (ok) n++;
+    var q = (suche.value || '').trim().toLowerCase(), a = art.value, k = kat ? kat.value : '', au = autor ? autor.value : '', n = 0;
+    var dms = vfeld && VERSION.test(vfeld.value.trim()) ? vfeld.value.trim() : '';
+    if (nur) { nur.disabled = !dms; if (!dms) nur.checked = false; }
+    document.querySelectorAll('.kachel').forEach(function (el) {
+      var r = el.dataset.versionen ? pruefe(JSON.parse(el.dataset.versionen), dms) : null, m = el.querySelector('.passt-marke');
+      if (m) { m.hidden = !r; m.textContent = marke(r); m.className = 'passt-marke' + (r ? ' ' + r.fall : ''); }
+      var ok = (!q || el.dataset.suche.indexOf(q) >= 0) && (!a || el.dataset.art === a)
+        && (!k || (' ' + el.dataset.kategorien + ' ').indexOf(' ' + k + ' ') >= 0) && (!au || el.dataset.autor === au)
+        && (!(nur && nur.checked) || (r && r.fall === 'ja'));
+      el.hidden = !ok; if (ok) n++;
     });
     document.getElementById('keine').hidden = n > 0;
+    // Kategorie und Autor stehen in der Adresse (teilbar, Zurück im Browser); die DMS-Version nie.
+    var p = new URLSearchParams(location.search);
+    if (k) p.set('kategorie', k); else p.delete('kategorie');
+    if (au) p.set('autor', au); else p.delete('autor');
+    var ziel = location.pathname + (p.toString() ? '?' + p.toString() : '');
+    if (ziel !== location.pathname + location.search) { try { history.replaceState(null, '', ziel); } catch (e) { /* egal */ } }
   }
-  if (suche) { suche.addEventListener('input', filtern); art.addEventListener('change', filtern); }
+  if (suche) {
+    var p = new URLSearchParams(location.search);
+    if (kat && p.get('kategorie')) kat.value = p.get('kategorie');
+    if (autor && p.get('autor')) autor.value = p.get('autor');
+    if (vfeld) vfeld.value = liesVersion();
+    [suche, art, kat, autor, vfeld, nur].forEach(function (x) { if (x) x.addEventListener(x.tagName === 'INPUT' && x.type !== 'checkbox' ? 'input' : 'change', function () {
+      if (x === vfeld) { var w = vfeld.value.trim(); if (!w || VERSION.test(w)) merkeVersion(w); }
+      filtern();
+    }); });
+    filtern();
+  }
+  // Paketseite: Hinweis „passt / ältere Version / braucht neueres DMS“ unter dem Kopf.
+  var kopf = document.querySelector('.paketkopf[data-versionen]'), feld = document.getElementById('dms-passt');
+  function zeigePaket() {
+    var versionen = JSON.parse(kopf.dataset.versionen), dms = liesVersion(), r = pruefe(versionen, dms), id = kopf.dataset.paket;
+    var knopf = kopf.querySelector('.installieren');
+    feld.className = 'dms-passt'; feld.textContent = ''; if (knopf) knopf.hidden = false;
+    if (!r) {
+      feld.innerHTML = '<p class="leise">Passt das Paket zu deinem DMS? Deine DMS-Version: <input id="dms-version-paket" inputmode="decimal" placeholder="z. B. 0.144.2" aria-label="Deine DMS-Version"> <span class="klein">(steht im DMS unter „Über das DMS“, bleibt nur in diesem Browser)</span></p>';
+      var i = document.getElementById('dms-version-paket');
+      i.addEventListener('change', function () { var w = i.value.trim(); if (VERSION.test(w)) { merkeVersion(w); zeigePaket(); } });
+      return;
+    }
+    var aendern = ' <a href="#" data-dms-version-aendern>ändern</a>';
+    if (r.fall === 'ja') { feld.className += ' ja'; feld.innerHTML = 'Passt zu deinem DMS ' + dms + '.' + aendern; return; }
+    if (knopf) knopf.hidden = true;
+    feld.className += ' warn';
+    var html = '<p><strong>Für Version ' + r.neu[0] + ' brauchst du DMS ' + mindestens(r.neu[1]) + ' oder neuer</strong> – du hast ' + dms + '.' + aendern + '</p>'
+      + '<p>Aktualisiere dein DMS, damit du dieses Paket mit allen Verbesserungen und Fehlerbehebungen nutzen kannst.</p>'
+      + '<p><a class="knopf primaer" href="'''+HANDBUCH_AKTUALISIEREN+'''">So aktualisierst du dein DMS →</a></p>';
+    if (r.fall === 'aelter') html += '<p class="aelter-link"><a href="#" data-installieren="' + id + '@' + r.version + '">Ältere Version ' + r.version + ' trotzdem installieren</a> <span class="leise">– ihr fehlen Verbesserungen und Fehlerbehebungen. Nach dem DMS-Update holst du die neue Version über die Paketverwaltung nach.</span></p>';
+    feld.innerHTML = html;
+  }
+  if (kopf && feld) {
+    feld.addEventListener('click', function (e) { if (e.target.closest('[data-dms-version-aendern]')) { e.preventDefault(); merkeVersion(''); zeigePaket(); } });
+    zeigePaket();
+  }
 })();
 '''
 

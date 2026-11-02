@@ -24,6 +24,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from vorlagen import kategorien_von, lies_kategorien  # noqa: E402
 from jsonschema import Draft202012Validator
 
 WURZEL = Path(__file__).resolve().parent.parent
@@ -131,6 +134,11 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         # Angaben des Pakets aus der neuesten Version.
         if p['versionen'][0]['version'] == version:
             p.update({'name': m['name'], 'beschreibung': m['beschreibung'], 'autor': m['autor'], 'lizenz': m['lizenz'], 'aktuell': version})
+    # Kategorien (#84, Stufe 1) stehen in werkzeuge/kategorien.yaml, nicht im Paket; das DMS ignoriert das Feld.
+    kat = lies_kategorien()
+    for pid, p in pakete.items():
+        if kategorien_von(pid, kat):
+            p['kategorien'] = kategorien_von(pid, kat)
 
     katalog = {
         'format': FORMAT,

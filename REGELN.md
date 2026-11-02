@@ -61,6 +61,10 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://motom
 - **Dienst-Adresse** (ab DMS 0.124.0, `dms: ">=0.124.0"`): Braucht ein Paket einen Dienst, den jeder Haushalt woanders betreibt (z. B. einen KI-Dienst), verlangt es die Adresse als Einstellung vom Typ `adresse` statt einer festen Adresse in `code.netz`. Höchstens eine je Paket, nur in einem Abschnitt, **ohne** `standard` – höchstens ein `beispiel` für einen Dienst im eigenen Netz (z. B. `http://ollama:11434/v1`). Der Administrator bestätigt die Adresse beim Speichern; nur dorthin lässt der Paket-Läufer das Paket ins Netz. Das README erklärt, was wann dorthin geht.
 - Einstellungen ändern ist Sache des DMS. Ein Paket speichert seine Einstellungen nicht selbst irgendwo anders und bringt keine eigene Oberfläche dafür mit.
 
+## Kategorien
+
+Jedes Paket gehört zu **einer oder zwei Kategorien** aus einer festen Liste in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml) (Vorlagen für die Ablage, Dateiformate, Texterkennung und Volltext, Sprachen, KI, Post und Scannen, Sicherung, Für Entwickler). Danach filtert die Katalog-Webseite, und „Ähnliche Pakete“ zeigt Pakete derselben Kategorie. Ein neues Paket trägst du dort unter `pakete:` ein; die CI prüft es (`python3 werkzeuge/vorlagen.py --pruefen`). Eine neue Kategorie kommt nur über ein Issue dazu, freie Schlagwörter gibt es nicht. Die Kategorien stehen (noch) nicht im Manifest, das DMS braucht sie nicht.
+
 ## Namen
 
 Schlüssel von Mappentypen, Feldern und Registern sind **im Paket lokal**, z. B. `versicherung`. Das DMS legt sie mit der Paket-Id davor an (`haushalt_versicherung`), damit sich zwei Pakete nicht in die Quere kommen. Angezeigt wird nur der Name („Versicherung“). Verweise auf Typen anderer Pakete schreibst du als `<paket>:<schluessel>`, z. B. `basis:organisation`. Das andere Paket muss dann unter `abhaengigkeiten` stehen. Auf Mappentypen, die das DMS selbst mitbringt, verweist du mit `dms:` – ohne Abhängigkeit: `dms:ablageort` (wo ein Original liegt), `dms:benutzer` und `dms:rolle`. Dafür muss im Manifest `dms: ">=0.75.0"` stehen. Die Paket-Id `dms` ist deshalb vergeben.
