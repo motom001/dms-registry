@@ -46,6 +46,18 @@ details.bereich[open] > summary::before { transform: rotate(90deg); }
 details.bereich > summary h2 { display: inline; font-size: 1.05rem; font-weight: 650; border: 0; margin: 0; padding: 0; }
 details.bereich .kurz { font-size: .92rem; }
 details.bereich > .innen { padding: 4px 16px 14px; border-top: 1px solid var(--linie); }
+ul.woerter { margin: 4px 0 10px; }
+ul.baum { list-style: none; margin: 0; padding-left: 18px; border-left: 1px solid var(--linie); }
+ul.baum.wurzel { padding-left: 0; border-left: 0; }
+ul.baum li { margin: 2px 0; }
+details.sicht { border: 0; padding: 0; margin: 0; background: none; border-radius: 0; }
+details.sicht > summary { cursor: pointer; padding: 3px 0; list-style: none; }
+details.sicht > summary::-webkit-details-marker { display: none; }
+details.sicht > summary::before { content: "›"; display: inline-block; width: .9em; color: var(--leise); font-weight: 700; transition: transform .15s; }
+details.sicht[open] > summary::before { transform: rotate(90deg); }
+details.sicht > .filter { margin: 2px 0 8px .9em; padding: 6px 10px; border-radius: 8px; background: var(--grund); font-size: .92rem; }
+details.sicht > .filter p { margin: 2px 0; }
+details.sicht > .filter ul { margin: 2px 0 2px 1.1em; padding: 0; }
 details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
 .spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
 .passt h3 { font-size: 1rem; margin: 16px 0 8px; }
