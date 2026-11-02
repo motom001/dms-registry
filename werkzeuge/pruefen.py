@@ -81,6 +81,8 @@ DMS_ANTWORTEN_AB = (0, 124, 0)
 DMS_FUNKTIONEN_ANTWORTEN = {'netz_strom', 'netz_weiter', 'teil'}
 # Wortlisten (inhalt.wortlisten, DMS #356): gleichbedeutende Wörter für die Suche, ab DMS 0.127.0.
 DMS_WORTLISTEN_AB = (0, 127, 0)
+# Schnittstelle dms:texterkennung (DMS #458): das Paket übernimmt die Texterkennung, ab DMS 0.133.0.
+DMS_TEXTERKENNUNG_AB = (0, 133, 0)
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -126,6 +128,12 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
     vor_antworten = ab is None or ab < DMS_ANTWORTEN_AB
     if 'dms:antworten' in (rechte.get('schnittstellen') or []) and vor_antworten:
         fehler.append('code.rechte.schnittstellen: dms:antworten kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')
+    # dms:texterkennung (DMS #458): ab 0.133.0; das Paket schreibt den Volltext, braucht also dokumente: schreiben.
+    if 'dms:texterkennung' in (rechte.get('schnittstellen') or []):
+        if rechte.get('dokumente') != 'schreiben':
+            fehler.append('code.rechte.schnittstellen: dms:texterkennung braucht code.rechte.dokumente: schreiben – das Paket schreibt den Volltext')
+        if ab is None or ab < DMS_TEXTERKENNUNG_AB:
+            fehler.append('code.rechte.schnittstellen: dms:texterkennung kennt das DMS erst ab 0.133.0 – bitte dms: ">=0.133.0" angeben')
     adressen = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
     if adressen and vor_antworten:
         fehler.append('code.einstellungen: Einstellungen vom Typ adresse kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')

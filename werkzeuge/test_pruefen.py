@@ -147,6 +147,18 @@ class Einstellungen(unittest.TestCase):
         c['einstellungen'][0]['felder'][0]['beispiel'] = 'http://x'
         self.assertTrue(any('beispiel gibt es nur bei typ adresse' in f for f in self.paket(c, dms='>=0.124.0')))
 
+    def test_schnittstelle_texterkennung(self):
+        # dms:texterkennung (DMS #458): ab DMS 0.133.0, nur mit dokumente: schreiben.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'lesen': ['*'], 'dokumente': 'schreiben', 'schnittstellen': ['dms:texterkennung']}
+        c['ereignisse'] = ['volltext.fertig']
+        self.assertEqual(self.paket(c, dms='>=0.133.0'), [])
+        alt = self.paket(c, dms='>=0.132.0')
+        self.assertTrue(any('dms:texterkennung kennt das DMS erst ab 0.133.0' in f for f in alt), alt)
+        c['rechte']['dokumente'] = 'lesen'
+        self.assertTrue(any('braucht code.rechte.dokumente: schreiben' in f for f in self.paket(c, dms='>=0.133.0')))
+
     def test_dms_untergrenze(self):
         self.assertEqual(pruefen.dms_untergrenze('>=0.94.0'), (0, 94, 0))
         self.assertEqual(pruefen.dms_untergrenze('>0.93.0 <1.0.0'), (0, 93, 1))

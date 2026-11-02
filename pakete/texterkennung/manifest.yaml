@@ -2,22 +2,24 @@
 schema: 1
 id: texterkennung
 name: Texterkennung
-version: 1.0.0
-beschreibung: Erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly und schreibt ihn als Volltext ins DMS – abgeschottet im Paket-Läufer, ohne Netz.
+version: 2.0.0
+beschreibung: Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache automatisch, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
-# 0.88.0: Paket-Läufer, Volltext schreiben, Seite als Graustufenbild
-dms: ">=0.88.0"
+# 0.133.0: Ereignis „Volltext fertig“ auch ohne Text, Schnittstelle dms:texterkennung, Fortsetzung („weiter“),
+# Seitenbild auch für JPEG und PNG, Sprachdaten aus Zusatzpaketen (texterkennung_<sprache>)
+dms: ">=0.133.0"
 inhalt: {}
 code:
   sprache: c
   quelle: code/
-  ereignisse: [dokument.hochgeladen, texterkennung.fertig]
+  ereignisse: [volltext.fertig]
   rechte:
     lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen; Lesen der Mappe nur für „Nur diese Mappentypen“
     dokumente: schreiben  # Seiten als Bild lesen und den Volltext schreiben
+    schnittstellen: ["dms:texterkennung"]  # die Texterkennung des DMS: Dokumente ohne Text warten auf dieses Paket
   netz: []
   einstellungen:
     - abschnitt: Texterkennung
@@ -25,20 +27,26 @@ code:
         - schluessel: sprache
           name: Sprache
           typ: auswahl
-          optionen: [Deutsch, Englisch, Deutsch und Englisch]
-          standard: Deutsch
-          hilfe: Bei „Deutsch und Englisch“ erkennt das Paket jede Seite zweimal und nimmt die sicherere Erkennung – das dauert doppelt so lang.
-        - schluessel: nur_ohne_text
-          name: Nur Dokumente ohne Text
+          optionen: [Automatisch, Deutsch, Englisch, Deutsch und Englisch]
+          standard: Automatisch
+          hilfe: Automatisch – das Paket liest zuerst Deutsch, erkennt die Sprache des Texts und liest die Seite in einer anderen erkannten Sprache ein zweites Mal, wenn deren Sprachdaten da sind – die sicherere Lesung gilt (Englisch immer, weitere über Zusatzpakete wie „Texterkennung – Französisch“). Bei „Deutsch und Englisch“ liest es jede Seite zweimal und nimmt die sicherere Lesung – das dauert doppelt so lang.
+        - schluessel: verwerfen
+          name: Vorhandenen Volltext verwerfen und neu erkennen
+          typ: janein
+          standard: false
+          hilfe: Aus – Text aus dem PDF bleibt, das Paket erkennt nur Dokumente ohne Text (Scans, Fotos). An – das Paket erkennt jedes PDF und Bild neu und ersetzt den Text aus dem PDF. „Volltext neu erzeugen → Für alle Dokumente“ in der Werkbank erkennt immer neu, auch wenn das hier aus ist.
+        - schluessel: drehen
+          name: Seiten selbst aufrichten
           typ: janein
           standard: true
-          hilfe: Ja – das Paket wartet, bis die Texterkennung des DMS fertig ist, und erkennt nur, wenn sie keinen Text gefunden hat (z. B. bei schwierigen Scans). Nein – das Paket erkennt jedes neue PDF und Bild und ersetzt den Volltext.
+          hilfe: Erkennt die Lage jeder Seite (quer, auf dem Kopf) und die Schrift (z. B. Kyrillisch) und richtet die Seite vor dem Lesen auf. Kostet etwa ein Zehntel mehr Zeit.
         - schluessel: max_seiten
           name: Höchstens so viele Seiten
           typ: zahl
           min: 1
-          max: 200
-          standard: 30
+          max: 1000
+          standard: 100
+          hilfe: Lange Dokumente erkennt das Paket abschnittsweise (etwa eine Minute je Aufruf); am Dokument steht, wie weit es ist.
         - schluessel: dpi
           name: Auflösung (dpi)
           typ: zahl
