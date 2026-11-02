@@ -14,6 +14,9 @@ Im Ausgabeordner liegen danach:
                                     – signiert danach werkzeuge/signieren.py (katalog.sig)
     archive/<id>-<version>.zip      genau die Dateien des Paketordners, ohne Unterordner davor
 
+Kategorien (#84, Stufe 1): aus werkzeuge/kategorien.yaml als zusätzliches Feld „kategorien“ je Paket – das DMS
+liest nur die Felder, die es kennt; ältere Versionen stört das Feld nicht. Ohne gültige Kategorien bricht der Bau ab.
+
 Ältere Versionen bleiben erhalten. Ein Archiv mit gleicher Id und Version ändert sich nie: Ist der Inhalt
 eines Pakets anders als im veröffentlichten Archiv, die Version aber gleich, bricht das Skript ab.
 
@@ -26,12 +29,17 @@ from pathlib import Path
 import yaml
 from jsonschema import Draft202012Validator
 
+import kategorien  # noqa: E402 – liegt daneben (werkzeuge/)
+
 WURZEL = Path(__file__).resolve().parent.parent
 REPO = 'https://github.com/motom001/dms-registry'
 FORMAT = 1
 ZEIT = (1980, 1, 1, 0, 0, 0)
 # Nur zum Ausprobieren (Webseite): Pakete mit Code auch ohne gebautes Modul.
 OHNE_BAU = False
+# Feste Reihenfolge der Felder je Paket (wie bisher, „kategorien“ dahinter): gleiche Eingabe, gleiche Bytes –
+# auch wenn das Paket aus einem älteren katalog.json mit anderer Reihenfolge kommt.
+PAKETFELDER = ('id', 'versionen', 'name', 'beschreibung', 'autor', 'lizenz', 'aktuell', 'kategorien')
 
 
 def dateien(ordner: Path) -> dict[str, bytes]:
@@ -95,6 +103,11 @@ def eintrag(ordner: Path, m: dict, archivname: str, daten: bytes, veroeffentlich
     }
 
 
+def geordnet(p: dict) -> dict:
+    """Felder eines Pakets in fester Reihenfolge (PAKETFELDER), Unbekanntes alphabetisch dahinter."""
+    return {**{k: p[k] for k in PAKETFELDER if k in p}, **{k: p[k] for k in sorted(p) if k not in PAKETFELDER}}
+
+
 def versionsschluessel(v: str):
     return tuple(int(x) for x in v.split('.'))
 
@@ -106,6 +119,8 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
     pakete = {p['id']: p for p in alt.get('pakete', [])}
     jetzt = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
     neu: list[tuple[str, bytes]] = []
+    kat = kategorien.lade()
+    fehler += [f'werkzeuge/kategorien.yaml: {f}' for f in kategorien.fehler_der_liste(kat)]
 
     for ordner in sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir()):
         m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
@@ -131,6 +146,10 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         # Angaben des Pakets aus der neuesten Version.
         if p['versionen'][0]['version'] == version:
             p.update({'name': m['name'], 'beschreibung': m['beschreibung'], 'autor': m['autor'], 'lizenz': m['lizenz'], 'aktuell': version})
+        # Kategorien gehören zum Paket, nicht zur Version: immer der Stand aus kategorien.yaml (#84).
+        fk = kategorien.fehler_des_pakets(kat, pid)
+        fehler += [f'{pid}: {f}' for f in fk]
+        p['kategorien'] = kategorien.von(kat, pid)
 
     katalog = {
         'format': FORMAT,
@@ -139,7 +158,7 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         # Die Signatur steht getrennt in katalog.sig (werkzeuge/signieren.py, #74), damit ältere DMS-Versionen
         # diesen Katalog unverändert lesen; das Feld bleibt null.
         'signatur': None,
-        'pakete': sorted(pakete.values(), key=lambda p: p['id']),
+        'pakete': [geordnet(p) for p in sorted(pakete.values(), key=lambda p: p['id'])],
     }
     schema = json.loads((WURZEL / 'schema/katalog.schema.json').read_text(encoding='utf-8'))
     fehler += [f"katalog.json: {'/'.join(map(str, e.absolute_path)) or '(oben)'}: {e.message}" for e in Draft202012Validator(schema).iter_errors(katalog)]

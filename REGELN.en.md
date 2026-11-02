@@ -53,6 +53,7 @@ They are explained in the administrator manual under [Pakete mit Code](https://m
 - With every change, a higher version (SemVer) and an entry in `CHANGELOG.md`
 - German texts in fields and views; the README in German, additionally in English if you like
 - A maintainer for the package in `CODEOWNERS`
+- 1–2 categories in `werkzeuge/kategorien.yaml` (see [Categories](#categories))
 
 ## Settings
 
@@ -66,6 +67,25 @@ They are explained in the administrator manual under [Pakete mit Code](https://m
 Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versicherung`. The DMS creates them with the package id in front (`haushalt_versicherung`) so that two packages do not get in each other's way. Only the name ("Versicherung") is displayed. You write references to types of other packages as `<paket>:<schluessel>`, e.g. `basis:organisation`. The other package must then be listed under `abhaengigkeiten` (dependencies). To Mappe types that the DMS brings itself, you refer with `dms:` – without a dependency: `dms:ablageort` (where an original is kept), `dms:benutzer` (user) and `dms:rolle` (role). This requires `dms: ">=0.75.0"` in the manifest. The package id `dms` is therefore taken.
 
 Sample Mappen may refer to each other (from DMS 0.79.0): a sample gets a `schluessel`, a reference field of another sample gets the value `{ beispiel: strom }` – or `{ beispiel: "basis:stadtwerke" }` for a sample from a dependency. The manifest must then contain `dms: ">=0.79.0"`.
+
+## Categories
+
+The catalogue can be filtered by category. There is a **fixed list** – free tags do not help with filtering (everyone writes something different: "OCR", "scan", "text recognition").
+
+| Identifier | Category (German) | English |
+| --- | --- | --- |
+| `vorlagen` | Vorlagen für die Ablage | Filing templates |
+| `dateiformate` | Dateiformate | File formats |
+| `volltext` | Texterkennung und Volltext | Text recognition and full text |
+| `sprachen` | Sprachen | Languages |
+| `ki` | KI | AI |
+| `post` | Post und Scannen | Paper mail and scanning |
+| `sicherung` | Sicherung | Backup |
+| `entwickler` | Für Entwickler | For developers |
+
+- Every package has **1 or 2** categories; the first one is the main category ("Ähnliche Pakete ›" – similar packages – on the package page leads there).
+- For now the assignment lives in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml), **not** in the manifest. When you submit a package, you add the line `<id>: [<identifier>]` there yourself; `pruefen.py` reports packages without an entry and unknown identifiers. The maintainer may change the assignment in the pull request.
+- A **new category** is only added via an issue: identifier, German and English name, which packages belong to it and why no existing one fits. Only after approval is it added to `werkzeuge/kategorien.yaml` (and to this table).
 
 ## Fields for recognition
 

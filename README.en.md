@@ -19,7 +19,8 @@ In the DMS you install packages under **Werkbank → Pakete**. Package managemen
 pakete/<paket>/        one folder per package, name = package id
 vorlage/               template for a new package – copy it and get started
 schema/                JSON schemas for manifest.yaml and the contents
-werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (also run in the CI)
+werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (also run in the CI);
+                       kategorien.yaml: categories of the packages in the catalogue
 schluessel/            public keys the catalogue is signed with (see "Signing the catalogue")
 REGELN.md              what is allowed, what is not, which licences (English: REGELN.en.md)
 CONTRIBUTING.md        how a package gets here (English: CONTRIBUTING.en.md)
@@ -47,19 +48,19 @@ With every merge to `main`, the CI builds the **catalogue** and puts it on the b
 - `…/gh-pages/archive/<id>-<version>.zip` – one archive per package version containing exactly the files of the package folder (without a folder in front)
 - `…/gh-pages/katalog.sig` – the signature of the catalogue (see [Signing the catalogue](#signing-the-catalogue))
 
-The same branch holds the **catalogue website** (`werkzeuge/webseite.py`): browse packages like in an app store – an overview with search and filters, and one page per package with description, what gets created, permissions, changes and older versions. **"In meinem DMS installieren"** (install in my DMS) asks for the address of your DMS the first time (remembered only in your browser, changeable) and opens `/werkbank/pakete?installieren=<id>@<version>` there; nothing is installed until you confirm it in the DMS. The website sends nothing to your DMS. The overview is available in German and English (`en/index.html`, switch "Deutsch · English" at the top, works without JavaScript); package pages and package descriptions are in German for now.
+The same branch holds the **catalogue website** (`werkzeuge/webseite.py`): browse packages like in an app store – an overview with search and filters by type, **category** and **author** (also via the address, e.g. `index.html?kategorie=dateiformate&autor=motom001`), and one page per package with description, what gets created, permissions, changes and older versions. **"In meinem DMS installieren"** (install in my DMS) asks for the address of your DMS the first time (remembered only in your browser, changeable) and opens `/werkbank/pakete?installieren=<id>@<version>` there; nothing is installed until you confirm it in the DMS. The website sends nothing to your DMS. The overview is available in German and English (`en/index.html`, switch "Deutsch · English" at the top, works without JavaScript); package pages and package descriptions are in German for now. Categories appear as chips on tiles and package pages; "Ähnliche Pakete ›" (similar packages) on a package page are packages of the same category (see [REGELN.en.md, "Categories"](REGELN.en.md#categories)).
 
 **Packages without internet** (`sammeldatei.html`, motom001/dms#461; page in German for now): tick packages, choose the DMS version (default: the newest; the DMS links here with `?dms=<version>`), dependencies are added automatically. The browser downloads the archives, checks each against SHA-256 and size from `katalog.json` and packs them together with the index `sammeldatei.json` (format: [`schema/sammeldatei.schema.json`](schema/sammeldatei.schema.json)) into **one bundle file**, together with the signed catalogue (`katalog.json` and `katalog.sig`) – nothing is uploaded. When uploading, the DMS checks every archive against size and checksum in the index and against the signed catalogue (and against the official catalogue if it has already fetched it), rejects unknown files and then installs package by package. If the signature is valid, nobody needs to confirm the origin any more. `werkzeuge/sammeldatei.py` creates the same file on the command line and checks a bundle the way the DMS does (`--pruefen <file> [--katalog katalog.json] [--oeffentlich <x.pub> …]`).
 
 With GitHub Pages (source: branch `gh-pages`), the website is available at **`https://motom001.github.io/dms-registry/`**, and the catalogue also at `…/katalog.json`.
 
-`katalog.json` (format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) contains the format version, creation time, source and, per package, id, name, description, author, licence, current version and **all versions**, newest first. Per version it lists: required DMS version, dependencies, content overview (Mappe types and views with names, number of samples), whether the package has code, address of the archive (relative to `katalog.json`), **SHA-256** and size of the archive, time of publication, and links to the source folder, README and changelog.
+`katalog.json` (format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) contains the format version, creation time, source and, per package, id, name, description, author, licence, current version, categories (`kategorien`, 1–2 identifiers from `werkzeuge/kategorien.yaml` – for the website only, the DMS does not read this field) and **all versions**, newest first. Per version it lists: required DMS version, dependencies, content overview (Mappe types and views with names, number of samples), whether the package has code, address of the archive (relative to `katalog.json`), **SHA-256** and size of the archive, time of publication, and links to the source folder, README and changelog.
 
 ```json
 {
   "format": 1, "erstellt": "2026-11-01T10:00:00Z", "quelle": "https://github.com/motom001/dms-registry", "signatur": null,
   "pakete": [{
-    "id": "basis", "name": "Basis", "beschreibung": "…", "autor": { "name": "…", "github": "…" }, "lizenz": "CC0-1.0", "aktuell": "1.0.0",
+    "id": "basis", "name": "Basis", "beschreibung": "…", "autor": { "name": "…", "github": "…" }, "lizenz": "CC0-1.0", "aktuell": "1.0.0", "kategorien": ["vorlagen"],
     "versionen": [{
       "version": "1.0.0", "dms": ">=0.63.0", "abhaengigkeiten": {},
       "inhalt": { "mappentypen": [{ "schluessel": "organisation", "name": "Organisation" }], "sichten": [ … ], "beispiele": 2 },
@@ -130,8 +131,11 @@ If you run your own catalogue, you can sign it with `werkzeuge/signieren.py` in 
 git clone https://github.com/<you>/dms-registry && cd dms-registry
 werkzeuge/neues-paket.sh my_package "My package"
 # adjust pakete/my_package/: manifest.yaml, README.md, inhalt/ …
+# propose a category: in werkzeuge/kategorien.yaml under "pakete:", e.g. "my_package: [vorlagen]"
 python3 werkzeuge/pruefen.py pakete/my_package
 ```
+
+You propose the **category** yourself: one line `<id>: [<identifier>]` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml), one or two identifiers from the list there (the first one is the main category). Without an entry, `pruefen.py` fails; the maintainer may still change the assignment in the pull request. New categories only via an issue ([REGELN.en.md, "Categories"](REGELN.en.md#categories)).
 
 Then open a pull request. The details are in [CONTRIBUTING.en.md](CONTRIBUTING.en.md).
 

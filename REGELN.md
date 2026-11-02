@@ -53,6 +53,7 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://motom
 - Bei jeder Änderung eine höhere Version (SemVer) und ein Eintrag im `CHANGELOG.md`
 - Deutsche Texte in Feldern und Sichten; das README auf Deutsch, gern zusätzlich auf Englisch
 - Ein Pfleger in `CODEOWNERS`
+- 1–2 Kategorien in `werkzeuge/kategorien.yaml` (siehe [Kategorien](#kategorien))
 
 ## Einstellungen
 
@@ -66,6 +67,25 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://motom
 Schlüssel von Mappentypen, Feldern und Registern sind **im Paket lokal**, z. B. `versicherung`. Das DMS legt sie mit der Paket-Id davor an (`haushalt_versicherung`), damit sich zwei Pakete nicht in die Quere kommen. Angezeigt wird nur der Name („Versicherung“). Verweise auf Typen anderer Pakete schreibst du als `<paket>:<schluessel>`, z. B. `basis:organisation`. Das andere Paket muss dann unter `abhaengigkeiten` stehen. Auf Mappentypen, die das DMS selbst mitbringt, verweist du mit `dms:` – ohne Abhängigkeit: `dms:ablageort` (wo ein Original liegt), `dms:benutzer` und `dms:rolle`. Dafür muss im Manifest `dms: ">=0.75.0"` stehen. Die Paket-Id `dms` ist deshalb vergeben.
 
 Beispiel-Mappen dürfen aufeinander verweisen (ab DMS 0.79.0): Ein Beispiel bekommt einen `schluessel`, ein Verweisfeld eines anderen Beispiels den Wert `{ beispiel: strom }` – oder `{ beispiel: "basis:stadtwerke" }` für ein Beispiel einer Abhängigkeit. Dann muss im Manifest `dms: ">=0.79.0"` stehen.
+
+## Kategorien
+
+Im Katalog lässt sich nach Kategorie filtern. Es gibt eine **feste Liste** – freie Schlagwörter helfen beim Filtern nicht (jeder schreibt etwas anderes: „OCR“, „Scan“, „Texterkennung“).
+
+| Kennung | Kategorie | English |
+| --- | --- | --- |
+| `vorlagen` | Vorlagen für die Ablage | Filing templates |
+| `dateiformate` | Dateiformate | File formats |
+| `volltext` | Texterkennung und Volltext | Text recognition and full text |
+| `sprachen` | Sprachen | Languages |
+| `ki` | KI | AI |
+| `post` | Post und Scannen | Paper mail and scanning |
+| `sicherung` | Sicherung | Backup |
+| `entwickler` | Für Entwickler | For developers |
+
+- Jedes Paket hat **1 oder 2** Kategorien; die erste ist die Hauptkategorie (dorthin führt „Ähnliche Pakete ›“ auf der Paketseite).
+- Die Zuordnung steht vorerst in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml), **nicht** im Manifest. Wer ein Paket einreicht, trägt dort selbst die Zeile `<id>: [<kennung>]` ein; `pruefen.py` meldet Pakete ohne Eintrag und unbekannte Kennungen. Der Maintainer kann die Zuordnung im Pull Request ändern.
+- Eine **neue Kategorie** kommt nur über ein Issue dazu: Kennung, Name deutsch und englisch, welche Pakete dazugehören und warum keine vorhandene passt. Erst nach Freigabe ergänzt sie jemand in `werkzeuge/kategorien.yaml` (und in dieser Tabelle).
 
 ## Felder für die Erkennung
 

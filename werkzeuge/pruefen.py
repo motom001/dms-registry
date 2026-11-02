@@ -6,6 +6,9 @@ Prüft Pakete nach den Regeln der Registry (REGELN.md).
     python3 werkzeuge/pruefen.py pakete/haushalt    # ein Paket
     python3 werkzeuge/pruefen.py --basis origin/main pakete/haushalt   # zusätzlich: Version erhöht?
 
+Kategorien (#84): Jedes Paket unter pakete/ braucht 1–2 Kategorien in werkzeuge/kategorien.yaml. Fehlt diese
+Datei (pruefen.py allein kopiert, z. B. im Test des DMS), entfällt die Prüfung.
+
 Braucht: pip install pyyaml jsonschema
 """
 import json, re, subprocess, sys
@@ -521,6 +524,28 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> lis
     return fehler
 
 
+KATEGORIEN = Path(__file__).resolve().parent / 'kategorien.yaml'
+
+
+def kategorien_modul():
+    """werkzeuge/kategorien.py – erst bei Bedarf geladen, damit pruefen.py auch allein läuft."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import kategorien
+    return kategorien
+
+
+def pruefe_kategorien(ordner: Path) -> list[str]:
+    """Kategorien eines Pakets der Registry (#84): nur für Ordner unter pakete/ und nur mit kategorien.yaml."""
+    if not KATEGORIEN.exists() or ordner.parent != WURZEL / 'pakete':
+        return []
+    k = kategorien_modul()
+    try:
+        daten = k.lade(KATEGORIEN)
+    except Exception as e:  # noqa: BLE001
+        return [f'werkzeuge/kategorien.yaml: kein gültiges YAML ({e})']
+    return k.fehler_des_pakets(daten, ordner.name)
+
+
 def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler: list[str] = []
     vorlage = ordner.name == 'vorlage'
@@ -548,6 +573,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         fehler.append('manifest.yaml: id „dms“ ist reserviert (Verweise auf Mappentypen des DMS)')
     if not vorlage and m.get('id') != ordner.name:
         fehler.append(f"manifest.yaml: id „{m.get('id')}“ muss wie der Ordner heißen („{ordner.name}“)")
+    fehler += pruefe_kategorien(ordner)
 
     # Lizenztext passt grob zur Kennung.
     lizenz = (ordner / 'LICENSE').read_text(encoding='utf-8', errors='replace') if (ordner / 'LICENSE').exists() else ''
@@ -706,6 +732,19 @@ def main():
         basis, args = args[1], args[2:]
     ordner = [Path(a).resolve() for a in args] or [WURZEL / 'vorlage', *sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir())]
     gesamt = 0
+    if not args and KATEGORIEN.exists():
+        # Die Liste selbst und Einträge für Pakete, die es nicht gibt (#84).
+        k = kategorien_modul()
+        try:
+            f = k.fehler_gesamt(k.lade(KATEGORIEN), {p.name for p in (WURZEL / 'pakete').iterdir() if p.is_dir()})
+        except Exception as e:  # noqa: BLE001
+            f = [f'kein gültiges YAML ({e})']
+        gesamt += len(f)
+        print(f'✗ werkzeuge/kategorien.yaml' if f else '✓ werkzeuge/kategorien.yaml')
+        for x in f:
+            print(f'    {x}')
+            if 'GITHUB_ACTIONS' in __import__('os').environ:
+                print(f'::error file=werkzeuge/kategorien.yaml,title=Kategorien::{x}')
     for o in ordner:
         f = pruefe(o, basis)
         name = o.relative_to(WURZEL).as_posix()

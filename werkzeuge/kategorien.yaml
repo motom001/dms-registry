@@ -1,0 +1,51 @@
+# Kategorien des Paketkatalogs (#84): feste Liste statt freier Schlagwörter.
+#
+# Stufe 1: Die Zuordnung steht hier und nicht im Paket – das Paketformat (manifest.yaml) bleibt unverändert.
+# katalog.py übernimmt sie als Feld „kategorien“ je Paket in katalog.json (das DMS ignoriert es), webseite.py
+# zeigt sie als Chips und Filter. pruefen.py meldet Pakete ohne Eintrag und unbekannte Kennungen.
+#
+# Neues Paket: unter „pakete“ eine Zeile <id>: [<kennung>] eintragen – 1 oder 2 Kennungen, die erste ist die
+# Hauptkategorie. Eine neue Kategorie kommt nur über ein Issue dazu (REGELN.md, Abschnitt „Kategorien“).
+# „pakete“ bleibt der letzte Block (die CI hängt für ihr Probe-Paket eine Zeile an).
+
+kategorien:
+  - kennung: vorlagen
+    de: Vorlagen für die Ablage
+    en: Filing templates
+  - kennung: dateiformate
+    de: Dateiformate
+    en: File formats
+  - kennung: volltext
+    de: Texterkennung und Volltext
+    en: Text recognition and full text
+  - kennung: sprachen
+    de: Sprachen
+    en: Languages
+  - kennung: ki
+    de: KI
+    en: AI
+  - kennung: post
+    de: Post und Scannen
+    en: Paper mail and scanning
+  - kennung: sicherung
+    de: Sicherung
+    en: Backup
+  - kennung: entwickler
+    de: Für Entwickler
+    en: For developers
+
+pakete:
+  basis: [vorlagen]
+  bildformate: [dateiformate]
+  fahrzeuge: [vorlagen]
+  hallo_post: [entwickler]
+  haus: [vorlagen]
+  haushalt: [vorlagen]
+  ki_aehnlich: [ki]
+  ki_assistent: [ki]
+  office_email: [dateiformate, volltext]
+  sicherung_webdav: [sicherung]
+  texterkennung: [volltext]
+  texterkennung_fra: [sprachen]
+  trennblatt: [post]
+  vermietung: [vorlagen]

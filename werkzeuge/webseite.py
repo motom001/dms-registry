@@ -6,7 +6,8 @@ Baut die Katalog-Webseite aus katalog.json und den Paketordnern – Pakete anseh
 
 Im Ausgabeordner entstehen:
 
-    index.html                   Übersicht: Kacheln je Paket, Suche, Filter (Konfiguration / mit Code)
+    index.html                   Übersicht: Kacheln je Paket, Suche, Filter nach Art, Kategorie und Autor
+                                 (?kategorie=<kennung>, ?autor=<github>, kombinierbar; #84)
     en/index.html                dieselbe Übersicht auf Englisch (Umschalter „Deutsch · English“ oben)
     paket/<id>/index.html        Detailseite: README, was angelegt wird, Rechte, Changelog, Versionen
     sammeldatei.html             mehrere Pakete als eine Sammeldatei für ein DMS ohne Internet (motom001/dms#461)
@@ -20,14 +21,21 @@ Sprachen (#54): Die festen Texte von Übersicht und Seitenrahmen stehen gebünde
 Paketseiten und Pakettexte aus den Manifesten bleiben vorerst deutsch (Mehrsprachigkeit: dms #357). Ohne
 JavaScript lesbar: Jede Sprache ist eine eigene erzeugte Seite, der Umschalter ist ein normaler Link.
 
+Kategorien (#84): Namen aus werkzeuge/kategorien.yaml (deutsch/englisch), die Zuordnung je Paket aus dem Feld
+„kategorien“ in katalog.json. Ohne JavaScript zeigt die Übersicht alle Pakete; Filter, Chips und „Ähnliche Pakete ›“
+führen dann zur vollständigen Liste.
+
 Braucht: pip install pyyaml markdown
 """
 import hashlib, html, json, sys
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import quote
 
 import markdown
 import yaml
+
+import kategorien  # noqa: E402 – liegt daneben (werkzeuge/)
 
 WURZEL = Path(__file__).resolve().parent.parent
 FELDTYPEN = {'text': 'Text', 'langtext': 'Langtext', 'formatiert': 'Formatierter Text', 'zahl': 'Zahl', 'betrag': 'Betrag', 'datum': 'Datum',
@@ -75,6 +83,14 @@ TEXTE = {
         'konfiguration': 'Konfiguration',
         'mit_code': 'Mit Code',
         'kachel_code': 'mit Code',
+        'kategorie': 'Kategorie',
+        'alle_kategorien': 'Alle Kategorien',
+        'kategorien': 'Kategorien',
+        'autor': 'Autor',
+        'alle_autoren': 'Alle Autoren',
+        'zuruecksetzen': 'Filter zurücksetzen',
+        'treffer': '{n} von {gesamt} Paketen',
+        'ohne_js': 'Suche und Filter brauchen JavaScript – ohne siehst du hier alle Pakete.',
         'keine': 'Kein Paket gefunden.',
         'stand': 'Stand',
         'anzahl': ('Paket', 'Pakete'),
@@ -107,6 +123,14 @@ TEXTE = {
         'konfiguration': 'Configuration',
         'mit_code': 'With code',
         'kachel_code': 'with code',
+        'kategorie': 'Category',
+        'alle_kategorien': 'All categories',
+        'kategorien': 'Categories',
+        'autor': 'Author',
+        'alle_autoren': 'All authors',
+        'zuruecksetzen': 'Clear filters',
+        'treffer': '{n} of {gesamt} packages',
+        'ohne_js': 'Search and filters need JavaScript – without it, this page lists all packages.',
         'keine': 'No package found.',
         'stand': 'As of',
         'anzahl': ('package', 'packages'),
@@ -172,21 +196,50 @@ def lies_yaml(ordner: Path, rel: str | None):
     return yaml.safe_load((ordner / rel).read_text(encoding='utf-8')) or []
 
 
+# Kategorien (#84): werkzeuge/kategorien.yaml, geladen in main().
+KAT: dict = {'kategorien': [], 'pakete': {}}
+
+
+def kategorie_namen(sprache: str) -> dict[str, str]:
+    return kategorien.namen(KAT, sprache)
+
+
+def filter_link(vor: str, sprache: str, **filter) -> str:
+    """Adresse der Übersicht mit Filter, z. B. index.html?kategorie=dateiformate (#84)."""
+    q = '&'.join(f'{k}={quote(v)}' for k, v in filter.items())
+    return f'{vor}{SPRACHEN[sprache]}index.html' + (f'?{q}' if q else '')
+
+
+def chips(p: dict, sprache: str, vor: str) -> str:
+    """Kategorien als kleine Chips; jeder führt zur Übersicht, gefiltert nach dieser Kategorie (#84)."""
+    namen = kategorie_namen(sprache)
+    liste = [k for k in p.get('kategorien') or [] if k in namen]
+    if not liste:
+        return ''
+    return (f'<ul class="chips" aria-label="{e(TEXTE[sprache]["kategorien"])}">'
+            + ''.join(f'<li><a class="chip" href="{e(filter_link(vor, sprache, kategorie=k))}" data-kategorie="{e(k)}">{e(namen[k])}</a></li>' for k in liste)
+            + '</ul>')
+
+
 def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
+    """Kachel: Der Name ist der Link zur Paketseite und deckt die ganze Kachel ab; die Chips liegen darüber (#84)."""
     v = p['versionen'][0]
     code = 'code' if v['code'] else 'konfiguration'
-    suche = ' '.join([p['id'], p['name'], p['beschreibung'], p['autor']['name']]).lower()
+    namen = kategorie_namen(sprache)
+    kat = [k for k in p.get('kategorien') or [] if k in namen]
+    suche = ' '.join([p['id'], p['name'], p['beschreibung'], p['autor']['name'], *(namen[k] for k in kat)]).lower()
     if vor is None:
         vor = '../' * SPRACHEN[sprache].count('/')
     # Pakettexte sind deutsch – auch auf der englischen Übersicht als lang="de" ausgezeichnet (Vorlesen, Silbentrennung).
     de = '' if sprache == 'de' else ' lang="de"'
     mit_code = f' · {e(TEXTE[sprache]["kachel_code"])}' if v['code'] else ''
-    return f'''      <a class="kachel" href="{vor}paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}">
+    return f'''      <div class="kachel" data-art="{code}" data-suche="{e(suche)}" data-kategorien="{e(' '.join(kat))}" data-autor="{e(p['autor']['github'])}">
         <span class="symbol" aria-hidden="true">{e(p['name'][:1].upper())}</span>
-        <span class="name"{de}>{e(p['name'])}</span>
+        <a class="name" href="{vor}paket/{e(p['id'])}/"{de}>{e(p['name'])}</a>
         <span class="text"{de}>{e(p['beschreibung'])}</span>
         <span class="unter">{e(p['aktuell'])} · {e(p['autor']['name'])}{mit_code}</span>
-      </a>'''
+        {chips(p, sprache, vor)}
+      </div>'''
 
 
 def uebersicht(katalog: dict, pakete: list, sprache: str) -> str:
@@ -194,12 +247,24 @@ def uebersicht(katalog: dict, pakete: list, sprache: str) -> str:
     t = TEXTE[sprache]
     kacheln = '\n'.join(kachel(p, sprache) for p in pakete)
     hinweis = f'\n    <p class="hinweis">{t["hinweis_html"]}</p>' if t['hinweis_html'] else ''
+    # Auswahl Kategorie und Autor (#84): nur, was im Katalog vorkommt; die Zahl dahinter hilft beim Wählen.
+    namen = kategorie_namen(sprache)
+    zahl = {k: sum(k in (p.get('kategorien') or []) for p in pakete) for k in namen}
+    kat_opt = ''.join(f'<option value="{e(k)}">{e(n)} ({zahl[k]})</option>' for k, n in namen.items() if zahl[k])
+    autoren: dict = {}
+    for p in pakete:
+        autoren.setdefault(p['autor']['github'], [p['autor']['name'], 0])[1] += 1
+    autor_opt = ''.join(f'<option value="{e(g)}">{e(n)} ({z})</option>' for g, (n, z) in sorted(autoren.items(), key=lambda x: x[1][0].lower()))
     inhalt = f'''    <h1>{e(t['titel'])}</h1>
     <p class="leise">{t['einleitung_html']}</p>{hinweis}
     <div class="werkzeuge">
       <input type="search" id="suche" placeholder="{e(t['suche'])}" aria-label="{e(t['suche_label'])}">
       <select id="art" aria-label="{e(t['art'])}"><option value="">{e(t['alle'])}</option><option value="konfiguration">{e(t['konfiguration'])}</option><option value="code">{e(t['mit_code'])}</option></select>
+      <select id="kategorie" aria-label="{e(t['kategorie'])}"><option value="">{e(t['alle_kategorien'])}</option>{kat_opt}</select>
+      <select id="autor" aria-label="{e(t['autor'])}"><option value="">{e(t['alle_autoren'])}</option>{autor_opt}</select>
     </div>
+    <noscript><p class="leise klein">{e(t['ohne_js'])}</p></noscript>
+    <p class="treffer"><span id="treffer" role="status" data-vorlage="{e(t['treffer'])}" data-gesamt="{len(pakete)}"></span> <button type="button" id="zuruecksetzen" class="textknopf" hidden>{e(t['zuruecksetzen'])}</button></p>
     <div class="kacheln">
 {kacheln}
     </div>
@@ -318,13 +383,13 @@ def beziehungen(p: dict, pakete: list) -> list:
     gruppen = []
     gesehen = {p['id']}
 
-    def dazu(titel, ids, hoechstens=None, mehr=''):
+    def dazu(titel, ids, hoechstens=None, ziel=''):
+        """ziel: Die Überschrift wird ein Link „Titel ›“ zur ganzen Liste (#84) – nur bei Ähnliche/Weitere."""
         liste = [nach_id[i] for i in ids if i in nach_id and i not in gesehen]
-        ganz = len(liste)
         liste = liste[:hoechstens] if hoechstens else liste
         gesehen.update(x['id'] for x in liste)
         if liste:
-            gruppen.append((titel, liste, mehr if hoechstens and ganz > hoechstens else ''))
+            gruppen.append((titel, liste, ziel))
 
     dazu('Braucht', list(p['versionen'][0]['abhaengigkeiten']))
     if 'dms:umwandeln' in eigene:
@@ -332,12 +397,23 @@ def beziehungen(p: dict, pakete: list) -> list:
     dazu('Erweiterungen dafür', [x['id'] for x in pakete if p['id'] in x['versionen'][0]['abhaengigkeiten']])
     if 'dms:texterkennung' in eigene:
         dazu('Liest auch Dateien, die diese Pakete umwandeln', [x['id'] for x in pakete if 'dms:umwandeln' in schnittstellen(manifest(x['id']))])
-    art = p['versionen'][0]['code']
-    dazu('Ähnliche Pakete', [x['id'] for x in pakete if x['versionen'][0]['code'] == art], 3)
+    # Ähnliche Pakete = gleiche Kategorie (#84); wer mehr Kategorien teilt, steht vorn. Die Überschrift führt zur
+    # Übersicht, gefiltert nach der Hauptkategorie (der ersten).
+    eigene_kat = p.get('kategorien') or []
+    if eigene_kat:
+        aehnlich = sorted((x for x in pakete if set(x.get('kategorien') or []) & set(eigene_kat)),
+                          key=lambda x: -len(set(x.get('kategorien') or []) & set(eigene_kat)))
+        dazu('Ähnliche Pakete', [x['id'] for x in aehnlich], 3, filter_link('../../', 'de', kategorie=eigene_kat[0]))
     g = p['autor']['github']
-    dazu(f'Weitere Pakete von {p["autor"]["name"]}', [x['id'] for x in pakete if x['autor']['github'] == g], 3,
-         f'<p><a href="../../autor/{e(g)}/">Alle Pakete von {e(p["autor"]["name"])} →</a></p>')
+    dazu(f'Weitere Pakete von {p["autor"]["name"]}', [x['id'] for x in pakete if x['autor']['github'] == g], 3, f'../../autor/{quote(g)}/')
     return gruppen
+
+
+def ueberschrift(titel: str, ziel: str) -> str:
+    """„Ähnliche Pakete ›“ wie im App Store: Überschrift als Link, Pfeil grau, beim Zeigen in der Akzentfarbe (#84)."""
+    if not ziel:
+        return e(titel)
+    return f'<a class="weiter" href="{e(ziel)}">{e(titel)}<span class="pfeil" aria-hidden="true">›</span></a>'
 
 
 def mini(x: dict, vor: str) -> str:
@@ -497,7 +573,7 @@ def detail(p: dict, pakete: list) -> str:
                f'<dt>Abhängigkeiten</dt><dd>{abh}</dd><dt>Quellcode</dt><dd><a href="{e(v["quelle"])}">auf GitHub ansehen</a></dd></dl>'
                f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead>'
                f'<tbody>{versionen}</tbody></table></div>')
-    passt = ''.join(f'<h3>{e(t)}</h3><div class="minis">' + ''.join(mini(x, '../../') for x in liste) + '</div>' + mehr for t, liste, mehr in beziehungen(p, pakete))
+    passt = ''.join(f'<h3>{ueberschrift(t, ziel)}</h3><div class="minis">' + ''.join(mini(x, '../../') for x in liste) + '</div>' for t, liste, ziel in beziehungen(p, pakete))
     teile = [bereich('Was mitkommt', mitkommt, kurz_mit),
              bereich('Was das Paket darf', rechte, kurz_recht),
              bereich('Beschreibung', readme, 'ausführlich', 'readme')]
@@ -511,7 +587,8 @@ def detail(p: dict, pakete: list) -> str:
               f'      <div class="titel"><h1>{e(p["name"])}</h1>\n'
               f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
               f'        <p class="kurztext">{e(p["beschreibung"])}</p>\n'
-              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p></div>\n'
+              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p>\n'
+              f'        {chips(p, "de", "../../")}</div>\n'
               f'    </div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
     return seite(f'{p["name"]} – DMS-Pakete', inhalt, 2, p['beschreibung'])
 
@@ -547,18 +624,33 @@ a.hilfe:hover, a.hilfe:focus-visible { color: var(--a); border-color: var(--a); 
 .werkzeuge { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
 .werkzeuge input, .werkzeuge select, dialog input { font: inherit; padding: 8px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); min-width: 0; }
 .werkzeuge input { flex: 1 1 240px; }
+.werkzeuge select { flex: 1 1 auto; max-width: 100%; }
+.werkzeuge input:focus-visible, .werkzeuge select:focus-visible { outline: 2px solid var(--a); outline-offset: 1px; }
+p.treffer { margin: -10px 0 10px; min-height: 1.55em; color: var(--leise); font-size: .92rem; }
+p.treffer .textknopf { margin-left: 6px; }
 .kacheln { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-a.kachel { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 12px; padding: 16px; color: inherit; text-decoration: none; }
-a.kachel:hover, a.kachel:focus-visible { border-color: var(--a); }
-.kachel .symbol { grid-row: span 3; }
-.kachel .name { font-weight: 700; }
-.kachel .text, .kachel .unter { grid-column: 2; color: var(--leise); font-size: .92rem; }
+.kachel { position: relative; display: grid; grid-template-columns: auto 1fr; grid-auto-rows: min-content; gap: 2px 12px; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 12px; padding: 16px; }
+.kachel:hover { border-color: var(--a); }
+.kachel .symbol { grid-row: span 4; }
+.kachel a.name { font-weight: 700; color: inherit; text-decoration: none; }
+.kachel a.name::after { content: ""; position: absolute; inset: 0; border-radius: 12px; }
+.kachel a.name:focus-visible { outline: none; }
+.kachel a.name:focus-visible::after { outline: 2px solid var(--a); outline-offset: 2px; }
+.kachel .text, .kachel .unter, .kachel .chips { grid-column: 2; }
+.kachel .text, .kachel .unter { color: var(--leise); font-size: .92rem; }
+.kachel .chips { position: relative; z-index: 1; margin-top: 6px; }
+ul.chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+a.chip { display: inline-block; font-size: .8rem; font-weight: 600; line-height: 1.5; padding: 2px 10px; border: 1px solid var(--linie); border-radius: 999px; background: var(--grund); color: var(--leise); text-decoration: none; }
+a.chip:hover, a.chip:focus-visible { color: var(--a); border-color: var(--a); }
+a.chip:focus-visible { outline: 2px solid var(--a); outline-offset: 1px; }
+a.chip.an { color: var(--a); border-color: var(--a); }
 .symbol { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--a); color: #fff; font-weight: 700; font-size: 1.3rem; }
 .symbol.gross { width: 64px; height: 64px; font-size: 1.8rem; border-radius: 16px; flex: none; }
 .paketkopf { display: flex; gap: 16px; align-items: flex-start; margin: 8px 0 20px; }
 .paketkopf .titel { flex: 1; min-width: 0; }
 .paketkopf .kurztext { font-size: 1.08rem; margin: 4px 0; }
-.paketkopf .titel { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'name knopf' 'text text' 'meta meta'; align-items: center; column-gap: 16px; }
+.paketkopf .titel { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'name knopf' 'text text' 'meta meta' 'kat kat'; align-items: center; column-gap: 16px; }
+.paketkopf .chips { grid-area: kat; margin-top: 6px; }
 .paketkopf h1 { grid-area: name; }
 .paketkopf .installieren { grid-area: knopf; }
 .paketkopf .kurztext { grid-area: text; }
@@ -591,12 +683,17 @@ details.sicht > .filter ul { margin: 2px 0 2px 1.1em; padding: 0; }
 details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
 .spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
 .passt h3 { font-size: 1rem; margin: 16px 0 8px; }
+.passt h3 a.weiter { color: inherit; text-decoration: none; }
+.passt h3 a.weiter .pfeil { display: inline-block; margin-left: .3em; color: var(--leise); font-weight: 700; }
+.passt h3 a.weiter:hover, .passt h3 a.weiter:focus-visible { color: var(--a); }
+.passt h3 a.weiter:hover .pfeil, .passt h3 a.weiter:focus-visible .pfeil { color: var(--a); }
+.passt h3 a.weiter:hover { text-decoration: underline; text-underline-offset: 3px; }
 .minis { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
 a.mini { display: flex; gap: 10px; align-items: flex-start; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 10px; padding: 10px 12px; color: inherit; text-decoration: none; font-size: .92rem; }
 a.mini:hover, a.mini:focus-visible { border-color: var(--a); }
 .kurzfassung { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .symbol.klein { width: 32px; height: 32px; font-size: 1rem; border-radius: 8px; flex: none; }
-@media (max-width: 640px) { .paketkopf { gap: 12px; } .paketkopf .titel { grid-template-columns: 1fr; grid-template-areas: 'name' 'text' 'meta' 'knopf'; } .paketkopf .installieren { width: 100%; margin-top: 12px; } .paketkopf .symbol.gross { width: 48px; height: 48px; font-size: 1.4rem; } .spalten { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .paketkopf { gap: 12px; } .paketkopf .titel { grid-template-columns: 1fr; grid-template-areas: 'name' 'text' 'meta' 'kat' 'knopf'; } .paketkopf .installieren { width: 100%; margin-top: 12px; } .paketkopf .symbol.gross { width: 48px; height: 48px; font-size: 1.4rem; } .spalten { grid-template-columns: 1fr; } }
 .knoepfe { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
 .knopf { display: inline-block; font: inherit; font-weight: 600; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--linie); background: var(--flaeche); color: var(--tinte); text-decoration: none; cursor: pointer; }
 .knopf.primaer { background: var(--a); border-color: var(--a); color: #fff; }
@@ -651,16 +748,61 @@ SKRIPT = '''
     if (b) { e.preventDefault(); oeffne(b.getAttribute('data-installieren')); return; }
     if (e.target.closest('[data-dms-adresse]')) { e.preventDefault(); frage(null); }
   });
+  // Übersicht: Suche und Filter nach Art, Kategorie und Autor (#84). Kategorie und Autor stehen in der Adresse
+  // (?kategorie=…&autor=…), damit Links darauf zeigen können und „Zurück“ im Browser den Filter behält.
   var suche = document.getElementById('suche'), art = document.getElementById('art');
+  var kat = document.getElementById('kategorie'), autor = document.getElementById('autor');
+  if (!suche) return;
+  var treffer = document.getElementById('treffer'), zurueck = document.getElementById('zuruecksetzen');
+  function waehle(sel, wert) {
+    sel.value = wert || '';
+    if (sel.value !== (wert || '')) sel.value = '';  // unbekannte Kennung: kein Filter
+  }
+  function ausAdresse() {
+    var q = new URLSearchParams(location.search);
+    waehle(kat, q.get('kategorie')); waehle(autor, q.get('autor'));
+  }
+  function adresse() {
+    var q = new URLSearchParams(location.search);
+    [['kategorie', kat.value], ['autor', autor.value]].forEach(function (x) { if (x[1]) q.set(x[0], x[1]); else q.delete(x[0]); });
+    var s = q.toString();
+    return location.pathname + (s ? '?' + s : '') + location.hash;
+  }
   function filtern() {
-    var q = (suche.value || '').trim().toLowerCase(), a = art.value, n = 0;
-    document.querySelectorAll('.kachel').forEach(function (k) {
-      var ok = (!q || k.dataset.suche.indexOf(q) >= 0) && (!a || k.dataset.art === a);
-      k.hidden = !ok; if (ok) n++;
+    var q = (suche.value || '').trim().toLowerCase(), a = art.value, k = kat.value, au = autor.value, n = 0, alle = 0;
+    document.querySelectorAll('.kachel').forEach(function (el) {
+      var ok = (!q || el.dataset.suche.indexOf(q) >= 0) && (!a || el.dataset.art === a)
+        && (!k || (' ' + el.dataset.kategorien + ' ').indexOf(' ' + k + ' ') >= 0) && (!au || el.dataset.autor === au);
+      el.hidden = !ok; alle++; if (ok) n++;
     });
+    document.querySelectorAll('a.chip').forEach(function (c) { c.classList.toggle('an', !!k && c.dataset.kategorie === k); });
+    var aktiv = !!(q || a || k || au);
+    treffer.textContent = aktiv ? treffer.dataset.vorlage.replace('{n}', n).replace('{gesamt}', alle) : '';
+    zurueck.hidden = !aktiv;
     document.getElementById('keine').hidden = n > 0;
   }
-  if (suche) { suche.addEventListener('input', filtern); art.addEventListener('change', filtern); }
+  function geaendert() { try { history.replaceState(null, '', adresse()); } catch (e) { /* file:// */ } filtern(); }
+  suche.addEventListener('input', filtern);
+  art.addEventListener('change', filtern);
+  kat.addEventListener('change', geaendert);
+  autor.addEventListener('change', geaendert);
+  zurueck.addEventListener('click', function () { suche.value = ''; art.value = ''; kat.value = ''; autor.value = ''; geaendert(); suche.focus(); });
+  // Chip auf einer Kachel: auf dieser Seite filtern statt neu laden; ein neuer Eintrag im Verlauf, „Zurück“ hebt ihn auf.
+  document.addEventListener('click', function (ev) {
+    var c = ev.target.closest('a.chip');
+    if (!c || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+    ev.preventDefault();
+    waehle(kat, kat.value === c.dataset.kategorie ? '' : c.dataset.kategorie);
+    try { history.pushState(null, '', adresse()); } catch (e) { /* file:// */ }
+    filtern();
+    var w = document.querySelector('.werkzeuge');
+    if (w.getBoundingClientRect().top < 0) w.scrollIntoView();
+    kat.focus();
+  });
+  window.addEventListener('popstate', function () { ausAdresse(); filtern(); });
+  // Auch nach „Zurück“ aus dem Zwischenspeicher des Browsers gilt die Adresse.
+  window.addEventListener('pageshow', function () { ausAdresse(); filtern(); });
+  ausAdresse(); filtern();
 })();
 '''
 
@@ -913,6 +1055,8 @@ def main():
         sys.exit(2)
     ausgabe = Path(sys.argv[1]).resolve()
     katalog = json.loads((ausgabe / 'katalog.json').read_text(encoding='utf-8'))
+    global KAT
+    KAT = kategorien.lade()
     pakete = sorted(katalog['pakete'], key=lambda p: p['name'].lower())
     for sprache, ordner in SPRACHEN.items():
         (ausgabe / ordner).mkdir(parents=True, exist_ok=True)

@@ -17,7 +17,8 @@ Im DMS installierst du Pakete unter **Werkbank → Pakete**. Die Paketverwaltung
 pakete/<paket>/        ein Ordner je Paket, Name = Paket-Id
 vorlage/               Vorlage für ein neues Paket – kopieren und loslegen
 schema/                JSON-Schemas für manifest.yaml und die Inhalte
-werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (laufen auch in der CI)
+werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (laufen auch in der CI);
+                       kategorien.yaml: Kategorien der Pakete im Katalog
 schluessel/            öffentliche Schlüssel, mit denen der Katalog signiert ist (siehe „Katalog signieren“)
 REGELN.md              was erlaubt ist, was nicht, welche Lizenzen
 CONTRIBUTING.md        wie ein Paket hierher kommt
@@ -44,19 +45,19 @@ Bei jedem Merge auf `main` baut die CI den **Katalog** und legt ihn auf den Bran
 - `…/gh-pages/archive/<id>-<version>.zip` – je Paketversion ein Archiv mit genau den Dateien des Paketordners (ohne Ordner davor)
 - `…/gh-pages/katalog.sig` – die Signatur des Katalogs (siehe [Katalog signieren](#katalog-signieren))
 
-Auf demselben Branch liegt die **Katalog-Webseite** (`werkzeuge/webseite.py`): Pakete ansehen wie im App Store – Übersicht mit Suche und Filter, je Paket eine Seite mit Beschreibung, was angelegt wird, Rechten, Änderungen und älteren Versionen. **„In meinem DMS installieren“** fragt beim ersten Mal nach der Adresse deines DMS (nur im Browser gemerkt, änderbar) und öffnet dort `/werkbank/pakete?installieren=<id>@<version>`; installiert wird erst nach deiner Bestätigung im DMS. Die Webseite sendet nichts an dein DMS. Die Übersicht gibt es deutsch und englisch (`en/index.html`, oben der Umschalter „Deutsch · English“, auch ohne JavaScript); Paketseiten und Paketbeschreibungen bleiben vorerst deutsch.
+Auf demselben Branch liegt die **Katalog-Webseite** (`werkzeuge/webseite.py`): Pakete ansehen wie im App Store – Übersicht mit Suche und Filtern nach Art, **Kategorie** und **Autor** (auch über die Adresse, z. B. `index.html?kategorie=dateiformate&autor=motom001`), je Paket eine Seite mit Beschreibung, was angelegt wird, Rechten, Änderungen und älteren Versionen. **„In meinem DMS installieren“** fragt beim ersten Mal nach der Adresse deines DMS (nur im Browser gemerkt, änderbar) und öffnet dort `/werkbank/pakete?installieren=<id>@<version>`; installiert wird erst nach deiner Bestätigung im DMS. Die Webseite sendet nichts an dein DMS. Die Übersicht gibt es deutsch und englisch (`en/index.html`, oben der Umschalter „Deutsch · English“, auch ohne JavaScript); Paketseiten und Paketbeschreibungen bleiben vorerst deutsch. Kategorien stehen als Chips an Kachel und Paketseite; „Ähnliche Pakete ›“ auf der Paketseite sind Pakete derselben Kategorie (siehe [REGELN.md, „Kategorien“](REGELN.md#kategorien)).
 
 **Pakete ohne Internet** (`sammeldatei.html`, motom001/dms#461): Pakete ankreuzen, DMS-Version wählen (Vorgabe: die neueste; aus dem DMS kommt der Link mit `?dms=<version>`), Abhängigkeiten kommen automatisch mit. Der Browser lädt die Archive, prüft jedes gegen SHA-256 und Größe aus `katalog.json` und packt sie mit dem Verzeichnis `sammeldatei.json` (Format: [`schema/sammeldatei.schema.json`](schema/sammeldatei.schema.json)) in **eine Sammeldatei** – dazu den signierten Katalog (`katalog.json` und `katalog.sig`) –, nichts wird hochgeladen. Das DMS prüft beim Hochladen jedes Archiv gegen Größe und Prüfsumme im Verzeichnis und gegen den signierten Katalog (und gegen den offiziellen Katalog, wenn es ihn schon abgerufen hat), lehnt fremde Dateien ab und installiert dann Paket für Paket. Ist die Signatur gültig, muss niemand mehr die Herkunft bestätigen. `werkzeuge/sammeldatei.py` erzeugt dieselbe Datei auf der Kommandozeile und prüft eine Sammeldatei wie das DMS (`--pruefen <datei> [--katalog katalog.json] [--oeffentlich <x.pub> …]`).
 
 Mit GitHub Pages (Quelle: Branch `gh-pages`) ist die Webseite unter **`https://motom001.github.io/dms-registry/`** erreichbar, der Katalog dann auch unter `…/katalog.json`.
 
-`katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige DMS-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele), ob das Paket Code hat, Adresse des Archivs (relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
+`katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version, Kategorien (`kategorien`, 1–2 Kennungen aus `werkzeuge/kategorien.yaml` – nur für die Webseite, das DMS liest das Feld nicht) und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige DMS-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele), ob das Paket Code hat, Adresse des Archivs (relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
 
 ```json
 {
   "format": 1, "erstellt": "2026-11-01T10:00:00Z", "quelle": "https://github.com/motom001/dms-registry", "signatur": null,
   "pakete": [{
-    "id": "basis", "name": "Basis", "beschreibung": "…", "autor": { "name": "…", "github": "…" }, "lizenz": "CC0-1.0", "aktuell": "1.0.0",
+    "id": "basis", "name": "Basis", "beschreibung": "…", "autor": { "name": "…", "github": "…" }, "lizenz": "CC0-1.0", "aktuell": "1.0.0", "kategorien": ["vorlagen"],
     "versionen": [{
       "version": "1.0.0", "dms": ">=0.63.0", "abhaengigkeiten": {},
       "inhalt": { "mappentypen": [{ "schluessel": "organisation", "name": "Organisation" }], "sichten": [ … ], "beispiele": 2 },
@@ -127,8 +128,11 @@ Wer einen eigenen Katalog betreibt, kann ihn mit `werkzeuge/signieren.py` ebenso
 git clone https://github.com/<du>/dms-registry && cd dms-registry
 werkzeuge/neues-paket.sh mein_paket "Mein Paket"
 # pakete/mein_paket/ anpassen: manifest.yaml, README.md, inhalt/ …
+# Kategorie vorschlagen: in werkzeuge/kategorien.yaml unter „pakete:“ z. B. „mein_paket: [vorlagen]“
 python3 werkzeuge/pruefen.py pakete/mein_paket
 ```
+
+Die **Kategorie** schlägst du selbst vor: eine Zeile `<id>: [<kennung>]` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml), eine oder zwei Kennungen aus der Liste dort (die erste ist die Hauptkategorie). Ohne Eintrag schlägt `pruefen.py` fehl; im Pull Request kann der Maintainer die Zuordnung noch ändern. Neue Kategorien nur über ein Issue ([REGELN.md, „Kategorien“](REGELN.md#kategorien)).
 
 Dann einen Pull Request stellen. Wie das im Einzelnen läuft, steht in [CONTRIBUTING.md](CONTRIBUTING.md).
 
