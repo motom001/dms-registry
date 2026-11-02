@@ -59,7 +59,7 @@ TEXTE = {
         'registry_url': REGISTRY,
         'dms_adresse': 'DMS-Adresse',
         'dialog_titel': 'Adresse deines DMS',
-        'dialog_html': 'Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.',
+        'dialog_html': 'Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.',
         'dialog_fehler': 'Bitte eine Adresse mit http:// oder https:// angeben.',
         'speichern': 'Speichern und öffnen',
         'abbrechen': 'Abbrechen',
@@ -172,11 +172,12 @@ def lies_yaml(ordner: Path, rel: str | None):
     return yaml.safe_load((ordner / rel).read_text(encoding='utf-8')) or []
 
 
-def kachel(p: dict, sprache: str = 'de') -> str:
+def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
     v = p['versionen'][0]
     code = 'code' if v['code'] else 'konfiguration'
     suche = ' '.join([p['id'], p['name'], p['beschreibung'], p['autor']['name']]).lower()
-    vor = '../' * SPRACHEN[sprache].count('/')
+    if vor is None:
+        vor = '../' * SPRACHEN[sprache].count('/')
     # Pakettexte sind deutsch – auch auf der englischen Übersicht als lang="de" ausgezeichnet (Vorlesen, Silbentrennung).
     de = '' if sprache == 'de' else ' lang="de"'
     mit_code = f' · {e(TEXTE[sprache]["kachel_code"])}' if v['code'] else ''
@@ -299,11 +300,72 @@ def rechte_text(code: dict, typen: dict | None = None) -> str:
     return '<ul class="rechte">' + ''.join(f'<li>{z}</li>' for z in zeilen) + '</ul>'
 
 
-def detail(p: dict) -> str:
+def manifest(pid: str) -> dict:
+    pfad = WURZEL / 'pakete' / pid / 'manifest.yaml'
+    return (yaml.safe_load(pfad.read_text(encoding='utf-8')) or {}) if pfad.exists() else {}
+
+
+def schnittstellen(m: dict) -> set:
+    return set(((m.get('code') or {}).get('rechte') or {}).get('schnittstellen') or [])
+
+
+def beziehungen(p: dict, pakete: list) -> list:
+    """„Passt dazu“ (#80) – nur aus Angaben, die es schon gibt: Abhängigkeiten in beide Richtungen und die
+    Schnittstellen. Ein Paket mit dms:umwandeln liefert eine Fassung, deren Text bei Scans erst ein Paket mit
+    dms:texterkennung liest – das ist die Abgrenzung Bildformate ↔ Texterkennung."""
+    nach_id = {x['id']: x for x in pakete}
+    eigene = schnittstellen(manifest(p['id']))
+    gruppen = []
+    gesehen = {p['id']}
+
+    def dazu(titel, ids, hoechstens=None, mehr=''):
+        liste = [nach_id[i] for i in ids if i in nach_id and i not in gesehen]
+        ganz = len(liste)
+        liste = liste[:hoechstens] if hoechstens else liste
+        gesehen.update(x['id'] for x in liste)
+        if liste:
+            gruppen.append((titel, liste, mehr if hoechstens and ganz > hoechstens else ''))
+
+    dazu('Braucht', list(p['versionen'][0]['abhaengigkeiten']))
+    if 'dms:umwandeln' in eigene:
+        dazu('Für durchsuchbaren Text bei Scans zusätzlich', [x['id'] for x in pakete if 'dms:texterkennung' in schnittstellen(manifest(x['id']))])
+    dazu('Erweiterungen dafür', [x['id'] for x in pakete if p['id'] in x['versionen'][0]['abhaengigkeiten']])
+    if 'dms:texterkennung' in eigene:
+        dazu('Liest auch Dateien, die diese Pakete umwandeln', [x['id'] for x in pakete if 'dms:umwandeln' in schnittstellen(manifest(x['id']))])
+    art = p['versionen'][0]['code']
+    dazu('Ähnliche Pakete', [x['id'] for x in pakete if x['versionen'][0]['code'] == art], 3)
+    g = p['autor']['github']
+    dazu(f'Weitere Pakete von {p["autor"]["name"]}', [x['id'] for x in pakete if x['autor']['github'] == g], 3,
+         f'<p><a href="../../autor/{e(g)}/">Alle Pakete von {e(p["autor"]["name"])} →</a></p>')
+    return gruppen
+
+
+def mini(x: dict, vor: str) -> str:
+    return (f'<a class="mini" href="{vor}paket/{e(x["id"])}/"><span class="symbol klein" aria-hidden="true">{e(x["name"][:1].upper())}</span>'
+            f'<span><strong>{e(x["name"])}</strong><br><span class="leise kurzfassung">{e(x["beschreibung"])}</span></span></a>')
+
+
+def autor_link(p: dict, vor: str) -> str:
+    g = p['autor']['github']
+    return (f'<a href="{vor}autor/{e(g)}/">{e(p["autor"]["name"])}</a>'
+            f' <a class="gh" href="https://github.com/{e(g)}" title="GitHub-Profil" aria-label="GitHub-Profil @{e(g)}">@{e(g)} ↗</a>')
+
+
+def bereich(titel: str, inhalt: str, kurz: str = '', klasse: str = '') -> str:
+    """Aufklappbarer Bereich der Paketseite (#80); kurz = Zusammenfassung in der Kopfzeile."""
+    k = f' <span class="leise kurz">{e(kurz)}</span>' if kurz else ''
+    return f'<details class="bereich {klasse}"><summary><h2>{e(titel)}</h2>{k}</summary><div class="innen">{inhalt}</div></details>'
+
+
+def mehrzahl(n: int, eins: str, viele: str) -> str:
+    return f'{n} {eins if n == 1 else viele}'
+
+
+def detail(p: dict, pakete: list) -> str:
     v = p['versionen'][0]
     ordner = WURZEL / 'pakete' / p['id']
     vorhanden = (ordner / 'manifest.yaml').exists()
-    m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8')) if vorhanden else {}
+    m = manifest(p['id'])
     readme = md((ordner / 'README.md').read_text(encoding='utf-8')) if (ordner / 'README.md').exists() else f'<p>{e(p["beschreibung"])}</p>'
     changelog = md((ordner / 'CHANGELOG.md').read_text(encoding='utf-8')) if (ordner / 'CHANGELOG.md').exists() else ''
     typen = lies_yaml(ordner, (m.get('inhalt') or {}).get('mappentypen')) if vorhanden else []
@@ -313,44 +375,72 @@ def detail(p: dict) -> str:
             f'<details><summary><strong>{e(t["name"])}</strong> – {len(t.get("felder", []))} Felder</summary><ul>'
             + ''.join(f'<li>{e(f["label"])} <span class="leise">({FELDTYPEN.get(f["typ"], f["typ"])}{", Pflicht" if f.get("pflicht") else ""})</span></li>' for f in t.get('felder', []))
             + '</ul></details>' for t in typen)
+        n_typen = len(typen)
     else:
-        typ_html = '<ul>' + ''.join(f'<li>{e(t["name"])}</li>' for t in v['inhalt']['mappentypen']) + '</ul>'
+        n_typen = len(v['inhalt']['mappentypen'])
+        typ_html = ('<ul>' + ''.join(f'<li>{e(t["name"])}</li>' for t in v['inhalt']['mappentypen']) + '</ul>') if n_typen else '<p class="leise">keine</p>'
     namen = {s['schluessel']: s['name'] for s in sichten}
-    sicht_html = '<ul>' + ''.join(f'<li>{e(s["name"])}' + (f' <span class="leise">(unter {e(namen.get(s["eltern"], s["eltern"]))})</span>' if s.get('eltern') else '') + '</li>' for s in sichten) + '</ul>' if sichten \
-        else '<ul>' + ''.join(f'<li>{e(s["name"])}</li>' for s in v['inhalt']['sichten']) + '</ul>'
+    if sichten:
+        sicht_html = '<ul>' + ''.join(f'<li>{e(s["name"])}' + (f' <span class="leise">(unter {e(namen.get(s["eltern"], s["eltern"]))})</span>' if s.get('eltern') else '') + '</li>' for s in sichten) + '</ul>'
+        n_sichten = len(sichten)
+    else:
+        n_sichten = len(v['inhalt']['sichten'])
+        sicht_html = ('<ul>' + ''.join(f'<li>{e(s["name"])}</li>' for s in v['inhalt']['sichten']) + '</ul>') if n_sichten else '<p class="leise">keine</p>'
+    n_bsp = v['inhalt']['beispiele']
+    if n_typen or n_sichten or n_bsp:
+        bsp = (f'<p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
+               if n_bsp else '<p class="leise">keine Beispielmappen</p>')
+        mitkommt = f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>{bsp}'
+        kurz_mit = ' · '.join(t for t in [mehrzahl(n_typen, 'Mappentyp', 'Mappentypen') if n_typen else '',
+                                          mehrzahl(n_sichten, 'Ansicht', 'Ansichten') if n_sichten else '',
+                                          mehrzahl(n_bsp, 'Beispielmappe', 'Beispielmappen') if n_bsp else ''] if t)
+    else:
+        mitkommt = ('<p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, '
+                    'keine Beispielmappen. Es bringt nur eine Funktion mit (siehe „Was das Paket darf“).</p>')
+        kurz_mit = 'legt nichts in der Ablage an'
+    rechte = rechte_text(m['code'], {t['schluessel']: t['name'] for t in typen if 'schluessel' in t}) if vorhanden and m.get('code') \
+        else '<p>Kein Code: Das Paket legt nur Mappentypen, Ansichten und auf Wunsch Beispiele an.</p>'
+    if m.get('code'):
+        kurz_recht = 'mit Zugriff auf Netzwerk/Internet' if ((m['code'].get('netz') or []) or adressen(m['code'])) else 'kein Zugriff auf Netzwerk und Internet'
+    else:
+        kurz_recht = 'nur Konfiguration, kein Code'
     abh = ', '.join(f'<a href="../{e(k)}/">{e(k)}</a> {e(b)}' for k, b in v['abhaengigkeiten'].items()) or 'keine'
     versionen = ''.join(
         f'<tr><td>{e(x["version"])}</td><td>{datum(x["veroeffentlicht"])}</td><td>{e(x["dms"])}</td>'
         f'<td><a href="../../{e(x["archiv"])}">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="{e(p["id"])}@{e(x["version"])}">installieren</button></td></tr>'
         for x in p['versionen'])
-    rechte = rechte_text(m['code'], {t['schluessel']: t['name'] for t in typen if 'schluessel' in t}) if vorhanden and m.get('code') else '<p>Kein Code: Das Paket legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.</p>'
-    inhalt = f'''    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
-    <div class="paketkopf">
-      <span class="symbol gross" aria-hidden="true">{e(p['name'][:1].upper())}</span>
-      <div><h1>{e(p['name'])}</h1><p class="leise">{e(p['beschreibung'])}</p></div>
-    </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="{e(p['id'])}@{e(v['version'])}">In meinem DMS installieren</button>
-      <a class="knopf" href="{e(v['quelle'])}">Quellcode</a></div>
-    <dl class="eckdaten">
-      <dt>Version</dt><dd>{e(v['version'])} vom {datum(v['veroeffentlicht'])}</dd>
-      <dt>Autor</dt><dd>{e(p['autor']['name'])} (<a href="https://github.com/{e(p['autor']['github'])}">@{e(p['autor']['github'])}</a>)</dd>
-      <dt>Lizenz</dt><dd>{e(p['lizenz'])}</dd>
-      <dt>Nötige DMS-Version</dt><dd>{e(v['dms'])}</dd>
-      <dt>Abhängigkeiten</dt><dd>{abh}</dd>
-    </dl>
-    <section><h2>Was angelegt wird</h2>
-      <h3>Mappentypen</h3>{typ_html}
-      <h3>Sichten</h3>{sicht_html}
-      <p>{v['inhalt']['beispiele']} Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
-    </section>
-    <section><h2>Rechte und Netzwerkzugriff</h2>{rechte}</section>
-    <section class="readme"><h2>Beschreibung</h2>{readme}</section>
-    {f'<section class="changelog"><h2>Änderungen</h2>{changelog}</section>' if changelog else ''}
-    <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody>{versionen}</tbody></table></div>
-    </section>
-'''
+    technik = (f'<dl class="eckdaten"><dt>Version</dt><dd>{e(v["version"])} vom {datum(v["veroeffentlicht"])}</dd>'
+               f'<dt>Lizenz</dt><dd>{e(p["lizenz"])}</dd><dt>Nötige DMS-Version</dt><dd>{e(v["dms"])}</dd>'
+               f'<dt>Abhängigkeiten</dt><dd>{abh}</dd><dt>Quellcode</dt><dd><a href="{e(v["quelle"])}">auf GitHub ansehen</a></dd></dl>'
+               f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead>'
+               f'<tbody>{versionen}</tbody></table></div>')
+    passt = ''.join(f'<h3>{e(t)}</h3><div class="minis">' + ''.join(mini(x, '../../') for x in liste) + '</div>' + mehr for t, liste, mehr in beziehungen(p, pakete))
+    teile = [bereich('Was mitkommt', mitkommt, kurz_mit),
+             bereich('Was das Paket darf', rechte, kurz_recht),
+             bereich('Beschreibung', readme, 'ausführlich', 'readme')]
+    if changelog:
+        teile.append(bereich('Änderungen', changelog, f'Version {v["version"]}', 'changelog'))
+    teile.append(bereich('Für Fortgeschrittene und Entwickler', technik, 'Version, Lizenz, Quellcode, Downloads', 'klein'))
+    passt_html = f'\n    <section class="passt"><h2>Passt dazu</h2>{passt}</section>' if passt else ''
+    inhalt = (f'    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>\n'
+              f'    <div class="paketkopf">\n'
+              f'      <span class="symbol gross" aria-hidden="true">{e(p["name"][:1].upper())}</span>\n'
+              f'      <div class="titel"><h1>{e(p["name"])}</h1><p class="kurztext">{e(p["beschreibung"])}</p>\n'
+              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p></div>\n'
+              f'      <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
+              f'    </div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
     return seite(f'{p["name"]} – DMS-Pakete', inhalt, 2, p['beschreibung'])
+
+
+def autorseite(name: str, github: str, liste: list) -> str:
+    """Alle Pakete eines Autors (#80): erreichbar über den Namen auf jeder Paketseite."""
+    kacheln = '\n'.join(kachel(p, 'de', '../../') for p in liste)
+    inhalt = (f'    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>\n'
+              f'    <h1>Pakete von {e(name)}</h1>\n'
+              f'    <p class="leise">{mehrzahl(len(liste), "Paket", "Pakete")} · <a class="gh" href="https://github.com/{e(github)}">GitHub-Profil @{e(github)} ↗</a></p>\n'
+              f'    <div class="kacheln">\n{kacheln}\n    </div>\n')
+    return seite(f'Pakete von {name} – DMS-Pakete', inhalt, 2, f'Alle DMS-Pakete von {name}')
+
 
 
 STIL = '''
@@ -381,7 +471,30 @@ a.kachel:hover, a.kachel:focus-visible { border-color: var(--a); }
 .kachel .text, .kachel .unter { grid-column: 2; color: var(--leise); font-size: .92rem; }
 .symbol { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--a); color: #fff; font-weight: 700; font-size: 1.3rem; }
 .symbol.gross { width: 64px; height: 64px; font-size: 1.8rem; border-radius: 16px; flex: none; }
-.paketkopf { display: flex; gap: 16px; align-items: center; margin: 8px 0 16px; }
+.paketkopf { display: flex; gap: 16px; align-items: flex-start; margin: 8px 0 20px; }
+.paketkopf .titel { flex: 1; min-width: 0; }
+.paketkopf .kurztext { font-size: 1.08rem; margin: 4px 0; }
+.paketkopf .installieren { flex: none; margin-top: 6px; }
+p.klein { font-size: .9rem; margin: 2px 0; }
+a.gh { color: var(--leise); font-size: .9em; text-decoration: none; }
+a.gh:hover, a.gh:focus-visible { color: var(--a); text-decoration: underline; }
+details.bereich { padding: 0; margin: 10px 0; border-radius: 12px; }
+details.bereich > summary { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 12px 16px; cursor: pointer; list-style: none; }
+details.bereich > summary::-webkit-details-marker { display: none; }
+details.bereich > summary::before { content: "›"; display: inline-block; width: .8em; transition: transform .15s; color: var(--leise); font-weight: 700; }
+details.bereich[open] > summary::before { transform: rotate(90deg); }
+details.bereich > summary h2 { display: inline; font-size: 1.15rem; border: 0; margin: 0; padding: 0; }
+details.bereich .kurz { font-size: .92rem; }
+details.bereich > .innen { padding: 4px 16px 14px; border-top: 1px solid var(--linie); }
+details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
+.spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.passt h3 { font-size: 1rem; margin: 16px 0 8px; }
+.minis { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+a.mini { display: flex; gap: 10px; align-items: flex-start; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 10px; padding: 10px 12px; color: inherit; text-decoration: none; font-size: .92rem; }
+a.mini:hover, a.mini:focus-visible { border-color: var(--a); }
+.kurzfassung { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.symbol.klein { width: 32px; height: 32px; font-size: 1rem; border-radius: 8px; flex: none; }
+@media (max-width: 640px) { .paketkopf { flex-wrap: wrap; } .paketkopf .installieren { width: 100%; order: 3; } .spalten { grid-template-columns: 1fr; } }
 .knoepfe { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
 .knopf { display: inline-block; font: inherit; font-weight: 600; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--linie); background: var(--flaeche); color: var(--tinte); text-decoration: none; cursor: pointer; }
 .knopf.primaer { background: var(--a); border-color: var(--a); color: #fff; }
@@ -701,7 +814,14 @@ def main():
     for p in pakete:
         ziel = ausgabe / 'paket' / p['id']
         ziel.mkdir(parents=True, exist_ok=True)
-        (ziel / 'index.html').write_text(detail(p), encoding='utf-8')
+        (ziel / 'index.html').write_text(detail(p, pakete), encoding='utf-8')
+    autoren: dict = {}
+    for p in pakete:
+        autoren.setdefault(p['autor']['github'], (p['autor']['name'], []))[1].append(p)
+    for g, (name, liste) in autoren.items():
+        ziel = ausgabe / 'autor' / g
+        ziel.mkdir(parents=True, exist_ok=True)
+        (ziel / 'index.html').write_text(autorseite(name, g, liste), encoding='utf-8')
     (ausgabe / 'stil.css').write_text((STIL + SAMMEL_STIL).lstrip(), encoding='utf-8')
     (ausgabe / 'dms.js').write_text(SKRIPT.lstrip(), encoding='utf-8')
     (ausgabe / 'sammeldatei.html').write_text(sammelseite(), encoding='utf-8')
