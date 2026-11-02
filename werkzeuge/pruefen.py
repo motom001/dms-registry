@@ -72,6 +72,8 @@ def dms_fehler(v: str, wo: str) -> str | None:
 # Verweisen – post (ab DMS 0.94.0). dms:benutzer ist verboten: Pakete sehen keine Benutzer.
 DMS_RECHTE_TYPEN = {'ablageort', 'rolle', 'post'}
 DMS_POST_RECHT_AB = (0, 94, 0)
+# Wortlisten (inhalt.wortlisten, DMS #356): gleichbedeutende Wörter für die Suche, ab DMS 0.127.0.
+DMS_WORTLISTEN_AB = (0, 127, 0)
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -103,6 +105,28 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
         ab = dms_untergrenze(dms_bereich)
         if ab is None or ab < DMS_POST_RECHT_AB:
             fehler.append('code.rechte: dms:post kennt das DMS erst ab 0.94.0 – bitte dms: ">=0.94.0" angeben')
+    return fehler
+
+
+def falte(w: str) -> str:
+    """Wie das DMS vergleicht: ohne Akzente und Umlautpunkte, ß als ss, klein."""
+    import unicodedata
+    return ''.join(c for c in unicodedata.normalize('NFD', w) if not unicodedata.combining(c)).replace('ß', 'ss').lower()
+
+
+def pruefe_wortlisten(gruppen: list, dms_bereich: str) -> list[str]:
+    """inhalt.wortlisten: keine doppelten Wörter in einer Gruppe (gefaltet), passende DMS-Version."""
+    fehler: list[str] = []
+    for i, g in enumerate(gruppen, 1):
+        woerter = [w.strip() for w in (g.get('woerter') or []) if isinstance(w, str)] if isinstance(g, dict) else []
+        gefaltet = [falte(w) for w in woerter]
+        doppelt = sorted({w for w, f in zip(woerter, gefaltet) if gefaltet.count(f) > 1})
+        if doppelt:
+            fehler.append(f'wortlisten[{i}]: Wörter doppelt (Groß-/Kleinschreibung und Umlaute zählen nicht): {", ".join(doppelt)}')
+    if gruppen:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_WORTLISTEN_AB:
+            fehler.append('inhalt.wortlisten: Wortlisten kennt das DMS erst ab 0.127.0 – bitte dms: ">=0.127.0" angeben')
     return fehler
 
 
@@ -272,7 +296,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     # Inhalte gegen das Schema; lokale Schlüssel eindeutig; Verweise auflösbar.
     inhalte = m.get('inhalt') or {}
     geladen: dict[str, list] = {}
-    for art in ('mappentypen', 'sichten', 'beispiele'):
+    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten'):
         if art not in inhalte:
             continue
         pfad = ordner / str(inhalte[art])
@@ -343,6 +367,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         if isinstance(b, dict) and b.get('typ'):
             verweis_ok(b['typ'], 'beispiele')
     fehler += pruefe_beispiel_verweise(geladen.get('beispiele', []) or [], str(m.get('id')), abh)
+    fehler += pruefe_wortlisten(geladen.get('wortlisten', []) or [], str(m.get('dms', '')))
 
     # tests/erwartung.yaml stimmt mit dem Inhalt überein.
     erw_pfad = ordner / 'tests' / 'erwartung.yaml'
@@ -354,6 +379,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             fehler.append('tests/erwartung.yaml: sichten passen nicht zu inhalt/')
         if 'beispiele' in erw and erw['beispiele'] != len(geladen.get('beispiele', [])):
             fehler.append('tests/erwartung.yaml: Anzahl beispiele passt nicht')
+        if erw.get('wortlisten', 0) != len(geladen.get('wortlisten', [])):
+            fehler.append('tests/erwartung.yaml: Anzahl wortlisten passt nicht')
     elif not vorlage:
         fehler.append('tests/erwartung.yaml fehlt')
 

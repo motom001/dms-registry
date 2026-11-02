@@ -1,0 +1,7 @@
+# Gleichbedeutende Wörter für die Suche (ab DMS 0.127.0): Wer eines sucht, findet auch die anderen.
+# Schema: schema/inhalt.schema.json (wortlisten)
+- woerter: [Nebenkosten, Betriebskosten]
+- woerter: [Nebenkostenabrechnung, Betriebskostenabrechnung]
+- woerter: [Kaltmiete, Nettokaltmiete, Grundmiete]
+- woerter: [Kaution, Mietkaution, Mietsicherheit]
+- woerter: [Mieter, Mietpartei]

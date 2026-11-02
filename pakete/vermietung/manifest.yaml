@@ -2,14 +2,15 @@
 schema: 1
 id: vermietung
 name: Vermietung
-version: 1.0.1
+version: 1.1.0
 beschreibung: Mietobjekte, Wohnungen, Mietverträge, Nebenkostenabrechnungen und Ausgaben – für Vermieter mit wenigen Wohnungen, mit Fristen für Abrechnung, Mieterhöhung und Vertragsende.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
-# 0.79.0: Beispiele verweisen auf Beispiele ({ beispiel: … }), Verweis auf den Ablageort des DMS
-dms: ">=0.79.0"
+# 0.79.0: Beispiele verweisen auf Beispiele ({ beispiel: … }), Verweis auf den Ablageort des DMS;
+# 0.127.0: Wortlisten für die Suche
+dms: ">=0.127.0"
 abhaengigkeiten:
   basis: ">=1.1.0"
   haushalt: ">=1.0.0"
@@ -18,3 +19,4 @@ inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml
   beispiele: inhalt/beispiele.yaml
+  wortlisten: inhalt/wortlisten.yaml

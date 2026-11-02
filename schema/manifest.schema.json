@@ -219,6 +219,10 @@
         },
         "beispiele": {
           "type": "string"
+        },
+        "wortlisten": {
+          "type": "string",
+          "description": "Gleichbedeutende Wörter für die Suche (ab DMS 0.127.0, dms: \">=0.127.0\")"
         }
       }
     },

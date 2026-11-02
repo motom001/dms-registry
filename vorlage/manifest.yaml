@@ -24,6 +24,8 @@ inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml
   beispiele: inhalt/beispiele.yaml   # optional: Beispiel-Mappen, auf Wunsch bei der Installation
+#  wortlisten: inhalt/wortlisten.yaml # optional (DMS ab 0.127.0): gleichbedeutende Wörter für die Suche,
+#                                     # z. B. - woerter: [Kfz, Auto, PKW]; dann dms: ">=0.127.0"
 
 # Nur für Pakete mit Code (DMS ab 0.88.0) – sonst weglassen, dazu den Ordner code/. Siehe code/README.md.
 # code:
