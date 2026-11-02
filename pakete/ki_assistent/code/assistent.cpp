@@ -12,6 +12,10 @@
  * Aktion verbindung_testen
  *   → GET <dienst>/models (Modell vorhanden?) und eine kurze Probefrage (Antwortzeit)
  *
+ * Jede Anfrage an /chat/completions schickt "reasoning_effort": "none" (ab 1.1.1): Modelle, die vor der Antwort
+ * „nachdenken“, antworten dann gleich (Ollama schaltet damit das Nachdenken ab). Antwortet ein Dienst darauf mit
+ * HTTP 400, wiederholt das Paket die Anfrage einmal ohne das Feld.
+ *
  * Netz nur zur Dienst-Adresse aus den Einstellungen – das erzwingt der Paket-Läufer. Was das Paket bekommt,
  * schreibt es nirgends hin (kein log, kein Speicher).
  */
@@ -188,11 +192,29 @@ static Chat chat(const Dienst &d, std::string body, bool weitergeben, double bis
   return c;
 }
 
+/** Kein „Nachdenken“ vor der Antwort (OpenAI-kompatibel; Ollama schaltet es damit ab). */
+static const char *OHNE_NACHDENKEN = ",\"reasoning_effort\":\"none\"";
+
+/**
+ * chat() mit "reasoning_effort": "none" zwischen vorne und hinten, solange aufwand gilt. Antwortet der Dienst darauf
+ * mit HTTP 400 (kennt das Feld oder den Wert nicht), einmal ohne das Feld; aufwand ist danach aus.
+ */
+static Chat chatOhneNachdenken(const Dienst &d, const std::string &vorne, const std::string &hinten, bool weitergeben, double bisMs, bool &aufwand) {
+  if (aufwand) {
+    Chat c = chat(d, vorne + OHNE_NACHDENKEN + hinten, weitergeben, bisMs);
+    if (c.status != 400 || c.zeitUm || (bisMs > 0 && jetztMs() >= bisMs)) return c;
+    aufwand = false;
+  }
+  return chat(d, vorne + hinten, weitergeben, bisMs);
+}
+
 static int32_t antworte(const Json &e) {
   Dienst d = dienstAus(e);
   if (!d.fehler.empty()) { ergebnis(d.fehler); return 1; }
   char laenge[16]; snprintf(laenge, sizeof laenge, "%d", d.laenge);
-  Chat c = chat(d, "{\"model\":" + jsonText(d.modell) + ",\"stream\":true,\"temperature\":0.2,\"max_tokens\":" + laenge + ",\"messages\":" + nachrichten(e) + "}", true, 0);
+  bool aufwand = true;
+  Chat c = chatOhneNachdenken(d, "{\"model\":" + jsonText(d.modell) + ",\"stream\":true,\"temperature\":0.2,\"max_tokens\":" + laenge,
+    ",\"messages\":" + nachrichten(e) + "}", true, 0, aufwand);
   if (!c.fehler.empty()) { ergebnis(c.fehler); return 1; }
   ergebnis("{\"text\":" + jsonText(c.text) + "}");
   return 0;
@@ -359,11 +381,15 @@ static int32_t erkenne(const Json &e) {
     + "," + nachricht("user", "Fülle die Felder" + (typ.empty() ? std::string() : " für „" + typ + "“") + " aus dem Text oben. Antworte nur mit einem JSON-Objekt nach diesem JSON Schema und lass Felder weg, die nicht im Text stehen:\n" + schemaText) + "]";
   text.clear(); text.shrink_to_fit();
   char tokens[16]; snprintf(tokens, sizeof tokens, "%d", ERKENNEN_TOKENS);
-  std::string kopf = "{\"model\":" + jsonText(d.modell) + ",\"stream\":true,\"temperature\":0,\"max_tokens\":" + tokens + ",\"messages\":" + m + ",\"response_format\":";
+  std::string kopf = "{\"model\":" + jsonText(d.modell) + ",\"stream\":true,\"temperature\":0,\"max_tokens\":" + tokens;
+  std::string format = ",\"messages\":" + m + ",\"response_format\":";
+  m.clear(); m.shrink_to_fit();
   // Strukturierte Ausgabe nach JSON Schema (Ollama ab 0.5, llama.cpp-Server, LocalAI, vLLM …). Kennt der Dienst
   // das nicht (HTTP 400), ein zweiter Versuch mit „nur JSON“ – das Schema steht ohnehin in der Nachricht.
-  Chat c = chat(d, kopf + "{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"felder\",\"schema\":" + schemaText + "}}}", false, bis);
-  if (c.status == 400 && !c.zeitUm && jetztMs() < bis) c = chat(d, kopf + "{\"type\":\"json_object\"}}", false, bis);
+  // Jeweils zuerst mit "reasoning_effort": "none"; lehnt der Dienst das ab (HTTP 400), ohne das Feld.
+  bool aufwand = true;
+  Chat c = chatOhneNachdenken(d, kopf, format + "{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"felder\",\"schema\":" + schemaText + "}}}", false, bis, aufwand);
+  if (c.status == 400 && !c.zeitUm && jetztMs() < bis) c = chatOhneNachdenken(d, kopf, format + "{\"type\":\"json_object\"}}", false, bis, aufwand);
   if (c.zeitUm) { char t[96]; snprintf(t, sizeof t, "Der KI-Dienst hat nicht innerhalb von %d s geantwortet.", sek); ergebnis(t); return 1; }
   if (!c.fehler.empty()) { ergebnis(c.fehler); return 1; }
 
@@ -412,9 +438,16 @@ static int32_t verbindungTesten(const Json &e) {
   }
   // Kurze Probefrage: Wie lange braucht eine Antwort (inklusive Laden des Modells)?
   double t1 = jetztMs();
-  std::string body = "{\"model\":" + jsonText(d.modell) + ",\"stream\":false,\"max_tokens\":8,\"messages\":[" + nachricht("user", "Antworte nur mit dem Wort OK.") + "]}";
+  // Wie bei den Fragen ohne „Nachdenken“; lehnt der Dienst das Feld ab (HTTP 400), einmal ohne.
+  std::string vorne = "{\"model\":" + jsonText(d.modell) + ",\"stream\":false,\"max_tokens\":8";
+  std::string hinten = ",\"messages\":[" + nachricht("user", "Antworte nur mit dem Wort OK.") + "]}";
   q = anfrage(d, "POST", "/chat/completions", false);
+  std::string body = vorne + OHNE_NACHDENKEN + hinten;
   status = dms_netz(q.data(), (int32_t)q.size(), body.data(), (int32_t)body.size());
+  if (status == 400) {
+    body = vorne + hinten;
+    status = dms_netz(q.data(), (int32_t)q.size(), body.data(), (int32_t)body.size());
+  }
   a = antwort();
   if (status != 200) { ergebnis(bericht + " Modell „" + d.modell + "“ vorhanden, aber die Probefrage scheitert: " + problem(d, status, a)); return 1; }
   char s[64]; snprintf(s, sizeof s, "%.1f s", (jetztMs() - t1) / 1000.0);
