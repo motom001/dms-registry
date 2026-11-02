@@ -61,7 +61,7 @@ TEXTE = {
         'marke': 'DMS-Pakete',
         'beschreibung': 'Pakete für das DMS: fertige Mappentypen und Sichten',
         'handbuecher': 'Handbücher',
-        'ohne_internet': 'Ohne Internet',
+        'ohne_internet': 'Pakete herunterladen',
         'registry': 'Registry',
         'registry_url': REGISTRY,
         'dms_adresse': 'DMS-Adresse',
@@ -101,7 +101,7 @@ TEXTE = {
         'marke': 'DMS packages',
         'beschreibung': 'Packages for the DMS: ready-made Mappe types and views',
         'handbuecher': 'Manuals',
-        'ohne_internet': 'Offline',
+        'ohne_internet': 'Download packages',
         'registry': 'Registry',
         'registry_url': f'{REGISTRY}/blob/main/README.en.md',
         'dms_adresse': 'DMS address',
@@ -838,7 +838,8 @@ SKRIPT = '''
 
 # Sammeldatei (motom001/dms#461): Auswahl, Abhängigkeiten und ZIP – alles im Browser aus katalog.json und archive/.
 # Format und Prüfung wie werkzeuge/sammeldatei.py (Referenz) und schema/sammeldatei.schema.json.
-SAMMEL_INHALT = r'''    <h1>Pakete ohne Internet</h1>
+SAMMEL_INHALT = r'''    <h1>Pakete herunterladen</h1>
+    <p><strong>Für ein DMS ohne Internetzugang:</strong> mehrere Pakete als eine Datei, die du im DMS hochlädst.</p>
     <p class="leise">Kommt dein DMS nicht ins Internet? Wähle hier die Pakete aus und lade sie als <strong>eine Sammeldatei</strong> herunter.
       Im DMS lädst du sie unter <strong>Werkbank → Pakete → „Ohne Internet …“</strong> hoch (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).
       Das DMS prüft jedes Paket gegen seine Prüfsumme und installiert dann eins nach dem anderen.</p>
@@ -869,7 +870,7 @@ SAMMEL_INHALT = r'''    <h1>Pakete ohne Internet</h1>
 
 
 def sammelseite() -> str:
-    return seite('Pakete ohne Internet – DMS-Pakete', SAMMEL_INHALT, 0, 'Mehrere Pakete als eine Sammeldatei für ein DMS ohne Internet', skripte=('sammeldatei.js',))
+    return seite('Pakete herunterladen – DMS-Pakete', SAMMEL_INHALT, 0, 'Mehrere Pakete als eine Sammeldatei für ein DMS ohne Internet', skripte=('sammeldatei.js',))
 
 
 SAMMEL_STIL = '''
