@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.3.0
+
+- **Formate** (dms-registry #55, DMS #535): Telefon, Fax und Mobil prüft das DMS als Telefonnummer, E-Mail als E-Mail-Adresse, Internetseite als Internetseite und die IBAN der Organisation mit Länge und Prüfziffer. Die PLZ hat in Deutschland genau 5 Ziffern; steht im Feld *Land* ein anderes Land, ist sie frei. Am Handy erscheint die passende Tastatur, Telefon und E-Mail lassen sich antippen.
+- Person: Der **Geburtstag** darf nicht in der Zukunft liegen.
+- Braucht DMS ab 0.121.0. Gespeicherte Angaben bleiben gültig; das Update übernimmt Formate und Grenzen nur an Feldern, an denen du in der Werkbank nichts davon eingestellt hast. Welche Angaben nicht passen, zeigt Werkbank → Wartungsoperationen.
+
 ## 1.2.0
 
 - **Erkennung** (dms-registry #49, DMS #336/#391): Die Felder sind „für die Erkennung“ markiert. Post wird so ohne eigene Einrichtung dem richtigen Absender zugeordnet – an Kundennummer, IBAN, Umsatzsteuer-Id, E-Mail-Adresse bzw. -Domain, Internetseite, Telefon oder Name. „Visitenkarte scannen“ füllt bei einer Person Name, Funktion, Organisation, Telefon, Mobil, E-Mail und Anschrift.

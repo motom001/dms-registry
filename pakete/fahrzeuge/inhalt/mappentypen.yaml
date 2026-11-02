@@ -16,7 +16,8 @@
     # Für die Erkennung (DMS 0.113): Post mit Kennzeichen oder Fahrzeug-Identnummer gehört zu diesem Fahrzeug.
     - { key: kennzeichen, label: Kennzeichen, typ: text, eindeutig: true, maxLen: 20, hilfe: "z. B. MU-ST 123", erkennung: { art: nummer, hinweis: "Leerzeichen und Bindestriche zählen nicht: MU-ST 123 = MU ST123" } }
     - { key: fin, label: Fahrzeug-Identnummer, typ: text, maxLen: 17, muster: "[A-HJ-NPR-Z0-9]{17}", hilfe: "17 Zeichen ohne I, O und Q – steht im Fahrzeugschein unter E", erkennung: { art: nummer } }
-    - { key: erstzulassung, label: Erstzulassung, typ: datum }
+    # Ab 1.2.0 (DMS 0.121): nicht in der Zukunft.
+    - { key: erstzulassung, label: Erstzulassung, typ: datum, max: heute }
     # Bis 1.0.x war der Halter ein Textfeld (halter). Ein Update legt den Verweis dazu; den Text wandelt der
     # Administrator in der Werkbank mit Vorschau um (aus_text, DMS 0.120, #534).
     - { key: halter_verweis, label: Halter, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: halter, hilfe: Wer im Fahrzeugschein steht – eine Person aus dem Paket Basis }

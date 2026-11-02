@@ -252,6 +252,79 @@ class AusText(unittest.TestCase):
         self.assertTrue(any('erst ab 0.120.0' in f for f in self.paket([self.VERWEIS], dms='>=0.113.0')))
 
 
+class Formate(unittest.TestCase):
+    """Feldformate und Datumsgrenzen (dms-registry #55, DMS #535)."""
+
+    def paket(self, je_feld: dict, dms: str = '>=0.121.0', felder: list | None = None, beispiele: list | None = None) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m['dms'] = dms
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            typen = yaml.safe_load((ziel / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+            for f in felder or []:
+                typen[0]['felder'].append(f)
+                typen[0]['register'][0]['felder'].append(f['key'])
+            for f in typen[0]['felder']:
+                f.update(je_feld.get(f['key'], {}))
+            (ziel / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump(typen, allow_unicode=True), encoding='utf-8')
+            if beispiele is not None:
+                (ziel / 'inhalt' / 'beispiele.yaml').write_text(yaml.safe_dump(beispiele, allow_unicode=True), encoding='utf-8')
+                m['inhalt']['beispiele'] = 'inhalt/beispiele.yaml'
+                (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+                erw = yaml.safe_load((ziel / 'tests' / 'erwartung.yaml').read_text(encoding='utf-8')) or {}
+                erw['beispiele'] = len(beispiele)
+                (ziel / 'tests' / 'erwartung.yaml').write_text(yaml.safe_dump(erw, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    ADRESSE = [{'key': 'telefon', 'label': 'Telefon', 'typ': 'text'}, {'key': 'plz', 'label': 'PLZ', 'typ': 'text', 'maxLen': 10},
+               {'key': 'land', 'label': 'Land', 'typ': 'text', 'standard': 'Deutschland'}]
+
+    def test_gueltig(self):
+        self.assertEqual(self.paket({'telefon': {'format': 'telefon'}, 'plz': {'format': 'plz', 'landFeld': 'land'}, 'datum': {'max': '2099-12-31'}}, felder=self.ADRESSE), [])
+        self.assertEqual(self.paket({'datum': {'min': '2000-01-01', 'max': '2030-12-31'}}), [])
+
+    def test_format_nur_bei_text(self):
+        self.assertTrue(any('nur bei Feldart „text“' in f for f in self.paket({'datum': {'format': 'email'}})))
+        self.assertTrue(any('format' in f for f in self.paket({'bezeichnung': {'format': 'fax'}})), 'Schema kennt das Format nicht')
+
+    def test_landfeld(self):
+        self.assertTrue(any('nur bei format: plz' in f for f in self.paket({'telefon': {'format': 'telefon', 'landFeld': 'land'}}, felder=self.ADRESSE)))
+        self.assertTrue(any('kein Text- oder Auswahlfeld' in f for f in self.paket({'plz': {'format': 'plz', 'landFeld': 'gibtsnicht'}}, felder=self.ADRESSE)))
+
+    def test_datumsgrenzen(self):
+        self.assertTrue(any('min' in f for f in self.paket({'datum': {'min': 'gestern'}})))
+        self.assertTrue(any('min liegt nach max' in f for f in self.paket({'datum': {'min': '2030-01-01', 'max': '2020-01-01'}})))
+
+    def test_braucht_dms_0_121(self):
+        self.assertTrue(any('erst ab 0.121.0' in f for f in self.paket({'datum': {'max': 'heute'}}, dms='>=0.113.0')))
+
+    def test_beispiele_passen(self):
+        je = {'telefon': {'format': 'telefon'}, 'plz': {'format': 'plz', 'landFeld': 'land'}, 'datum': {'max': 'heute'}}
+        gut = [{'typ': 'beispiel', 'werte': {'bezeichnung': 'Lena', 'telefon': '+49 30 123456', 'plz': '01357', 'datum': '2020-01-01'}},
+               {'typ': 'beispiel', 'werte': {'bezeichnung': 'Jonas', 'plz': '1010', 'land': 'Österreich'}}]
+        self.assertEqual(self.paket(je, felder=self.ADRESSE, beispiele=gut), [])
+        schlecht = [{'typ': 'beispiel', 'werte': {'bezeichnung': 'Markus', 'telefon': '030 abc', 'plz': '01357asda', 'datum': '2999-01-01'}}]
+        f = '\n'.join(self.paket(je, felder=self.ADRESSE, beispiele=schlecht))
+        self.assertIn('Telefonnummer', f)
+        self.assertIn('deutsche PLZ', f)
+        self.assertIn('liegt nach heute', f)
+
+    def test_iban(self):
+        self.assertTrue(pruefen.iban_ok('DE89 3704 0044 0532 0130 00'))
+        self.assertFalse(pruefen.iban_ok('DE88 3704 0044 0532 0130 00'))
+        self.assertFalse(pruefen.iban_ok('DE89 3704 0044 0532 0130 0'))
+
+    def test_pakete_der_registry(self):
+        for p in ('basis', 'haus', 'vermietung', 'fahrzeuge', 'haushalt'):
+            self.assertEqual(pruefen.pruefe(WURZEL / 'pakete' / p, None), [], p)
+
+
 if __name__ == '__main__':
     unittest.main()
 

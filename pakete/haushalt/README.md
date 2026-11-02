@@ -40,7 +40,7 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 ## Voraussetzungen
 
-- DMS ab Version 0.120 (Personen als Verweis, Umwandlung von Text in Verweise nach dem Update)
+- DMS ab Version 0.121 (Personen als Verweis, Umwandlung von Text in Verweise nach dem Update, Feldformate und Datumsgrenzen)
 - Paket **Basis** ab 1.1.0 (Person) – wird bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz

@@ -4,6 +4,7 @@
   "title": "Inhalte eines DMS-Pakets (mappentypen.yaml, sichten.yaml, beispiele.yaml)",
   "$defs": {
     "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+    "datumsgrenze": { "anyOf": [{ "const": "heute" }, { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }] },
     "typverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$" },
     "feld": {
       "type": "object", "required": ["key", "label", "typ"],
@@ -13,7 +14,8 @@
         "typ": { "enum": ["text", "langtext", "formatiert", "zahl", "betrag", "datum", "janein", "auswahl", "referenz", "passwort"] },
         "pflicht": { "type": "boolean" }, "eindeutig": { "type": "boolean" }, "hilfe": { "type": "string" },
         "standard": {}, "minLen": { "type": "integer" }, "maxLen": { "type": "integer" }, "muster": { "type": "string" },
-        "min": { "type": "number" }, "max": { "type": "number" }, "nachkomma": { "type": "integer" }, "waehrung": { "type": "string" },
+        "min": { "description": "Zahl und Betrag: Zahl. Datum (DMS ab 0.121.0, #535): „heute“ oder JJJJ-MM-TT – frühestes erlaubtes Datum.", "oneOf": [{ "type": "number" }, { "$ref": "#/$defs/datumsgrenze" }] },
+        "max": { "description": "Zahl und Betrag: Zahl. Datum (DMS ab 0.121.0, #535): „heute“ oder JJJJ-MM-TT – spätestes erlaubtes Datum, z. B. heute für einen Geburtstag.", "oneOf": [{ "type": "number" }, { "$ref": "#/$defs/datumsgrenze" }] }, "nachkomma": { "type": "integer" }, "waehrung": { "type": "string" },
         "optionen": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
         "mehrfach": { "type": "boolean" },
         "ziel": { "$ref": "#/$defs/typverweis" },
@@ -21,6 +23,14 @@
         "frist": { "type": "object", "required": ["vorlauf", "einheit"], "properties": { "vorlauf": { "type": "integer", "minimum": 0 }, "einheit": { "enum": ["tage", "wochen", "monate"] }, "wiederholung": { "type": "integer" } } },
         "aus_text": {
           "description": "Text → Verweis (DMS ab 0.120.0, DMS #534): Kennung des bisherigen Textfelds, aus dem sich dieses Verweisfeld nach einem Update füllen lässt. Das DMS legt den Verweis zusätzlich an; umgewandelt wird erst nach einer Vorschau in der Werkbank.",
+          "$ref": "#/$defs/schluessel"
+        },
+        "format": {
+          "description": "Nur bei typ text (DMS ab 0.121.0, #535): Format der Angabe. Neue und geänderte Werte müssen passen, gespeicherte bleiben gültig.",
+          "enum": ["email", "telefon", "internetseite", "iban", "plz"]
+        },
+        "landFeld": {
+          "description": "Bei format plz: Kennung des Felds mit dem Land (Text oder Auswahl). Deutschland oder leer heißt genau 5 Ziffern.",
           "$ref": "#/$defs/schluessel"
         },
         "erkennung": {

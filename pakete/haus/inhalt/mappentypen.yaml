@@ -15,15 +15,17 @@
       optionen: [Eigentum, Miete, Ferienwohnung, Garage, Grundstück]
     - { key: strasse, label: Straße, typ: text, maxLen: 120 }
     - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
-    - { key: plz, label: PLZ, typ: text, maxLen: 10 }
+    # Ab 1.1.0 (DMS 0.121): PLZ mit Format, dazu das Land (Ferienwohnung im Ausland).
+    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land }
     - { key: ort, label: Ort, typ: text, maxLen: 80 }
+    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
     - { key: baujahr, label: Baujahr, typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Vierstellig, z. B. 1998" }
     - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2 }
     - { key: grundstueck, label: Grundstücksgröße (m²), typ: zahl, min: 0, nachkomma: 0 }
     - { key: eigentuemer, label: Eigentümer/Vermieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Miete der Vermieter oder die Hausverwaltung }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Grundbuchauszug, Kauf- oder Mietvertrag auf Papier liegen }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, baujahr, wohnflaeche, grundstueck, eigentuemer, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, wohnflaeche, grundstueck, eigentuemer, verbleib_original] }
     - key: wartungen
       name: Wartungen
       art: verknuepfungen
@@ -50,7 +52,7 @@
       optionen: [Heizung, Schornstein, Rauchmelder, Dach, Lüftung, Photovoltaik, Aufzug, Sonstiges]
     - { key: fachbetrieb, label: Fachbetrieb, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
     - { key: wartungsvertrag, label: Wartungsvertrag, typ: referenz, ziel: "haushalt:vertrag", verweisart: bezug, hilfe: Falls es einen Wartungsvertrag gibt – ein Vertrag aus dem Paket Haushalt }
-    - { key: zuletzt_am, label: Zuletzt am, typ: datum }
+    - { key: zuletzt_am, label: Zuletzt am, typ: datum, max: heute }
     - { key: turnus, label: Turnus (Monate), typ: zahl, min: 1, max: 120, nachkomma: 0, hilfe: "Alle wie viele Monate, z. B. 12 für jährlich" }
     - key: naechste_faellig
       label: Nächste fällig
@@ -77,7 +79,7 @@
       pflicht: true
       optionen: [Strom, Gas, Wasser, Wärme, Einspeisung]
     - { key: zaehlernummer, label: Zählernummer, typ: text, maxLen: 40 }
-    - { key: abgelesen_am, label: Abgelesen am, typ: datum, pflicht: true }
+    - { key: abgelesen_am, label: Abgelesen am, typ: datum, pflicht: true, max: heute }
     - { key: stand, label: Stand, typ: zahl, pflicht: true, min: 0, nachkomma: 3 }
     - { key: einheit, label: Einheit, typ: auswahl, optionen: [kWh, m³, MWh] }
   register:

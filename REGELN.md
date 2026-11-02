@@ -96,6 +96,30 @@ Steht in einem Paket ein Mensch, eine Firma oder ein anderes Ding als **Text**, 
 
 `werkzeuge/pruefen.py` prüft Feldart, Quelle, Pflicht und DMS-Version.
 
+## Formate und Datumsgrenzen
+
+Das DMS prüft Angaben in Textfeldern nach einem **Format** und Datumsfelder nach **Grenzen** (DMS #535). So landen keine PLZ mit Buchstaben, keine Telefonnummer mit Buchstaben und kein Geburtstag in der Zukunft in den Mappen. Am Handy erscheint die passende Tastatur, Telefon und E-Mail lassen sich antippen.
+
+```yaml
+- { key: telefon, label: Telefon, typ: text, maxLen: 40, format: telefon }
+- { key: email, label: E-Mail, typ: text, maxLen: 200, format: email }
+- { key: internet, label: Internetseite, typ: text, maxLen: 200, format: internetseite }
+- { key: iban, label: IBAN, typ: text, maxLen: 42, format: iban }
+- { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land }
+- { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
+- { key: geburtstag, label: Geburtstag, typ: datum, max: heute }
+- { key: einzug, label: Einzug, typ: datum, min: "2000-01-01" }
+```
+
+- **`format`** nur bei `typ: text`: `email` (`name@beispiel.de`), `telefon` (Ziffern, `+` am Anfang, Leerzeichen, `/`, `-`, Klammern), `internetseite` (mit oder ohne `https://`), `iban` (Länge des Landes und Prüfziffer, Anzeige in Vierergruppen) oder `plz`.
+- **`landFeld`** nur bei `format: plz`: die Kennung eines Text- oder Auswahlfelds desselben Mappentyps mit dem Land. Steht dort Deutschland oder nichts (und ist die Vorgabe Deutschland), sind **genau 5 Ziffern** Pflicht; bei anderen Ländern ist die PLZ frei. Ohne `landFeld` gilt immer Deutschland – gib bei Anschriften deshalb ein Feld *Land* mit.
+- **`min`** und **`max`** bei `typ: datum`: `heute` oder ein Datum `"JJJJ-MM-TT"` (in Anführungszeichen, sonst liest YAML es als Datum). Setze Grenzen nur, wo eine Angabe sonst sicher falsch ist – `max: heute` für Geburtstag, Erstzulassung oder „abgelesen am“; nie für Fristen wie „gültig bis“.
+- Gespeicherte Werte bleiben gültig: Das DMS prüft nur neue und geänderte Angaben. Ein Update übernimmt Format und Grenzen an installierten Feldern, an denen der Administrator weder Format noch Grenzen eingestellt hat; das ist eine Minor-Version.
+- **Beispiele müssen passen** – das DMS legt sie mit denselben Prüfungen an. Nimm erfundene, aber gültige Werte: Persona-Namen, Testnummern wie `+49 30 123456`, die Test-IBAN `DE89 3704 0044 0532 0130 00`.
+- Wer `format`, `landFeld` oder Datumsgrenzen nutzt, schreibt im Manifest `dms: ">=0.121.0"`.
+
+`werkzeuge/pruefen.py` prüft Feldart, Land-Feld, Grenzen, die Beispiele und die DMS-Version.
+
 ## Verwaiste Pakete
 
 Antwortet der Pfleger auf Fehler oder nötige Anpassungen drei Monate lang nicht, wird das Paket als *verwaist* markiert und kann von jemand anderem übernommen werden.

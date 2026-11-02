@@ -2,7 +2,7 @@
 schema: 1
 id: basis
 name: Basis
-version: 1.2.0
+version: 1.3.0
 beschreibung: Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.
 autor:
   name: Thomas Meissner
@@ -10,7 +10,8 @@ autor:
 lizenz: Apache-2.0
 # 0.79.0: Beispiele verweisen auf Beispiele ({ beispiel: … })
 # 0.113.0: Feld-Eigenschaft „für die Erkennung nutzen“ (erkennung, DMS #336/#391)
-dms: ">=0.113.0"
+# 0.121.0: Feldformate und Datumsgrenzen (format, landFeld, min/max bei Datum, DMS #535)
+dms: ">=0.121.0"
 abhaengigkeiten: {}
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
