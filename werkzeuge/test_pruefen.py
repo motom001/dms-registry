@@ -197,6 +197,22 @@ class Einstellungen(unittest.TestCase):
         kern['umwandeln'] = ['TIFF']
         self.assertTrue(self.paket(kern, dms='>=0.137.0'))
 
+    def test_schnittstelle_sicherung(self):
+        # dms:sicherung-lesen (DMS #585): ab DMS 0.142.0, nur zusammen mit dem Ereignis sicherung.fertig; keine Mappen nötig.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'schnittstellen': ['dms:sicherung-lesen']}
+        c['ereignisse'] = ['sicherung.fertig']
+        self.assertEqual(self.paket(c, dms='>=0.142.0'), [])
+        alt = self.paket(c, dms='>=0.141.0')
+        self.assertTrue(any('dms:sicherung-lesen kennt das DMS erst ab 0.142.0' in f for f in alt), alt)
+        ohne = copy.deepcopy(c)
+        ohne['ereignisse'] = []
+        self.assertTrue(any('braucht das Ereignis sicherung.fertig' in f for f in self.paket(ohne, dms='>=0.142.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte'] = {}
+        self.assertTrue(any('sicherung.fertig gibt es nur mit' in f for f in self.paket(ohne, dms='>=0.142.0')))
+
     def test_dms_untergrenze(self):
         self.assertEqual(pruefen.dms_untergrenze('>=0.94.0'), (0, 94, 0))
         self.assertEqual(pruefen.dms_untergrenze('>0.93.0 <1.0.0'), (0, 93, 1))

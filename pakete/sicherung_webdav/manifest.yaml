@@ -1,0 +1,91 @@
+# Paket Sicherungsziel WebDAV (DMS #585, dms-registry #71, Stufe 1): jede Sicherung außer Haus auf Nextcloud, ein NAS
+# oder zum Hoster – in Teilen hochladen, dort prüfen, dem DMS je Sicherung zurückmelden.
+# Schema: schema/manifest.schema.json
+schema: 1
+id: sicherung_webdav
+name: Sicherungsziel WebDAV
+version: 1.0.0
+beschreibung: Bringt jede Sicherung des DMS außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# 0.142.0: Ereignis sicherung.fertig, Schnittstelle dms:sicherung-lesen, Rückmeldung je Sicherung (DMS #585)
+dms: ">=0.142.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: [sicherung.fertig]
+  rechte:
+    # Nur die verschlüsselte Sicherung aus dem Ereignis, in Stücken – keine Mappen, keine Dokumente, nie der Schlüssel.
+    schnittstellen: ["dms:sicherung-lesen"]
+  # Keine feste Adresse: Netz nur zur Adresse, die der Administrator einträgt und bestätigt.
+  netz: []
+  einstellungen:
+    - abschnitt: Ziel
+      hilfe: Wohin die Sicherungen gehen. Nextcloud lädt auch große Sicherungen in Teilen hoch und liest sie zur Prüfung zurück. Eine Nextcloud-Dateiablage („Nur Hochladen“) ist der beste Schutz gegen Erpressersoftware – das DMS kann dort nichts lesen oder löschen –, nimmt aber nur Sicherungen bis 128 MB und lässt sich nicht zurücklesen.
+      felder:
+        - schluessel: art
+          name: Art des Ziels
+          typ: auswahl
+          optionen: [Nextcloud, Nextcloud-Dateiablage, WebDAV allgemein]
+          standard: Nextcloud
+          hilfe: Nextcloud (auch ownCloud-kompatible Server mit Chunking) mit Benutzer und App-Passwort; Nextcloud-Dateiablage über einen Freigabe-Link „Nur Hochladen“; WebDAV allgemein für NAS und Hoster.
+        - schluessel: adresse
+          name: Adresse
+          typ: adresse
+          pflicht: true
+          hilfe: "Nextcloud und Dateiablage: die Adresse der Nextcloud, z. B. https://cloud.example.org (bzw. mit Unterordner, wenn sie dort liegt). WebDAV allgemein: die Adresse des Ordners, z. B. https://nas.example.org:5006/sicherung. Nur dorthin darf das Paket ins Netz."
+        - schluessel: benutzer
+          name: Benutzer
+          typ: text
+          hilfe: Nextcloud und WebDAV allgemein. Am besten ein eigener Benutzer nur für die Sicherungen (siehe README).
+        - schluessel: passwort
+          name: Passwort
+          typ: geheim
+          hilfe: Bei Nextcloud ein App-Passwort (Einstellungen → Sicherheit → Neues App-Passwort), bei der Dateiablage das Kennwort der Freigabe, falls gesetzt.
+        - schluessel: ordner
+          name: Ordner
+          typ: text
+          standard: DMS-Sicherung
+          hilfe: Nextcloud – Ordner im Konto des Benutzers; WebDAV allgemein – Unterordner unter der Adresse (leer = die Adresse selbst). Fehlt er, legt ihn das Paket an. Bei der Dateiablage ohne Bedeutung.
+        - schluessel: freigabe
+          name: Freigabe-Link (Dateiablage)
+          typ: text
+          hilfe: Nur für die Nextcloud-Dateiablage, z. B. https://cloud.example.org/s/AbCdEf123 – der Link der Freigabe „Nur Hochladen (Dateiablage)“.
+    - abschnitt: Hochladen und Prüfen
+      felder:
+        - schluessel: teil_mb
+          name: Teilgröße (MB)
+          typ: zahl
+          min: 5
+          max: 8
+          standard: 8
+          hilfe: So groß ist jeder Teil beim Hochladen. Bei einem langsamen Anschluss kleiner – jeder Teil muss innerhalb von etwa 2 Minuten oben sein (8 MB brauchen bei 1 MBit/s Upload etwa 70 Sekunden).
+        - schluessel: voll_mb
+          name: Vollständig zurücklesen bis (MB)
+          typ: zahl
+          min: 0
+          max: 1000000
+          standard: 2048
+          hilfe: Bis zu dieser Größe liest das Paket jede Sicherung vom Ziel ganz zurück und vergleicht die Prüfsumme. Größere prüft es mit 8 Stichproben – und einmal im Monat vollständig.
+    - abschnitt: Aufbewahrung am Ziel
+      hilfe: Aufräumen am Ziel überlässt du am besten dem Ziel selbst (Versionen, Schnappschüsse, Aufräum-Regeln). Schaltest du das Löschen hier ein, braucht der Zugang Löschrechte – und genau das hebt den Schutz gegen Erpressersoftware auf. Bei der Dateiablage geht Löschen nicht.
+      felder:
+        - schluessel: extern_loeschen
+          name: Alte Sicherungen am Ziel löschen
+          typ: janein
+          standard: false
+          hilfe: Aus (Vorgabe) – das Paket listet am Ziel nichts auf und löscht nichts. An – nach jeder geprüften Kopie bleiben am Ziel nur die neuesten (Anzahl darunter).
+        - schluessel: extern_behalten
+          name: Am Ziel behalten (Anzahl)
+          typ: zahl
+          min: 1
+          max: 1000
+          standard: 14
+          hilfe: Nur wenn „Alte Sicherungen am Ziel löschen“ an ist.
+  aktionen:
+    - schluessel: verbindung_testen
+      name: Verbindung testen
+      hilfe: Meldet sich mit den gespeicherten Einstellungen beim Ziel an und schaut, ob der Ordner da ist – ohne etwas hochzuladen.

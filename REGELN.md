@@ -40,6 +40,7 @@ Vor der Installation zeigt das DMS die Rechte eines Pakets mit Code, die Katalog
 - „Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)“ – nur mit `code.rechte.schnittstellen` und `dms: ">=0.125.0"`
 - „Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)“ – nur mit `code.rechte.schnittstellen`, `dokumente: schreiben` und `dms: ">=0.133.0"`
 - „Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln): TIFF, WebP, …“ – nur mit `code.rechte.schnittstellen`, `code.umwandeln`, dem Ereignis `datei.umwandeln`, `dokumente: lesen` und `dms: ">=0.137.0"` (siehe [Dateien umwandeln](#dateien-umwandeln))
+- „Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)“ – nur mit `code.rechte.schnittstellen`, dem Ereignis `sicherung.fertig` und `dms: ">=0.142.0"` (siehe [Sicherung außer Haus](#sicherung-außer-haus))
 - „kein Zugriff auf Netzwerk und Internet“ bzw. „Zugriff auf Netzwerk/Internet nur zu: …“; mit einer Dienst-Adresse als Einstellung zusätzlich „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“
 - „Reagiert auf diese Ereignisse:“ mit einem Ereignis je Zeile
 
@@ -173,6 +174,25 @@ code:
 - Der veröffentlichte Katalog ist signiert (siehe [README, „Katalog signieren“](README.md#katalog-signieren)). Pull Requests ändern daran nichts: Signiert wird nur in der CI auf `main`.
 - **Private Schlüssel** (`*.pem`) gehören nie ins Repository, in Issues oder in Pull Requests. Gerät einer doch hinein: sofort dem Maintainer melden (vertraulich, siehe [SECURITY.md](SECURITY.md)).
 - `schluessel/*.pub`, `werkzeuge/signieren.py` und der Workflow „Katalog veröffentlichen“ ändert nur der Maintainer (CODEOWNERS).
+
+## Sicherung außer Haus
+
+Ein Paket mit dem Recht `dms:sicherung-lesen` kopiert jede Sicherung des DMS auf einen externen Speicher und prüft sie dort (DMS #585) – z. B. [Sicherungsziel WebDAV](pakete/sicherung_webdav/):
+
+```yaml
+dms: ">=0.142.0"
+code:
+  ereignisse: [sicherung.fertig]
+  rechte:
+    schnittstellen: ["dms:sicherung-lesen"]   # keine Mappen, keine Dokumente
+  netz: []                                     # Ziel als Einstellung vom Typ adresse
+```
+
+- Das Paket bekommt nur die **verschlüsselte** Sicherung aus seinem Ereignis, in Stücken – nie den Schlüssel, nie Inhalte. Es lädt sie **in Teilen** hoch und lädt sie nie ganz in den Speicher.
+- **Zugangsdaten** nur als `geheim`; das Ziel als Einstellung vom Typ `adresse`.
+- **Löschschutz:** Das Paket listet am Ziel nichts auf und löscht nichts. „Alte Sicherungen extern löschen“ gibt es höchstens als Einstellung mit Vorgabe **aus** und dem Hinweis, dass dafür Löschrechte nötig sind – genau die heben den Schutz gegen Erpressersoftware auf. Das README empfiehlt Zugänge nur mit Schreibrecht (z. B. Nextcloud-Dateiablage, S3 ohne `DeleteObject` mit Object Lock).
+- **Ehrlich zurückmelden:** `geprueft` nur, wenn die Prüfsumme bestätigt oder die Datei zurückgelesen ist; sonst `hochgeladen`.
+- Ablauf, Ereignis, Lesen in Stücken und Rückmeldung beschreibt das Entwicklerhandbuch des DMS unter [Sicherung außer Haus](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#sicherung-ausser-haus).
 
 ## Verwaiste Pakete
 

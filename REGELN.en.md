@@ -40,6 +40,7 @@ Before installation, the DMS shows the permissions of a package with code, and t
 - „Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)“ (suggest fields from documents for “fill from document”, only from the text the DMS passes along) – only with `code.rechte.schnittstellen` and `dms: ">=0.125.0"`
 - „Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)“ (take over text recognition for scans and images – the DMS reports documents without text and shows „waiting for text recognition“ until the package writes the full text) – only with `code.rechte.schnittstellen`, `dokumente: schreiben` and `dms: ">=0.133.0"`
 - „Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln): TIFF, WebP, …“ (convert files the DMS cannot read itself – the package reads the original file and returns a version as PDF, PNG or JPEG for thumbnail and full text; the original stays unchanged) – only with `code.rechte.schnittstellen`, `code.umwandeln`, the event `datei.umwandeln`, `dokumente: lesen` and `dms: ">=0.137.0"` (see [Converting files](#converting-files))
+- „Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)“ (read the encrypted backup to copy it off-site – cannot open it: no key, no contents) – only with `code.rechte.schnittstellen`, the event `sicherung.fertig` and `dms: ">=0.142.0"` (see [Off-site backup](#off-site-backup))
 - „kein Zugriff auf Netzwerk und Internet“ (no access to network and internet) or „Zugriff auf Netzwerk/Internet nur zu: …“ (access to network/internet only to: …); with a service address as a setting additionally „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“ (the address from the setting „…“, which you enter and confirm)
 - „Reagiert auf diese Ereignisse:“ (reacts to these events) with one event per line
 
@@ -173,6 +174,25 @@ code:
 - The published catalogue is signed (see [README, "Signing the catalogue"](README.en.md#signing-the-catalogue)). Pull requests do not change that: signing happens only in the CI on `main`.
 - **Private keys** (`*.pem`) never belong in the repository, in issues or in pull requests. If one ends up there anyway: report it to the maintainer immediately (confidentially, see [SECURITY.en.md](SECURITY.en.md)).
 - Only the maintainer changes `schluessel/*.pub`, `werkzeuge/signieren.py` and the workflow "Katalog veröffentlichen" (CODEOWNERS).
+
+## Off-site backup
+
+A package with the permission `dms:sicherung-lesen` copies every backup of the DMS to external storage and verifies it there (DMS #585) – e.g. [Sicherungsziel WebDAV](pakete/sicherung_webdav/):
+
+```yaml
+dms: ">=0.142.0"
+code:
+  ereignisse: [sicherung.fertig]
+  rechte:
+    schnittstellen: ["dms:sicherung-lesen"]   # no folders, no documents
+  netz: []                                     # target as a setting of type adresse
+```
+
+- The package only gets the **encrypted** backup from its event, in chunks – never the key, never contents. It uploads it **in parts** and never loads it into memory as a whole.
+- **Credentials** only as `geheim`; the target as a setting of type `adresse`.
+- **Deletion protection:** the package lists nothing on the target and deletes nothing. “Delete old backups on the target” may at most be a setting that is **off** by default, with the note that it needs delete permissions – exactly what removes the protection against ransomware. The README recommends write-only access (e.g. Nextcloud file drop, S3 without `DeleteObject` with Object Lock).
+- **Report honestly:** `geprueft` only when the checksum is confirmed or the file was read back; otherwise `hochgeladen`.
+- Flow, event, chunked reading and reporting are described in the DMS developer manual under [Sicherung außer Haus](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#sicherung-ausser-haus) (German).
 
 ## Orphaned packages
 
