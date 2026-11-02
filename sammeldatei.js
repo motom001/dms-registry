@@ -1,12 +1,13 @@
 // Sammeldatei im Browser (motom001/dms#461): wie werkzeuge/sammeldatei.py – Auswahl samt Abhängigkeiten,
-// passend zur DMS-Version; jedes Archiv gegen katalog.json geprüft; ZIP mit sammeldatei.json, LIESMICH.txt
-// und den Archiven unter pakete/. Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser.
+// passend zur DMS-Version; jedes Archiv gegen katalog.json geprüft; ZIP mit sammeldatei.json, LIESMICH.txt,
+// dem signierten Katalog (katalog.json und katalog.sig Byte für Byte, #74) und den Archiven unter pakete/.
+// Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser.
 (function () {
   var VORAUSWAHL = ['texterkennung'];
   var KATALOG_URL = 'https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json';
   var BEREICH = /^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$/;
   var VERSION = /^\d+\.\d+\.\d+$/;
-  var katalog = null, gewaehlt = [];
+  var katalog = null, katalogRoh = null, signatur = null, gewaehlt = [];
   function teile(v) { return v.split('.').map(function (x) { return parseInt(x, 10) || 0; }); }
   function vergleiche(a, b) { var x = teile(a), y = teile(b); for (var i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] - y[i]; return 0; }
   function passt(v, bereich) {
@@ -131,7 +132,9 @@
       var jetzt = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
       var vz = { format: 1, art: 'dms-sammeldatei', erstellt: jetzt, quelle: katalog.quelle || 'https://github.com/motom001/dms-registry', katalog: KATALOG_URL, dms: dmsVersion(), pakete: eintraege };
       var enc = new TextEncoder();
-      var blob = zip([{ name: 'sammeldatei.json', daten: enc.encode(JSON.stringify(vz, null, 2) + '\n') }, { name: 'LIESMICH.txt', daten: enc.encode(LIESMICH) }].concat(dateien));
+      // Signierter Katalog (#74): genau die geladenen Bytes – die Signatur gilt nur für sie.
+      var mitKatalog = signatur ? [{ name: 'katalog.json', daten: katalogRoh }, { name: 'katalog.sig', daten: signatur }] : [];
+      var blob = zip([{ name: 'sammeldatei.json', daten: enc.encode(JSON.stringify(vz, null, 2) + '\n') }, { name: 'LIESMICH.txt', daten: enc.encode(LIESMICH) }].concat(mitKatalog, dateien));
       var summe = hex(await crypto.subtle.digest('SHA-256', await blob.arrayBuffer()));
       var dateiname = 'dms-pakete-' + jetzt.slice(0, 10) + '.zip';
       var a = el('a', { href: URL.createObjectURL(blob), download: dateiname, className: 'knopf' }, ['Noch einmal speichern']);
@@ -146,7 +149,15 @@
   async function start() {
     var form = document.getElementById('sammel');
     if (!form) return;
-    try { katalog = await (await fetch('katalog.json', { cache: 'no-store' })).json(); }
+    try {
+      // Erst die Signatur, dann den Katalog: Wird dazwischen neu veröffentlicht, passt die Signatur nicht, und das DMS fragt nach der Herkunft.
+      var s = await fetch('katalog.sig', { cache: 'no-store' }).catch(function () { return null; });
+      signatur = s && s.ok ? new Uint8Array(await s.arrayBuffer()) : null;
+      var k = await fetch('katalog.json', { cache: 'no-store' });
+      if (!k.ok) throw new Error(String(k.status));
+      katalogRoh = new Uint8Array(await k.arrayBuffer());
+      katalog = JSON.parse(new TextDecoder().decode(katalogRoh));
+    }
     catch (e) { document.getElementById('sammel-laden').textContent = 'Der Katalog lässt sich nicht laden: ' + e.message; return; }
     var feld = document.getElementById('dms-version'), q = new URLSearchParams(location.search).get('dms');
     if (q && VERSION.test(q)) feld.value = q;
