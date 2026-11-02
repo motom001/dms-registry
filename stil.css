@@ -49,3 +49,20 @@ dialog input { width: 100%; }
 .fehler { color: #c62828; margin: 0; }
 footer { max-width: 980px; margin: 0 auto; padding: 16px; color: var(--leise); font-size: .9rem; }
 @media (max-width: 560px) { .eckdaten { grid-template-columns: 1fr; } .eckdaten dt { margin-top: 6px; } }
+
+[hidden] { display: none !important; }
+.knopf:disabled { opacity: .5; cursor: not-allowed; }
+.sammel-dms { display: grid; gap: 4px; max-width: 420px; }
+.sammel-dms input { font: inherit; padding: 8px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); min-width: 0; }
+.klein { font-size: .9rem; margin: 0; }
+fieldset.sammel-pakete { border: 0; padding: 0; margin: 0; min-width: 0; }
+.sammel-liste { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+.sammel-liste li { background: var(--flaeche); border: 1px solid var(--linie); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+.sammel-liste li.an { border-color: var(--a); }
+.sammel-liste label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.sammel-liste input { margin-top: 5px; flex: none; }
+.sammel-liste .unter { display: block; color: var(--leise); font-size: .92rem; overflow-wrap: anywhere; }
+.marke-mit { display: inline-block; font-size: .8rem; font-weight: 600; border-radius: 999px; padding: 1px 8px; background: var(--grund); border: 1px solid var(--linie); color: var(--leise); }
+.hinweis-warn { border-left: 4px solid var(--warn); background: var(--flaeche); padding: 8px 12px; border-radius: 8px; }
+.hinweis-warn ul { margin: 0; padding-left: 18px; }
+#sammel-ergebnis code { overflow-wrap: anywhere; word-break: break-all; }

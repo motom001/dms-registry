@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pakete ohne Internet – DMS-Pakete</title>
+  <meta name="description" content="Mehrere Pakete als eine Sammeldatei für ein DMS ohne Internet">
+  <link rel="stylesheet" href="stil.css">
+  <script src="dms.js" defer></script>
+  <script src="sammeldatei.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="sammeldatei.html">Ohne Internet</a><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <h1>Pakete ohne Internet</h1>
+    <p class="leise">Kommt dein DMS nicht ins Internet? Wähle hier die Pakete aus und lade sie als <strong>eine Sammeldatei</strong> herunter.
+      Im DMS lädst du sie unter <strong>Werkbank → Pakete → „Ohne Internet …“</strong> hoch (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).
+      Das DMS prüft jedes Paket gegen seine Prüfsumme und installiert dann eins nach dem anderen.</p>
+    <noscript><p class="fehler">Die Sammeldatei entsteht in deinem Browser – dafür braucht die Seite JavaScript.</p></noscript>
+    <form id="sammel" class="stapel" hidden>
+      <div class="sammel-dms">
+        <label for="dms-version"><strong>DMS-Version</strong> <span class="leise">– dazu passende Paketversionen</span></label>
+        <input id="dms-version" inputmode="decimal" placeholder="z. B. 0.107.1" pattern="\d+\.\d+\.\d+" autocomplete="off" aria-describedby="dms-version-hilfe">
+        <p id="dms-version-hilfe" class="leise klein">Steht im DMS unter „Über das DMS“. Vorgabe: die neueste Version. Leer: die neueste Version jedes Pakets.</p>
+      </div>
+      <fieldset class="sammel-pakete"><legend><strong>Pakete</strong> <span class="leise">– Abhängigkeiten kommen automatisch mit</span></legend>
+        <ul id="sammel-liste" class="sammel-liste"></ul>
+      </fieldset>
+      <div id="sammel-probleme" class="hinweis-warn" role="status" hidden></div>
+      <div class="knoepfe"><button type="submit" class="knopf primaer" id="sammel-los">Sammeldatei herunterladen</button><span id="sammel-zusammenfassung" class="leise"></span></div>
+      <div id="sammel-ergebnis" role="status" aria-live="polite"></div>
+    </form>
+    <p id="sammel-laden" class="leise">Lade den Katalog …</p>
+    <section><h2>So prüft das DMS die Sammeldatei</h2>
+      <ul>
+        <li>Die Sammeldatei enthält die Archive aus diesem Katalog Byte für Byte unverändert, dazu das Verzeichnis <code>sammeldatei.json</code> mit Größe und SHA-256 je Archiv. Diese Seite prüft jedes Archiv schon beim Zusammenstellen gegen <code>katalog.json</code>.</li>
+        <li>Das DMS nimmt die Datei nur an, wenn jedes Archiv genau zu seiner Prüfsumme passt, nichts anderes darin liegt und jedes Paket gültig ist – sonst installiert es gar nichts. Kennt es den offiziellen Katalog schon, vergleicht es die Prüfsummen auch damit.</li>
+        <li>Die Prüfsummen zeigen, dass die Datei vollständig und unverändert ist – nicht, wer sie zusammengestellt hat. Nimm deshalb nur eine Sammeldatei, die du selbst hier geladen hast. Zum Vergleich zeigt diese Seite den SHA-256 der ganzen Datei, das DMS nach dem Hochladen ebenfalls.</li>
+        <li>Rechte von Paketen mit Code bestätigst du im DMS je Paket – eine Sammelbestätigung gibt es nicht.</li>
+      </ul>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="katalog.json">katalog.json</a></footer>
+</body>
+</html>
