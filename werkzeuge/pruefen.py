@@ -72,6 +72,8 @@ def dms_fehler(v: str, wo: str) -> str | None:
 # Verweisen – post (ab DMS 0.94.0). dms:benutzer ist verboten: Pakete sehen keine Benutzer.
 DMS_RECHTE_TYPEN = {'ablageort', 'rolle', 'post'}
 DMS_POST_RECHT_AB = (0, 94, 0)
+# Schnittstelle dms:vektoren und Ereignis volltext.fertig gibt es im DMS ab 0.122.0 (DMS #442).
+DMS_VEKTOREN_AB = (0, 122, 0)
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -103,6 +105,16 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
         ab = dms_untergrenze(dms_bereich)
         if ab is None or ab < DMS_POST_RECHT_AB:
             fehler.append('code.rechte: dms:post kennt das DMS erst ab 0.94.0 – bitte dms: ">=0.94.0" angeben')
+    # Schnittstellen des Kerns (DMS #442): Vektoren gehören zu Dokumenten, das Paket muss sie lesen dürfen.
+    ab = dms_untergrenze(dms_bereich)
+    neu = 'neu' if ab is None or ab < DMS_VEKTOREN_AB else ''
+    if 'dms:vektoren' in (rechte.get('schnittstellen') or []):
+        if rechte.get('dokumente', 'keine') == 'keine':
+            fehler.append('code.rechte.schnittstellen: dms:vektoren braucht auch code.rechte.dokumente: lesen – Vektoren gehören zu Dokumenten')
+        if neu:
+            fehler.append('code.rechte.schnittstellen: dms:vektoren kennt das DMS erst ab 0.122.0 – bitte dms: ">=0.122.0" angeben')
+    if 'volltext.fertig' in (code.get('ereignisse') or []) and neu:
+        fehler.append('code.ereignisse: volltext.fertig kennt das DMS erst ab 0.122.0 – bitte dms: ">=0.122.0" angeben')
     return fehler
 
 
