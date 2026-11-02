@@ -361,6 +361,75 @@ def mehrzahl(n: int, eins: str, viele: str) -> str:
     return f'{n} {eins if n == 1 else viele}'
 
 
+OPERATOR_TEXT = {
+    'gleich': 'ist gleich', 'enthaelt': 'enthält', 'kleiner': 'liegt vor', 'groesser': 'liegt nach', 'zwischen': 'zwischen',
+    'ausserhalb': 'außerhalb von', 'imZeitraum': 'im Zeitraum', 'einerVon': 'ist', 'zeigtAuf': 'zeigt auf',
+    'ja': 'ist angehakt', 'nein': 'ist nicht angehakt', 'leer': 'ist leer', 'nichtLeer': 'ist ausgefüllt',
+}
+EINHEIT_TEXT = {'tage': ('Tag', 'Tage'), 'wochen': ('Woche', 'Wochen'), 'monate': ('Monat', 'Monate'), 'jahre': ('Jahr', 'Jahre')}
+
+
+def wert_text(w) -> str:
+    """Wert einer Bedingung in Alltagssprache (wie beschreibeBedingung im DMS, Fassung für Einsteiger)."""
+    if isinstance(w, list):
+        return ' oder '.join(f'„{x}“' if not isinstance(x, dict) else wert_text(x) for x in w)
+    if isinstance(w, dict):
+        art, n = w.get('art'), int(w.get('versatz') or 0)
+        if art == 'heute':
+            if not n:
+                return 'heute'
+            eins, viele = EINHEIT_TEXT.get(w.get('einheit', 'tage'), ('Tag', 'Tage'))
+            return f'heute {"+" if n > 0 else "−"} {abs(n)} {eins if abs(n) == 1 else viele}'
+        if art in ('jahr', 'monat'):
+            wort = 'Jahr' if art == 'jahr' else 'Monat'
+            return {0: f'aktuelles {wort}' if art == 'jahr' else 'aktueller Monat', -1: f'letztes {wort}' if art == 'jahr' else 'letzter Monat',
+                    1: f'nächstes {wort}' if art == 'jahr' else 'nächster Monat'}.get(n, f'{wort} {n:+d}')
+        if art == 'ich':
+            return 'du selbst'
+        if 'wert' in w:
+            return wert_text(w['wert'])
+        return art or '…'
+    if isinstance(w, bool):
+        return 'ja' if w else 'nein'
+    return f'„{w}“'
+
+
+def bedingung_text(b: dict, feldnamen: dict) -> str:
+    feld = feldnamen.get(b.get('feld'), b.get('feld'))
+    op, w = b.get('operator'), b.get('wert')
+    if op in ('ja', 'nein', 'leer', 'nichtLeer'):
+        return f'„{feld}“ {OPERATOR_TEXT[op]}'
+    if op == 'zwischen' and isinstance(w, list) and len(w) == 2:
+        return f'„{feld}“ zwischen {wert_text(w[0])} und {wert_text(w[1])}'
+    return f'„{feld}“ {OPERATOR_TEXT.get(op, op)} {wert_text(w)}'
+
+
+def sicht_baum(sichten: list, typnamen: dict, feldnamen: dict) -> str:
+    """Ansichten als Baum wie später in der Ablage; jede Ansicht aufklappbar mit ihren Filtern (#80)."""
+    kinder: dict = {}
+    for s in sichten:
+        kinder.setdefault(s.get('eltern'), []).append(s)
+
+    def eintrag(s: dict) -> str:
+        teile = []
+        if s.get('beschreibung'):
+            teile.append(f'<p>{e(s["beschreibung"])}</p>')
+        typen = [typnamen.get(t, t) for t in s.get('typen', [])]
+        teile.append(f'<p><span class="leise">Zeigt:</span> {e(", ".join(typen)) if typen else "alle Mappentypen"}</p>')
+        bed = s.get('bedingungen') or []
+        if bed:
+            teile.append('<p class="leise">Nur Mappen, bei denen:</p><ul>' + ''.join(f'<li>{e(bedingung_text(b, feldnamen))}</li>' for b in bed) + '</ul>')
+        else:
+            teile.append('<p class="leise">Keine weiteren Filter.</p>')
+        unter = kinder.get(s['schluessel'])
+        rest = ('<ul class="baum">' + ''.join(eintrag(k) for k in unter) + '</ul>') if unter else ''
+        return f'<li><details class="sicht"><summary>{e(s["name"])}</summary><div class="filter">{"".join(teile)}</div></details>{rest}</li>'
+
+    oben = [s for s in sichten if not s.get('eltern') or s['eltern'] not in {x['schluessel'] for x in sichten}]
+    return ('<p class="leise klein">So erscheinen sie später in der Ablage. Antippen zeigt, was eine Ansicht filtert.</p>'
+            '<ul class="baum wurzel">' + ''.join(eintrag(s) for s in oben) + '</ul>')
+
+
 def detail(p: dict, pakete: list) -> str:
     v = p['versionen'][0]
     ordner = WURZEL / 'pakete' / p['id']
@@ -381,19 +450,33 @@ def detail(p: dict, pakete: list) -> str:
         typ_html = ('<ul>' + ''.join(f'<li>{e(t["name"])}</li>' for t in v['inhalt']['mappentypen']) + '</ul>') if n_typen else '<p class="leise">keine</p>'
     namen = {s['schluessel']: s['name'] for s in sichten}
     if sichten:
-        sicht_html = '<ul>' + ''.join(f'<li>{e(s["name"])}' + (f' <span class="leise">(unter {e(namen.get(s["eltern"], s["eltern"]))})</span>' if s.get('eltern') else '') + '</li>' for s in sichten) + '</ul>'
+        typnamen, feldnamen = {}, {}
+        for x in pakete:  # Mappentypen anderer Pakete (z. B. basis:person) mit Namen zeigen
+            for t in lies_yaml(WURZEL / 'pakete' / x['id'], (manifest(x['id']).get('inhalt') or {}).get('mappentypen')) if (WURZEL / 'pakete' / x['id'] / 'manifest.yaml').exists() else []:
+                typnamen[f'{x["id"]}:{t["schluessel"]}'] = t['name']
+        for t in typen:
+            typnamen[t['schluessel']] = t['name']
+            for f in t.get('felder', []):
+                feldnamen.setdefault(f['key'], f['label'])
+        sicht_html = sicht_baum(sichten, typnamen, feldnamen)
         n_sichten = len(sichten)
     else:
         n_sichten = len(v['inhalt']['sichten'])
         sicht_html = ('<ul>' + ''.join(f'<li>{e(s["name"])}</li>' for s in v['inhalt']['sichten']) + '</ul>') if n_sichten else '<p class="leise">keine</p>'
     n_bsp = v['inhalt']['beispiele']
-    if n_typen or n_sichten or n_bsp:
+    wortlisten = lies_yaml(ordner, (m.get('inhalt') or {}).get('wortlisten')) if vorhanden else []
+    n_wort = len(wortlisten)
+    wort_html = (f'<h3>Gleichbedeutende Wörter für die Suche</h3><p class="leise klein">Wer eines der Wörter sucht, findet auch die anderen – '
+                 f'z. B. „{e(wortlisten[0]["woerter"][1] if len(wortlisten[0]["woerter"]) > 1 else wortlisten[0]["woerter"][0])}“ findet auch „{e(wortlisten[0]["woerter"][0])}“.</p><ul class="woerter">'
+                 + ''.join(f'<li>{" · ".join(e(w) for w in g["woerter"])}</li>' for g in wortlisten) + '</ul>') if n_wort else ''
+    if n_typen or n_sichten or n_bsp or n_wort:
         bsp = (f'<p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
                if n_bsp else '<p class="leise">keine Beispielmappen</p>')
-        mitkommt = f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>{bsp}'
+        mitkommt = f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>{wort_html}{bsp}'
         kurz_mit = ' · '.join(t for t in [mehrzahl(n_typen, 'Mappentyp', 'Mappentypen') if n_typen else '',
                                           mehrzahl(n_sichten, 'Ansicht', 'Ansichten') if n_sichten else '',
-                                          mehrzahl(n_bsp, 'Beispielmappe', 'Beispielmappen') if n_bsp else ''] if t)
+                                          mehrzahl(n_bsp, 'Beispielmappe', 'Beispielmappen') if n_bsp else '',
+                                          mehrzahl(n_wort, 'Wortgruppe', 'Wortgruppen') + ' für die Suche' if n_wort else ''] if t)
     else:
         mitkommt = ('<p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, '
                     'keine Beispielmappen. Es bringt nur eine Funktion mit (siehe „Was das Paket darf“).</p>')
@@ -493,6 +576,18 @@ details.bereich[open] > summary::before { transform: rotate(90deg); }
 details.bereich > summary h2 { display: inline; font-size: 1.05rem; font-weight: 650; border: 0; margin: 0; padding: 0; }
 details.bereich .kurz { font-size: .92rem; }
 details.bereich > .innen { padding: 4px 16px 14px; border-top: 1px solid var(--linie); }
+ul.woerter { margin: 4px 0 10px; }
+ul.baum { list-style: none; margin: 0; padding-left: 18px; border-left: 1px solid var(--linie); }
+ul.baum.wurzel { padding-left: 0; border-left: 0; }
+ul.baum li { margin: 2px 0; }
+details.sicht { border: 0; padding: 0; margin: 0; background: none; border-radius: 0; }
+details.sicht > summary { cursor: pointer; padding: 3px 0; list-style: none; }
+details.sicht > summary::-webkit-details-marker { display: none; }
+details.sicht > summary::before { content: "›"; display: inline-block; width: .9em; color: var(--leise); font-weight: 700; transition: transform .15s; }
+details.sicht[open] > summary::before { transform: rotate(90deg); }
+details.sicht > .filter { margin: 2px 0 8px .9em; padding: 6px 10px; border-radius: 8px; background: var(--grund); font-size: .92rem; }
+details.sicht > .filter p { margin: 2px 0; }
+details.sicht > .filter ul { margin: 2px 0 2px 1.1em; padding: 0; }
 details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
 .spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
 .passt h3 { font-size: 1rem; margin: 16px 0 8px; }
