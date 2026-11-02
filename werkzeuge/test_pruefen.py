@@ -125,6 +125,28 @@ class Einstellungen(unittest.TestCase):
         c['rechte'] = {'dokumente': 'lesen', 'schnittstellen': ['dms:alles']}
         self.assertTrue(any('schnittstellen' in f for f in self.paket(c, dms='>=0.122.0')))
 
+    def test_schnittstelle_antworten(self):
+        # dms:antworten und Einstellung adresse (DMS #444): ab DMS 0.124.0; adresse ohne Vorgabe, nur im Abschnitt, höchstens eine.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'schnittstellen': ['dms:antworten']}
+        c['einstellungen'][0]['felder'].append({'schluessel': 'dienst', 'name': 'Dienst-Adresse', 'typ': 'adresse', 'pflicht': True, 'beispiel': 'http://ollama:11434/v1'})
+        self.assertEqual(self.paket(c, dms='>=0.124.0'), [])
+        alt = self.paket(c, dms='>=0.123.0')
+        self.assertTrue(any('dms:antworten kennt das DMS erst ab 0.124.0' in f for f in alt), alt)
+        self.assertTrue(any('adresse kennt das DMS erst ab 0.124.0' in f for f in alt), alt)
+        c['einstellungen'][0]['felder'][-1]['standard'] = 'https://anbieter.example/v1'
+        self.assertTrue(any('adresse hat keine Vorgabe' in f for f in self.paket(c, dms='>=0.124.0')))
+        del c['einstellungen'][0]['felder'][-1]['standard']
+        c['einstellungen'][0]['felder'].append({'schluessel': 'zweite', 'name': 'Zweite', 'typ': 'adresse'})
+        self.assertTrue(any('höchstens eine Einstellung vom Typ adresse' in f for f in self.paket(c, dms='>=0.124.0')))
+        c['einstellungen'][0]['felder'].pop()
+        c['einstellungen'][1]['felder'].append({'schluessel': 'liste_adresse', 'name': 'L', 'typ': 'adresse'})
+        self.assertTrue(any('nur in einem Abschnitt' in f for f in self.paket(c, dms='>=0.124.0')))
+        c['einstellungen'][1]['felder'].pop()
+        c['einstellungen'][0]['felder'][0]['beispiel'] = 'http://x'
+        self.assertTrue(any('beispiel gibt es nur bei typ adresse' in f for f in self.paket(c, dms='>=0.124.0')))
+
     def test_dms_untergrenze(self):
         self.assertEqual(pruefen.dms_untergrenze('>=0.94.0'), (0, 94, 0))
         self.assertEqual(pruefen.dms_untergrenze('>0.93.0 <1.0.0'), (0, 93, 1))
@@ -217,6 +239,10 @@ class Modul(unittest.TestCase):
         self.assertTrue(any('unbekannte Importe env.system' in f for f in wasm.pruefe(_modul([('env', 'memory', 'memory'), ('env', 'system', 'function')], ['dms_puffer', 'dms_ereignis']))))
         self.assertTrue(any('importiert keinen Speicher' in f for f in wasm.pruefe(_modul([('dms', 'log', 'function')], ['dms_puffer', 'dms_ereignis']))))
         self.assertTrue(any('dms_ereignis fehlt' in f for f in wasm.pruefe(_modul([('env', 'memory', 'memory')], ['dms_puffer']))))
+        # netz_strom, netz_weiter, teil (DMS #444) sind bekannt; welche das Modul nutzt, liefert dms_importe.
+        neu = _modul([('env', 'memory', 'memory'), ('dms', 'netz_strom', 'function'), ('dms', 'teil', 'function')], ['dms_puffer', 'dms_ereignis'])
+        self.assertEqual(wasm.pruefe(neu), [])
+        self.assertEqual(wasm.dms_importe(neu), {'netz_strom', 'teil'})
         self.assertTrue(any('kein WebAssembly' in f for f in wasm.pruefe(b'kein wasm')))
 
     def test_bauen_sh_pflicht(self):

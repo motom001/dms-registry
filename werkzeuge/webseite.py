@@ -214,14 +214,25 @@ EREIGNISSE = {
     'paket.einstellungen_geaendert': ('Die Einstellungen des Pakets wurden geändert', 'ereignis-einstellungen-geandert'),
 }
 DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und Volltext schreiben'}
-SCHNITTSTELLEN = {'dms:vektoren': ('Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)', 'recht-vektoren')}
+SCHNITTSTELLEN = {
+    'dms:vektoren': ('Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)', 'recht-vektoren', 'Vektoren zu Dokumenten'),
+    # DMS #444, ab 0.124.0
+    'dms:antworten': ('Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten)', 'recht-antworten', 'Fragen an die Ablage beantworten'),
+}
 
 
-def netz_text(netz: list) -> str:
-    """Netzwerkzugriff wie im DMS (#449), Adressen als Code."""
-    if not netz:
+def adressen(code: dict) -> list[str]:
+    """Namen der Einstellungen vom Typ adresse (Dienst-Adresse, DMS #444) in den Abschnitten."""
+    return [str(f.get('name') or f.get('schluessel')) for b in code.get('einstellungen') or [] if isinstance(b, dict) and 'liste' not in b
+            for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
+
+
+def netz_text(netz: list, adresse: list | None = None) -> str:
+    """Netzwerkzugriff wie im DMS (#449, #444), Adressen als Code."""
+    einst = [f'der Adresse aus der Einstellung „{e(a)}“ (trägst du ein und bestätigst sie)' for a in adresse or []]
+    if not netz and not einst:
         return 'kein Zugriff auf Netzwerk und Internet'
-    return 'Zugriff auf Netzwerk/Internet nur zu: ' + ', '.join(f'<code>{e(n)}</code>' for n in netz)
+    return 'Zugriff auf Netzwerk/Internet nur zu: ' + ', '.join([f'<code>{e(n)}</code>' for n in netz] + einst)
 
 
 def hilfe(anker: str, titel: str) -> str:
@@ -255,8 +266,10 @@ def rechte_text(code: dict, typen: dict | None = None) -> str:
         zeilen.append(DOKUMENT_RECHTE[dok] + hilfe('recht-dokumente', DOKUMENT_RECHTE[dok]))
     for x in r.get('schnittstellen') or []:
         if x in SCHNITTSTELLEN:
-            zeilen.append(e(SCHNITTSTELLEN[x][0]) + hilfe(SCHNITTSTELLEN[x][1], 'Vektoren zu Dokumenten'))
-    zeilen.append(netz_text(code.get('netz') or []) + hilfe('recht-netzwerk-und-internet', 'Zugriff auf Netzwerk und Internet'))
+            zeilen.append(e(SCHNITTSTELLEN[x][0]) + hilfe(SCHNITTSTELLEN[x][1], SCHNITTSTELLEN[x][2]))
+    a = adressen(code)
+    zeilen.append(netz_text(code.get('netz') or [], a)
+                  + (hilfe('dienst-adresse', 'Dienst-Adresse') if a else hilfe('recht-netzwerk-und-internet', 'Zugriff auf Netzwerk und Internet')))
     ereignisse = code.get('ereignisse') or []
     if ereignisse:
         unter = ''.join(
