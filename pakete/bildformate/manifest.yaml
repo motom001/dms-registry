@@ -3,8 +3,8 @@
 schema: 1
 id: bildformate
 name: Bildformate
-version: 1.0.0
-beschreibung: Vorschaubild und Volltext für TIFF-Scans (auch mehrseitig), WebP, GIF und BMP – das Paket wandelt sie in ein PDF, JPEG oder PNG, das das DMS liest. Das Original bleibt das Dokument. Abgeschottet im Paket-Läufer, ohne Netz.
+version: 1.0.1
+beschreibung: Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP im DMS sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.
 autor:
   name: Thomas Meissner
   github: motom001
