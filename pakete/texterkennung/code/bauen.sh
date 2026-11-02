@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Baut code/modul.wasm (Tesseract + Leptonica als WebAssembly) und legt die Sprachdaten nach code/daten/.
+# Baut code/modul.wasm (Tesseract + Leptonica als WebAssembly) und legt die Sprachdaten (deu, eng, osd) nach code/daten/.
 #
 # Die CI ruft das über werkzeuge/bauen.py auf: WASI_SDK zeigt auf das WASI-SDK, BAU auf einen Arbeitsordner
 # außerhalb des Pakets (Quellen und Zwischenstände der Bibliotheken; bleibt zwischen Läufen erhalten).
@@ -13,6 +13,7 @@ TESSERACT=3b7c70e34dea179549ed3e995872e2e019eb8477   # 5.5.1
 TESSDATA=87416418657359cb625c412a48b6e1d6d41c29bd    # tessdata_fast
 DEU_SHA256=19d219bbb6672c869d20a9636c6816a81eb9a71796cb93ebe0cb1530e2cdb22d
 ENG_SHA256=7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2
+OSD_SHA256=9cf5d576fcc47564f11265841e5ca839001e7e6f38ff7f7aacf46d15a96b00ff
 
 TOOLCHAIN="$WASI_SDK/share/cmake/wasi-sdk.cmake"
 WASI_FLAGS="-D_WASI_EMULATED_SIGNAL -D_WASI_EMULATED_PROCESS_CLOCKS -D_WASI_EMULATED_MMAN"
@@ -64,16 +65,24 @@ fi
   -lwasi-emulated-signal -lwasi-emulated-process-clocks -lwasi-emulated-mman \
   -Wl,--import-memory -Wl,--strip-all -o "$CODE/modul.wasm"
 
-# Sprachdaten (tessdata_fast, Apache-2.0).
-# Nur die zwei Dateien laden, nicht das ganze Repository (Teilklon ohne Inhalte, dann gezielt auschecken).
-if [ "$(git -C "$BAU/tessdata" rev-parse HEAD 2>/dev/null)" != "$TESSDATA" ] || [ ! -f "$BAU/tessdata/eng.traineddata" ]; then
+# Sprachdaten (tessdata_fast, Apache-2.0): Deutsch, Englisch und osd (Lage und Schrift der Seite).
+# Nur diese Dateien laden, nicht das ganze Repository (Teilklon ohne Inhalte, dann gezielt auschecken).
+if [ "$(git -C "$BAU/tessdata" rev-parse HEAD 2>/dev/null)" != "$TESSDATA" ] || [ ! -f "$BAU/tessdata/osd.traineddata" ]; then
   rm -rf "${BAU:?}/tessdata"
   git init -q "$BAU/tessdata"
   git -C "$BAU/tessdata" fetch -q --depth 1 --filter=blob:none https://github.com/tesseract-ocr/tessdata_fast "$TESSDATA"
-  git -C "$BAU/tessdata" -c advice.detachedHead=false checkout -q FETCH_HEAD -- deu.traineddata eng.traineddata
+  git -C "$BAU/tessdata" -c advice.detachedHead=false checkout -q FETCH_HEAD -- deu.traineddata eng.traineddata osd.traineddata
   git -C "$BAU/tessdata" update-ref HEAD FETCH_HEAD
 fi
 mkdir -p "$CODE/daten"
-cp "$BAU/tessdata/deu.traineddata" "$BAU/tessdata/eng.traineddata" "$CODE/daten/"
+cp "$BAU/tessdata/deu.traineddata" "$BAU/tessdata/eng.traineddata" "$BAU/tessdata/osd.traineddata" "$CODE/daten/"
 echo "$DEU_SHA256  $CODE/daten/deu.traineddata
-$ENG_SHA256  $CODE/daten/eng.traineddata" | sha256sum -c --quiet -
+$ENG_SHA256  $CODE/daten/eng.traineddata
+$OSD_SHA256  $CODE/daten/osd.traineddata" | sha256sum -c --quiet -
+
+# Test der Spracherkennung (code/sprache.h) – nativ, wenn ein C++-Compiler da ist.
+if command -v c++ >/dev/null 2>&1; then
+  c++ -std=c++17 -O2 -Wall -Werror -I "$CODE" "$CODE/../tests/sprache_test.cpp" -o "$BAU/sprache_test"
+  "$BAU/sprache_test" >"$BAU/sprache_test.log" || { cat "$BAU/sprache_test.log"; exit 1; }
+  echo "  Spracherkennung: $(grep -c '^ok' "$BAU/sprache_test.log") Prüfungen bestanden"
+fi
