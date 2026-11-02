@@ -223,6 +223,8 @@ SCHNITTSTELLEN = {
     'dms:vektoren': ('Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)', 'recht-vektoren', 'Vektoren zu Dokumenten'),
     # DMS #444, ab 0.124.0
     'dms:antworten': ('Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten)', 'recht-antworten', 'Fragen an die Ablage beantworten'),
+    # DMS #511, ab 0.125.0
+    'dms:erkennen': ('Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)', 'recht-erkennen', 'Felder aus Dokumenten vorschlagen'),
 }
 
 

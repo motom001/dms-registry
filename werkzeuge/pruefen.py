@@ -79,6 +79,8 @@ DMS_VEKTOREN_AB = (0, 122, 0)
 DMS_ANTWORTEN_AB = (0, 124, 0)
 # Läufer-Funktionen, die erst ab DMS 0.124.0 da sind: Ein Modul, das sie importiert, lädt in älteren nicht.
 DMS_FUNKTIONEN_ANTWORTEN = {'netz_strom', 'netz_weiter', 'teil'}
+# Schnittstelle dms:erkennen („Aus Dokument ausfüllen“ per Paket) gibt es im DMS ab 0.125.0 (DMS #511).
+DMS_ERKENNEN_AB = (0, 125, 0)
 # Wortlisten (inhalt.wortlisten, DMS #356): gleichbedeutende Wörter für die Suche, ab DMS 0.127.0.
 DMS_WORTLISTEN_AB = (0, 127, 0)
 
@@ -126,6 +128,9 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
     vor_antworten = ab is None or ab < DMS_ANTWORTEN_AB
     if 'dms:antworten' in (rechte.get('schnittstellen') or []) and vor_antworten:
         fehler.append('code.rechte.schnittstellen: dms:antworten kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')
+    # dms:erkennen (DMS #511): ab 0.125.0.
+    if 'dms:erkennen' in (rechte.get('schnittstellen') or []) and (ab is None or ab < DMS_ERKENNEN_AB):
+        fehler.append('code.rechte.schnittstellen: dms:erkennen kennt das DMS erst ab 0.125.0 – bitte dms: ">=0.125.0" angeben')
     adressen = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
     if adressen and vor_antworten:
         fehler.append('code.einstellungen: Einstellungen vom Typ adresse kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')

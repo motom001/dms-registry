@@ -37,6 +37,7 @@ Before installation, the DMS shows the permissions of a package with code, and t
 - „Mappen lesen: …“ (read Mappen), „Mappen anlegen und ändern: …“ (create and change Mappen), „Dokumente lesen“ (read documents) or „Dokumente lesen und Volltext schreiben“ (read documents and write full text)
 - „Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)“ (store vectors for documents and find similar documents) – only with `code.rechte.schnittstellen` and `dms: ">=0.122.0"`
 - „Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten)“ (answer questions about the files, only from excerpts the DMS passes along) – only with `code.rechte.schnittstellen` and `dms: ">=0.124.0"`
+- „Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)“ (suggest fields from documents for “fill from document”, only from the text the DMS passes along) – only with `code.rechte.schnittstellen` and `dms: ">=0.125.0"`
 - „kein Zugriff auf Netzwerk und Internet“ (no access to network and internet) or „Zugriff auf Netzwerk/Internet nur zu: …“ (access to network/internet only to: …); with a service address as a setting additionally „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“ (the address from the setting „…“, which you enter and confirm)
 - „Reagiert auf diese Ereignisse:“ (reacts to these events) with one event per line
 
