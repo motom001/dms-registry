@@ -9,3 +9,10 @@ updates:
       aktionen:
         patterns: ["*"]
     commit-message: { prefix: "CI" }
+  - package-ecosystem: pip
+    directory: "/werkzeuge"
+    schedule: { interval: weekly, day: monday, time: "05:00", timezone: Europe/Berlin }
+    groups:
+      python:
+        patterns: ["*"]
+    commit-message: { prefix: "Werkzeuge" }

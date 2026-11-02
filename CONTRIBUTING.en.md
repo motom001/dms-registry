@@ -8,7 +8,7 @@
 2. **Wait for approval.** Only what carries the label `freigegeben` (approved) is accepted; this label is set by the maintainer alone.
 3. **Fork, create the package:** `werkzeuge/neues-paket.sh <id> "<Name>"` copies the template to `pakete/<id>/`.
 4. **Fill it in:** `manifest.yaml`, `README.md`, `LICENSE` (year and name), `CHANGELOG.md`, contents under `inhalt/`, expectations under `tests/`. Examples are given as comments in the template.
-5. **Check:** `python3 werkzeuge/pruefen.py pakete/<id>` (requires `pip install pyyaml jsonschema`). The same check runs in the pull request.
+5. **Check:** `python3 werkzeuge/pruefen.py pakete/<id>` (requires `pip install --require-hashes -r werkzeuge/requirements.txt`). The same check runs in the pull request.
 6. **Pull request** with `Closes #…`. Every commit carries a `Signed-off-by:` (`git commit -s`). With it you confirm, according to the [Developer Certificate of Origin](https://developercertificate.org/), that you have the right to submit the contribution under the licence of the package.
 7. **Maintenance:** Add yourself to `.github/CODEOWNERS` for your package. You take care of bugs and new DMS versions; the maintainer approves and merges.
 

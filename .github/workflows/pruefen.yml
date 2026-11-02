@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
-      - run: pip install --quiet pyyaml jsonschema markdown
+      - run: pip install --quiet --require-hashes -r werkzeuge/requirements.txt
       - name: Tests der Prüfung
         run: python3 -m unittest werkzeuge/test_pruefen.py werkzeuge/test_sammeldatei.py
       # Pakete mit Code: aus dem Quellcode bauen (WASI-SDK und Bibliotheken bleiben im Cache), danach prüft

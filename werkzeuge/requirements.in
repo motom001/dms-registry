@@ -1,0 +1,6 @@
+# Python-Pakete für die Werkzeuge (pruefen.py, katalog.py, webseite.py).
+# Neu erzeugen nach einer Änderung hier (Python 3.12 wie in der CI):
+#   uv pip compile --python-version 3.12 --generate-hashes werkzeuge/requirements.in -o werkzeuge/requirements.txt
+pyyaml
+jsonschema
+markdown
