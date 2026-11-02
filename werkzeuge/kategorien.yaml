@@ -8,6 +8,7 @@ kategorien:
   - { kennung: volltext, de: Texterkennung und Volltext, en: Text recognition and full text }
   - { kennung: sprachen, de: Sprachen, en: Languages }
   - { kennung: ki, de: KI, en: AI }
+  - { kennung: suche, de: Suche, en: Search }
   - { kennung: post, de: Post und Scannen, en: Mail and scanning }
   - { kennung: sicherung, de: Sicherung, en: Backup }
   - { kennung: entwickler, de: Für Entwickler, en: For developers }
@@ -19,7 +20,7 @@ pakete:
   vermietung: [vorlagen]
   bildformate: [dateiformate]
   office_email: [dateiformate, volltext]
-  texterkennung: [volltext]
+  texterkennung: [volltext, suche]
   texterkennung_fra: [sprachen, volltext]
   texterkennung_spa: [sprachen, volltext]
   texterkennung_ita: [sprachen, volltext]
@@ -30,8 +31,8 @@ pakete:
   texterkennung_rus: [sprachen, volltext]
   texterkennung_ukr: [sprachen, volltext]
   texterkennung_ara: [sprachen, volltext]
-  ki_aehnlich: [ki]
-  ki_assistent: [ki]
+  ki_aehnlich: [ki, suche]
+  ki_assistent: [ki, suche]
   trennblatt: [post]
   sicherung_webdav: [sicherung]
   hallo_post: [entwickler]

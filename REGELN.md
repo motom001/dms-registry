@@ -64,7 +64,7 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://motom
 
 ## Kategorien
 
-Jedes Paket gehört zu **einer oder zwei Kategorien** aus einer festen Liste in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml) (Vorlagen für die Ablage, Dateiformate, Texterkennung und Volltext, Sprachen, KI, Post und Scannen, Sicherung, Für Entwickler). Danach filtert die Katalog-Webseite, und „Ähnliche Pakete“ zeigt Pakete derselben Kategorie. Ein neues Paket trägst du dort unter `pakete:` ein; die CI prüft es (`python3 werkzeuge/vorlagen.py --pruefen`). Eine neue Kategorie kommt nur über ein Issue dazu, freie Schlagwörter gibt es nicht. Die Kategorien stehen (noch) nicht im Manifest, das DMS braucht sie nicht.
+Jedes Paket gehört zu **einer oder zwei Kategorien** aus einer festen Liste in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml) (Vorlagen für die Ablage, Dateiformate, Texterkennung und Volltext, Sprachen, KI, Suche, Post und Scannen, Sicherung, Für Entwickler). Danach filtert die Katalog-Webseite, und „Ähnliche Pakete“ zeigt Pakete derselben Kategorie. Ein neues Paket trägst du dort unter `pakete:` ein; die CI prüft es (`python3 werkzeuge/vorlagen.py --pruefen`). Eine neue Kategorie kommt nur über ein Issue dazu, freie Schlagwörter gibt es nicht. Die Kategorien stehen (noch) nicht im Manifest, das DMS braucht sie nicht. Ob ein Paket **nur lokal** läuft, sich mit **einem eingetragenen Dienst** verbindet (Einstellung vom Typ `adresse`) oder **feste Adressen im Internet** nutzt (`code.netz`), liest die Webseite selbst aus dem Manifest – dafür gibt es keine Kategorie.
 
 ## Namen
 

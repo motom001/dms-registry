@@ -64,7 +64,7 @@ They are explained in the administrator manual under [Pakete mit Code](https://m
 
 ## Categories
 
-Every package belongs to **one or two categories** from a fixed list in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml). The catalog website filters by them, and “Similar packages” shows packages of the same category. Add a new package there under `pakete:`; CI checks it (`python3 werkzeuge/vorlagen.py --pruefen`). New categories only via an issue; there are no free tags. Categories are not (yet) part of the manifest; the DMS does not need them.
+Every package belongs to **one or two categories** from a fixed list in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml). The catalog website filters by them, and “Similar packages” shows packages of the same category. Add a new package there under `pakete:`; CI checks it (`python3 werkzeuge/vorlagen.py --pruefen`). New categories only via an issue; there are no free tags. Categories are not (yet) part of the manifest; the DMS does not need them. Whether a package runs **locally only**, connects to **a service you enter** (setting of type `adresse`) or uses **fixed internet addresses** (`code.netz`) is read from the manifest by the website – there is no category for that.
 
 ## Names
 
