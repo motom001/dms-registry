@@ -22,7 +22,7 @@ JavaScript lesbar: Jede Sprache ist eine eigene erzeugte Seite, der Umschalter i
 
 Braucht: pip install pyyaml markdown
 """
-import html, json, sys
+import hashlib, html, json, sys
 from datetime import datetime
 from pathlib import Path
 
@@ -141,8 +141,8 @@ def seite(titel: str, inhalt: str, tiefe: int, beschreibung: str = '', sprache: 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{e(titel)}</title>
   <meta name="description" content="{e(beschreibung or t['beschreibung'])}">{alternativ}
-  <link rel="stylesheet" href="{vor}stil.css">
-  <script src="{vor}dms.js" defer></script>{mehr}
+  <link rel="stylesheet" href="{vor}stil.css?v={STAND}">
+  <script src="{vor}dms.js?v={STAND}" defer></script>{mehr}
 </head>
 <body>
   <header class="kopf"><a href="{start}" class="marke">{e(t['marke'])}</a>
@@ -347,8 +347,8 @@ def mini(x: dict, vor: str) -> str:
 
 def autor_link(p: dict, vor: str) -> str:
     g = p['autor']['github']
-    return (f'<a href="{vor}autor/{e(g)}/">{e(p["autor"]["name"])}</a>'
-            f' <a class="gh" href="https://github.com/{e(g)}" title="GitHub-Profil" aria-label="GitHub-Profil @{e(g)}">@{e(g)} ↗</a>')
+    # GitHub-Profil steht auf der Autorenseite (Thomas, #80)
+    return f'<a href="{vor}autor/{e(g)}/">{e(p["autor"]["name"])}</a>'
 
 
 def bereich(titel: str, inhalt: str, kurz: str = '', klasse: str = '') -> str:
@@ -474,16 +474,17 @@ a.kachel:hover, a.kachel:focus-visible { border-color: var(--a); }
 .paketkopf { display: flex; gap: 16px; align-items: flex-start; margin: 8px 0 20px; }
 .paketkopf .titel { flex: 1; min-width: 0; }
 .paketkopf .kurztext { font-size: 1.08rem; margin: 4px 0; }
-.paketkopf .installieren { flex: none; margin-top: 6px; }
+.paketkopf .installieren { flex: none; margin-top: 6px; white-space: nowrap; padding: 7px 14px; font-size: .95rem; }
+.paketkopf h1 { font-size: 1.6rem; }
 p.klein { font-size: .9rem; margin: 2px 0; }
 a.gh { color: var(--leise); font-size: .9em; text-decoration: none; }
 a.gh:hover, a.gh:focus-visible { color: var(--a); text-decoration: underline; }
 details.bereich { padding: 0; margin: 10px 0; border-radius: 12px; }
-details.bereich > summary { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 12px 16px; cursor: pointer; list-style: none; }
+details.bereich > summary { display: flex; align-items: baseline; column-gap: 8px; gap: 10px; flex-wrap: wrap; padding: 12px 16px; cursor: pointer; list-style: none; }
 details.bereich > summary::-webkit-details-marker { display: none; }
 details.bereich > summary::before { content: "›"; display: inline-block; width: .8em; transition: transform .15s; color: var(--leise); font-weight: 700; }
 details.bereich[open] > summary::before { transform: rotate(90deg); }
-details.bereich > summary h2 { display: inline; font-size: 1.15rem; border: 0; margin: 0; padding: 0; }
+details.bereich > summary h2 { display: inline; font-size: 1.05rem; font-weight: 650; border: 0; margin: 0; padding: 0; }
 details.bereich .kurz { font-size: .92rem; }
 details.bereich > .innen { padding: 4px 16px 14px; border-top: 1px solid var(--linie); }
 details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
@@ -617,6 +618,10 @@ fieldset.sammel-pakete { border: 0; padding: 0; margin: 0; min-width: 0; }
 .hinweis-warn ul { margin: 0; padding-left: 18px; }
 #sammel-ergebnis code { overflow-wrap: anywhere; word-break: break-all; }
 '''
+
+# Stand von Stil und Skript im Dateinamen-Anhang, damit Browser nach Änderungen nicht die alte Fassung zeigen
+STAND = hashlib.sha256((STIL + SAMMEL_STIL + SKRIPT).encode()).hexdigest()[:10]
+
 
 SAMMEL_SKRIPT = r'''
 // Sammeldatei im Browser (motom001/dms#461): wie werkzeuge/sammeldatei.py – Auswahl samt Abhängigkeiten,
