@@ -125,6 +125,15 @@ class Einstellungen(unittest.TestCase):
         c['rechte'] = {'dokumente': 'lesen', 'schnittstellen': ['dms:alles']}
         self.assertTrue(any('schnittstellen' in f for f in self.paket(c, dms='>=0.122.0')))
 
+    def test_schnittstelle_erkennen(self):
+        # dms:erkennen (DMS #511): ab DMS 0.125.0, ohne weitere Rechte.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'schnittstellen': ['dms:erkennen']}
+        self.assertEqual(self.paket(c, dms='>=0.125.0'), [])
+        alt = self.paket(c, dms='>=0.124.0')
+        self.assertTrue(any('dms:erkennen kennt das DMS erst ab 0.125.0' in f for f in alt), alt)
+
     def test_schnittstelle_antworten(self):
         # dms:antworten und Einstellung adresse (DMS #444): ab DMS 0.124.0; adresse ohne Vorgabe, nur im Abschnitt, höchstens eine.
         import copy

@@ -293,11 +293,12 @@
             },
             "schnittstellen": {
               "type": "array",
-              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0",
+              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0. dms:erkennen (DMS #511) – Felder für „Aus Dokument ausfüllen“ aus Text und JSON Schema des Kerns vorschlagen; braucht dms: >=0.125.0",
               "items": {
                 "enum": [
                   "dms:vektoren",
-                  "dms:antworten"
+                  "dms:antworten",
+                  "dms:erkennen"
                 ]
               },
               "uniqueItems": true

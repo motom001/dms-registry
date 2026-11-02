@@ -3,22 +3,24 @@
 schema: 1
 id: ki_assistent
 name: KI-Assistent
-version: 1.0.0
-beschreibung: Beantwortet Fragen an die Ablage („Frag deine Ablage“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.
+version: 1.1.0
+beschreibung: Beantwortet Fragen an die Ablage („Frag deine Ablage“) und füllt Felder aus Dokumenten („Aus Dokument ausfüllen“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
 # 0.124.0: Schnittstelle dms:antworten, Einstellung vom Typ adresse, netz_strom/netz_weiter/teil (DMS #444)
-dms: ">=0.124.0"
+# 0.125.0: Schnittstelle dms:erkennen – „Aus Dokument ausfüllen“ per Paket (DMS #511)
+dms: ">=0.125.0"
 inhalt: {}
 code:
   sprache: c
   quelle: code/
   rechte:
-    # Nur Fragen beantworten: Das DMS gibt je Frage wenige Ausschnitte mit (mit den Rechten des Fragenden).
+    # Fragen beantworten: Das DMS gibt je Frage wenige Ausschnitte mit (mit den Rechten des Fragenden).
+    # Felder vorschlagen (ab 1.1.0): Das DMS gibt den Text des Dokuments und die Beschreibung der Felder mit.
     # Keine Mappen, keine Dokumente – das Paket liest nichts selbst aus der Ablage.
-    schnittstellen: ["dms:antworten"]
+    schnittstellen: ["dms:antworten", "dms:erkennen"]
   # Keine feste Adresse: Netz nur zur Dienst-Adresse, die der Administrator einträgt und bestätigt.
   netz: []
   einstellungen:
@@ -47,6 +49,21 @@ code:
           max: 4096
           standard: 800
           hilfe: Obergrenze für die Länge einer Antwort. Kleiner heißt schneller, gerade auf einem NAS ohne Grafikkarte.
+    - abschnitt: Aus Dokument ausfüllen
+      hilfe: Ob der KI-Dienst beim Knopf „Aus Dokument ausfüllen“ die Felder vorschlägt, wählst du unter Werkbank → Pakete → KI-Assistent → Aus Dokument ausfüllen (Standard für alle Mappentypen) oder in der Erkennung des Mappentyps. Antwortet der Dienst nicht rechtzeitig oder unbrauchbar, übernimmt die eingebaute Erkennung des DMS.
+      felder:
+        - schluessel: erkennen
+          name: Für „Aus Dokument ausfüllen“ nutzen
+          typ: janein
+          standard: true
+          hilfe: Aus heißt, das Paket lehnt jede Anfrage ab und das DMS nimmt die eingebaute Erkennung – auch wenn das Paket in der Werkbank gewählt ist.
+        - schluessel: erkennen_sekunden
+          name: Zeitgrenze (Sekunden)
+          typ: zahl
+          min: 10
+          max: 55
+          standard: 50
+          hilfe: So lange wartet das Paket auf die Antwort des Dienstes. Das DMS wartet höchstens 60 Sekunden und nimmt danach die eingebaute Erkennung.
   aktionen:
     - schluessel: verbindung_testen
       name: Verbindung testen

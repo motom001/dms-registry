@@ -132,3 +132,30 @@ inline std::string jsonText(const std::string &s) {
   }
   return r + "\"";
 }
+
+// Json wieder als Text (Schlüssel in der Reihenfolge der std::map, Zahlen ohne überflüssige Stellen).
+inline std::string jsonSchreib(const Json &j) {
+  switch (j.art) {
+    case Json::NUL: return "null";
+    case Json::BOOL: return j.b ? "true" : "false";
+    case Json::ZAHL: {
+      char b[32];
+      if (j.z == (double)(long long)j.z && j.z > -1e15 && j.z < 1e15) snprintf(b, sizeof b, "%lld", (long long)j.z);
+      else snprintf(b, sizeof b, "%.17g", j.z);
+      return b;
+    }
+    case Json::TEXT: return jsonText(j.t);
+    case Json::LISTE: {
+      std::string r = "[";
+      for (size_t i = 0; i < j.l.size(); i++) r += (i ? "," : "") + jsonSchreib(j.l[i]);
+      return r + "]";
+    }
+    case Json::OBJEKT: {
+      std::string r = "{";
+      bool erst = true;
+      for (const auto &kv : j.o) { r += (erst ? "" : ",") + jsonText(kv.first) + ":" + jsonSchreib(kv.second); erst = false; }
+      return r + "}";
+    }
+  }
+  return "null";
+}
