@@ -85,6 +85,8 @@ DMS_ERKENNEN_AB = (0, 125, 0)
 DMS_WORTLISTEN_AB = (0, 127, 0)
 # Schnittstelle dms:texterkennung (DMS #458): das Paket übernimmt die Texterkennung, ab DMS 0.133.0.
 DMS_TEXTERKENNUNG_AB = (0, 133, 0)
+# Schnittstelle dms:umwandeln, code.umwandeln und Ereignis datei.umwandeln (DMS #577): Dateien umwandeln, ab DMS 0.137.0.
+DMS_UMWANDELN_AB = (0, 137, 0)
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -139,6 +141,23 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
             fehler.append('code.rechte.schnittstellen: dms:texterkennung braucht code.rechte.dokumente: schreiben – das Paket schreibt den Volltext')
         if ab is None or ab < DMS_TEXTERKENNUNG_AB:
             fehler.append('code.rechte.schnittstellen: dms:texterkennung kennt das DMS erst ab 0.133.0 – bitte dms: ">=0.133.0" angeben')
+    # dms:umwandeln (DMS #577): ab 0.137.0; nur mit code.umwandeln, dem Ereignis datei.umwandeln und Lesen von Dokumenten.
+    umwandeln = 'dms:umwandeln' in (rechte.get('schnittstellen') or [])
+    typen = code.get('umwandeln') or []
+    ereignis = 'datei.umwandeln' in (code.get('ereignisse') or [])
+    if umwandeln:
+        if not typen:
+            fehler.append('code.rechte.schnittstellen: dms:umwandeln braucht code.umwandeln – die Dateitypen, die das Paket umwandelt')
+        if rechte.get('dokumente', 'keine') == 'keine':
+            fehler.append('code.rechte.schnittstellen: dms:umwandeln braucht auch code.rechte.dokumente: lesen – das Paket liest die Originaldatei')
+        if not ereignis:
+            fehler.append('code.rechte.schnittstellen: dms:umwandeln braucht das Ereignis datei.umwandeln in code.ereignisse')
+    elif typen:
+        fehler.append('code.umwandeln: braucht code.rechte.schnittstellen: [dms:umwandeln]')
+    elif ereignis:
+        fehler.append('code.ereignisse: datei.umwandeln gibt es nur mit code.rechte.schnittstellen: [dms:umwandeln]')
+    if (umwandeln or typen or ereignis) and (ab is None or ab < DMS_UMWANDELN_AB):
+        fehler.append('code.rechte.schnittstellen: dms:umwandeln kennt das DMS erst ab 0.137.0 – bitte dms: ">=0.137.0" angeben')
     adressen = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
     if adressen and vor_antworten:
         fehler.append('code.einstellungen: Einstellungen vom Typ adresse kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')

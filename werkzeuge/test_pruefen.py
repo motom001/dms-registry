@@ -168,6 +168,35 @@ class Einstellungen(unittest.TestCase):
         c['rechte']['dokumente'] = 'lesen'
         self.assertTrue(any('braucht code.rechte.dokumente: schreiben' in f for f in self.paket(c, dms='>=0.133.0')))
 
+    def test_schnittstelle_umwandeln(self):
+        # dms:umwandeln (DMS #577): ab DMS 0.137.0, nur mit code.umwandeln, dem Ereignis datei.umwandeln und Lesen.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen', 'schnittstellen': ['dms:umwandeln']}
+        c['ereignisse'] = ['datei.umwandeln']
+        c['umwandeln'] = ['image/tiff', 'image/webp']
+        self.assertEqual(self.paket(c, dms='>=0.137.0'), [])
+        alt = self.paket(c, dms='>=0.136.0')
+        self.assertTrue(any('dms:umwandeln kennt das DMS erst ab 0.137.0' in f for f in alt), alt)
+        ohne = copy.deepcopy(c)
+        del ohne['umwandeln']
+        self.assertTrue(any('braucht code.umwandeln' in f for f in self.paket(ohne, dms='>=0.137.0')))
+        ohne = copy.deepcopy(c)
+        ohne['ereignisse'] = []
+        self.assertTrue(any('braucht das Ereignis datei.umwandeln' in f for f in self.paket(ohne, dms='>=0.137.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte']['dokumente'] = 'keine'
+        self.assertTrue(any('dms:umwandeln braucht auch code.rechte.dokumente: lesen' in f for f in self.paket(ohne, dms='>=0.137.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen'}
+        self.assertTrue(any('code.umwandeln: braucht' in f for f in self.paket(ohne, dms='>=0.137.0')))
+        # PDF, JPEG und PNG liest das DMS selbst (Schema).
+        kern = copy.deepcopy(c)
+        kern['umwandeln'] = ['image/png']
+        self.assertTrue(self.paket(kern, dms='>=0.137.0'))
+        kern['umwandeln'] = ['TIFF']
+        self.assertTrue(self.paket(kern, dms='>=0.137.0'))
+
     def test_dms_untergrenze(self):
         self.assertEqual(pruefen.dms_untergrenze('>=0.94.0'), (0, 94, 0))
         self.assertEqual(pruefen.dms_untergrenze('>0.93.0 <1.0.0'), (0, 93, 1))

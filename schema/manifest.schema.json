@@ -261,7 +261,8 @@
               "dokument.hochgeladen",
               "texterkennung.fertig",
               "volltext.fertig",
-              "paket.einstellungen_geaendert"
+              "paket.einstellungen_geaendert",
+              "datei.umwandeln"
             ]
           },
           "uniqueItems": true
@@ -293,13 +294,14 @@
             },
             "schnittstellen": {
               "type": "array",
-              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0. dms:erkennen (DMS #511) – Felder für „Aus Dokument ausfüllen“ aus Text und JSON Schema des Kerns vorschlagen; braucht dms: >=0.125.0. dms:texterkennung (DMS #458) – Texterkennung für Scans und Bilder übernehmen; braucht dokumente: schreiben und dms: >=0.133.0",
+              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0. dms:erkennen (DMS #511) – Felder für „Aus Dokument ausfüllen“ aus Text und JSON Schema des Kerns vorschlagen; braucht dms: >=0.125.0. dms:texterkennung (DMS #458) – Texterkennung für Scans und Bilder übernehmen; braucht dokumente: schreiben und dms: >=0.133.0. dms:umwandeln (DMS #577) – Dateien, die das DMS nicht selbst liest, in eine Fassung (PDF, PNG, JPEG) umwandeln; braucht dokumente: lesen, code.umwandeln, das Ereignis datei.umwandeln und dms: >=0.137.0",
               "items": {
                 "enum": [
                   "dms:vektoren",
                   "dms:antworten",
                   "dms:erkennen",
-                  "dms:texterkennung"
+                  "dms:texterkennung",
+                  "dms:umwandeln"
                 ]
               },
               "uniqueItems": true
@@ -312,6 +314,24 @@
             "type": "string",
             "pattern": "^https://[^/\\s@?#]+(/[^\\s?#]*)?$"
           },
+          "uniqueItems": true
+        },
+        "umwandeln": {
+          "type": "array",
+          "description": "Dateien umwandeln (DMS #577, nur mit dms:umwandeln): die Dateitypen (MIME), für die das Paket zuständig ist, z. B. image/tiff. PDF, JPEG und PNG liest das DMS selbst und sind nicht erlaubt.",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]{0,62}/[a-z0-9][a-z0-9!#$&^_.+-]{0,62}$",
+            "not": {
+              "enum": [
+                "application/pdf",
+                "image/jpeg",
+                "image/png"
+              ]
+            }
+          },
+          "minItems": 1,
+          "maxItems": 20,
           "uniqueItems": true
         },
         "einstellungen": {

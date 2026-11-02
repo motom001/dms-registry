@@ -39,6 +39,7 @@ Vor der Installation zeigt das DMS die Rechte eines Pakets mit Code, die Katalog
 - „Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten)“ – nur mit `code.rechte.schnittstellen` und `dms: ">=0.124.0"`
 - „Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)“ – nur mit `code.rechte.schnittstellen` und `dms: ">=0.125.0"`
 - „Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)“ – nur mit `code.rechte.schnittstellen`, `dokumente: schreiben` und `dms: ">=0.133.0"`
+- „Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln): TIFF, WebP, …“ – nur mit `code.rechte.schnittstellen`, `code.umwandeln`, dem Ereignis `datei.umwandeln`, `dokumente: lesen` und `dms: ">=0.137.0"` (siehe [Dateien umwandeln](#dateien-umwandeln))
 - „kein Zugriff auf Netzwerk und Internet“ bzw. „Zugriff auf Netzwerk/Internet nur zu: …“; mit einer Dienst-Adresse als Einstellung zusätzlich „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“
 - „Reagiert auf diese Ereignisse:“ mit einem Ereignis je Zeile
 
@@ -141,6 +142,26 @@ Ein Paket kann **gleichbedeutende Wörter** für die Suche mitbringen (ab DMS 0.
 - Allgemeine Wörter, die in jeder Ablage vorkommen (Rechnung/Beleg, Vertrag/Vereinbarung), stehen im Paket **Basis**; Fachpakete bringen nur ihre fachlichen Wörter mit. Ein Wort steht in höchstens einem Paket des Katalogs (`werkzeuge/test_pruefen.py` prüft das).
 - `tests/erwartung.yaml` nennt die Zahl der Gruppen: `wortlisten: 5`.
 - Das DMS legt die Gruppen beim Installieren an, ersetzt sie bei einem Update durch die des Pakets und entfernt sie mit dem Paket.
+
+## Dateien umwandeln
+
+Das DMS liest selbst nur PDF, JPEG und PNG (DMS #577). Ein Paket mit dem Recht `dms:umwandeln` macht aus anderen Dateitypen eine **Fassung**, aus der das DMS Vorschaubild und Volltext erzeugt – z. B. [Bildformate](pakete/bildformate/) für TIFF, WebP, GIF und BMP:
+
+```yaml
+dms: ">=0.137.0"
+code:
+  ereignisse: [datei.umwandeln]
+  umwandeln: [image/tiff, image/webp]      # zuständige Dateitypen (MIME); PDF, JPEG und PNG nicht
+  rechte:
+    lesen: ["*"]
+    dokumente: lesen                       # das Original lesen – Schreiben braucht es nicht
+    schnittstellen: ["dms:umwandeln"]
+```
+
+- **Zurückgeben** darf es nur, was das DMS selbst liest: die Fassung als **PDF, PNG oder JPEG** (`PUT /dokumente/{id}/fassung`, höchstens 50 MB) und auf Wunsch ein Vorschaubild als **JPEG oder PNG**. Mehrseitiges als PDF. Das Original ändert es nie.
+- **Kein Netz:** Umwandeln geschieht im Paket. Eine Datei an einen fremden Dienst zu schicken, um sie umzuwandeln, ist nicht erlaubt.
+- **Fremde Bibliotheken** (Decoder, Encoder) mit passender Lizenz (siehe [Lizenzen](#lizenzen)), auf feste Commits gebaut, mit ihren Lizenztexten unter `code/lizenzen/` und einem Hinweis im README. Formate, für deren Decoder Patentlizenzen verlangt werden (z. B. HEVC in HEIC), kommen erst nach Rücksprache mit den Pflegern in den Katalog; das README nennt das offen.
+- Die Schnittstelle (Ablauf, Ereignis, Formate, Grenzen, Antworten) beschreibt das Entwicklerhandbuch des DMS unter [Dateien umwandeln](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#dateien-umwandeln).
 
 ## Verwaiste Pakete
 
