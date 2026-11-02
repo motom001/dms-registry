@@ -37,7 +37,7 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 
 ## Voraussetzungen
 
-- DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)
+- DMS ab Version 0.121 (Feldformate und Datumsgrenzen)
 - Pakete **Basis** ab 1.1.0 (Person), **Haushalt** ab 1.0.0 und **Haus** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz

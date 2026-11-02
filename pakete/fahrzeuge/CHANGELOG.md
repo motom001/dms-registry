@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.0
+
+- **Grenzen** (dms-registry #55, DMS #535): Die **Erstzulassung** darf nicht in der Zukunft liegen. „HU fällig“ bleibt ohne Grenze.
+- Braucht DMS ab 0.121.0. Gespeicherte Angaben bleiben gültig; das Update übernimmt die Grenze nur, wenn du am Feld nichts davon eingestellt hast.
+
 ## 1.1.0
 
 - **Halter als Verweis auf eine Person** (dms-registry #52, DMS #534): Am Fahrzeug ist der **Halter** jetzt ein Verweis auf eine **Person** aus dem Paket Basis (Verweisart Bezug: Wer eine Person löscht, löscht damit nicht das Auto). An der Person siehst du unter *Verknüpfungen* ihre Fahrzeuge.

@@ -26,7 +26,9 @@
       typ: text
       maxLen: 42
       muster: "[A-Z]{2}[0-9]{2}( ?[A-Z0-9]){11,30}"
-      hilfe: Großbuchstaben und Ziffern, Leerzeichen erlaubt, z. B. DE12 3456 7890 1234 5678 90
+      # Ab 1.2.0 (DMS 0.121): Länge des Landes und Prüfziffer, Anzeige in Vierergruppen.
+      format: iban
+      hilfe: Leerzeichen erlaubt, z. B. DE89 3704 0044 0532 0130 00
     - { key: online_zugang, label: Online-Zugang, typ: passwort, hilfe: Zugangsdaten zum Online-Banking; nur wer die Mappe bearbeiten darf, sieht sie }
     - { key: eroeffnet_am, label: Eröffnet am, typ: datum }
     - { key: gekuendigt_am, label: Gekündigt am, typ: datum }

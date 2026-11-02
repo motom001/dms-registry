@@ -96,6 +96,30 @@ If a package holds a person, a company or another thing as **text** where a **re
 
 `werkzeuge/pruefen.py` checks field type, source, `pflicht` and DMS version.
 
+## Formats and date limits
+
+The DMS checks values in text fields against a **format** and date fields against **limits** (DMS #535). This keeps postcodes with letters, phone numbers with letters and birthdays in the future out of the Mappen. On a phone the matching keyboard appears, and phone numbers and e-mail addresses can be tapped.
+
+```yaml
+- { key: telefon, label: Telefon, typ: text, maxLen: 40, format: telefon }
+- { key: email, label: E-Mail, typ: text, maxLen: 200, format: email }
+- { key: internet, label: Internetseite, typ: text, maxLen: 200, format: internetseite }
+- { key: iban, label: IBAN, typ: text, maxLen: 42, format: iban }
+- { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land }
+- { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
+- { key: geburtstag, label: Geburtstag, typ: datum, max: heute }
+- { key: einzug, label: Einzug, typ: datum, min: "2000-01-01" }
+```
+
+- **`format`** only with `typ: text`: `email` (`name@beispiel.de`), `telefon` (digits, `+` at the start, spaces, `/`, `-`, brackets), `internetseite` (with or without `https://`), `iban` (length for the country and check digits, shown in groups of four) or `plz`.
+- **`landFeld`** only with `format: plz`: the key of a text or choice field of the same Mappe type holding the country. If it says Germany or nothing (and the default is Deutschland), **exactly 5 digits** are required; for other countries the postcode is free. Without `landFeld` Germany always applies – so add a field *Land* to addresses.
+- **`min`** and **`max`** with `typ: datum`: `heute` (today) or a date `"YYYY-MM-DD"` (in quotes, otherwise YAML reads it as a date). Only set limits where a value would otherwise certainly be wrong – `max: heute` for birthday, first registration or "read on"; never for deadlines such as "valid until".
+- Stored values stay valid: the DMS only checks new and changed values. A package update applies format and limits to installed fields where the administrator has set neither; that is a minor version.
+- **Samples must fit** – the DMS creates them with the same checks. Use invented but valid values: persona names, test numbers such as `+49 30 123456`, the test IBAN `DE89 3704 0044 0532 0130 00`.
+- If you use `format`, `landFeld` or date limits, write `dms: ">=0.121.0"` in the manifest.
+
+`werkzeuge/pruefen.py` checks field type, country field, limits, the samples and the DMS version.
+
 ## Orphaned packages
 
 If the maintainer of a package does not respond to bugs or necessary adjustments for three months, the package is marked as *orphaned* and can be taken over by someone else.

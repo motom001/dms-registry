@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.0
+
+- **Formate** (dms-registry #55, DMS #535): Die **IBAN** eines Kontos prüft das DMS mit Länge und Prüfziffer und zeigt sie in Vierergruppen. Der Ausweis bleibt bei „Gültig bis“ ohne Grenze – das Datum liegt ja meist in der Zukunft.
+- Braucht DMS ab 0.121.0. Gespeicherte Angaben bleiben gültig; das Update übernimmt das Format nur, wenn du am Feld nichts davon eingestellt hast.
+
 ## 1.1.0
 
 - **Personen als Verweis** (dms-registry #52, DMS #534): Wo ein Mensch gemeint ist, steht jetzt ein Verweis auf eine **Person** aus dem Paket Basis statt Text – **Konto → Inhaber** (mehrere, z. B. Gemeinschaftskonto), **Versicherung → Versichert** (mehrere), **Arbeitsverhältnis, Vorsorge, Ausweis & Urkunde, Gesundheit, Bildung → Person**. Verweisart Bezug: Wer eine Person löscht, löscht damit nicht Konto oder Vertrag. An der Person siehst du unter *Verknüpfungen* alles, was zu ihr gehört.

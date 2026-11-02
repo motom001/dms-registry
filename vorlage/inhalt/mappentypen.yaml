@@ -28,6 +28,9 @@
       typ: betrag
       min: 0
       waehrung: EUR
+    # Format eines Textfelds (braucht dms: ">=0.121.0", siehe REGELN.md): email, telefon, internetseite, iban, plz
+    #   - { key: telefon, label: Telefon, typ: text, maxLen: 40, format: telefon }
+    # Grenzen eines Datumsfelds: min/max als "JJJJ-MM-TT" oder heute, z. B. max: heute für einen Geburtstag
     # Für die Erkennung nutzen (braucht dms: ">=0.113.0", siehe REGELN.md): z. B. an einer Vertragsnummer
     #   erkennung: { art: nummer, hinweis: "Steht oben rechts, Muster VN-######" }
     # oder ohne Art – das DMS schließt sie aus Feldart und Bezeichnung:

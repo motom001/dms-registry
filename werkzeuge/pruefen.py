@@ -175,6 +175,133 @@ def pruefe_aus_text(typen: list, dms_bereich: str) -> list[str]:
     return fehler
 
 
+# Feldformate und Datumsgrenzen (DMS #535, ab 0.121.0) – wie shared/src/feldformate.ts im DMS.
+DMS_FORMATE_AB = (0, 121, 0)
+FELDFORMATE = ('email', 'telefon', 'internetseite', 'iban', 'plz')
+HEUTE = 'heute'
+# Länge einer IBAN je Land (SWIFT IBAN Registry) – wie IBAN_LAENGEN im DMS (shared/src/erkennung.ts).
+IBAN_LAENGEN = {
+    'AD': 24, 'AE': 23, 'AL': 28, 'AT': 20, 'AZ': 28, 'BA': 20, 'BE': 16, 'BG': 22, 'BH': 22, 'BI': 27, 'BR': 29, 'BY': 28, 'CH': 21,
+    'CR': 22, 'CY': 28, 'CZ': 24, 'DE': 22, 'DJ': 27, 'DK': 18, 'DO': 28, 'EE': 20, 'EG': 29, 'ES': 24, 'FI': 18, 'FK': 18, 'FO': 18,
+    'FR': 27, 'GB': 22, 'GE': 22, 'GI': 23, 'GL': 18, 'GR': 27, 'GT': 28, 'HR': 21, 'HU': 28, 'IE': 22, 'IL': 23, 'IQ': 23, 'IS': 26,
+    'IT': 27, 'JO': 30, 'KW': 30, 'KZ': 20, 'LB': 28, 'LC': 32, 'LI': 21, 'LT': 20, 'LU': 20, 'LV': 21, 'LY': 25, 'MC': 27, 'MD': 24,
+    'ME': 22, 'MK': 19, 'MN': 20, 'MR': 27, 'MT': 31, 'MU': 30, 'NI': 28, 'NL': 18, 'NO': 15, 'OM': 23, 'PK': 24, 'PL': 28, 'PS': 29,
+    'PT': 25, 'QA': 29, 'RO': 24, 'RS': 22, 'RU': 33, 'SA': 24, 'SC': 31, 'SD': 18, 'SE': 24, 'SI': 19, 'SK': 24, 'SM': 27, 'SO': 23,
+    'ST': 25, 'SV': 28, 'TL': 23, 'TN': 24, 'TR': 26, 'UA': 29, 'VA': 22, 'VG': 24, 'XK': 20, 'YE': 30,
+}
+DEUTSCHLAND = {'deutschland', 'de', 'deu', 'd', 'germany', 'bundesrepublik deutschland', 'brd'}
+
+
+def ist_datumsgrenze(v) -> bool:
+    """„heute“ oder ein Datum JJJJ-MM-TT."""
+    import datetime
+    if v == HEUTE:
+        return True
+    if isinstance(v, datetime.date):  # YAML liest 2000-01-01 ohne Anführungszeichen als Datum
+        return True
+    if not isinstance(v, str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', v):
+        return False
+    try:
+        datetime.date.fromisoformat(v)
+        return True
+    except ValueError:
+        return False
+
+
+def iban_ok(s: str) -> bool:
+    i = re.sub(r'\s', '', s).upper()
+    if not re.fullmatch(r'[A-Z]{2}\d{2}[A-Z0-9]+', i) or IBAN_LAENGEN.get(i[:2]) != len(i):
+        return False
+    return int(''.join(str(int(c, 36)) for c in i[4:] + i[:4])) % 97 == 1
+
+
+def format_fehler(f: dict, wert, werte: dict, alle: list, heute: str) -> str | None:
+    """Was an einem Beispielwert nicht zu Format bzw. Grenzen passt; None = passt (oder leer)."""
+    if wert is None or wert == '':
+        return None
+    fmt = f.get('format')
+    if f.get('typ') == 'text' and fmt in FELDFORMATE:
+        w = str(wert).strip()
+        if fmt == 'email' and not re.fullmatch(r'[^\s@<>()\[\]",;:]+@(?:[^\W_](?:[\w-]*[^\W_])?\.)+[^\W\d_]{2,}', w):
+            return 'keine gültige E-Mail-Adresse'
+        if fmt == 'telefon' and (not re.fullmatch(r'\+?[\d\s/()-]+', w) or len(re.findall(r'\d', w)) < 3):
+            return 'keine gültige Telefonnummer (nur Ziffern, + am Anfang, Leerzeichen, /, -, Klammern)'
+        if fmt == 'internetseite':
+            u = w if re.match(r'[a-z][a-z0-9+.-]*://', w, re.I) else f'https://{w}'
+            if re.search(r'\s', u) or not re.fullmatch(r'https?://[^/?#.\s]+(\.[^/?#.\s]+)+(:\d+)?([/?#]\S*)?', u, re.I):
+                return 'keine gültige Internetseite'
+        if fmt == 'iban' and not iban_ok(w):
+            return 'keine gültige IBAN (Länge des Landes oder Prüfziffer)'
+        if fmt == 'plz':
+            lf = next((x for x in alle if isinstance(x, dict) and x.get('key') == f.get('landFeld')), None)
+            land = werte.get(lf['key']) if lf else None
+            if land in (None, '') and lf:
+                land = lf.get('standard')
+            deutsch = not lf or land in (None, '') or str(land).strip().lower() in DEUTSCHLAND
+            if deutsch and not re.fullmatch(r'\d{5}', w):
+                return 'keine deutsche PLZ (genau 5 Ziffern)'
+    if f.get('typ') == 'datum':
+        w = str(wert)
+        grenze = lambda g: heute if g == HEUTE else (str(g) if ist_datumsgrenze(g) else None)  # noqa: E731
+        lo, hi = grenze(f.get('min')), grenze(f.get('max'))
+        if lo and w < lo:
+            return f'liegt vor {"heute" if f.get("min") == HEUTE else lo}'
+        if hi and w > hi:
+            return f'liegt nach {"heute" if f.get("max") == HEUTE else hi}'
+    return None
+
+
+def pruefe_formate(typen: list, beispiele: list, dms_bereich: str, heute: str | None = None) -> list[str]:
+    """format, landFeld und Datumsgrenzen an Feldern; Beispiele müssen passen; braucht dms: ">=0.121.0"."""
+    import datetime
+    heute = heute or datetime.date.today().isoformat()
+    fehler: list[str] = []
+    benutzt = False
+    je_typ: dict = {}
+    for t in typen:
+        if not isinstance(t, dict):
+            continue
+        felder = [f for f in t.get('felder') or [] if isinstance(f, dict)]
+        je_typ[t.get('schluessel')] = felder
+        for f in felder:
+            wo = f'mappentypen/{t.get("schluessel")}/{f.get("key")}'
+            typ = f.get('typ')
+            if 'format' in f:
+                benutzt = True
+                if typ != 'text':
+                    fehler.append(f'{wo}: format gibt es nur bei Feldart „text“')
+                elif f['format'] not in FELDFORMATE:
+                    fehler.append(f'{wo}: format „{f["format"]}“ gibt es nicht (möglich: {", ".join(FELDFORMATE)})')
+            if 'landFeld' in f:
+                benutzt = True
+                lf = next((x for x in felder if x.get('key') == f['landFeld']), None)
+                if f.get('format') != 'plz':
+                    fehler.append(f'{wo}: landFeld gibt es nur bei format: plz')
+                elif not lf or lf is f or lf.get('typ') not in ('text', 'auswahl'):
+                    fehler.append(f'{wo}: landFeld „{f["landFeld"]}“ ist kein Text- oder Auswahlfeld dieses Mappentyps')
+            if typ == 'datum' and ('min' in f or 'max' in f):
+                benutzt = True
+                for k in ('min', 'max'):
+                    if k in f and not ist_datumsgrenze(f[k]):
+                        fehler.append(f'{wo}: {k} bei einem Datum ist „heute“ oder ein Datum JJJJ-MM-TT')
+                lo, hi = f.get('min'), f.get('max')
+                if ist_datumsgrenze(lo) and ist_datumsgrenze(hi) and HEUTE not in (lo, hi) and str(lo) > str(hi):
+                    fehler.append(f'{wo}: min liegt nach max')
+    for i, b in enumerate(beispiele or []):
+        if not isinstance(b, dict) or not isinstance(b.get('werte'), dict):
+            continue
+        felder = je_typ.get(b.get('typ'), [])
+        for f in felder:
+            x = format_fehler(f, b['werte'].get(f.get('key')), b['werte'], felder, heute)
+            if x:
+                fehler.append(f'beispiele[{i}] ({b.get("typ")}): {f.get("key")} „{b["werte"].get(f.get("key"))}“ – {x}')
+    if benutzt:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_FORMATE_AB:
+            fehler.append('mappentypen: format, landFeld und Datumsgrenzen kennt das DMS erst ab 0.121.0 – bitte dms: ">=0.121.0" angeben')
+    return fehler
+
+
 def beispiel_verweise(werte: dict) -> list[str]:
     """Verweise auf andere Beispiele in den Werten (#347 im DMS): { beispiel: x } oder Listen davon."""
     erg = []
@@ -402,6 +529,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
 
     fehler += pruefe_erkennung(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
     fehler += pruefe_aus_text(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
+    fehler += pruefe_formate(geladen.get('mappentypen', []) or [], geladen.get('beispiele', []) or [], str(m.get('dms', '')))
 
     sichten = {s.get('schluessel') for s in geladen.get('sichten', []) if isinstance(s, dict)}
     for s in geladen.get('sichten', []):

@@ -36,7 +36,7 @@ Eine **Person** ist ein Kontakt – Ansprechpartnerin bei der Bank, Hausarzt, Ve
 
 ## Voraussetzungen
 
-- DMS ab Version 0.79 (Version 1.0.0 lief ab 0.63)
+- DMS ab Version 0.121 (Feldformate und Datumsgrenzen; Version 1.0.0 lief ab 0.63)
 - keine weiteren Pakete
 
 ## Rechte und Netz
