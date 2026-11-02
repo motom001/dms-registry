@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T05:36:07Z",
+  "erstellt": "2026-11-02T05:38:19Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1710,6 +1710,37 @@
       },
       "lizenz": "Apache-2.0",
       "aktuell": "1.2.0"
+    },
+    {
+      "id": "ki_aehnlich",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.122.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/ki_aehnlich-1.0.0.zip",
+          "sha256": "dc163c76784156fe0c643d00baa05dbbed99ef2b5ebf95956e9accfdeb9f6866",
+          "groesse": 26489373,
+          "veroeffentlicht": "2026-11-02T05:38:19Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/ki_aehnlich",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_aehnlich/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_aehnlich/CHANGELOG.md"
+        }
+      ],
+      "name": "KI lokal – Ähnlichkeit",
+      "beschreibung": "Findet ähnliche Dokumente und sucht mit eigenen Worten – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0"
     },
     {
       "id": "texterkennung",

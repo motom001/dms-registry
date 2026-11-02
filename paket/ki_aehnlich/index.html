@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KI lokal – Ähnlichkeit – DMS-Pakete</title>
+  <meta name="description" content="Findet ähnliche Dokumente und sucht mit eigenen Worten – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="../../sammeldatei.html">Ohne Internet</a><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">K</span>
+      <div><h1>KI lokal – Ähnlichkeit</h1><p class="leise">Findet ähnliche Dokumente und sucht mit eigenen Worten – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="ki_aehnlich@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/ki_aehnlich">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 02.11.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>Apache-2.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.122.0</dd>
+      <dt>Abhängigkeiten</dt><dd>keine</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><ul></ul>
+      <h3>Sichten</h3><ul></ul>
+      <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netzwerkzugriff</h2><ul class="rechte"><li>Mappen lesen: alle Mappentypen <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Dokumente lesen <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-dokumente" title="Erklärung: Dokumente lesen" aria-label="Erklärung: Dokumente lesen (Administratorhandbuch)">?</a></li><li>Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren) <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-vektoren" title="Erklärung: Vektoren zu Dokumenten" aria-label="Erklärung: Vektoren zu Dokumenten (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Der Volltext eines Dokuments ist da <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignis-volltext-fertig" title="Erklärung: Der Volltext eines Dokuments ist da" aria-label="Erklärung: Der Volltext eines Dokuments ist da (Administratorhandbuch)">?</a></li></ul></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Das Paket <strong>KI lokal – Ähnlichkeit</strong> lässt das DMS <strong>ähnliche Dokumente</strong> finden und <strong>mit eigenen Worten</strong> suchen: „Rechnung für die Heizung“ findet so auch die Mappe mit „Wartung Gastherme“, obwohl kein Wort übereinstimmt. Es rechnet mit einem kleinen mehrsprachigen Embedding-Modell im <strong>Paket-Läufer</strong> des DMS – abgeschottet, <strong>ohne Netz</strong> und ohne zusätzlichen Dienst. Deine Daten verlassen das DMS nicht.</p>
+<p>Im DMS siehst du danach:</p>
+<ul>
+<li>an jeder Mappe mit Dokumenten <strong>„Ähnliche Dokumente“</strong> aus anderen Mappen,</li>
+<li>in der Suche der Startseite mit <strong>„auch in Dokumenten“</strong> zusätzlich <strong>„Ähnliche Treffer“</strong> mit dem Kennzeichen <strong>ähnlich</strong>,</li>
+<li>unter <strong>Werkbank → Pakete → KI lokal – Ähnlichkeit</strong> den Abschnitt <strong>Ähnlichkeit</strong>: wie viele Dokumente schon berechnet sind, die Einstellung „Ähnliche Treffer in der Suche zeigen“ und <strong>Neu berechnen</strong>.</li>
+</ul>
+<p>Jeder sieht nur Mappen, die er lesen darf. Was die KI tut, ist ein Vorschlag: Sie ändert keine Mappe und kein Dokument.</p>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Mappen lesen: alle Mappentypen</strong> – Dokumente liegen in Mappen beliebiger Typen; das Paket liest nur deren Volltext.</li>
+<li><strong>Dokumente lesen</strong> – den Volltext eines Dokuments. Dateien und Volltext ändert es nicht.</li>
+<li><strong>Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)</strong> – zu jedem Dokument eine Liste von Zahlen, die seinen Inhalt beschreibt. Das DMS vergleicht sie; die Suche fragt das Paket nach dem Vektor des Suchbegriffs.</li>
+<li><strong>kein Zugriff auf Netzwerk und Internet.</strong> Das Modell liegt im Paket.</li>
+<li>Es reagiert auf <strong>Der Volltext eines Dokuments ist da</strong> – für neue Dokumente und, gedrosselt, für den Bestand.</li>
+</ul>
+<p><strong>Speicher und Zeit:</strong> Das Paket kommt mit den Standardgrenzen des Läufers aus (256 MB, 2 Minuten je Aufruf) und verlangt deshalb keine höheren. Ein Aufruf braucht etwa 31 MB, davon 28 MB für das Modell (siehe <a href="#messung">Messung</a>).</p>
+<h3>So arbeitet es</h3>
+<ol>
+<li>Steht der Volltext eines Dokuments fest (eingebaute Texterkennung, Textebene des PDFs oder ein Paket wie <strong>Texterkennung</strong>), holt das Paket ihn, zerlegt ihn in Wortteile (Tokens) und bildet den Mittelwert ihrer Vektoren. Den Vektor legt es im DMS ab.</li>
+<li>Den <strong>Bestand</strong> schickt das DMS nach der Installation gedrosselt nach (alle 30 Sekunden bis zu 50 Dokumente, solange das Paket nichts anderes zu tun hat). Den Fortschritt zeigt die Werkbank.</li>
+<li>In der Suche fragt das DMS das Paket nach dem Vektor des Suchbegriffs (höchstens 1,5 Sekunden) und vergleicht ihn mit den gespeicherten.</li>
+</ol>
+<p>Berücksichtigt wird höchstens der erste Megabyte Volltext eines Dokuments.</p>
+<h3>Das Modell</h3>
+<p><a href="https://huggingface.co/sentence-transformers/static-similarity-mrl-multilingual-v1">static-similarity-mrl-multilingual-v1</a> von sentence-transformers, <strong>Apache-2.0</strong>, ohne Nutzungsbeschränkungen. Es ist ein <em>statisches</em> Embedding-Modell: je Wortteil ein fester Vektor, der Text ist ihr Mittelwert. Zur Laufzeit rechnet kein neuronales Netz – deshalb ist es in WebAssembly ohne Threads und ohne Grafikkarte schnell genug. Es kennt 50 Sprachen, darunter Deutsch und Englisch, und ist auf Ähnlichkeit von Texten trainiert (Matryoshka: die ersten Dimensionen allein taugen schon).</p>
+<p>Im Paket stecken die ersten <strong>256 von 1024 Dimensionen</strong>, auf 8 Bit gerundet: 28 MB statt 433 MB. Das passt unter die Grenze von 32 MB je Paket.</p>
+<p><strong>Warum nicht ein anderes Modell?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Modell</th>
+<th>Lizenz</th>
+<th>Größe (8 Bit)</th>
+<th>warum nicht</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>multilingual-e5-small (Transformer)</td>
+<td>MIT</td>
+<td>≈ 118 MB</td>
+<td>zu groß für 32 MB; ein Transformer in WebAssembly ohne Threads rechnet je Dokument Sekunden</td>
+</tr>
+<tr>
+<td>paraphrase-multilingual-MiniLM-L12-v2</td>
+<td>Apache-2.0</td>
+<td>≈ 118 MB</td>
+<td>wie oben</td>
+</tr>
+<tr>
+<td>all-MiniLM-L6-v2, gte-small</td>
+<td>Apache-2.0 / MIT</td>
+<td>23–34 MB</td>
+<td>nur Englisch</td>
+</tr>
+<tr>
+<td>potion-multilingual-128M (statisch)</td>
+<td>MIT</td>
+<td>≈ 128 MB</td>
+<td>500 000 Wortteile – zu groß</td>
+</tr>
+<tr>
+<td><strong>static-similarity-mrl-multilingual-v1</strong></td>
+<td><strong>Apache-2.0</strong></td>
+<td><strong>28 MB</strong> (256 Dim.)</td>
+<td>gewählt</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Grenzen:</strong> Ein statisches Modell achtet nicht auf die Reihenfolge der Wörter und erreicht nicht ganz die Qualität eines Transformers wie multilingual-e5-small. Die Modellkarte nennt es ausdrücklich für Ähnlichkeit, nicht für Suche über lange Dokumente. Für „ähnliche Dokumente“ und „mit eigenen Worten suchen“ im Haushalt reicht das; für Fragen an die Ablage kommt Stufe 2 (Adapter zu einem lokalen KI-Dienst, #45).</p>
+<h3>Messung</h3>
+<p>Gemessen mit <code>tests/modul_test.mjs</code> und im Paket-Läufer des DMS (DMS 0.122.0, Standardgrenzen) auf <strong>amd64 mit 2 Kernen</strong> – mit einem Zufallsmodell gleicher Größe (105 879 Wortteile × 256), denn die Rechenzeit hängt nicht von den Zahlen ab:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Modul allein</th>
+<th>im Paket-Läufer (mit Start des Workers und Laden des Modells)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vektor eines Suchbegriffs</td>
+<td>50 ms</td>
+<td>≈ 200 ms; die ganze Suche mit Ähnlichkeit 0,2–0,5 s</td>
+</tr>
+<tr>
+<td>Dokument mit 49 000 Zeichen</td>
+<td>60–85 ms</td>
+<td>≈ 230 ms</td>
+</tr>
+<tr>
+<td>Speicher je Aufruf</td>
+<td>30 MB</td>
+<td>31 MB</td>
+</tr>
+</tbody>
+</table>
+<p>Auf einem <strong>Intel N100</strong> erwarten wir ähnliche Werte, also deutlich unter einer Sekunde für den Suchbegriff – gemessen ist das noch nicht. Messungen auf <strong>N100, Raspberry Pi 5 und einem NAS</strong> stehen noch aus und kommen hier dazu. Wie gut das echte Modell auf Deutsch trennt, prüft die CI nach jedem Bau (<code>tests/ci.sh</code>, z. B. „Rechnung für die Heizung“ näher an „Wartung der Gastherme“ als an „Kündigung des Handyvertrags“).</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS <strong>0.122.0</strong> oder neuer (Schnittstelle <code>dms:vektoren</code>, Ereignis „Der Volltext eines Dokuments ist da“).</li>
+<li>Dokumente mit Volltext – ohne Volltext gibt es keinen Vektor.</li>
+</ul>
+<h3>Für Entwickler</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/aehnlich.cpp"><code>code/aehnlich.cpp</code></a></td>
+<td>das Modul (DMS-Paket-ABI 1): Tokenizer (BertNormalizer, BertPreTokenizer, WordPiece wie in <code>tokenizers</code>), Mittelwert der Vektoren, Ereignis und Aktion <code>dms:vektor</code></td>
+</tr>
+<tr>
+<td><a href="code/umwandeln.py"><code>code/umwandeln.py</code></a></td>
+<td>beim Bau: Modell und Tokenizer → <code>code/daten/</code> (256 Dimensionen, 8 Bit), Zeichentabellen aus Unicode</td>
+</tr>
+<tr>
+<td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
+<td>Bau: Modul mit wasi-sdk; Modell von Hugging Face auf einem festen Commit, große Datei gegen die SHA-256 aus ihrem Git-LFS-Zeiger geprüft (feste Prüfsummen lassen sich zusätzlich eintragen)</td>
+</tr>
+<tr>
+<td><a href="code/json.h"><code>code/json.h</code></a></td>
+<td>kleiner JSON-Leser (wie bei Trennblatt)</td>
+</tr>
+<tr>
+<td><a href="code/lizenzen/"><code>code/lizenzen/</code></a></td>
+<td>Herkunft und Lizenzen von Modell, Vokabular und Zeichentabellen</td>
+</tr>
+<tr>
+<td><a href="tests/"><code>tests/</code></a></td>
+<td><code>pruefen.sh</code> ohne Netz (kleines Testmodell, Laufzeit mit Zufallsmodell), <code>ci.sh</code> mit dem echten Modell</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/ki_aehnlich   # lädt das Modell (433 MB) einmal
+pakete/ki_aehnlich/tests/pruefen.sh                                                 # ohne Netz
+</code></pre>
+<p>Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#vektoren-und-ahnlichkeit">Pakete mit Code → Vektoren und Ähnlichkeit</a>.</p>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>). Das Modell und sein Vokabular stehen ebenfalls unter Apache-2.0, die Zeichentabellen stammen aus der Unicode-Datenbank – Einzelheiten in <a href="code/lizenzen/README.md"><code>code/lizenzen/README.md</code></a>.</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: Vektoren aus dem Volltext mit static-similarity-mrl-multilingual-v1 (256 Dimensionen, 8 Bit), Vektor eines Suchbegriffs für die Suche des DMS, Tokenizer von bert-base-multilingual-uncased in C.</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.122.0</td><td><a href="../../archive/ki_aehnlich-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_aehnlich@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>
