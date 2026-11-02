@@ -20,7 +20,7 @@
     <p class="leise">Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">DMS</a> – Open Source und vom DMS-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.</p>
     <div class="werkzeuge">
       <input type="search" id="suche" placeholder="Paket suchen …" aria-label="Pakete durchsuchen">
-      <select id="kategorie" aria-label="Kategorie"><option value="">Alle Kategorien</option><option value="vorlagen">Vorlagen für die Ablage (5)</option><option value="dateiformate">Dateiformate (2)</option><option value="volltext">Texterkennung und Volltext (3)</option><option value="sprachen">Sprachen (1)</option><option value="ki">KI (2)</option><option value="post">Post und Scannen (1)</option><option value="sicherung">Sicherung (1)</option><option value="entwickler">Für Entwickler (1)</option></select>
+      <select id="kategorie" aria-label="Kategorie"><option value="">Alle Kategorien</option><option value="vorlagen">Vorlagen für die Ablage (5)</option><option value="dateiformate">Dateiformate (2)</option><option value="volltext">Texterkennung und Volltext (12)</option><option value="sprachen">Sprachen (10)</option><option value="ki">KI (2)</option><option value="post">Post und Scannen (1)</option><option value="sicherung">Sicherung (1)</option><option value="entwickler">Für Entwickler (1)</option></select>
       <select id="autor" aria-label="Autor"><option value="">Alle Autoren</option><option value="motom001">Thomas Meissner</option></select>
       <select id="art" aria-label="Art"><option value="">Alle Pakete</option><option value="konfiguration">Konfiguration</option><option value="code">Mit Code</option></select>
     </div>
@@ -111,18 +111,90 @@
         <span class="chips"><span class="chip">Sicherung</span></span>
         <span class="passt-marke" hidden></span>
       </a>
-      <a class="kachel" href="paket/texterkennung/" data-art="code" data-suche="texterkennung texterkennung die texterkennung des dms – erkennt text in gescannten pdfs und bildern mit tesseract als webassembly (sprache je seite, auch mischseiten, seiten aufrichten, lange dokumente abschnittsweise) und schreibt ihn als volltext ins dms. abgeschottet im paket-läufer, ohne netz. thomas meissner" data-kategorien="volltext" data-autor="motom001" data-versionen="[[&quot;2.1.0&quot;,&quot;&gt;=0.139.0&quot;],[&quot;2.0.0&quot;,&quot;&gt;=0.133.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.88.0&quot;]]">
+      <a class="kachel" href="paket/texterkennung/" data-art="code" data-suche="texterkennung texterkennung (deutsch und englisch) das grundpaket für die texterkennung des dms – macht gescannte pdfs und fotos durchsuchbar, auf deutsch und englisch. weitere sprachen gibt es als zusatzsprachen (z. b. französisch, spanisch, türkisch). erkennt die sprache je seite, richtet seiten auf, ohne netz. thomas meissner" data-kategorien="volltext" data-autor="motom001" data-versionen="[[&quot;2.1.1&quot;,&quot;&gt;=0.139.0&quot;],[&quot;2.1.0&quot;,&quot;&gt;=0.139.0&quot;],[&quot;2.0.0&quot;,&quot;&gt;=0.133.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.88.0&quot;]]">
         <span class="symbol" aria-hidden="true">T</span>
-        <span class="name">Texterkennung</span>
-        <span class="text">Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache je Seite, auch Mischseiten, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.</span>
-        <span class="unter">2.1.0 · Thomas Meissner · mit Code</span>
+        <span class="name">Texterkennung (Deutsch und Englisch)</span>
+        <span class="text">Das Grundpaket für die Texterkennung des DMS – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.</span>
+        <span class="unter">2.1.1 · Thomas Meissner · mit Code</span>
         <span class="chips"><span class="chip">Texterkennung und Volltext</span></span>
         <span class="passt-marke" hidden></span>
       </a>
-      <a class="kachel" href="paket/texterkennung_fra/" data-art="code" data-suche="texterkennung_fra texterkennung – französisch bringt dem paket texterkennung französisch bei – die sprachdaten (tessdata_fast) liest das paket texterkennung bei „sprache automatisch“ selbst. ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+      <a class="kachel" href="paket/texterkennung_ara/" data-art="code" data-suche="texterkennung_ara texterkennung – zusatzsprache arabisch zusatzsprache arabisch für das grundpaket texterkennung – damit auch arabische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
         <span class="symbol" aria-hidden="true">T</span>
-        <span class="name">Texterkennung – Französisch</span>
-        <span class="text">Bringt dem Paket Texterkennung Französisch bei – die Sprachdaten (tessdata_fast) liest das Paket Texterkennung bei „Sprache automatisch“ selbst. Ohne eigene Rechte, ohne Netz.</span>
+        <span class="name">Texterkennung – Zusatzsprache Arabisch</span>
+        <span class="text">Zusatzsprache Arabisch für das Grundpaket Texterkennung – damit auch arabische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_fra/" data-art="code" data-suche="texterkennung_fra texterkennung – zusatzsprache französisch zusatzsprache französisch für das grundpaket texterkennung – damit auch französische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.1&quot;,&quot;&gt;=0.133.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Französisch</span>
+        <span class="text">Zusatzsprache Französisch für das Grundpaket Texterkennung – damit auch französische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.1 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_ita/" data-art="code" data-suche="texterkennung_ita texterkennung – zusatzsprache italienisch zusatzsprache italienisch für das grundpaket texterkennung – damit auch italienische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Italienisch</span>
+        <span class="text">Zusatzsprache Italienisch für das Grundpaket Texterkennung – damit auch italienische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_nld/" data-art="code" data-suche="texterkennung_nld texterkennung – zusatzsprache niederländisch zusatzsprache niederländisch für das grundpaket texterkennung – damit auch niederländische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Niederländisch</span>
+        <span class="text">Zusatzsprache Niederländisch für das Grundpaket Texterkennung – damit auch niederländische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_pol/" data-art="code" data-suche="texterkennung_pol texterkennung – zusatzsprache polnisch zusatzsprache polnisch für das grundpaket texterkennung – damit auch polnische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Polnisch</span>
+        <span class="text">Zusatzsprache Polnisch für das Grundpaket Texterkennung – damit auch polnische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_por/" data-art="code" data-suche="texterkennung_por texterkennung – zusatzsprache portugiesisch zusatzsprache portugiesisch für das grundpaket texterkennung – damit auch portugiesische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Portugiesisch</span>
+        <span class="text">Zusatzsprache Portugiesisch für das Grundpaket Texterkennung – damit auch portugiesische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_rus/" data-art="code" data-suche="texterkennung_rus texterkennung – zusatzsprache russisch zusatzsprache russisch für das grundpaket texterkennung – damit auch russische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Russisch</span>
+        <span class="text">Zusatzsprache Russisch für das Grundpaket Texterkennung – damit auch russische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_spa/" data-art="code" data-suche="texterkennung_spa texterkennung – zusatzsprache spanisch zusatzsprache spanisch für das grundpaket texterkennung – damit auch spanische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Spanisch</span>
+        <span class="text">Zusatzsprache Spanisch für das Grundpaket Texterkennung – damit auch spanische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_tur/" data-art="code" data-suche="texterkennung_tur texterkennung – zusatzsprache türkisch zusatzsprache türkisch für das grundpaket texterkennung – damit auch türkische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Türkisch</span>
+        <span class="text">Zusatzsprache Türkisch für das Grundpaket Texterkennung – damit auch türkische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/texterkennung_ukr/" data-art="code" data-suche="texterkennung_ukr texterkennung – zusatzsprache ukrainisch zusatzsprache ukrainisch für das grundpaket texterkennung – damit auch ukrainische briefe und scans durchsuchbar werden. enthält nur die sprachdaten (tessdata_fast), ohne eigene rechte, ohne netz. thomas meissner" data-kategorien="sprachen volltext" data-autor="motom001" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol" aria-hidden="true">T</span>
+        <span class="name">Texterkennung – Zusatzsprache Ukrainisch</span>
+        <span class="text">Zusatzsprache Ukrainisch für das Grundpaket Texterkennung – damit auch ukrainische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</span>
         <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
         <span class="chips"><span class="chip">Sprachen</span><span class="chip">Texterkennung und Volltext</span></span>
         <span class="passt-marke" hidden></span>
@@ -145,7 +217,7 @@
       </a>
     </div>
     <p id="keine" class="leerhinweis" hidden>Kein Paket gefunden.</p>
-    <p class="leise">Stand: 02.11.2026 · 14 Pakete</p>
+    <p class="leise">Stand: 02.11.2026 · 23 Pakete</p>
 
   </main>
   <dialog id="dms-dialog">

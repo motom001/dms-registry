@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T23:17:57Z",
+  "erstellt": "2026-11-02T23:24:51Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -2088,6 +2088,24 @@
       "id": "texterkennung",
       "versionen": [
         {
+          "version": "2.1.1",
+          "dms": ">=0.139.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung-2.1.1.zip",
+          "sha256": "24b76ddedcae3b665e4638ac1909c885df4baf5ea0645df38de83cb2bf929211",
+          "groesse": 8115887,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/CHANGELOG.md"
+        },
+        {
           "version": "2.1.0",
           "dms": ">=0.139.0",
           "abhaengigkeiten": {},
@@ -2142,21 +2160,78 @@
           "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/CHANGELOG.md"
         }
       ],
-      "name": "Texterkennung",
-      "beschreibung": "Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache je Seite, auch Mischseiten, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.",
+      "name": "Texterkennung (Deutsch und Englisch)",
+      "beschreibung": "Das Grundpaket für die Texterkennung des DMS – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "2.1.0",
+      "aktuell": "2.1.1",
       "kategorien": [
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_ara",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ara-1.0.0.zip",
+          "sha256": "fa448f837f5db283d722f7cfdf3f744cfbb457ac635ee6e93a2c39a687c922be",
+          "groesse": 727686,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ara",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ara/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ara/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Arabisch",
+      "beschreibung": "Zusatzsprache Arabisch für das Grundpaket Texterkennung – damit auch arabische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen",
         "volltext"
       ]
     },
     {
       "id": "texterkennung_fra",
       "versionen": [
+        {
+          "version": "1.0.1",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_fra-1.0.1.zip",
+          "sha256": "7677731a317ff7758e78d70de7b318aaff12fb660fa4bbd8fd450d8a32143291",
+          "groesse": 618133,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_fra",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/CHANGELOG.md"
+        },
         {
           "version": "1.0.0",
           "dms": ">=0.133.0",
@@ -2178,8 +2253,304 @@
           "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/CHANGELOG.md"
         }
       ],
-      "name": "Texterkennung – Französisch",
-      "beschreibung": "Bringt dem Paket Texterkennung Französisch bei – die Sprachdaten (tessdata_fast) liest das Paket Texterkennung bei „Sprache automatisch“ selbst. Ohne eigene Rechte, ohne Netz.",
+      "name": "Texterkennung – Zusatzsprache Französisch",
+      "beschreibung": "Zusatzsprache Französisch für das Grundpaket Texterkennung – damit auch französische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.1",
+      "kategorien": [
+        "sprachen",
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_ita",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ita-1.0.0.zip",
+          "sha256": "6d31ee2fd6ff8e017fc37883368d9b3e16b12f4d62f62ac39ac3c7f5f8c70c26",
+          "groesse": 1282622,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ita",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ita/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ita/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Italienisch",
+      "beschreibung": "Zusatzsprache Italienisch für das Grundpaket Texterkennung – damit auch italienische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen",
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_nld",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_nld-1.0.0.zip",
+          "sha256": "589620fc8b3357efb811217ef491868e4998cc0f0f22b9234bfd8ee3977d51ab",
+          "groesse": 2987730,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_nld",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_nld/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_nld/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Niederländisch",
+      "beschreibung": "Zusatzsprache Niederländisch für das Grundpaket Texterkennung – damit auch niederländische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen",
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_pol",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_pol-1.0.0.zip",
+          "sha256": "6661714cc274a8f0eebc80390212534fcb2adec657908e7f08ec6840f6c63cd7",
+          "groesse": 2037910,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_pol",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_pol/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_pol/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Polnisch",
+      "beschreibung": "Zusatzsprache Polnisch für das Grundpaket Texterkennung – damit auch polnische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen",
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_por",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_por-1.0.0.zip",
+          "sha256": "c2112c112bb20285e85c33f8fa99fe3131230c61c6ceeaa3cf2c467dad5c3ee7",
+          "groesse": 1011034,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_por",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_por/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_por/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Portugiesisch",
+      "beschreibung": "Zusatzsprache Portugiesisch für das Grundpaket Texterkennung – damit auch portugiesische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen",
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_rus",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_rus-1.0.0.zip",
+          "sha256": "3ec4a16d9cea2564093624c0874327eb8781c6b369866af430f08c2a38c2a42f",
+          "groesse": 1610696,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_rus",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_rus/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_rus/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Russisch",
+      "beschreibung": "Zusatzsprache Russisch für das Grundpaket Texterkennung – damit auch russische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen",
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_spa",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_spa-1.0.0.zip",
+          "sha256": "93a322dbbde6027f43653faa33d75f35998d97ce6b60d8f21b5b57dc0362e52a",
+          "groesse": 1138443,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_spa",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_spa/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_spa/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Spanisch",
+      "beschreibung": "Zusatzsprache Spanisch für das Grundpaket Texterkennung – damit auch spanische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen",
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_tur",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_tur-1.0.0.zip",
+          "sha256": "a82c59bd704b10cfce2edd6b340c9a86f862e0110e20b904cca88324f3c10bec",
+          "groesse": 2015889,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_tur",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_tur/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_tur/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Türkisch",
+      "beschreibung": "Zusatzsprache Türkisch für das Grundpaket Texterkennung – damit auch türkische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen",
+        "volltext"
+      ]
+    },
+    {
+      "id": "texterkennung_ukr",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ukr-1.0.0.zip",
+          "sha256": "ef0bb4f43a858ec4edb124d8ed269135b301fe6dc0bdc70155a456ac573b2fe4",
+          "groesse": 1622863,
+          "veroeffentlicht": "2026-11-02T23:24:51Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ukr",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ukr/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ukr/CHANGELOG.md"
+        }
+      ],
+      "name": "Texterkennung – Zusatzsprache Ukrainisch",
+      "beschreibung": "Zusatzsprache Ukrainisch für das Grundpaket Texterkennung – damit auch ukrainische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
