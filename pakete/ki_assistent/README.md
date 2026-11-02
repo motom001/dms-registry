@@ -43,6 +43,8 @@ Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:
 
 ## Einrichten
 
+Eine ausführliche Anleitung mit einem fertigen Beispiel für Ollama per Docker Compose – auch für ein NAS ohne Grafikkarte, mit Modellwahl, Speicher, Geschwindigkeit und Fehlersuche – steht im Administratorhandbuch des DMS unter **[KI lokal betreiben](https://motom001.github.io/dms/admin/aktuell/ki-lokal/)**.
+
 ### 1. Einen KI-Dienst bereitstellen
 
 **Ollama aus dem App-Store deines Heimservers** – am einfachsten:
@@ -50,7 +52,7 @@ Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:
 - **Umbrel:** App Store → *Ollama* installieren. Adresse für das DMS meist `http://<umbrel>:11434/v1`.
 - **CasaOS / ZimaOS:** App Store → *Ollama* installieren. Adresse `http://<rechner>:11434/v1`.
 
-Danach ein Modell holen, z. B. im Terminal des Ollama-Containers: `ollama pull qwen2.5:3b`.
+Danach ein Modell holen, z. B. im Terminal des Ollama-Containers: `ollama pull ministral-3:3b`.
 
 **Docker Compose neben dem DMS** – dann erreicht das DMS Ollama im selben Netz unter `http://ollama:11434/v1`:
 
@@ -65,7 +67,7 @@ services:
     # deploy: { resources: { reservations: { devices: [{ driver: nvidia, count: all, capabilities: [gpu] }] } } }
 ```
 
-Ins Compose-Projekt des DMS eintragen (oder beide Projekte in ein gemeinsames Netzwerk hängen), dann `docker compose exec ollama ollama pull qwen2.5:3b`. Einen Port nach außen braucht Ollama dafür nicht.
+Ins Compose-Projekt des DMS eintragen (oder beide Projekte in ein gemeinsames Netzwerk hängen), dann `docker compose exec ollama ollama pull ministral-3:3b`. Einen Port nach außen braucht Ollama dafür nicht.
 
 **Ein anderer Rechner mit Grafikkarte** im Heimnetz ist oft deutlich schneller als ein NAS: Ollama dort installieren, mit `OLLAMA_HOST=0.0.0.0` starten und im DMS `http://<ip-des-rechners>:11434/v1` eintragen. Die Verbindung im Heimnetz ist dann unverschlüsselt (`http://`) – das ist bei einem eigenen Netz üblich; über das Internet nimm immer `https://`.
 
@@ -74,7 +76,7 @@ Ins Compose-Projekt des DMS eintragen (oder beide Projekte in ein gemeinsames Ne
 1. *Werkbank → Pakete → KI-Assistent → Installieren* und die Rechte bestätigen.
 2. Reiter **Einstellungen**:
    - **Dienst-Adresse**, z. B. `http://ollama:11434/v1` – im leeren Feld steht das nur als Beispiel.
-   - **Modell**, z. B. `qwen2.5:3b`.
+   - **Modell**, z. B. `ministral-3:3b`.
    - **Schlüssel (API-Key)** nur, wenn der Dienst eine Anmeldung verlangt (Ollama nicht). Das DMS speichert ihn verschlüsselt.
    - **Antwort höchstens (Tokens)**, Standard 800 – kleiner ist schneller (gilt für „Frag deine Ablage“).
    - Abschnitt **Aus Dokument ausfüllen**: an/aus und **Zeitgrenze** (Standard 50 Sekunden).
@@ -85,9 +87,20 @@ Unter *Werkbank → Pakete → KI-Assistent* stellst du außerdem die **Höchstm
 
 ## Welches Modell?
 
-Kleine Modelle mit 1–4 Milliarden Parametern (quantisiert, z. B. Q4) laufen auch ohne Grafikkarte; gute Kandidaten für deutsche Fragen sind `qwen2.5:3b`, `llama3.2:3b` und `gemma2:2b`. Größere Modelle (7–8 Milliarden) antworten besser, brauchen aber eine Grafikkarte oder viel Geduld.
+Kleine Modelle mit etwa 3 Milliarden Parametern laufen auch ohne Grafikkarte. Mit offener Lizenz (Stand 11/2026, Einzelheiten im Handbuch unter [Welches Modell?](https://motom001.github.io/dms/admin/aktuell/ki-lokal/#modell)):
 
-Für **Aus Dokument ausfüllen** muss der Dienst **strukturierte Ausgabe nach JSON Schema** können (`response_format` vom Typ `json_schema`): Ollama ab Version 0.5, der Server von llama.cpp, LocalAI und vLLM können das. Ältere Dienste bekommen einen zweiten Versuch mit „nur JSON“; dann hängt es mehr vom Modell ab. Geeignet sind Modelle, die gut Anweisungen folgen, z. B. `qwen2.5:3b` oder `qwen2.5:7b`; ganz kleine Modelle (unter 2 Milliarden) erfinden eher Werte. Die Antwort ist kurz, aber der ganze Text muss gelesen werden – auf einem NAS ohne Grafikkarte kann eine lange Seite die Zeitgrenze überschreiten. Dann übernimmt die eingebaute Erkennung.
+| Modell (Name bei Ollama) | Größe | Lizenz | wofür |
+| --- | --- | --- | --- |
+| **`ministral-3:3b`** (Mistral AI) | 3 Mrd. | Apache-2.0 | **Empfehlung ohne Grafikkarte** – „Frag deine Ablage“ und „Aus Dokument ausfüllen“; spricht gut Deutsch |
+| `granite4.1:3b` (IBM) | 3 Mrd. | Apache-2.0 | Alternative ohne Grafikkarte |
+| `ministral-3:8b` (Mistral AI) | 8 Mrd. | Apache-2.0 | mit Grafikkarte (8 GB); ohne Grafik nur für Hintergrundarbeit wie „Aus Dokument ausfüllen“ |
+| `qwen2.5:7b` (Alibaba) | 7 Mrd. | Apache-2.0 | mit Grafikkarte; bewährt bei strukturierter Ausgabe |
+
+Das Paket hat **ein** Feld *Modell* – „Frag deine Ablage“ und „Aus Dokument ausfüllen“ nutzen dasselbe Modell. `qwen2.5:3b` (bis 1.1.0 hier als Beispiel genannt) steht unter der *Qwen Research License* – keine offene Lizenz, nur für nicht-kommerzielle Nutzung; `llama3.2:3b` unter der *Llama 3.2 Community License* mit Nutzungsbedingungen. Beide laufen technisch gut; prüfe die Lizenz, wenn du das DMS nicht nur privat nutzt.
+
+Modelle, die vor der Antwort **„nachdenken“** (etwa `qwen3` oder Modelle mit *thinking* im Namen), lassen auf einem NAS lange auf die erste Zeile warten. Ab 1.1.1 schickt das Paket deshalb bei jeder Anfrage `"reasoning_effort": "none"` mit – Ollama schaltet damit das Nachdenken ab. Lehnt ein Dienst das Feld ab (HTTP 400), wiederholt das Paket die Anfrage einmal ohne.
+
+Für **Aus Dokument ausfüllen** muss der Dienst **strukturierte Ausgabe nach JSON Schema** können (`response_format` vom Typ `json_schema`): Ollama ab Version 0.5, der Server von llama.cpp, LocalAI und vLLM können das. Ältere Dienste bekommen einen zweiten Versuch mit „nur JSON“; dann hängt es mehr vom Modell ab. Geeignet sind z. B. `ministral-3:3b` oder mit Grafikkarte `qwen2.5:7b`; ganz kleine Modelle (unter 2 Milliarden) erfinden eher Werte. Die Antwort ist kurz, aber der ganze Text muss gelesen werden – auf einem NAS ohne Grafikkarte kann eine lange Seite die Zeitgrenze überschreiten. Dann übernimmt die eingebaute Erkennung.
 
 ## Messung
 
@@ -111,11 +124,11 @@ Die Zeit bestimmt also fast nur der KI-Dienst. **Messungen mit echten Modellen a
 
 | Datei | Inhalt |
 | --- | --- |
-| [`code/assistent.cpp`](code/assistent.cpp) | das Modul (DMS-Paket-ABI 1): Aktionen `dms:antworten` (Chat Completions mit `"stream": true` über `netz_strom`/`netz_weiter`, Stücke mit `teil`), `dms:erkennen` (Chat Completions mit `response_format` `json_schema`, Prüfung der Antwort gegen das Schema) und `verbindung_testen` |
+| [`code/assistent.cpp`](code/assistent.cpp) | das Modul (DMS-Paket-ABI 1): Aktionen `dms:antworten` (Chat Completions mit `"stream": true` über `netz_strom`/`netz_weiter`, Stücke mit `teil`), `dms:erkennen` (Chat Completions mit `response_format` `json_schema`, Prüfung der Antwort gegen das Schema) und `verbindung_testen`; jede Anfrage mit `"reasoning_effort": "none"`, bei HTTP 400 einmal ohne |
 | [`code/json.h`](code/json.h) | kleiner JSON-Leser (wie bei KI lokal – Ähnlichkeit) |
 | [`code/bauen.sh`](code/bauen.sh) | Bau mit wasi-sdk – ohne fremde Bibliotheken und ohne Daten |
-| [`tests/modul_test.mjs`](tests/modul_test.mjs) | Ablauf mit einer Nachbildung des DMS und eines Dienstes: Stücke, Nachrichten, Fehler, Verbindung testen, Aus Dokument ausfüllen (Schema, Prüfung der Antwort, zweiter Versuch, Zeitgrenze, Rückfall) |
-| [`tests/attrappe.mjs`](tests/attrappe.mjs) | Attrappe eines OpenAI-kompatiblen Dienstes zum Ausprobieren ohne Modell – beantwortet auch Anfragen mit JSON Schema (liest E-Mail, Datum und „Feld: Wert“-Zeilen) |
+| [`tests/modul_test.mjs`](tests/modul_test.mjs) | Ablauf mit einer Nachbildung des DMS und eines Dienstes: Stücke, Nachrichten, Fehler, Verbindung testen, Aus Dokument ausfüllen (Schema, Prüfung der Antwort, zweiter Versuch, Zeitgrenze, Rückfall), Dienst ohne `reasoning_effort` |
+| [`tests/attrappe.mjs`](tests/attrappe.mjs) | Attrappe eines OpenAI-kompatiblen Dienstes zum Ausprobieren ohne Modell – beantwortet auch Anfragen mit JSON Schema (liest E-Mail, Datum und „Feld: Wert“-Zeilen); Modell `alt:1b` kennt kein JSON Schema, `streng:1b` kein `reasoning_effort` |
 
 ```sh
 pakete/ki_assistent/tests/pruefen.sh          # bauen und prüfen, ohne Netz

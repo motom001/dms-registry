@@ -84,6 +84,7 @@ const ok = (name) => console.log(`✓ ${name}`) || n++;
   assert.equal(q.methode, 'POST');
   assert.equal(q.kopf.authorization, undefined, 'ohne Schlüssel kein Kopf');
   assert.equal(q.body.model, 'kleines-modell:3b'); assert.equal(q.body.stream, true); assert.equal(q.body.max_tokens, 300);
+  assert.equal(q.body.reasoning_effort, 'none', 'ohne „Nachdenken“');
   const m = q.body.messages;
   assert.deepEqual(m.map((x) => x.role), ['system', 'user', 'assistant', 'user', 'user']);
   assert.equal(m[0].content, FRAGE.hinweis);
@@ -125,6 +126,7 @@ const ok = (name) => console.log(`✓ ${name}`) || n++;
   assert.equal(r.code, 0, r.ergebnis);
   assert.match(r.ergebnis, /^Erreichbar: http:\/\/ollama:11434\/v1 \(\d+ ms\)\. Modell „kleines-modell:3b“ vorhanden\. Probefrage beantwortet in \d+,\d s\.$/);
   assert.deepEqual(r.anfragen.map((a) => `${a.methode} ${a.url}`), ['GET http://ollama:11434/v1/models', 'POST http://ollama:11434/v1/chat/completions']);
+  assert.equal(r.anfragen[1].body.reasoning_effort, 'none');
   r = lauf({ aktion: 'verbindung_testen', einstellungen: { ...EINST, modell: 'anderes' } }, dienst);
   assert.equal(r.code, 0, r.ergebnis);
   r = lauf({ aktion: 'verbindung_testen', einstellungen: { ...EINST, modell: 'fehlt:7b' } }, dienst);
@@ -182,6 +184,7 @@ const ohneX = (o) => JSON.stringify(o).match(/"(\$schema|x-dms-[a-z]+|pattern)"/
   const q = r.anfragen[0];
   assert.equal(q.url, 'http://ollama:11434/v1/chat/completions');
   assert.equal(q.body.stream, true); assert.equal(q.body.temperature, 0); assert.equal(q.body.model, 'kleines-modell:3b');
+  assert.equal(q.body.reasoning_effort, 'none');
   // Strukturierte Ausgabe: Schema ohne $schema, x-dms-* und pattern; Auswahl ohne Werte fehlt.
   assert.equal(q.body.response_format.type, 'json_schema');
   const s = q.body.response_format.json_schema.schema;
@@ -201,13 +204,13 @@ const ohneX = (o) => JSON.stringify(o).match(/"(\$schema|x-dms-[a-z]+|pattern)"/
   ok('Aus Dokument ausfüllen: strukturierte Ausgabe, Antwort geprüft');
 }
 
-// 6. Dienst kennt json_schema nicht (HTTP 400): zweiter Versuch mit „nur JSON“; Antwort mit Text drumherum, Werte direkt, unter „vorschlaege“.
+// 6. Dienst kennt json_schema nicht (HTTP 400): erst ohne reasoning_effort, dann „nur JSON“; Antwort mit Text drumherum, Werte direkt, unter „vorschlaege“.
 {
   const r = lauf(ERKENNEN, (q, body) => (body.response_format.type === 'json_schema'
     ? { status: 400, stuecke: [JSON.stringify({ error: { message: "invalid response_format type 'json_schema'" } })] }
     : { status: 200, stuecke: [JSON.stringify({ choices: [{ message: { content: 'Gern:\n```json\n{"vorschlaege":{"vorname":"Jonas","honorar":{"betrag":80}}}\n```' } }] })] }));
   assert.equal(r.code, 0, r.ergebnis);
-  assert.deepEqual(r.anfragen.map((a) => a.body.response_format.type), ['json_schema', 'json_object']);
+  assert.deepEqual(r.anfragen.map((a) => [a.body.response_format.type, a.body.reasoning_effort]), [['json_schema', 'none'], ['json_schema', undefined], ['json_object', undefined]]);
   assert.deepEqual(JSON.parse(r.ergebnis), { vorname: { wert: 'Jonas', sicherheit: 'mittel' }, honorar: { wert: { betrag: 80 }, sicherheit: 'mittel' } });
   ok('Dienst ohne JSON Schema: zweiter Versuch mit „nur JSON“');
 }
@@ -241,6 +244,35 @@ const ohneX = (o) => JSON.stringify(o).match(/"(\$schema|x-dms-[a-z]+|pattern)"/
   r = lauf({ ...ERKENNEN, text: '  \n' }, () => { throw new Error('kein Netz erwartet'); });
   assert.equal(r.code, 1); assert.match(r.ergebnis, /keinen Text/);
   ok('Rückfall: Fehler zurück, wenn der Dienst nicht (rechtzeitig) antwortet');
+}
+
+// 9. Dienst lehnt "reasoning_effort" ab (HTTP 400): einmal ohne das Feld wiederholen – bei allen drei Aktionen.
+{
+  const streng = (antwort) => (q, body) => ('reasoning_effort' in (body ?? {})
+    ? { status: 400, stuecke: [JSON.stringify({ error: { message: 'Unrecognized request argument supplied: reasoning_effort' } })] }
+    : antwort(q, body));
+  let r = lauf(FRAGE, streng(() => ({ status: 200, stuecke: sse('Am 31.12.2026 [1].') })));
+  assert.equal(r.code, 0, r.ergebnis);
+  assert.deepEqual(r.anfragen.map((a) => a.body.reasoning_effort), ['none', undefined]);
+  assert.deepEqual(r.teile, ['Am 31.12.2026 [1].'], 'die abgelehnte Anfrage gibt nichts weiter');
+  const { reasoning_effort: _weg, ...ohne } = r.anfragen[0].body;
+  assert.deepEqual(r.anfragen[1].body, ohne, 'sonst dieselbe Anfrage');
+  // Aus Dokument ausfüllen: JSON Schema bleibt, nur das Feld fällt weg.
+  r = lauf(ERKENNEN, streng(() => ({ status: 200, stuecke: json({ vorname: { wert: 'Jonas' } }) })));
+  assert.equal(r.code, 0, r.ergebnis);
+  assert.deepEqual(r.anfragen.map((a) => [a.body.response_format.type, a.body.reasoning_effort]), [['json_schema', 'none'], ['json_schema', undefined]]);
+  // Verbindung testen: Probefrage einmal wiederholt.
+  const modelle = { data: [{ id: 'kleines-modell:3b' }] };
+  r = lauf({ aktion: 'verbindung_testen', einstellungen: EINST }, streng((q) => (q.methode === 'GET' ? { status: 200, stuecke: [JSON.stringify(modelle)] } : { status: 200, stuecke: ['{"choices":[{"message":{"content":"OK"}}]}'] })));
+  assert.equal(r.code, 0, r.ergebnis);
+  assert.deepEqual(r.anfragen.map((a) => a.body?.reasoning_effort ?? '-'), ['-', 'none', '-']);
+  // Anderer Fehler mit HTTP 400: nur einmal wiederholt, dann die Meldung des Dienstes.
+  r = lauf(FRAGE, () => ({ status: 400, stuecke: [JSON.stringify({ error: { message: 'context too long' } })] }));
+  assert.equal(r.code, 1); assert.equal(r.anfragen.length, 2); assert.match(r.ergebnis, /HTTP 400: context too long/);
+  // Andere Fehler (z. B. 404, 500) nicht wiederholt.
+  r = lauf(FRAGE, () => ({ status: 500, stuecke: ['{}'] }));
+  assert.equal(r.code, 1); assert.equal(r.anfragen.length, 1);
+  ok('Dienst ohne reasoning_effort: einmal ohne das Feld wiederholt');
 }
 
 console.log(`${n} Prüfungen bestanden`);

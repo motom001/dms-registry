@@ -3,7 +3,7 @@
 schema: 1
 id: ki_assistent
 name: KI-Assistent
-version: 1.1.0
+version: 1.1.1
 beschreibung: Beantwortet Fragen an die Ablage („Frag deine Ablage“) und füllt Felder aus Dokumenten („Aus Dokument ausfüllen“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.
 autor:
   name: Thomas Meissner
@@ -37,7 +37,7 @@ code:
           name: Modell
           typ: text
           pflicht: true
-          hilfe: Name des Modells beim Dienst, z. B. qwen2.5:3b oder llama3.2:3b (bei Ollama vorher mit „ollama pull …“ holen). „Verbindung testen“ zeigt, welche Modelle der Dienst kennt.
+          hilfe: Name des Modells beim Dienst, z. B. ministral-3:3b oder granite4.1:3b (bei Ollama vorher mit „ollama pull …“ holen). „Verbindung testen“ zeigt, welche Modelle der Dienst kennt.
         - schluessel: schluessel
           name: Schlüssel (API-Key)
           typ: geheim

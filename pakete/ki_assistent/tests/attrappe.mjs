@@ -6,11 +6,14 @@
 // Modell: „attrappe:1b“. Die Antwort nennt die erste Ausschnitt-Nummer aus den Nachrichten und die Frage.
 // Mit response_format (Aus Dokument ausfüllen) antwortet sie mit JSON nach dem Schema: E-Mail-Adressen, Datum
 // (TT.MM.JJJJ) und Zeilen „Feldname: Wert“ aus dem Text in <dokument>. Modell „alt:1b“ kennt json_schema nicht
-// (HTTP 400) wie ältere Dienste. Schreibt nichts mit außer der Anzahl der Anfragen.
+// (HTTP 400) wie ältere Dienste. "reasoning_effort" nimmt sie nur mit dem Wert "none" an; Modell „streng:1b“ lehnt
+// das Feld ab (HTTP 400) wie Dienste, die es nicht kennen. Schreibt nichts mit außer der Anzahl der Anfragen.
 import { createServer } from 'node:http';
 
 const MODELL = 'attrappe:1b';
 const ALT = 'alt:1b';
+const STRENG = 'streng:1b';
+const MODELLE = [MODELL, ALT, STRENG];
 const port = Number(process.argv[2] ?? 11434);
 let anfragen = 0;
 
@@ -46,15 +49,17 @@ const server = createServer((q, a) => {
   q.on('data', (d) => { roh += d; });
   q.on('end', () => {
     if (q.method === 'GET' && q.url === '/v1/models') {
-      a.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ object: 'list', data: [{ id: MODELL, object: 'model' }, { id: ALT, object: 'model' }] }));
+      a.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ object: 'list', data: MODELLE.map((id) => ({ id, object: 'model' })) }));
       return;
     }
     if (q.method !== 'POST' || q.url !== '/v1/chat/completions') { a.writeHead(404, { 'content-type': 'application/json' }).end('{"error":{"message":"not found"}}'); return; }
     let j;
     try { j = JSON.parse(roh); } catch { a.writeHead(400).end('{"error":{"message":"invalid json"}}'); return; }
-    if (j.model !== MODELL && j.model !== ALT) { a.writeHead(404, { 'content-type': 'application/json' }).end(JSON.stringify({ error: { message: `model "${j.model}" not found, try pulling it first` } })); return; }
+    if (!MODELLE.includes(j.model)) { a.writeHead(404, { 'content-type': 'application/json' }).end(JSON.stringify({ error: { message: `model "${j.model}" not found, try pulling it first` } })); return; }
+    const fehler = (meldung) => a.writeHead(400, { 'content-type': 'application/json' }).end(JSON.stringify({ error: { message: meldung } }));
+    if ('reasoning_effort' in j && (j.model === STRENG || j.reasoning_effort !== 'none')) { fehler("Unrecognized request argument supplied: reasoning_effort"); return; }
     const format = j.response_format?.type;
-    if (format === 'json_schema' && j.model === ALT) { a.writeHead(400, { 'content-type': 'application/json' }).end(JSON.stringify({ error: { message: "invalid response_format type 'json_schema'" } })); return; }
+    if (format === 'json_schema' && j.model === ALT) { fehler("invalid response_format type 'json_schema'"); return; }
     const text = format === 'json_schema' || format === 'json_object' ? felderFuer(j.messages ?? [], j.response_format.json_schema?.schema) : antwortFuer(j.messages ?? []);
     if (!j.stream) { a.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ choices: [{ index: 0, message: { role: 'assistant', content: text } }] })); return; }
     a.writeHead(200, { 'content-type': 'text/event-stream' });
