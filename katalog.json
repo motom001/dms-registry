@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T13:22:01Z",
+  "erstellt": "2026-11-02T13:46:24Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1972,6 +1972,37 @@
       },
       "lizenz": "Apache-2.0",
       "aktuell": "1.2.0"
+    },
+    {
+      "id": "office_email",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.88.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/office_email-1.0.0.zip",
+          "sha256": "7608c1ea95e4df7b79fcbe119a74181e8b0650f7cf6262ce5e22615f9c639a9e",
+          "groesse": 123932,
+          "veroeffentlicht": "2026-11-02T13:46:24Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/office_email",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/office_email/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/office_email/CHANGELOG.md"
+        }
+      ],
+      "name": "Office und E-Mail",
+      "beschreibung": "Macht Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und E-Mails (.eml, .msg) im Volltext durchsuchbar. Makros und eingebettete Objekte führt es nie aus. Abgeschottet im Paket-Läufer, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0"
     },
     {
       "id": "texterkennung",

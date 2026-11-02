@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Office und E-Mail – DMS-Pakete</title>
+  <meta name="description" content="Macht Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und E-Mails (.eml, .msg) im Volltext durchsuchbar. Makros und eingebettete Objekte führt es nie aus. Abgeschottet im Paket-Läufer, ohne Netz.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="../../sammeldatei.html">Ohne Internet</a><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">O</span>
+      <div><h1>Office und E-Mail</h1><p class="leise">Macht Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und E-Mails (.eml, .msg) im Volltext durchsuchbar. Makros und eingebettete Objekte führt es nie aus. Abgeschottet im Paket-Läufer, ohne Netz.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="office_email@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/office_email">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 02.11.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>Apache-2.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.88.0</dd>
+      <dt>Abhängigkeiten</dt><dd>keine</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><ul></ul>
+      <h3>Sichten</h3><ul></ul>
+      <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netzwerkzugriff</h2><ul class="rechte"><li>Mappen lesen: alle Mappentypen <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Dokumente lesen und Volltext schreiben <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-dokumente" title="Erklärung: Dokumente lesen und Volltext schreiben" aria-label="Erklärung: Dokumente lesen und Volltext schreiben (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Ein Dokument wurde hochgeladen <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignis-dokument-hochgeladen" title="Erklärung: Ein Dokument wurde hochgeladen" aria-label="Erklärung: Ein Dokument wurde hochgeladen (Administratorhandbuch)">?</a></li></ul></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Das DMS liest selbst nur PDF, JPEG und PNG. Mit dem Paket <strong>Office und E-Mail</strong> werden auch <strong>Word-, Excel- und PowerPoint-Dateien</strong>, <strong>OpenDocument</strong> (LibreOffice), <strong>RTF</strong>, <strong>Textdateien</strong> und <strong>E-Mails</strong> (<code>.eml</code>, Outlook <code>.msg</code>) <strong>im Volltext durchsuchbar</strong>: Das Paket liest den Text aus der Datei und gibt ihn dem DMS. Die Datei selbst bleibt unverändert.</p>
+<p>Es läuft im <strong>Paket-Läufer</strong> des DMS: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit. <strong>Makros und eingebettete Objekte führt es nie aus</strong> – es liest nur den Text.</p>
+<p>Ein <strong>Vorschaubild</strong> und eine <strong>Ansicht als PDF</strong> bringt das Paket (noch) nicht mit; das ist ein eigener Schritt mit einem Zusatzdienst (<a href="https://github.com/motom001/dms-registry/issues/72">#72</a>).</p>
+<h3>So arbeitet es</h3>
+<ol>
+<li>Eine Datei kommt ins DMS (Hochladen, Eingangsordner, Postfach, API). Das DMS meldet sie allen Paketen (Ereignis <strong>Dokument hochgeladen</strong>).</li>
+<li>Passt der Dateityp oder die Endung (siehe unten), holt das Paket die Datei, erkennt den Typ <strong>am Inhalt</strong> (nicht am Namen) und löst den Text heraus.</li>
+<li>Es schreibt den Text als <strong>Volltext</strong> des Dokuments. Am Dokument steht dann „Texterkennung durch Paket Office und E-Mail 1.0.0“ (so nennt das DMS jeden Volltext eines Pakets); die Suche findet das Dokument mit allen Wörtern daraus.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Was in den Volltext kommt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Word</strong> (<code>.docx</code>, <code>.docm</code>, <code>.dotx</code>)</td>
+<td>Text mit Absätzen, Tabellen, Textfeldern und Formeln; danach Fußnoten, Endnoten, Kommentare, Kopf- und Fußzeilen. Gelöschter Text aus der Änderungsverfolgung und Feldbefehle nicht.</td>
+</tr>
+<tr>
+<td><strong>Excel</strong> (<code>.xlsx</code>, <code>.xlsm</code>, <code>.xltx</code>)</td>
+<td>je Tabellenblatt sein Name und die Zellen Zeile für Zeile: Texte, Zahlen, Ergebnisse von Formeln (nicht die Formeln)</td>
+</tr>
+<tr>
+<td><strong>PowerPoint</strong> (<code>.pptx</code>, <code>.pptm</code>, <code>.ppsx</code>)</td>
+<td>Folien in ihrer Reihenfolge, mit Notizen</td>
+</tr>
+<tr>
+<td><strong>OpenDocument</strong> (<code>.odt</code>, <code>.ods</code>, <code>.odp</code>)</td>
+<td>Text, Tabellen mit Blattnamen, Folien</td>
+</tr>
+<tr>
+<td><strong>RTF</strong> (<code>.rtf</code>)</td>
+<td>Text (ohne Schriften, Farben, Bilder, Feldbefehle)</td>
+</tr>
+<tr>
+<td><strong>Text</strong> (<code>.txt</code>)</td>
+<td>der Text (UTF-8, UTF-16 oder Windows-1252)</td>
+</tr>
+<tr>
+<td><strong>E-Mail</strong> (<code>.eml</code>, auch aus einem mbox-Postfach)</td>
+<td>Von, An, Cc, Datum, Betreff, der Text der Nachricht (Klartext; nur HTML: ohne Tags, Skripte und Stile), die Namen der Anhänge – und der Text von Anhängen, die das Paket liest (Office, Text, weitergeleitete E-Mails; bis zur dritten Ebene)</td>
+</tr>
+<tr>
+<td><strong>Outlook</strong> (<code>.msg</code>)</td>
+<td>wie bei <code>.eml</code>: Absender, Empfänger, Datum, Betreff, Text, Anhänge</td>
+</tr>
+</tbody>
+</table>
+<p>Kann das Paket eine Datei nicht lesen, steht der Grund in der Übersicht des Pakets (<strong>Werkbank → Pakete → Office und E-Mail → Paket-Läufer</strong>), z. B. „Word lässt sich nicht lesen: mit einem Passwort verschlüsselt“.</p>
+<h3>Sicherheit</h3>
+<p>Office-Dateien und E-Mails können Makros, Skripte und eingebettete Programme enthalten. Das Paket liest davon nichts aus und führt nichts aus:</p>
+<ul>
+<li><strong>Nur Text:</strong> Aus Office-Dateien liest es nur die XML-Teile mit dem Text. <code>vbaProject.bin</code> (Makros in Word, Excel, PowerPoint), <code>Basic/</code> und <code>Scripts/</code> (Makros in LibreOffice) und eingebettete Objekte (<code>embeddings/</code>, OLE-Objekte) öffnet es nicht. Enthält eine Datei Makros, steht in der Übersicht „enthält Makros, nicht ausgeführt“.</li>
+<li><strong>XML ohne Nachladen:</strong> Eine DOCTYPE-Angabe überspringt es; eigene Entitäten und externe Verweise (XXE) gelten nicht.</li>
+<li><strong>E-Mails:</strong> HTML wird zu Text – Skripte, Stile, Bilder und Links werden nicht geladen oder ausgeführt. Verschlüsselte Teile (S/MIME, PGP/MIME) bleiben verschlüsselt.</li>
+<li><strong>ZIP-Bomben:</strong> Jeder Teil darf entpackt höchstens 96 MB groß und höchstens 1000-mal so groß wie gepackt sein; mehr liest das Paket nicht.</li>
+<li><strong>Kein Netz, kein Dateisystem:</strong> Der Paket-Läufer gibt dem Modul nur die API des DMS.</li>
+</ul>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Mappen lesen: alle Mappentypen</strong> – Dokumente liegen in Mappen beliebiger Typen; die Mappen selbst liest das Paket nicht.</li>
+<li><strong>Dokumente lesen und Volltext schreiben</strong> – es liest die Datei und schreibt den Volltext. Dateien ändert, ersetzt oder löscht es nicht. (Das DMS kennt für Pakete kein schmaleres Recht „nur Volltext schreiben“; mehr als den Volltext schreibt der Code nicht.)</li>
+<li><strong>Kein Netz.</strong> Alles geschieht im Paket.</li>
+<li>Es reagiert auf <strong>Dokument hochgeladen</strong> (<code>dokument.hochgeladen</code>).</li>
+</ul>
+<p>Einstellungen hat das Paket keine.</p>
+<h3>Grenzen</h3>
+<ul>
+<li><strong>Nur neue Dateien:</strong> Das Paket liest Dateien, die nach der Installation ins DMS kommen. Dateien, die schon vorher da waren, bekommen keinen Volltext – das DMS meldet sie Paketen bisher nicht.</li>
+<li><strong>Neue Versionen:</strong> Lädst du eine neue Version einer Word-Datei hoch, meldet das DMS sie dem Paket nicht; der Volltext der neuen Version fehlt dann.</li>
+<li><strong>Volltext neu erzeugen:</strong> Die Wartungsoperation <em>Volltext neu erzeugen</em> in der Werkbank entfernt den Text dieser Dateien, ohne dass das Paket ihn neu schreiben kann.</li>
+<li><strong>Länge:</strong> höchstens etwa 1,8 Millionen Zeichen je Datei (die API des DMS nimmt höchstens 2 MB je Anfrage); längere Texte kürzt das Paket („gekürzt“ in der Übersicht).</li>
+<li><strong>Größe:</strong> Dateien über 50 MB holt das Paket nicht.</li>
+<li><strong>Alte Formate:</strong> Word 97–2003 (<code>.doc</code>), Excel 97–2003 (<code>.xls</code>) und PowerPoint 97–2003 (<code>.ppt</code>) liest das Paket nicht. In einer E-Mail nennt es solche Anhänge nur mit Namen. Tipp: in Word, Excel oder LibreOffice öffnen und als <code>.docx</code>, <code>.xlsx</code> oder <code>.pptx</code> speichern.</li>
+<li><strong>Verschlüsselte Dateien</strong> (Passwort beim Öffnen) liest es nicht.</li>
+<li><strong>Zeichensätze in E-Mails:</strong> UTF-8, UTF-16, ISO-8859-1, ISO-8859-15 und Windows-1252. Andere (z. B. für Kyrillisch oder Japanisch) kommen nur lesbar an, wenn sie gültiges UTF-8 sind.</li>
+<li><strong>PDF-Anhänge</strong> einer E-Mail liest das Paket nicht – lege sie als eigenes Dokument ab, dann liest das DMS sie selbst.</li>
+</ul>
+<p>Die ersten drei Punkte brauchen eine Änderung im DMS; bis dahin hilft es, eine solche Datei noch einmal hochzuladen.</p>
+<h3>Messung</h3>
+<p>Gemessen am 02.11.2026 auf amd64 mit 2 Kernen (nebenher belastet), Node 22, nur das Herauslösen im Modul (<code>node tests/modul_test.mjs &lt;ordner&gt; --messen</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th style="text-align: right;">Größe</th>
+<th style="text-align: right;">Text</th>
+<th style="text-align: right;">Zeit</th>
+<th style="text-align: right;">Speicher</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Word, 30.000 Absätze (erfunden)</td>
+<td style="text-align: right;">94 KB</td>
+<td style="text-align: right;">1,8 Mio. Zeichen (gekürzt)</td>
+<td style="text-align: right;">0,09 s</td>
+<td style="text-align: right;">15 MB</td>
+</tr>
+<tr>
+<td>Excel, 100.000 Zeilen × 4 Spalten (erfunden)</td>
+<td style="text-align: right;">1,4 MB</td>
+<td style="text-align: right;">1,8 Mio. Zeichen (gekürzt)</td>
+<td style="text-align: right;">0,13 s</td>
+<td style="text-align: right;">23 MB</td>
+</tr>
+<tr>
+<td>PowerPoint-Vorlage aus LibreOffice, 13 Folien</td>
+<td style="text-align: right;">1,6 MB</td>
+<td style="text-align: right;">3.383 Zeichen</td>
+<td style="text-align: right;">0,01 s</td>
+<td style="text-align: right;">4 MB</td>
+</tr>
+<tr>
+<td>E-Mail, 1,1 MB Text</td>
+<td style="text-align: right;">1,1 MB</td>
+<td style="text-align: right;">1,2 Mio. Zeichen</td>
+<td style="text-align: right;">0,05 s</td>
+<td style="text-align: right;">13 MB</td>
+</tr>
+</tbody>
+</table>
+<p>Das Modul ist 0,2 MB groß.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS <strong>0.88.0</strong> oder neuer (Paket-Läufer, Ereignis „Dokument hochgeladen“, Volltext schreiben).</li>
+</ul>
+<h3>Für Entwickler</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/office_email.cpp"><code>code/office_email.cpp</code></a></td>
+<td>das Modul (DMS-Paket-ABI 1): Ereignis → Datei über die API → Text → <code>PUT /dokumente/{id}/volltext</code></td>
+</tr>
+<tr>
+<td><a href="code/erkennen.h"><code>code/erkennen.h</code></a></td>
+<td>Dateityp am Inhalt erkennen, an den passenden Leser geben</td>
+</tr>
+<tr>
+<td><a href="code/office.h"><code>code/office.h</code></a>, <a href="code/zip.h"><code>code/zip.h</code></a>, <a href="code/xml.h"><code>code/xml.h</code></a></td>
+<td>Office Open XML und OpenDocument: ZIP (mit zlib), XML, Text je Format</td>
+</tr>
+<tr>
+<td><a href="code/mail.h"><code>code/mail.h</code></a>, <a href="code/cfb.h"><code>code/cfb.h</code></a></td>
+<td>E-Mails (MIME, RFC 2047/2231) und Outlook <code>.msg</code> (Compound File)</td>
+</tr>
+<tr>
+<td><a href="code/rtf.h"><code>code/rtf.h</code></a>, <a href="code/zeichen.h"><code>code/zeichen.h</code></a></td>
+<td>RTF; Zeichensätze, Base64, Quoted-Printable, HTML zu Text</td>
+</tr>
+<tr>
+<td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
+<td>Bau: zlib 1.3.1 aus der Quelle (fester Commit, Hash geprüft)</td>
+</tr>
+<tr>
+<td><a href="tests/"><code>tests/</code></a></td>
+<td><code>beispiele.py</code> (Testdateien nur mit der Python-Standardbibliothek, mit erwarteten Texten), <code>modul_test.mjs</code> (das Modul mit einer Nachbildung des DMS), <code>ci.sh</code> (CI), <code>pruefen.sh</code> (alles lokal)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/office_email
+pakete/office_email/tests/pruefen.sh                                               # bauen und alle Tests
+</code></pre>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>). Im Modul steckt <a href="https://zlib.net/">zlib</a> 1.3.1 (Lizenz Zlib, Text in <a href="code/lizenzen/zlib.txt"><code>code/lizenzen/zlib.txt</code></a>); alle Leser für Office, E-Mail und RTF sind Teil dieses Pakets.</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung (dms-registry #30, Stufe 1): <strong>Volltext</strong> für Word, Excel und PowerPoint (<code>.docx</code>, <code>.xlsx</code>, <code>.pptx</code>, auch mit Makros und Vorlagen), OpenDocument (<code>.odt</code>, <code>.ods</code>, <code>.odp</code>), RTF, Textdateien und E-Mails (<code>.eml</code>, Outlook <code>.msg</code>, mit dem Text lesbarer Anhänge) – über das Ereignis „Dokument hochgeladen“ und <code>PUT /dokumente/{id}/volltext</code>.</li>
+<li>Makros und eingebettete Objekte werden nie gelesen oder ausgeführt; XML ohne DTD und Entitäten, Grenzen gegen ZIP-Bomben, kein Netz.</li>
+<li>Einzige fremde Bibliothek: zlib 1.3.1. Keine Einstellungen.</li>
+<li>Noch nicht: Vorschaubild und PDF-Ansicht (#72), Dateien von vor der Installation, neue Versionen (brauchen eine Änderung im DMS).</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.88.0</td><td><a href="../../archive/office_email-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="office_email@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>
