@@ -163,6 +163,11 @@ code:
 - **Third-party libraries** (decoders, encoders) need a suitable licence (see [Licences](#licences)), are built from fixed commits, with their licence texts under `code/lizenzen/` and a note in the README. Formats whose decoders require patent licences (e.g. HEVC in HEIC) only go into the catalogue after consulting the maintainers; the README says so openly.
 - The interface (flow, event, formats, limits, responses) is described in the DMS developer manual under [Dateien umwandeln](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#dateien-umwandeln) (German).
 
+**Text only** (e.g. [Office und E-Mail](pakete/office_email/) for Word, Excel, e-mails): if a file type needs no thumbnail but only the full text, the package reads the file on the event `dokument.hochgeladen` and writes the text with `PUT /dokumente/{id}/volltext` (`dokumente: schreiben`). The following applies:
+
+- **Run nothing:** macros, scripts and embedded objects are neither started nor evaluated; only read the parts of Office files that hold the text, XML without DTD and external entities, limits against ZIP bombs.
+- **No network**, as with converting. The file type is determined by the content, not the name; files the DMS reads itself (PDF, JPEG, PNG) are left alone.
+
 ## Orphaned packages
 
 If the maintainer of a package does not respond to bugs or necessary adjustments for three months, the package is marked as *orphaned* and can be taken over by someone else.

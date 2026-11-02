@@ -1,0 +1,22 @@
+# Paket Office und E-Mail – Volltext für Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und
+# E-Mails (.eml, .msg), die das DMS nicht selbst liest. Schema: schema/manifest.schema.json
+schema: 1
+id: office_email
+name: Office und E-Mail
+version: 1.0.0
+beschreibung: Macht Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und E-Mails (.eml, .msg) im Volltext durchsuchbar. Makros und eingebettete Objekte führt es nie aus. Abgeschottet im Paket-Läufer, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# Ereignis dokument.hochgeladen, GET /dokumente/{id}/inhalt und PUT /dokumente/{id}/volltext gibt es seit 0.88.0 (DMS #338).
+dms: ">=0.88.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: [dokument.hochgeladen]
+  rechte:
+    lesen: ["*"]           # Dokumente liegen in Mappen beliebiger Typen
+    dokumente: schreiben   # die Datei lesen und den Volltext schreiben; das Paket ändert keine Dateien
+  netz: []

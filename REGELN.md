@@ -163,6 +163,11 @@ code:
 - **Fremde Bibliotheken** (Decoder, Encoder) mit passender Lizenz (siehe [Lizenzen](#lizenzen)), auf feste Commits gebaut, mit ihren Lizenztexten unter `code/lizenzen/` und einem Hinweis im README. Formate, für deren Decoder Patentlizenzen verlangt werden (z. B. HEVC in HEIC), kommen erst nach Rücksprache mit den Pflegern in den Katalog; das README nennt das offen.
 - Die Schnittstelle (Ablauf, Ereignis, Formate, Grenzen, Antworten) beschreibt das Entwicklerhandbuch des DMS unter [Dateien umwandeln](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#dateien-umwandeln).
 
+**Nur Text aus Dokumenten** (z. B. [Office und E-Mail](pakete/office_email/) für Word, Excel, E-Mails): Braucht ein Dateityp kein Vorschaubild, sondern nur den Volltext, liest das Paket die Datei beim Ereignis `dokument.hochgeladen` und schreibt den Text mit `PUT /dokumente/{id}/volltext` (`dokumente: schreiben`). Dabei gilt:
+
+- **Nichts ausführen:** Makros, Skripte und eingebettete Objekte werden weder gestartet noch ausgewertet; aus Office-Dateien nur die Teile mit dem Text lesen, XML ohne DTD und externe Entitäten, Grenzen gegen ZIP-Bomben.
+- **Kein Netz**, wie beim Umwandeln. Der Typ zählt am Inhalt, nicht am Namen; Dateien, die das DMS selbst liest (PDF, JPEG, PNG), lässt das Paket aus.
+
 ## Verwaiste Pakete
 
 Antwortet der Pfleger auf Fehler oder nötige Anpassungen drei Monate lang nicht, wird das Paket als *verwaist* markiert und kann von jemand anderem übernommen werden.
