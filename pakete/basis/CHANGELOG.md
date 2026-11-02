@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.4.0
+
+- Neu: **gleichbedeutende Wörter** für die Suche (DMS #356) – wer „Rechnung“ sucht, findet auch „Beleg“; dazu Quittung/Kassenbon/Kassenzettel, Vertrag/Vereinbarung, Kündigung/Beendigung, Police/Versicherungsschein, Mahnung/Zahlungserinnerung, Gutschrift/Erstattung, Lastschrift/Abbuchung und Anschrift/Adresse. Nur allgemeine Wörter; fachliche bringen die Fachpakete mit (z. B. Fahrzeuge, Vermietung).
+- Braucht DMS ab 0.127.0 (Wortlisten). Mappentypen, Sichten und Beispiele sind unverändert.
+
 ## 1.3.0
 
 - **Formate** (dms-registry #55, DMS #535): Telefon, Fax und Mobil prüft das DMS als Telefonnummer, E-Mail als E-Mail-Adresse, Internetseite als Internetseite und die IBAN der Organisation mit Länge und Prüfziffer. Die PLZ hat in Deutschland genau 5 Ziffern; steht im Feld *Land* ein anderes Land, ist sie frei. Am Handy erscheint die passende Tastatur, Telefon und E-Mail lassen sich antippen.

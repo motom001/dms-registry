@@ -32,16 +32,18 @@ Eine **Person** ist ein Kontakt – Ansprechpartnerin bei der Bank, Hausarzt, Ve
 
 **Sichten:** *Organisationen* mit *Versicherungen*, *Banken*, *Behörden*, *Ärzte und Praxen* und *Niederlassungen*; *Personen* mit *Familie und Freunde* und *Ansprechpartner*.
 
+**Gleichbedeutende Wörter für die Suche:** *Rechnung, Beleg* · *Quittung, Kassenbon, Kassenzettel* · *Vertrag, Vereinbarung* · *Kündigung, Beendigung* · *Police, Versicherungsschein, Versicherungspolice* · *Mahnung, Zahlungserinnerung* · *Gutschrift, Erstattung, Rückerstattung* · *Lastschrift, Abbuchung* · *Anschrift, Adresse*. Wer eines sucht, findet auch die anderen. Das sind nur allgemeine Wörter, die in jeder Ablage vorkommen; fachliche Wörter bringen die Fachpakete mit (z. B. Kfz/Auto in Fahrzeuge). Sie stehen im DMS unter Werkbank → Suche; eigene Gruppen kannst du dort ergänzen.
+
 **Beispiele (optional):** „Stadtwerke Musterstadt“, „Praxis Dr. Beispiel“, die „Sparkasse Musterstadt“ mit zwei Filialen, die Kundenberaterin Sabine Beraterin (Filiale Marktplatz), Hausarzt Dr. Bernd Beispiel und Oma Muster – erfundene Daten, untereinander verknüpft.
 
 ## Voraussetzungen
 
-- DMS ab Version 0.121 (Feldformate und Datumsgrenzen; Version 1.0.0 lief ab 0.63)
+- DMS ab Version 0.127 (Wortlisten für die Suche; vorher 0.121 für Feldformate und Datumsgrenzen; Version 1.0.0 lief ab 0.63)
 - keine weiteren Pakete
 
 ## Rechte und Netz
 
-Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Sichten und auf Wunsch Beispiele an.
+Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Sichten, gleichbedeutende Wörter für die Suche und auf Wunsch Beispiele an.
 
 ## Nach der Installation
 

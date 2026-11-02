@@ -400,6 +400,20 @@ class Wortlisten(unittest.TestCase):
     def test_erwartung(self):
         self.assertTrue(any('Anzahl wortlisten' in f for f in self.paket([{'woerter': ['Kfz', 'Auto']}], erwartung=2)))
 
+    def test_kein_wort_in_zwei_paketen(self):
+        """Allgemeine Wörter stehen in Basis, fachliche im Fachpaket – keines doppelt im Katalog (DMS #356)."""
+        gesehen: dict[str, str] = {}
+        for m_pfad in sorted((WURZEL / 'pakete').glob('*/manifest.yaml')):
+            datei = (yaml.safe_load(m_pfad.read_text(encoding='utf-8')).get('inhalt') or {}).get('wortlisten')
+            if not datei:
+                continue
+            paket = m_pfad.parent.name
+            for g in yaml.safe_load((m_pfad.parent / datei).read_text(encoding='utf-8')) or []:
+                for w in g['woerter']:
+                    k = pruefen.falte(w)
+                    self.assertIn(gesehen.setdefault(k, paket), (paket,), f'„{w}“ steht in {gesehen[k]} und {paket}')
+        self.assertIn(pruefen.falte('Rechnung'), gesehen)
+
 
 if __name__ == '__main__':
     unittest.main()
