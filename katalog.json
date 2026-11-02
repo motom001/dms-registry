@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T12:53:54Z",
+  "erstellt": "2026-11-02T13:22:01Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1977,6 +1977,24 @@
       "id": "texterkennung",
       "versionen": [
         {
+          "version": "2.1.0",
+          "dms": ">=0.139.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung-2.1.0.zip",
+          "sha256": "4fdef0ff2c7aafc0ce272908eb235dbc4983c0e32c42bbd3f183373f755b5d76",
+          "groesse": 8115599,
+          "veroeffentlicht": "2026-11-02T13:22:01Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/CHANGELOG.md"
+        },
+        {
           "version": "2.0.0",
           "dms": ">=0.133.0",
           "abhaengigkeiten": {},
@@ -2014,13 +2032,13 @@
         }
       ],
       "name": "Texterkennung",
-      "beschreibung": "Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache automatisch, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.",
+      "beschreibung": "Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache je Seite, auch Mischseiten, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "2.0.0"
+      "aktuell": "2.1.0"
     },
     {
       "id": "texterkennung_fra",
