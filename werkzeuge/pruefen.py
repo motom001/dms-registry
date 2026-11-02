@@ -89,6 +89,9 @@ DMS_TEXTERKENNUNG_AB = (0, 133, 0)
 DMS_UMWANDELN_AB = (0, 137, 0)
 # Schnittstelle dms:sicherung-lesen und Ereignis sicherung.fertig (DMS #585): Sicherung außer Haus, ab DMS 0.142.0.
 DMS_SICHERUNG_AB = (0, 142, 0)
+# Schnittstelle dms:volltext, code.volltext und Ereignis datei.volltext (DMS #614): Volltext aus Paketen ohne Schreibrecht
+# auf Dokumente, ab DMS 0.145.0.
+DMS_VOLLTEXT_AB = (0, 145, 0)
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -160,6 +163,23 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
         fehler.append('code.ereignisse: datei.umwandeln gibt es nur mit code.rechte.schnittstellen: [dms:umwandeln]')
     if (umwandeln or typen or ereignis) and (ab is None or ab < DMS_UMWANDELN_AB):
         fehler.append('code.rechte.schnittstellen: dms:umwandeln kennt das DMS erst ab 0.137.0 – bitte dms: ">=0.137.0" angeben')
+    # dms:volltext (DMS #614): ab 0.145.0; nur mit code.volltext, dem Ereignis datei.volltext und Lesen von Dokumenten.
+    volltext = 'dms:volltext' in (rechte.get('schnittstellen') or [])
+    vtypen = code.get('volltext') or []
+    vereignis = 'datei.volltext' in (code.get('ereignisse') or [])
+    if volltext:
+        if not vtypen:
+            fehler.append('code.rechte.schnittstellen: dms:volltext braucht code.volltext – die Dateitypen, für die das Paket den Volltext liefert')
+        if rechte.get('dokumente', 'keine') == 'keine':
+            fehler.append('code.rechte.schnittstellen: dms:volltext braucht auch code.rechte.dokumente: lesen – das Paket liest die Datei')
+        if not vereignis:
+            fehler.append('code.rechte.schnittstellen: dms:volltext braucht das Ereignis datei.volltext in code.ereignisse')
+    elif vtypen:
+        fehler.append('code.volltext: braucht code.rechte.schnittstellen: [dms:volltext]')
+    elif vereignis:
+        fehler.append('code.ereignisse: datei.volltext gibt es nur mit code.rechte.schnittstellen: [dms:volltext]')
+    if (volltext or vtypen or vereignis) and (ab is None or ab < DMS_VOLLTEXT_AB):
+        fehler.append('code.rechte.schnittstellen: dms:volltext kennt das DMS erst ab 0.145.0 – bitte dms: ">=0.145.0" angeben')
     # dms:sicherung-lesen (DMS #585): ab 0.142.0, nur zusammen mit dem Ereignis sicherung.fertig.
     sichern = 'dms:sicherung-lesen' in (rechte.get('schnittstellen') or [])
     fertig = 'sicherung.fertig' in (code.get('ereignisse') or [])

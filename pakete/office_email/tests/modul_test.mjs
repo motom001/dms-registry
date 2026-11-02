@@ -1,10 +1,10 @@
 // Test des gebauten Moduls (code/modul.wasm) mit einer kleinen Nachbildung des DMS: Importe dms.* und WASI,
-// Ereignis „Dokument hochgeladen“, die Datei über GET /dokumente/{id}/inhalt, der Volltext über
+// Ereignis „Datei braucht Volltext“ (und „Dokument hochgeladen“ wie bis 1.0.0), die Datei über GET /dokumente/{id}/inhalt, der Volltext über
 // PUT /dokumente/{id}/volltext. Die Fälle (was im Text stehen muss und was nicht) schreibt tests/beispiele.py.
 //
 //   node tests/modul_test.mjs <ordner mit den Testdateien aus tests/beispiele.py>
 //   node tests/modul_test.mjs <ordner> --messen     # Zeit, Speicher und Textlänge je Datei im Ordner
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -14,7 +14,7 @@ if (!ordner) { console.error('Aufruf: node tests/modul_test.mjs <ordner>'); proc
 const modul = new WebAssembly.Module(readFileSync(join(hier, '..', 'code', 'modul.wasm')));
 
 /** Ein Aufruf wie im Paket-Läufer: frischer Speicher (höchstens 256 MB), Ereignis rein, Ergebnis und API-Aufrufe raus. */
-function lauf({ datei, name = datei, mime = '', inhalt = 200, volltext = 200, art = 'dokument.hochgeladen', groesse = 1 }) {
+function lauf({ datei, name = datei, mime = '', inhalt = 200, volltext = 200, art = 'datei.volltext', groesse = 1 }) {
   const aufrufe = [];
   let antwort = new Uint8Array(0), ergebnis = '', text = null;
   const protokoll = [];
@@ -22,7 +22,9 @@ function lauf({ datei, name = datei, mime = '', inhalt = 200, volltext = 200, ar
   const u8 = () => new Uint8Array(memory.buffer);
   const lies = (p, l) => new TextDecoder('utf-8', { fatal: true }).decode(u8().slice(p, p + l));
   const json = (status, x) => { antwort = new TextEncoder().encode(JSON.stringify(x)); return status; };
-  const api = (q) => {
+  let koerper = 0;
+  const api = (q, laenge) => {
+    koerper = laenge;
     aufrufe.push(`${q.methode} ${q.pfad}`);
     if (q.methode === 'GET' && q.pfad === '/dokumente/dok-1/inhalt') {
       if (inhalt !== 200) return json(inhalt, { fehler: 'gibt es nicht' });
@@ -32,13 +34,15 @@ function lauf({ datei, name = datei, mime = '', inhalt = 200, volltext = 200, ar
     if (q.methode === 'PUT' && q.pfad === '/dokumente/dok-1/volltext') {
       if (volltext !== 200) return json(volltext, { fehler: 'Störung' });
       if (typeof q.body?.text !== 'string' || Object.keys(q.body).length !== 1) return json(422, { fehler: 'text fehlt' });
+      // Wie das DMS (ab 0.145.0): höchstens 5 Millionen Zeichen, Körper bis 32 MB.
+      if (q.body.text.length > 5_000_000 || koerper > 32 * 1024 * 1024) return json(413, { fehler: 'zu lang' });
       text = q.body.text;
       return json(200, { id: 'dok-1' });
     }
     return json(404, { fehler: `unbekannt: ${q.methode} ${q.pfad}` });
   };
   const dms = {
-    api: (p, l) => api(JSON.parse(lies(p, l))),
+    api: (p, l) => api(JSON.parse(lies(p, l)), l),
     antwort_laenge: () => antwort.length,
     antwort_lesen: (p, max) => { const n = Math.min(max, antwort.length); u8().set(antwort.subarray(0, n), p); return n; },
     ergebnis: (p, l) => { ergebnis = lies(p, l); return 0; },
@@ -61,8 +65,9 @@ function lauf({ datei, name = datei, mime = '', inhalt = 200, volltext = 200, ar
   inst.exports._initialize?.();
   const ereignis = new TextEncoder().encode(JSON.stringify({
     art, id: 'e-1', versuch: 1, erstellt: new Date().toISOString(),
-    daten: { dokument: 'dok-1', mappe: 'mappe-1', name, mime, groesse, volltextGeplant: false },
-    paket: { id: 'office_email', version: '1.0.0' }, einstellungen: {},
+    daten: art === 'dokument.hochgeladen' ? { dokument: 'dok-1', mappe: 'mappe-1', name, mime, groesse, volltextGeplant: false }
+      : { dokument: 'dok-1', mappe: 'mappe-1', name, mime, groesse, sha256: '0'.repeat(64) },
+    paket: { id: 'office_email', version: '1.1.0' }, einstellungen: {},
   }));
   const p = inst.exports.dms_puffer(ereignis.length);
   u8().set(ereignis, p);
@@ -109,5 +114,16 @@ r = lauf({ datei: 'brief.docx', volltext: 503 });
 pruefe('DMS gestört (503): Fehlercode, Wiederholung', r.code !== 0, r);
 r = lauf({ datei: 'brief.docx', art: 'paket.einstellungen_geaendert' });
 pruefe('Anderes Ereignis: nichts zu tun', r.code === 0 && r.aufrufe.length === 0, r);
+r = lauf({ datei: 'brief.docx', art: 'dokument.hochgeladen' });
+pruefe('Dokument hochgeladen (wie bis 1.0.0): wird gelesen', r.code === 0 && r.text?.includes('Sehr geehrte'), r);
+r = lauf({ datei: 'brief.docx', name: 'archiv.zip', mime: 'application/octet-stream' });
+pruefe('Unbekannter Typ, fremde Endung: nicht geholt, Grund fürs Dokument', r.code === 0 && r.aufrufe.length === 0 && r.ergebnis.includes('nichts zu tun'), r);
+// Lange Texte bis zur Grenze des DMS (5 Mio. Zeichen, #614): über 2 MB in einer Anfrage, Umlaute zählen als ein Zeichen.
+writeFileSync(join(ordner, 'lang.txt'), 'Kündigung Mietvertrag Wohnung Lena Jonas ä\n'.repeat(90_000));
+r = lauf({ datei: 'lang.txt', mime: 'text/plain' });
+pruefe('Text mit knapp 4 Mio. Zeichen (gut 4 MB): ganz, ungekürzt', r.code === 0 && r.text?.length > 3_800_000 && !r.ergebnis.includes('gekürzt'), r, `Länge ${r.text?.length}`);
+writeFileSync(join(ordner, 'zulang.txt'), 'Nebenkostenabrechnung Herr Özdemir 2026\n'.repeat(150_000));
+r = lauf({ datei: 'zulang.txt', mime: 'text/plain' });
+pruefe('Text mit 6 Mio. Zeichen: auf 5 Mio. gekürzt', r.code === 0 && r.text?.length <= 5_000_000 && r.text.length > 4_500_000 && r.ergebnis.includes('gekürzt'), r, `Länge ${r.text?.length}`);
 
 process.exit(fehler ? 1 : 0);

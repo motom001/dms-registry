@@ -265,6 +265,8 @@ EREIGNISSE = {
     'datei.umwandeln': ('Eine Datei soll umgewandelt werden (Dateitypen, die das DMS nicht selbst liest)', 'ereignis-datei-umwandeln'),
     # DMS #585, ab 0.142.0
     'sicherung.fertig': ('Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden', 'ereignis-sicherung-fertig'),
+    # DMS #614, ab 0.145.0
+    'datei.volltext': ('Eine Datei braucht ihren Volltext (Dateitypen, die das DMS nicht selbst liest)', 'ereignis-datei-volltext'),
 }
 DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und Volltext schreiben'}
 SCHNITTSTELLEN = {
@@ -279,9 +281,22 @@ SCHNITTSTELLEN = {
     'dms:umwandeln': ('Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln)', 'recht-umwandeln', 'Dateien umwandeln'),
     # DMS #585, ab 0.142.0
     'dms:sicherung-lesen': ('Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)', 'recht-sicherung-lesen', 'Sicherung lesen'),
+    # DMS #614, ab 0.145.0 – dahinter die Dateitypen aus code.volltext
+    'dms:volltext': ('Volltext für Dateien liefern, die das DMS nicht selbst lesen kann – das Paket liest die Datei und schreibt nur ihren Volltext; Dokumente ändern, ersetzen oder löschen kann es nicht (dms:volltext)', 'recht-volltext', 'Volltext liefern'),
 }
-# Kurze Namen der Dateitypen hinter dms:umwandeln (wie DATEITYP_NAMEN im DMS, shared/src/dateiumwandlung.ts).
-DATEITYP_NAMEN = {'image/tiff': 'TIFF', 'image/webp': 'WebP', 'image/gif': 'GIF', 'image/bmp': 'BMP', 'image/heic': 'HEIC', 'image/heif': 'HEIF', 'image/avif': 'AVIF'}
+# Kurze Namen der Dateitypen hinter dms:umwandeln und dms:volltext (wie DATEITYP_NAMEN im DMS, shared/src/dateiumwandlung.ts).
+DATEITYP_NAMEN = {
+    'image/tiff': 'TIFF', 'image/webp': 'WebP', 'image/gif': 'GIF', 'image/bmp': 'BMP', 'image/heic': 'HEIC', 'image/heif': 'HEIF', 'image/avif': 'AVIF',
+    'application/msword': 'Word', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Word',
+    'application/vnd.ms-excel': 'Excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'Excel',
+    'application/vnd.ms-powerpoint': 'PowerPoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PowerPoint',
+    'application/vnd.oasis.opendocument.text': 'OpenDocument-Text', 'application/vnd.oasis.opendocument.spreadsheet': 'OpenDocument-Tabelle',
+    'application/vnd.oasis.opendocument.presentation': 'OpenDocument-Präsentation',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.template': 'Word', 'application/vnd.ms-word.document.macroenabled.12': 'Word',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.template': 'Excel', 'application/vnd.ms-excel.sheet.macroenabled.12': 'Excel',
+    'application/vnd.openxmlformats-officedocument.presentationml.slideshow': 'PowerPoint', 'application/vnd.ms-powerpoint.presentation.macroenabled.12': 'PowerPoint',
+    'message/rfc822': 'E-Mail', 'application/vnd.ms-outlook': 'Outlook-E-Mail', 'application/rtf': 'RTF', 'text/rtf': 'RTF', 'text/plain': 'Text',
+}
 
 
 def adressen(code: dict) -> list[str]:
@@ -329,7 +344,8 @@ def rechte_text(code: dict, typen: dict | None = None) -> str:
         zeilen.append(DOKUMENT_RECHTE[dok] + hilfe('recht-dokumente', DOKUMENT_RECHTE[dok]))
     for x in r.get('schnittstellen') or []:
         if x in SCHNITTSTELLEN:
-            typen_ = list(dict.fromkeys(DATEITYP_NAMEN.get(m, m) for m in code.get('umwandeln') or [])) if x == 'dms:umwandeln' else []
+            feld = {'dms:umwandeln': 'umwandeln', 'dms:volltext': 'volltext'}.get(x)
+            typen_ = list(dict.fromkeys(DATEITYP_NAMEN.get(m, m) for m in code.get(feld) or [])) if feld else []
             zeilen.append(e(SCHNITTSTELLEN[x][0] + (': ' + ', '.join(typen_) if typen_ else '')) + hilfe(SCHNITTSTELLEN[x][1], SCHNITTSTELLEN[x][2]))
     a = adressen(code)
     zeilen.append(netz_text(code.get('netz') or [], a)
