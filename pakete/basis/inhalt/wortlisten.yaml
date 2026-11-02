@@ -1,0 +1,13 @@
+# Gleichbedeutende Wörter für die Suche (ab DMS 0.127.0): Wer eines sucht, findet auch die anderen.
+# Nur allgemeine Wörter, die in jeder Ablage vorkommen. Fachliche Wörter stehen in den Fachpaketen
+# (z. B. Kfz/Auto in Fahrzeuge, Nebenkosten/Betriebskosten in Vermietung) und werden hier nicht wiederholt.
+# Schema: schema/inhalt.schema.json (wortlisten)
+- woerter: [Rechnung, Beleg]
+- woerter: [Quittung, Kassenbon, Kassenzettel]
+- woerter: [Vertrag, Vereinbarung]
+- woerter: [Kündigung, Beendigung]
+- woerter: [Police, Versicherungsschein, Versicherungspolice]
+- woerter: [Mahnung, Zahlungserinnerung]
+- woerter: [Gutschrift, Erstattung, Rückerstattung]
+- woerter: [Lastschrift, Abbuchung]
+- woerter: [Anschrift, Adresse]

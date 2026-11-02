@@ -136,6 +136,7 @@ A package can bring **synonyms** for the search (from DMS 0.127.0): whoever sear
 
 - 2 to 20 different words per group, 2 to 60 characters each; upper/lower case and umlauts do not count when comparing ("Gebühr" and "gebuhr" are the same word). At most 1000 groups per package.
 - Only words that really mean the same in everyday use and belong to the topic of the package – no generic terms ("Vertrag" for everything) and no names of companies or people.
+- General words found in every archive (Rechnung/Beleg, Vertrag/Vereinbarung) belong in the **Basis** package; subject packages only bring their subject-specific words. A word appears in at most one package of the catalogue (checked by `werkzeuge/test_pruefen.py`).
 - `tests/erwartung.yaml` states the number of groups: `wortlisten: 5`.
 - The DMS creates the groups on installation, replaces them with those of the package on an update and removes them together with the package.
 
