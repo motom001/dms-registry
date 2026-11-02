@@ -211,7 +211,8 @@ def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
         <span class="name"{de}>{e(p['name'])}</span>
         <span class="text"{de}>{e(p['beschreibung'])}</span>
         <span class="unter">{e(p['aktuell'])} · {e(p['autor']['name'])}{mit_code}</span>
-        <span class="chips">{chips}<span class="passt-marke" hidden></span></span>
+        <span class="chips">{chips}</span>
+        <span class="passt-marke" hidden></span>
       </a>'''
 
 
@@ -655,11 +656,15 @@ details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
 .paketkopf .titel > .chips:empty { display: none; }
 .chip { display: inline-block; font-size: .78rem; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--linie); color: var(--leise); text-decoration: none; background: var(--grund); }
 a.chip:hover, a.chip:focus-visible { border-color: var(--a); color: var(--a); }
-.passt-marke { font-size: .78rem; padding: 1px 8px; border-radius: 999px; }
-.passt-marke.ja { color: #1b5e20; background: #e8f5e9; }
-.passt-marke.aelter { color: #7a4a00; background: #fff3e0; }
-.passt-marke.nein { color: var(--leise); background: var(--grund); border: 1px solid var(--linie); }
-@media (prefers-color-scheme: dark) { .passt-marke.ja { color: #a5d6a7; background: #1b3a1e; } .passt-marke.aelter { color: #ffcc80; background: #3d2a0f; } }
+.kachel { position: relative; }
+.kachel.mit-marke { padding-bottom: 40px; }
+/* Passt zu meinem DMS (#84): fester Platz unten rechts, Punkt + Text – bewusst anders als die Kategorie-Chips */
+.passt-marke { position: absolute; right: 14px; bottom: 12px; font-size: .82rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.passt-marke::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+.passt-marke.ja { color: #2e7d32; }
+.passt-marke.aelter { color: #b26a00; }
+.passt-marke.nein { color: #c62828; }
+@media (prefers-color-scheme: dark) { .passt-marke.ja { color: #81c784; } .passt-marke.aelter { color: #ffb74d; } .passt-marke.nein { color: #ef9a9a; } }
 .dmsversion { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: -8px 0 18px; }
 .dmsversion input#dms-version { font: inherit; padding: 6px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); width: 9em; }
 .dmsversion .haken { display: inline-flex; gap: 6px; align-items: center; }
@@ -776,7 +781,7 @@ SKRIPT = '''
     if (nur) { nur.disabled = !dms; if (!dms) nur.checked = false; }
     document.querySelectorAll('.kachel').forEach(function (el) {
       var r = el.dataset.versionen ? pruefe(JSON.parse(el.dataset.versionen), dms) : null, m = el.querySelector('.passt-marke');
-      if (m) { m.hidden = !r; m.textContent = marke(r); m.className = 'passt-marke' + (r ? ' ' + r.fall : ''); }
+      if (m) { m.hidden = !r; m.textContent = marke(r); m.className = 'passt-marke' + (r ? ' ' + r.fall : ''); el.classList.toggle('mit-marke', !!r); }
       var ok = (!q || el.dataset.suche.indexOf(q) >= 0) && (!a || el.dataset.art === a)
         && (!k || (' ' + el.dataset.kategorien + ' ').indexOf(' ' + k + ' ') >= 0) && (!au || el.dataset.autor === au)
         && (!(nur && nur.checked) || (r && r.fall === 'ja'));
