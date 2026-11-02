@@ -219,6 +219,8 @@ EREIGNISSE = {
     'paket.einstellungen_geaendert': ('Die Einstellungen des Pakets wurden geändert', 'ereignis-einstellungen-geandert'),
     # DMS #577, ab 0.137.0
     'datei.umwandeln': ('Eine Datei soll umgewandelt werden (Dateitypen, die das DMS nicht selbst liest)', 'ereignis-datei-umwandeln'),
+    # DMS #585, ab 0.142.0
+    'sicherung.fertig': ('Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden', 'ereignis-sicherung-fertig'),
 }
 DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und Volltext schreiben'}
 SCHNITTSTELLEN = {
@@ -231,6 +233,8 @@ SCHNITTSTELLEN = {
     'dms:texterkennung': ('Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)', 'recht-texterkennung', 'Texterkennung übernehmen'),
     # DMS #577, ab 0.137.0 – dahinter die Dateitypen aus code.umwandeln
     'dms:umwandeln': ('Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln)', 'recht-umwandeln', 'Dateien umwandeln'),
+    # DMS #585, ab 0.142.0
+    'dms:sicherung-lesen': ('Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)', 'recht-sicherung-lesen', 'Sicherung lesen'),
 }
 # Kurze Namen der Dateitypen hinter dms:umwandeln (wie DATEITYP_NAMEN im DMS, shared/src/dateiumwandlung.ts).
 DATEITYP_NAMEN = {'image/tiff': 'TIFF', 'image/webp': 'WebP', 'image/gif': 'GIF', 'image/bmp': 'BMP', 'image/heic': 'HEIC', 'image/heif': 'HEIF', 'image/avif': 'AVIF'}

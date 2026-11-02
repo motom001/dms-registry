@@ -87,6 +87,8 @@ DMS_WORTLISTEN_AB = (0, 127, 0)
 DMS_TEXTERKENNUNG_AB = (0, 133, 0)
 # Schnittstelle dms:umwandeln, code.umwandeln und Ereignis datei.umwandeln (DMS #577): Dateien umwandeln, ab DMS 0.137.0.
 DMS_UMWANDELN_AB = (0, 137, 0)
+# Schnittstelle dms:sicherung-lesen und Ereignis sicherung.fertig (DMS #585): Sicherung außer Haus, ab DMS 0.142.0.
+DMS_SICHERUNG_AB = (0, 142, 0)
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -158,6 +160,15 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
         fehler.append('code.ereignisse: datei.umwandeln gibt es nur mit code.rechte.schnittstellen: [dms:umwandeln]')
     if (umwandeln or typen or ereignis) and (ab is None or ab < DMS_UMWANDELN_AB):
         fehler.append('code.rechte.schnittstellen: dms:umwandeln kennt das DMS erst ab 0.137.0 – bitte dms: ">=0.137.0" angeben')
+    # dms:sicherung-lesen (DMS #585): ab 0.142.0, nur zusammen mit dem Ereignis sicherung.fertig.
+    sichern = 'dms:sicherung-lesen' in (rechte.get('schnittstellen') or [])
+    fertig = 'sicherung.fertig' in (code.get('ereignisse') or [])
+    if sichern and not fertig:
+        fehler.append('code.rechte.schnittstellen: dms:sicherung-lesen braucht das Ereignis sicherung.fertig in code.ereignisse')
+    if fertig and not sichern:
+        fehler.append('code.ereignisse: sicherung.fertig gibt es nur mit code.rechte.schnittstellen: [dms:sicherung-lesen]')
+    if (sichern or fertig) and (ab is None or ab < DMS_SICHERUNG_AB):
+        fehler.append('code.rechte.schnittstellen: dms:sicherung-lesen kennt das DMS erst ab 0.142.0 – bitte dms: ">=0.142.0" angeben')
     adressen = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
     if adressen and vor_antworten:
         fehler.append('code.einstellungen: Einstellungen vom Typ adresse kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')
