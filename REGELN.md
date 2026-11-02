@@ -15,6 +15,7 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 ## Erlaubt
 
 - Mappentypen, Sichten, Rollen, Beispiel-Mappen
+- Wortlisten: gleichbedeutende Wörter für die Suche (siehe [Wortlisten](#wortlisten))
 - Code, der über die API des DMS arbeitet (sobald der Paket-Läufer verfügbar ist)
 - Zugriff auf Netzwerk/Internet nur zu Adressen, die im Manifest stehen (`code.netz`) und deren Zweck das README erklärt. Ohne `code.netz` hat ein Paket keinen Zugriff auf Netzwerk und Internet.
 
@@ -123,6 +124,20 @@ Das DMS prüft Angaben in Textfeldern nach einem **Format** und Datumsfelder nac
 - Wer `format`, `landFeld` oder Datumsgrenzen nutzt, schreibt im Manifest `dms: ">=0.121.0"`.
 
 `werkzeuge/pruefen.py` prüft Feldart, Land-Feld, Grenzen, die Beispiele und die DMS-Version.
+
+## Wortlisten
+
+Ein Paket kann **gleichbedeutende Wörter** für die Suche mitbringen (ab DMS 0.127.0): Wer eines sucht, findet auch die anderen. Im Manifest steht `inhalt.wortlisten: inhalt/wortlisten.yaml`, dazu `dms: ">=0.127.0"` – ältere DMS übergehen den Abschnitt stillschweigend. Die Datei ist eine Liste von Gruppen:
+
+```yaml
+- woerter: [Kfz, Auto, PKW, Fahrzeug]
+- woerter: [Nebenkosten, Betriebskosten]
+```
+
+- Je Gruppe 2 bis 20 verschiedene Wörter, je 2 bis 60 Zeichen; Groß-/Kleinschreibung und Umlaute zählen beim Vergleich nicht („Gebühr“ und „gebuhr“ sind dasselbe Wort). Höchstens 1000 Gruppen je Paket.
+- Nur Wörter, die im Alltag wirklich dasselbe meinen und zum Thema des Pakets gehören – keine Oberbegriffe („Vertrag“ für alles) und keine Namen von Firmen oder Personen.
+- `tests/erwartung.yaml` nennt die Zahl der Gruppen: `wortlisten: 5`.
+- Das DMS legt die Gruppen beim Installieren an, ersetzt sie bei einem Update durch die des Pakets und entfernt sie mit dem Paket.
 
 ## Verwaiste Pakete
 

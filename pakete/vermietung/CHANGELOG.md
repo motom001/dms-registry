@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.0
+
+- Neu: **gleichbedeutende Wörter** für die Suche – wer „Nebenkosten“ sucht, findet auch „Betriebskosten“; dazu Abrechnung, Kaltmiete, Kaution und Mieter.
+- Braucht DMS ab 0.127.0 (Wortlisten).
+
 ## 1.1.0
 
 - **Formate** (dms-registry #55, DMS #535): Neues Feld **Land** am Mietobjekt (Vorgabe Deutschland). Die PLZ hat in Deutschland genau 5 Ziffern, bei einem anderen Land ist sie frei.

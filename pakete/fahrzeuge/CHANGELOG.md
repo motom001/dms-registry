@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.3.0
+
+- Neu: **gleichbedeutende Wörter** für die Suche – wer „Kfz“ sucht, findet auch „Auto“ und „PKW“; dazu HU/TÜV, Fahrzeugbrief und Fahrzeugschein mit ihren amtlichen Namen, Werkstatt- und Reparaturrechnung.
+- Braucht DMS ab 0.127.0 (Wortlisten).
+
 ## 1.2.0
 
 - **Grenzen** (dms-registry #55, DMS #535): Die **Erstzulassung** darf nicht in der Zukunft liegen. „HU fällig“ bleibt ohne Grenze.
