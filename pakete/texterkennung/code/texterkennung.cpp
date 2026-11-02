@@ -3,7 +3,8 @@
 // Ablauf (ab DMS 0.133.0): Ereignis „Volltext fertig“ vom Kern → entscheiden (ohne Text immer; mit Text nur bei
 // „Vorhandenen Volltext verwerfen und neu erkennen“ oder ausdrücklich `neu`) → Seiten als Graustufenbild über die
 // API holen → Lage und Schrift erkennen (osd), Seite aufrichten → Tesseract, bei „Automatisch“ mit Spracherkennung
-// und zweitem Durchgang → Volltext per API zurückschreiben. Lange Dokumente abschnittsweise: nach etwa einer Minute
+// je Seite, zweitem Durchgang und Mischseiten (zwei Sprachen in einem Durchgang) → Volltext mit den Sprachen je Seite
+// per API zurückschreiben (ab DMS 0.139.0, motom001/dms#579). Lange Dokumente abschnittsweise: nach etwa einer Minute
 // antwortet das Modul mit {"weiter": …} und der Läufer ruft es gleich wieder auf.
 // Kein Netz, kein Dateisystem; die Sprachdaten liegen im Paket (code/daten/*.traineddata) bzw. in Zusatzpaketen
 // texterkennung_<sprache> und kommen über dms.datei.
@@ -43,6 +44,9 @@ enum Stufe { DEBUG = 0, INFO = 1, WARNUNG = 2, FEHLER = 3 };
 constexpr long ABSCHNITT_MS = 60000;
 // Ab dieser Sicherheit von osd wird eine Seite gedreht (bei wenig Text meldet osd Werte um 2–5).
 constexpr float DREHUNG_SICHER = 2.0f;
+// Mischseite (#579): Der Durchgang mit beiden Sprachen zugleich gilt nur, wenn er um mindestens so viele Prozentpunkte
+// sicherer ist als der beste mit einer Sprache – dann nennt das Paket für die Seite beide Sprachen.
+constexpr int MISCH_DEUTLICH = 2;
 
 void log(int stufe, const std::string &t) { dms_log(stufe, t.data(), (int32_t)t.size()); }
 void ergebnis(const std::string &t) { dms_ergebnis(t.data(), (int32_t)t.size()); }
@@ -92,10 +96,38 @@ bool datei(const std::string &name, std::vector<char> &ziel) {
   return true;
 }
 
-// Sprache laden (Kennung wie deu, fra); null, wenn die Sprachdaten fehlen – dann steht sie in `fehlen`.
+// Für Tesseract: Sprachdaten nach Dateinamen (…/fra.traineddata) – so lädt es mehrere Sprachen in einen Durchgang.
+bool leser(const char *pfad, std::vector<char> *ziel) {
+  std::string name(pfad ? pfad : "");
+  const size_t s = name.find_last_of('/');
+  if (s != std::string::npos) name = name.substr(s + 1);
+  const size_t p = name.find('.');
+  const std::string k = p == std::string::npos ? name : name.substr(0, p);
+  if (k.empty() || k.size() > 8) return false;
+  return datei(k + ".traineddata", *ziel) || datei("texterkennung_" + k + "/" + k + ".traineddata", *ziel);
+}
+
+std::vector<std::string> teile(const std::string &s);
+
+// Sprache laden (Kennung wie deu, fra); null, wenn die Sprachdaten fehlen – dann steht sie in `fehlen`. Mit „+“
+// (z. B. deu+fra, Mischseite #579) ein Durchgang mit beiden Sprachen zugleich; die Daten liest Tesseract über leser.
 tesseract::TessBaseAPI *sprache(const std::string &k) {
   auto i = geladen.find(k);
   if (i != geladen.end()) return i->second ? i->second->api.get() : nullptr;
+  if (k.find('+') != std::string::npos) {
+    for (const std::string &t : teile(k)) if (!sprache(t)) { geladen[k] = nullptr; return nullptr; }
+    auto s = std::make_unique<Sprache>();
+    s->api = std::make_unique<tesseract::TessBaseAPI>();
+    if (s->api->Init(nullptr, 0, k.c_str(), tesseract::OEM_LSTM_ONLY, nullptr, 0, nullptr, nullptr, false, leser)) {
+      log(WARNUNG, "Tesseract startet nicht mit " + k + " – Mischseiten mit einer Sprache");
+      geladen[k] = nullptr;
+      return nullptr;
+    }
+    s->api->SetPageSegMode(tesseract::PSM_AUTO);
+    tesseract::TessBaseAPI *a = s->api.get();
+    geladen[k] = std::move(s);
+    return a;
+  }
   auto s = std::make_unique<Sprache>();
   bool da = datei(k + ".traineddata", s->daten) || datei("texterkennung_" + k + "/" + k + ".traineddata", s->daten);
   if (!da) { fehlen.insert(k); geladen[k] = nullptr; return nullptr; }
@@ -168,23 +200,31 @@ Lesung lies(tesseract::TessBaseAPI *a, Pix *bild, int dpi) {
 // Stand eines Dokuments, auch über mehrere Aufrufe hinweg (in „weiter“).
 struct Stand {
   int seite = 1;            // nächste Seite
-  std::string text;         // bisher erkannt
-  std::string sprachen;     // z. B. „deu“ oder „deu+eng“ (bei „Deutsch und Englisch“: je Seite die sicherere)
-  bool entschieden = false; // Sprache bei „Automatisch“ festgelegt
-  int versuche = 0;         // Seiten, die zur Sprachwahl gelesen wurden
+  std::string text;         // bisher erkannt, Seiten durch Seitenvorschub (\f) getrennt
+  std::string seiten;       // Sprachen je Seite (#579), durch „|“ getrennt: „deu|fra|deu+fra|“ (leer: nicht erkannt)
+  std::string sprachen;     // Lesesprache(n): bei „Automatisch“ die der letzten Seite (Anfang für die nächste),
+                            // sonst fest – „deu“, „eng“ oder „deu+eng“ (je Seite die sicherere Lesung)
   int gedreht = 0;
-  std::string zweiter;      // Hinweis auf einen zweiten Durchgang
+  int zweite = 0;           // Seiten mit zweitem Durchgang in einer anderen Sprache
+  int misch = 0;            // Mischseiten (zwei Sprachen in einem Durchgang)
+  int anzahl = 0;           // erkannte Seiten
 };
 
-std::vector<std::string> teile(const std::string &s) {
+std::vector<std::string> teileAn(const std::string &s, char z, bool leere = false) {
   std::vector<std::string> r;
   size_t a = 0;
   while (a <= s.size()) {
-    size_t b = s.find('+', a);
+    size_t b = s.find(z, a);
     if (b == std::string::npos) b = s.size();
-    if (b > a) r.push_back(s.substr(a, b - a));
+    if (b > a || leere) r.push_back(s.substr(a, b - a));
     a = b + 1;
   }
+  return r;
+}
+std::vector<std::string> teile(const std::string &s) { return teileAn(s, '+'); }
+std::string verbinde(const std::vector<std::string> &l, const std::string &z) {
+  std::string r;
+  for (size_t i = 0; i < l.size(); i++) { if (i) r += z; r += l[i]; } // auch leere Seiten bekommen ihren Trenner
   return r;
 }
 
@@ -219,6 +259,74 @@ PixPtr richteAuf(PixPtr bild, int dpi, bool &gedreht, std::string &schrift) {
   if (!neu) return bild;
   gedreht = true;
   return PixPtr(neu);
+}
+
+// Eine Seite bei „Automatisch“ (#579: Sprache je Seite). Erster Durchgang in der Sprache der Seite davor (am Anfang
+// Deutsch; bei anderer Schrift wie Kyrillisch gleich in der passenden). Dann die Sprache(n) aus dem Text: Ist es eine
+// andere, ein zweiter Durchgang in ihr – die sicherere Lesung gilt (dms-registry#47: immer, wenn ihre Sprachdaten da
+// sind). Stehen zwei Sprachen auf der Seite, ein Durchgang mit beiden zugleich; ist er deutlich sicherer, gilt er und
+// die Seite bekommt beide Sprachen. Ergebnis: die Lesung und die Sprachen der Seite („deu“, „deu+fra“ oder leer).
+struct Seite { Lesung l; std::string sprachen; };
+Seite liesAutomatisch(Pix *bild, int dpi, Stand &s, const std::string &schrift) {
+  std::string erst = s.sprachen.empty() ? "deu" : teile(s.sprachen)[0];
+  if (!sprache(erst)) erst = "deu";
+  const std::string passend = spracheFuerSchrift(schrift, erst, [](const std::string &k) { return sprache(k) != nullptr; });
+  if (!passend.empty()) erst = passend;
+  Lesung l = liesMit(erst, bild, dpi);
+  std::string gelesen = erst;
+  std::vector<std::string> erkannt = sprachenEinerSeite(l.text);
+  if (!erkannt.empty() && erkannt[0] != gelesen && sprache(erkannt[0])) {
+    Lesung zwei = liesMit(erkannt[0], bild, dpi);
+    s.zweite++;
+    log(DEBUG, "zweiter Durchgang mit " + erkannt[0] + ": Sicherheit " + std::to_string(zwei.sicherheit) + " statt " + std::to_string(l.sicherheit) + " %");
+    if (zwei.sicherheit > l.sicherheit) {
+      l = zwei;
+      gelesen = erkannt[0];
+      // In der richtigen Sprache gelesen (mit Akzenten) erkennt der Text sich sicherer.
+      std::vector<std::string> neu = sprachenEinerSeite(l.text);
+      if (!neu.empty()) erkannt = neu;
+    }
+  }
+  std::string seite = erkannt.empty() ? "" : erkannt[0];
+  if (erkannt.size() == 2 && sprache(erkannt[0]) && sprache(erkannt[1])) {
+    const std::string beide = erkannt[0] + "+" + erkannt[1];
+    tesseract::TessBaseAPI *a = sprache(beide);
+    if (a) {
+      Lesung m = lies(a, bild, dpi);
+      log(DEBUG, "Mischseite " + beide + ": Sicherheit " + std::to_string(m.sicherheit) + " statt " + std::to_string(l.sicherheit) + " %");
+      if (m.sicherheit >= l.sicherheit + MISCH_DEUTLICH) { l = m; seite = beide; s.misch++; }
+    }
+  } else if (erkannt.size() == 2) {
+    sprache(erkannt[1]); // fehlende Sprachdaten melden
+  }
+  s.sprachen = gelesen;
+  return {l, seite};
+}
+
+// Sprachen je Seite als JSON für das DMS: [["deu"],["fra"],null] – null: das DMS erkennt die Sprache selbst.
+std::string seitenJson(const std::vector<std::string> &seiten) {
+  std::string r = "[";
+  for (size_t i = 0; i < seiten.size(); i++) {
+    if (i) r += ",";
+    if (seiten[i].empty()) { r += "null"; continue; }
+    std::vector<std::string> k = teile(seiten[i]);
+    r += "[";
+    for (size_t j = 0; j < k.size(); j++) r += (j ? "," : "") + jsonText(k[j]);
+    r += "]";
+  }
+  return r + "]";
+}
+
+// Kurz für die Meldung: „deu, enthält auch fra“ (nach Seiten gezählt, Mischseiten für beide).
+std::string sprachenMeldung(const std::vector<std::string> &seiten) {
+  std::map<std::string, int> n;
+  for (const std::string &x : seiten) for (const std::string &k : teile(x)) n[k]++;
+  std::vector<std::pair<std::string, int>> l(n.begin(), n.end());
+  std::sort(l.begin(), l.end(), [](const auto &a, const auto &b) { return a.second > b.second; });
+  if (l.empty()) return "";
+  std::string r = l[0].first;
+  for (size_t i = 1; i < l.size(); i++) r += (i == 1 ? ", enthält auch " : ", ") + l[i].first;
+  return r;
 }
 
 bool typErlaubt(const Json &einstellungen, const std::string &mappe) {
@@ -269,19 +377,20 @@ int verarbeite(const Json &e) {
   const std::string wahl = einst["sprache"].text("Automatisch");
   const bool automatisch = wahl == "Automatisch";
   Stand s;
-  if (fortsetzung) {
+  // Fortsetzung eines Abschnitts. Ein Stand aus Version 2.0 (ohne Sprachen je Seite) fängt neu an.
+  if (fortsetzung && weiter["seiten"].art == Json::TEXT) {
     s.seite = std::max(1, (int)weiter["seite"].zahl(1));
     s.text = weiter["text"].text();
+    s.seiten = weiter["seiten"].text();
     s.sprachen = weiter["sprachen"].text();
-    s.entschieden = weiter["entschieden"].wahr();
-    s.versuche = (int)weiter["versuche"].zahl(0);
     s.gedreht = (int)weiter["gedreht"].zahl(0);
-    s.zweiter = weiter["zweiter"].text();
+    s.zweite = (int)weiter["zweite"].zahl(0);
+    s.misch = (int)weiter["misch"].zahl(0);
+    s.anzahl = (int)weiter["anzahl"].zahl(0);
     for (const Json &k : weiter["fehlen"].l) fehlen.insert(k.text());
   }
-  if (s.sprachen.empty()) s.sprachen = wahl == "Englisch" ? "eng" : wahl == "Deutsch und Englisch" ? "deu+eng" : "deu";
-  if (!automatisch) s.entschieden = true;
-  for (const std::string &k : teile(s.sprachen)) if (!sprache(k)) { log(FEHLER, "Sprachdaten fehlen im Paket: " + k); return 2; }
+  if (!automatisch) s.sprachen = wahl == "Englisch" ? "eng" : wahl == "Deutsch und Englisch" ? "deu+eng" : "deu";
+  for (const std::string &k : teile(automatisch ? "deu" : s.sprachen)) if (!sprache(k)) { log(FEHLER, "Sprachdaten fehlen im Paket: " + k); return 2; }
   const bool drehen = einst["drehen"].wahr(true);
 
   const int dpi = std::clamp((int)einst["dpi"].zahl(300), 150, 400);
@@ -308,38 +417,33 @@ int verarbeite(const Json &e) {
     std::string schrift;
     bool gedreht = false;
     PixPtr aufrecht = drehen ? richteAuf(PixPtr(pixClone(bild.get())), dpi, gedreht, schrift) : PixPtr(pixClone(bild.get()));
-    // Andere Schrift (z. B. Kyrillisch): passende Sprache gleich mitnehmen, wenn sie da ist.
-    if (automatisch && !s.entschieden && s.versuche == 0) {
-      std::string passend = spracheFuerSchrift(schrift, s.sprachen, [](const std::string &k) { return sprache(k) != nullptr; });
-      if (!passend.empty()) s.sprachen = passend + "+" + s.sprachen;
-    }
-    Lesung l = liesMit(s.sprachen, aufrecht.get(), dpi);
-    if (gedreht) {
-      // Unsicher nach dem Drehen? Dann auch ungedreht – die bessere Lesung gilt.
-      Lesung u = l.sicherheit < 60 ? liesMit(s.sprachen, bild.get(), dpi) : Lesung{};
-      if (u.sicherheit > l.sicherheit) l = u; else s.gedreht++;
-    }
-    // Sprache bei „Automatisch“ (wie im DMS #395): nach der ersten Seite mit Text, höchstens drei Versuche. Anders als
-    // früher im DMS auch dann ein zweiter Durchgang, wenn Tesseract sich sicher war: Der erste Durchgang liest nur
-    // Deutsch, und Tesseract hält eine französische Seite auf Deutsch gelesen oft für sicher (Akzente fehlen dann).
-    // Es gilt die sicherere Lesung; das kostet nur bei Dokumenten in anderen Sprachen einen Durchgang mehr.
-    if (!s.entschieden) {
-      s.versuche++;
-      ErkannteSprache erkannt = erkenneSprache(s.text + "\n" + l.text);
-      s.entschieden = !erkannt.sprache.empty() || s.versuche >= 3;
-      const std::vector<std::string> bisher = teile(s.sprachen);
-      if (!erkannt.sprache.empty() && erkannt.konfidenz >= 0.5 && std::find(bisher.begin(), bisher.end(), erkannt.sprache) == bisher.end()) {
-        if (sprache(erkannt.sprache)) {
-          Lesung zwei = liesMit(erkannt.sprache, aufrecht.get(), dpi);
-          s.zweiter = "zweiter Durchgang mit " + erkannt.sprache + ": Sicherheit " + std::to_string(zwei.sicherheit) + " statt " + std::to_string(l.sicherheit) + " %";
-          if (zwei.sicherheit > l.sicherheit) { s.sprachen = erkannt.sprache; l = zwei; } else s.zweiter += ", erster blieb";
-        }
-        s.entschieden = true;
+    Seite seite;
+    if (automatisch) {
+      seite = liesAutomatisch(aufrecht.get(), dpi, s, schrift);
+      if (gedreht && seite.l.sicherheit < 60) {
+        // Unsicher nach dem Drehen? Dann auch ungedreht (in der Sprache der Seite) – die bessere Lesung gilt.
+        Lesung u = liesMit(seite.sprachen.empty() ? s.sprachen : seite.sprachen, bild.get(), dpi);
+        if (u.sicherheit > seite.l.sicherheit) { seite.l = u; gedreht = false; }
       }
+    } else {
+      seite.l = liesMit(s.sprachen, aufrecht.get(), dpi);
+      if (gedreht && seite.l.sicherheit < 60) {
+        Lesung u = liesMit(s.sprachen, bild.get(), dpi);
+        if (u.sicherheit > seite.l.sicherheit) { seite.l = u; gedreht = false; }
+      }
+      // Feste Sprache: Die Seite bekommt die Sprache ihres Texts (für die Wortstämme der Suche), ohne zweiten Durchgang.
+      std::vector<std::string> erkannt = sprachenEinerSeite(seite.l.text);
+      seite.sprachen = erkannt.empty() ? "" : erkannt[0];
     }
-    if (!s.text.empty()) s.text += "\n\n";
-    s.text += l.text;
-    log(DEBUG, "Seite " + std::to_string(nr) + ": " + std::to_string(l.text.size()) + " Zeichen, Sicherheit " + std::to_string(l.sicherheit) + " % (" + s.sprachen + (gedreht ? ", gedreht" : "") + ")");
+    if (gedreht) s.gedreht++;
+    // Seiten durch Seitenvorschub getrennt; im Text selbst darf keiner stehen.
+    std::string t = seite.l.text;
+    t.erase(std::remove(t.begin(), t.end(), '\f'), t.end());
+    if (s.anzahl > 0) { s.text += '\f'; s.seiten += '|'; }
+    s.text += t;
+    s.seiten += seite.sprachen;
+    s.anzahl++;
+    log(DEBUG, "Seite " + std::to_string(nr) + ": " + std::to_string(t.size()) + " Zeichen, Sicherheit " + std::to_string(seite.l.sicherheit) + " % (" + (seite.sprachen.empty() ? "Sprache unbekannt" : seite.sprachen) + (gedreht ? ", gedreht" : "") + ")");
   }
   if (liste && pos > letzte) ende = true;
   const int seiten = pos - 1;
@@ -348,28 +452,59 @@ int verarbeite(const Json &e) {
     for (const std::string &k : fehlen) f += (f.size() > 1 ? "," : "") + jsonText(k);
     f += "]";
     std::string fort = "Seite " + std::to_string(seiten) + (gesamt ? " von " + std::to_string(gesamt) : "");
-    ergebnis("{\"weiter\":{\"seite\":" + std::to_string(pos) + ",\"text\":" + jsonText(s.text) + ",\"sprachen\":" + jsonText(s.sprachen) +
-             ",\"entschieden\":" + (s.entschieden ? "true" : "false") + ",\"versuche\":" + std::to_string(s.versuche) + ",\"gedreht\":" + std::to_string(s.gedreht) +
-             ",\"zweiter\":" + jsonText(s.zweiter) + ",\"fehlen\":" + f + ",\"fortschritt\":" + jsonText(fort) + "}}");
+    ergebnis("{\"weiter\":{\"seite\":" + std::to_string(pos) + ",\"text\":" + jsonText(s.text) + ",\"seiten\":" + jsonText(s.seiten) +
+             ",\"sprachen\":" + jsonText(s.sprachen) + ",\"gedreht\":" + std::to_string(s.gedreht) + ",\"zweite\":" + std::to_string(s.zweite) +
+             ",\"misch\":" + std::to_string(s.misch) + ",\"anzahl\":" + std::to_string(s.anzahl) + ",\"fehlen\":" + f + ",\"fortschritt\":" + jsonText(fort) + "}}");
     return 0;
   }
-  if (seiten == 0) { ergebnis("keine Seiten"); return 0; }
+  if (seiten == 0 || s.anzahl == 0) { ergebnis("keine Seiten"); return 0; }
 
-  // Gemischt: Text aus dem PDF vorn, die erkannten Seiten dahinter (für die Suche zählt die Reihenfolge nicht).
-  std::string volltext = s.text;
+  // Text und Sprachen je Seite (#579). Gemischtes PDF: Die Seiten mit Text liefert das DMS (ab 0.139.0 mit Text je
+  // Seite); die erkannten kommen an ihre Stelle. Ohne Seiten vom DMS: Text aus dem PDF vorn, erkannte dahinter.
+  std::vector<std::string> texte = teileAn(s.text, '\f', true);
+  std::vector<std::string> sprachenJe = teileAn(s.seiten, '|', true);
+  sprachenJe.resize(texte.size());
   int alleSeiten = seiten;
+  std::string body;
   if (liste) {
     Antwort v = api("GET", "/dokumente/" + dok + "/volltext");
     if (v.status != 200) { log(FEHLER, "Volltext lesen: HTTP " + std::to_string(v.status)); return 4; }
     const Json j = JsonLeser::lies(v.body.data(), v.body.size());
-    volltext = j["text"].text() + "\n\n" + s.text;
     alleSeiten = std::max(seiten, (int)d["seiten"].zahl(seiten));
+    const Json &vom = j["seiten"];
+    if (vom.art == Json::LISTE && (int)vom.l.size() >= alleSeiten) {
+      std::vector<std::string> t2((size_t)alleSeiten), s2((size_t)alleSeiten);
+      for (int i = 0; i < alleSeiten; i++) {
+        t2[(size_t)i] = vom.l[(size_t)i]["text"].text();
+        std::vector<std::string> k;
+        for (const Json &x : vom.l[(size_t)i]["sprachen"].l) if (x.art == Json::TEXT) k.push_back(x.text());
+        s2[(size_t)i] = verbinde(k, "+");
+      }
+      for (size_t i = 0; i < nurSeiten.size() && i < texte.size(); i++) {
+        if (nurSeiten[i] < 1 || nurSeiten[i] > alleSeiten) continue;
+        t2[(size_t)nurSeiten[i] - 1] = texte[i];
+        s2[(size_t)nurSeiten[i] - 1] = sprachenJe[i];
+      }
+      for (std::string &x : t2) x.erase(std::remove(x.begin(), x.end(), '\f'), x.end());
+      texte = t2;
+      sprachenJe = s2;
+    } else {
+      std::string alt = j["text"].text();
+      alt.erase(std::remove(alt.begin(), alt.end(), '\f'), alt.end());
+      texte.insert(texte.begin(), alt);
+      sprachenJe.insert(sprachenJe.begin(), "");
+    }
   }
-  Antwort r = api("PUT", "/dokumente/" + dok + "/volltext", "{\"text\":" + jsonText(volltext) + ",\"seiten\":" + std::to_string(alleSeiten) + "}");
+  body = "{\"text\":" + jsonText(verbinde(texte, "\f")) + ",\"seiten\":" + std::to_string(alleSeiten) + ",\"seitensprachen\":" + seitenJson(sprachenJe) + "}";
+  Antwort r = api("PUT", "/dokumente/" + dok + "/volltext", body);
   if (r.status != 200) { log(FEHLER, "Volltext schreiben: HTTP " + std::to_string(r.status) + " " + r.body.substr(0, 200)); return 4; }
-  std::string meldung = seitenText(seiten) + (liste ? " ohne Text erkannt" : "") + ", " + std::to_string(s.text.size()) + " Zeichen, " + s.sprachen;
+  const size_t zeichen = s.text.size() - (size_t)(s.anzahl - 1); // ohne die Seitenvorschübe
+  std::string meldung = seitenText(s.anzahl) + (liste ? " ohne Text erkannt" : "") + ", " + std::to_string(zeichen) + " Zeichen";
+  const std::string spr = sprachenMeldung(sprachenJe);
+  if (!spr.empty()) meldung += ", " + spr;
+  if (s.misch) meldung += ", " + std::to_string(s.misch) + (s.misch == 1 ? " Mischseite" : " Mischseiten");
   if (s.gedreht) meldung += ", " + seitenText(s.gedreht) + " gedreht";
-  if (!s.zweiter.empty()) meldung += ", " + s.zweiter;
+  if (s.zweite) meldung += ", " + std::to_string(s.zweite) + "× zweiter Durchgang";
   if (!liste && seiten == maxSeiten && !ende) meldung += " (Grenze erreicht)";
   if (!fehlen.empty()) { meldung += " – Sprachdaten fehlen: " + fehlendText(); log(WARNUNG, "Sprachdaten fehlen: " + fehlendText()); }
   log(INFO, "Dokument " + dok + ": " + meldung);

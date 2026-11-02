@@ -8,10 +8,12 @@ Seit DMS 0.133 liest das DMS selbst nur noch die **Textebene** von PDFs (poppler
 
 1. Ein Dokument kommt ins DMS. Das DMS liest bei PDFs die Textebene und meldet dem Paket das Ereignis **Volltext fertig** – auch, wenn es keinen Text gefunden hat.
 2. **Ohne Text** (Scan, Foto) erkennt das Paket das Dokument immer. Bis es fertig ist, steht am Dokument „wartet auf Texterkennung (Paket Texterkennung)“, bei langen Dokumenten mit Fortschritt („Seite 20 von 64“).
-3. **Mit Text aus dem PDF** bleibt dieser Text stehen – außer „Vorhandenen Volltext verwerfen und neu erkennen“ ist an. Stecken in einem PDF neben Textseiten auch gescannte Seiten, erkennt das Paket nur diese und hängt ihren Text an.
+3. **Mit Text aus dem PDF** bleibt dieser Text stehen – außer „Vorhandenen Volltext verwerfen und neu erkennen“ ist an. Stecken in einem PDF neben Textseiten auch gescannte Seiten, erkennt das Paket nur diese und setzt ihren Text an ihrer Stelle zwischen die Textseiten.
 4. **Werkbank → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente** erkennt immer neu, auch wenn der Haken aus ist – etwa nach einem neuen Sprach-Zusatzpaket.
 
-Je Seite erkennt das Paket die **Lage** (quer, auf dem Kopf) und die **Schrift** und richtet die Seite vor dem Lesen auf. Bei **Sprache: Automatisch** liest es zuerst Deutsch, erkennt die Sprache des Texts und liest die Seite in der erkannten Sprache ein zweites Mal, wenn es eine andere ist und ihre Sprachdaten da sind – das sicherere Ergebnis gilt. Fehlen Sprachdaten (z. B. Französisch), steht das im Ergebnis und im Protokoll des Pakets: „Sprachdaten fehlen: fra (Zusatzpaket texterkennung_fra)“.
+Je Seite erkennt das Paket die **Lage** (quer, auf dem Kopf) und die **Schrift** und richtet die Seite vor dem Lesen auf. Bei **Sprache: Automatisch** erkennt es die **Sprache jeder Seite** (seit 2.1.0): Es liest die Seite zuerst in der Sprache der Seite davor (am Anfang Deutsch), erkennt die Sprache des Texts und liest die Seite in der erkannten Sprache ein zweites Mal, wenn es eine andere ist und ihre Sprachdaten da sind – das sicherere Ergebnis gilt. Stehen auf einer Seite zwei Sprachen, liest es sie zusätzlich mit beiden zugleich; ist das deutlich sicherer (mindestens 2 Prozentpunkte), gilt diese Lesung als **Mischseite**.
+
+Das DMS bekommt den Text mit den **Sprachen je Seite**: Am Dokument steht dann z. B. „Deutsch, enthält auch Französisch“, die Suche nimmt je Seite die Wortstämme ihrer Sprache, und wechselt die Sprache zwischen zwei Seiten ganz, schlägt das DMS an der Post „Post teilen?“ vor (geteilt wird nie von selbst). Fehlen Sprachdaten (z. B. Französisch), steht das im Ergebnis und im Protokoll des Pakets: „Sprachdaten fehlen: fra (Zusatzpaket texterkennung_fra)“.
 
 Lange Dokumente erkennt es **abschnittsweise**: Nach etwa einer Minute gibt es seinen Stand an den Läufer zurück, der es gleich wieder aufruft. Die Zeitgrenze des Läufers (2 Minuten je Aufruf) greift so nicht.
 
@@ -25,7 +27,7 @@ Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:
 - **Kein Netz.** Die Sprachdaten liegen im Paket bzw. in Zusatzpaketen.
 - Es reagiert auf **Volltext fertig**.
 
-Den Volltext des Pakets erkennst du am Hinweis „Texterkennung durch Paket Texterkennung 2.0.0“ am Dokument und an der Historie („Volltext von einem Paket“).
+Den Volltext des Pakets erkennst du am Hinweis „Texterkennung durch Paket Texterkennung 2.1.0“ am Dokument und an der Historie („Volltext von einem Paket“).
 
 ## Einstellungen
 
@@ -65,6 +67,7 @@ Vergleich mit der früheren eingebauten Texterkennung des DMS (bis 0.133: Tesser
 - **Erkennung:** gleich gut; Französisch mit dem Zusatzpaket etwas besser (zweiter Durchgang mit `fra`). Ohne das Zusatzpaket liest das Paket den französischen Brief auf Deutsch (98,3 % / 88,6 %) und meldet die fehlenden Sprachdaten.
 - **Zeit:** Bei langen Dokumenten braucht das Paket etwa ein Drittel länger als Tesseract nativ (ein erster Lauf ergab 31 s für 10 und 184 s für 60 Seiten); bei einer einzelnen Seite kommen 1–3 Sekunden für Textebene, Zustellung und Schreiben dazu. Abschnittsweise Erkennung: 60 Seiten in 4 Aufrufen zu je etwa einer Minute, ohne dass die Zeitgrenze greift.
 - **Größe:** Modul 2,7 MB, Sprachdaten 15,4 MB (deu 1,5 MB, eng 4,1 MB, osd 10,6 MB) – zusammen weit unter der Grenze von 32 MB.
+- **Mehrsprachig (2.1.0):** Ein gescannter Brief mit drei Seiten (deutsch, französisch, Mischseite deutsch/französisch, 200 dpi) mit dem Zusatzpaket Französisch: 10,6 s vom Hochladen bis „fertig“ (zwei zweite Durchgänge, ein Durchgang mit beiden Sprachen); alle sechs Probewörter beider Sprachen findet die Suche. Gemessen am 02.11.2026 auf amd64 (2 Kerne, nebenher belastet), DMS 0.139.
 - **arm64:** steht noch aus (beim Bau dieser Version war kein arm64-Rechner verfügbar).
 
 ## Grenzen
@@ -76,14 +79,14 @@ Vergleich mit der früheren eingebauten Texterkennung des DMS (bis 0.133: Tesser
 
 ## Voraussetzungen
 
-- DMS **0.133.0** oder neuer (Ereignis „Volltext fertig“ auch ohne Text, Recht „Texterkennung übernehmen“, Fortsetzung langer Aufgaben, Seitenbild für JPEG und PNG, Daten aus Zusatzpaketen).
+- DMS **0.139.0** oder neuer (Sprachen je Seite, Text je Seite bei gemischten PDFs); seit 0.133.0: Ereignis „Volltext fertig“ auch ohne Text, Recht „Texterkennung übernehmen“, Fortsetzung langer Aufgaben, Seitenbild für JPEG und PNG, Daten aus Zusatzpaketen. Für ältere DMS-Versionen bleibt Version 2.0.0 im Katalog.
 
 ## Für Entwickler
 
 | Datei | Inhalt |
 | --- | --- |
-| [`code/texterkennung.cpp`](code/texterkennung.cpp) | das Modul (DMS-Paket-ABI 1): Ereignis → entscheiden → Seiten über die API → Lage (osd) → Tesseract → Volltext; Fortsetzung mit `weiter` |
-| [`code/sprache.h`](code/sprache.h) | Spracherkennung aus dem Text (wie im DMS), Sprache passend zur Schrift; Test in [`tests/sprache_test.cpp`](tests/sprache_test.cpp) |
+| [`code/texterkennung.cpp`](code/texterkennung.cpp) | das Modul (DMS-Paket-ABI 1): Ereignis → entscheiden → Seiten über die API → Lage (osd) → Tesseract mit Sprache je Seite und Mischseiten → Volltext mit `seitensprachen`; Fortsetzung mit `weiter` |
+| [`code/sprache.h`](code/sprache.h) | Spracherkennung aus dem Text (wie im DMS), Sprachen einer Seite (Mischseite), Sprache passend zur Schrift; Test in [`tests/sprache_test.cpp`](tests/sprache_test.cpp) |
 | [`code/json.h`](code/json.h) | kleiner JSON-Leser ohne Ausnahmen |
 | [`code/bauen.sh`](code/bauen.sh) | Bau: Leptonica 1.85.0 und Tesseract 5.5.1 aus den Quellen (feste Commits), Sprachdaten deu, eng, osd aus tessdata_fast (feste Prüfsummen) |
 | [`code/wasi-compat.c`](code/wasi-compat.c), [`code/wasi-thread-shim.h`](code/wasi-thread-shim.h), [`code/stub/`](code/stub/) | was WASI nicht hat (Threads, temporäre Dateien, C++-Ausnahmen) |
@@ -93,7 +96,7 @@ Vergleich mit der früheren eingebauten Texterkennung des DMS (bis 0.133: Tesser
 WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/texterkennung   # beim ersten Mal einige Minuten
 ```
 
-Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter [Pakete mit Code](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/) (Volltext fertig, Texterkennung übernehmen, Fortsetzung).
+Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter [Pakete mit Code](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/) (Volltext fertig, Texterkennung übernehmen, Sprachen je Seite, Fortsetzung).
 
 ## Lizenz
 

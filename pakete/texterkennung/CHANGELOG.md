@@ -1,5 +1,16 @@
 # Änderungen
 
+## 2.1.0
+
+Dokumente in mehreren Sprachen (motom001/dms#579). **Braucht DMS 0.139.0.**
+
+- **Sprache je Seite:** Bei *Sprache: Automatisch* erkennt das Paket die Sprache jeder Seite einzeln. Es liest eine Seite zuerst in der Sprache der Seite davor (am Anfang Deutsch), erkennt die Sprache des Texts und liest sie in einer anderen erkannten Sprache ein zweites Mal, wenn deren Sprachdaten da sind – die sicherere Lesung gilt. Bisher entschied die erste Seite mit Text für das ganze Dokument; ein französisches Schreiben hinter einem deutschen Begleitbrief verlor seine Akzente.
+- **Mischseiten:** Stehen auf einer Seite zwei Sprachen (je mindestens ein Fünftel des Texts), liest das Paket sie zusätzlich mit beiden zugleich (Tesseract `deu+fra`). Ist das mindestens 2 Prozentpunkte sicherer, gilt diese Lesung und die Seite bekommt beide Sprachen.
+- **Sprachen an das DMS:** Der Volltext geht mit den Seiten (getrennt durch Seitenvorschub) und `seitensprachen` an das DMS. Das DMS zeigt „Deutsch, enthält auch Französisch“, durchsucht jede Seite mit den Wortstämmen ihrer Sprache und schlägt bei einem Sprachwechsel „Post teilen?“ vor. Bei festen Sprachen (Deutsch, Englisch, beide) meldet das Paket je Seite die Sprache ihres Texts, ohne zweiten Durchgang.
+- **Gemischte PDFs** (Textseiten und gescannte Seiten): Die erkannten Seiten kommen an ihre Stelle zwischen den Textseiten (bisher hinten angehängt); das DMS liefert dafür den Text je Seite.
+- Die Meldung am Dokument nennt die Sprachen („3 Seiten, 1230 Zeichen, deu, enthält auch fra, 1 Mischseite, 2× zweiter Durchgang“).
+- Ein langes Dokument, das bei der Aktualisierung gerade abschnittsweise erkannt wurde, fängt mit 2.1.0 von vorn an.
+
 ## 2.0.0
 
 Die Texterkennung wandert aus dem DMS in dieses Paket (DMS 0.133.0, motom001/dms#458; seit DMS 0.134.0 ohne Tesseract im Image, motom001/dms#459). Das Paket ist jetzt **die** Texterkennung des DMS und erkennt so gut wie die bisher eingebaute (siehe Messung im README).
