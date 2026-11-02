@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sicherungsziel WebDAV – DMS-Pakete</title>
+  <meta name="description" content="Bringt jede Sicherung des DMS außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="../../sammeldatei.html">Ohne Internet</a><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">S</span>
+      <div><h1>Sicherungsziel WebDAV</h1><p class="leise">Bringt jede Sicherung des DMS außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="sicherung_webdav@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/sicherung_webdav">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 02.11.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>Apache-2.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.142.0</dd>
+      <dt>Abhängigkeiten</dt><dd>keine</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><ul></ul>
+      <h3>Sichten</h3><ul></ul>
+      <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netzwerkzugriff</h2><ul class="rechte"><li>Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen) <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-sicherung-lesen" title="Erklärung: Sicherung lesen" aria-label="Erklärung: Sicherung lesen (Administratorhandbuch)">?</a></li><li>Zugriff auf Netzwerk/Internet nur zu: der Adresse aus der Einstellung „Adresse“ (trägst du ein und bestätigst sie) <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#dienst-adresse" title="Erklärung: Dienst-Adresse" aria-label="Erklärung: Dienst-Adresse (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#ereignis-sicherung-fertig" title="Erklärung: Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden" aria-label="Erklärung: Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden (Administratorhandbuch)">?</a></li></ul></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Bringt jede Sicherung des DMS <strong>außer Haus</strong> – auf <strong>Nextcloud</strong>, ein <strong>NAS</strong> oder einen <strong>WebDAV-Speicher beim Hoster</strong> – und <strong>prüft</strong> dort, dass sie heil angekommen ist. Gedacht für alle, deren DMS ohne Sicherungs-App des NAS läuft: auf einem Raspberry Pi, einem gemieteten Server oder bei einem Anbieter. Läuft das DMS auf einem NAS mit <em>Hyper Backup</em> oder <em>Hybrid Backup Sync</em>, reicht meist die App des NAS (siehe <a href="https://motom001.github.io/dms/admin/aktuell/sicherung-ausser-haus/">Sicherung außer Haus</a> im Administratorhandbuch).</p>
+<p>Es läuft im <strong>Paket-Läufer</strong> des DMS: abgeschottet, mit Grenzen für Speicher und Zeit, ins Netz nur zur Adresse, die du einträgst und bestätigst.</p>
+<h3>So arbeitet es</h3>
+<ol>
+<li>Das DMS sichert wie immer <strong>zuerst lokal</strong> in den Sicherungsordner. Danach meldet es dem Paket die fertige Sicherung (Ereignis <em>Sicherung fertig</em>).</li>
+<li>Das Paket liest die <strong>verschlüsselte</strong> Sicherung in Stücken und lädt sie <strong>in Teilen</strong> hoch – auch mehrere GB, ohne sie ganz in den Speicher zu laden. Bricht das Netz ab, versucht es das DMS nach 1, 5, 30 Minuten, 2 und 6 Stunden erneut; das Paket macht an der letzten Stelle weiter. Die lokale Sicherung bleibt davon unberührt.</li>
+<li>Neben die Sicherung legt es die <strong>schlanken Metadaten</strong> (<code>&lt;name&gt;.json</code>: Größe, Prüfsumme, Zeitpunkt, Fingerabdruck des Schlüssels – keine Namen, keine Versionen). Mit beiden Dateien lässt sich die Kopie wiederherstellen, auch wenn das Gerät weg ist.</li>
+<li>Es <strong>prüft</strong>: Größe am Ziel und Prüfsumme (SHA-256) durch Zurücklesen – bis 2 GB jede Sicherung vollständig, größere mit 8 Stichproben und einmal im Monat vollständig.</li>
+<li><strong>Werkbank → Sicherung</strong> zeigt je Sicherung „lokal ✓ · extern ✓ geprüft“ – oder „fehlgeschlagen“ mit Grund. Kommt seit mehr als 2 Tagen keine neuere Sicherung am Ziel an oder schlägt eine Kopie endgültig fehl, bekommen die Administratoren eine E-Mail.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Art des Ziels</th>
+<th>Hochladen</th>
+<th>Prüfen</th>
+<th>Löschen möglich?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Nextcloud</strong> (Benutzer + App-Passwort)</td>
+<td>in Teilen (Chunking v2), beliebig groß</td>
+<td>Größe + Zurücklesen</td>
+<td>ja (Zugang darf löschen)</td>
+</tr>
+<tr>
+<td><strong>Nextcloud-Dateiablage</strong> (Freigabe „Nur Hochladen“)</td>
+<td>am Stück, bis 128 MB</td>
+<td>nicht möglich – „hochgeladen“</td>
+<td><strong>nein</strong> – bester Schutz</td>
+</tr>
+<tr>
+<td><strong>WebDAV allgemein</strong> (NAS, Hoster)</td>
+<td>bis zur Teilgröße am Stück, größer in Teilen mit <code>Content-Range</code> (z. B. Apache mit mod_dav)</td>
+<td>Größe + Zurücklesen (mit <code>Range</code>)</td>
+<td>ja (Zugang darf meist löschen)</td>
+</tr>
+</tbody>
+</table>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)</strong> – das Paket liest genau die Sicherung aus seinem Ereignis, so wie sie verschlüsselt im Sicherungsordner liegt, und meldet zurück, ob sie angekommen ist. Den Schlüssel der Werkbank, Mappen, Dokumente und andere Dateien des Sicherungsordners bekommt es nie.</li>
+<li><strong>Zugriff auf Netzwerk/Internet nur zu: der Adresse aus der Einstellung „Adresse“ (trägst du ein und bestätigst sie)</strong> – dorthin geht die verschlüsselte Sicherung, sonst nirgends hin. Weiterleitungen auf andere Server folgt es nicht.</li>
+<li>Es reagiert auf <strong>Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden</strong> (<code>sicherung.fertig</code>).</li>
+</ul>
+<p>Das Passwort speichert das DMS verschlüsselt wie jedes Passwortfeld und zeigt es nach dem Speichern nicht mehr an. Es steht weder im Protokoll noch in den Meldungen an die Werkbank.</p>
+<h3>Einrichten</h3>
+<p><strong>Nextcloud</strong> (Beispiel mit der erfundenen Adresse <code>https://cloud.example.org</code>):</p>
+<ol>
+<li>In der Nextcloud einen <strong>eigenen Benutzer</strong> nur für die Sicherungen anlegen (z. B. <code>dms-sicherung</code>) und dort unter <em>Einstellungen → Sicherheit</em> ein <strong>App-Passwort</strong> erzeugen.</li>
+<li>Im DMS <strong>Werkbank → Pakete → Sicherungsziel WebDAV → Einstellungen</strong>: <em>Art des Ziels</em> <strong>Nextcloud</strong>, <em>Adresse</em> <code>https://cloud.example.org</code>, <em>Benutzer</em> <code>dms-sicherung</code>, <em>Passwort</em> das App-Passwort, <em>Ordner</em> <code>DMS-Sicherung</code>. Speichern und die Adresse bestätigen.</li>
+<li><strong>Verbindung testen</strong>, dann unter <em>Werkbank → Sicherung</em> <strong>Jetzt sichern</strong> und zusehen, wie die Kopie in der Spalte <em>Wo</em> ankommt.</li>
+</ol>
+<p><strong>Nextcloud-Dateiablage:</strong> In der Nextcloud einen Ordner anlegen, <em>Teilen → Link teilen → Nur Hochladen (Dateiablage)</em> wählen und am besten ein Kennwort setzen. Im DMS <em>Art des Ziels</em> <strong>Nextcloud-Dateiablage</strong>, <em>Adresse</em> <code>https://cloud.example.org</code>, <em>Freigabe-Link</em> den Link (<code>https://cloud.example.org/s/…</code>), <em>Passwort</em> das Kennwort der Freigabe.</p>
+<p><strong>NAS oder Hoster:</strong> WebDAV am NAS bzw. beim Hoster einschalten, einen eigenen Benutzer mit Zugriff nur auf einen Ordner anlegen. Im DMS <em>Art des Ziels</em> <strong>WebDAV allgemein</strong>, <em>Adresse</em> die WebDAV-Adresse des Ordners (z. B. <code>https://nas.example.org:5006/sicherung</code>), Benutzer und Passwort. Sicherungen bis zur Teilgröße (8 MB) gehen überall; größere brauchen einen Server, der Teile mit <code>Content-Range</code> annimmt – sonst meldet das Paket das verständlich. Nextcloud kann es immer.</p>
+<h3>Schutz gegen Erpressersoftware</h3>
+<p>Übernimmt jemand dein DMS, kennt er die gespeicherten Zugangsdaten. Damit er die Kopien außer Haus nicht löschen kann:</p>
+<ul>
+<li><strong>Am besten die Nextcloud-Dateiablage:</strong> Sie kann hochladen, aber nicht auflisten, lesen oder löschen. Papierkorb und Versionen einer normalen Nextcloud helfen <strong>nicht</strong> – derselbe Zugang kann sie leeren.</li>
+<li>Sonst einen <strong>eigenen Benutzer</strong> nur für die Sicherungen und am Ziel <strong>Versionierung oder Schnappschüsse</strong>, die dieser Benutzer nicht löschen kann (z. B. Schnappschüsse des NAS).</li>
+<li><strong>Alte Sicherungen am Ziel löschen</strong> bleibt am besten <strong>aus</strong> (Vorgabe). Dann listet das Paket am Ziel nichts auf und löscht nichts; aufräumen lässt du das Ziel selbst. Schaltest du es ein, braucht der Zugang Löschrechte – genau das hebt den Schutz auf.</li>
+<li>Der <strong>Schlüssel</strong> der Werkbank gehört nie auf das Ziel – ohne ihn ist die Kopie wertlos, mit ihm wäre sie für jeden lesbar.</li>
+</ul>
+<h3>Einstellungen</h3>
+<table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Standard</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Art des Ziels</td>
+<td>Nextcloud</td>
+<td>Nextcloud, Nextcloud-Dateiablage oder WebDAV allgemein</td>
+</tr>
+<tr>
+<td>Adresse</td>
+<td>–</td>
+<td>Nextcloud: Adresse der Nextcloud; WebDAV allgemein: Adresse des Ordners</td>
+</tr>
+<tr>
+<td>Benutzer, Passwort</td>
+<td>–</td>
+<td>Zugang; bei Nextcloud ein App-Passwort</td>
+</tr>
+<tr>
+<td>Ordner</td>
+<td>DMS-Sicherung</td>
+<td>Ordner im Nextcloud-Konto bzw. Unterordner unter der WebDAV-Adresse; fehlt er, legt ihn das Paket an</td>
+</tr>
+<tr>
+<td>Freigabe-Link (Dateiablage)</td>
+<td>–</td>
+<td>nur bei der Dateiablage</td>
+</tr>
+<tr>
+<td>Teilgröße (MB)</td>
+<td>8</td>
+<td>5–8; jeder Teil muss in etwa 2 Minuten hochgeladen sein</td>
+</tr>
+<tr>
+<td>Vollständig zurücklesen bis (MB)</td>
+<td>2048</td>
+<td>darüber Stichproben, einmal im Monat vollständig</td>
+</tr>
+<tr>
+<td>Alte Sicherungen am Ziel löschen</td>
+<td>aus</td>
+<td>siehe oben</td>
+</tr>
+<tr>
+<td>Am Ziel behalten (Anzahl)</td>
+<td>14</td>
+<td>nur mit „löschen“</td>
+</tr>
+</tbody>
+</table>
+<h3>Grenzen</h3>
+<ul>
+<li>Die <strong>Dateiablage</strong> nimmt Sicherungen nur am Stück und höchstens 128 MB (die Datei liegt dafür im Speicher des Aufrufs, 256 MB). Größere melden „fehlgeschlagen“ mit Hinweis auf einen Nextcloud-Benutzer.</li>
+<li>Ein Aufruf darf 2 Minuten dauern; jeder Teil muss in dieser Zeit oben sein. Das ganze Hochladen einer Sicherung verteilt sich auf höchstens 500 Fortsetzungen (gut 8 Stunden) – danach gilt es als fehlgeschlagen.</li>
+<li>Zurücklesen kostet Zeit und Datenvolumen in voller Größe der Sicherung. Wer das nicht will, setzt <em>Vollständig zurücklesen bis</em> auf 0 – dann prüft das Paket mit Stichproben und einmal im Monat vollständig.</li>
+<li>S3-kompatible Speicher (mit Object Lock) kommen als eigenes Paket (Stufe 2). SFTP und FTPS gibt es nicht.</li>
+</ul>
+<h3>Pflege</h3>
+<p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit dem Paketnamen im Titel.</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung (DMS #585, dms-registry #71, Stufe 1): bringt jede Sicherung des DMS nach dem Ereignis <em>Sicherung fertig</em> auf einen WebDAV-Speicher und prüft sie dort – <strong>Nextcloud</strong> (Hochladen in Teilen mit Chunking v2, auch für Sicherungen mit mehreren GB), <strong>Nextcloud-Dateiablage</strong> („Nur Hochladen“, bis 128 MB am Stück, ohne Lese- und Löschrecht) und <strong>WebDAV allgemein</strong> (Teile mit <code>Content-Range</code>, kleine Sicherungen am Stück).</li>
+<li>Liest die verschlüsselte Sicherung in Stücken zu höchstens 8 MB, verteilt lange Arbeit auf mehrere Aufrufe und macht nach einem Abbruch an der letzten Stelle weiter.</li>
+<li>Prüft Größe und Prüfsumme (SHA-256) durch Zurücklesen – bis 2 GB (einstellbar) vollständig, darüber mit 8 Stichproben und einmal im Monat vollständig. Eine Dateiablage meldet ehrlich „hochgeladen“.</li>
+<li>Legt die schlanken Metadaten (<code>&lt;name&gt;.json</code>) neben die Sicherung – damit lässt sich die Kopie ohne Gerät wiederherstellen.</li>
+<li>Meldet dem DMS je Sicherung „läuft“, „geprüft“, „hochgeladen“ oder „fehlgeschlagen“ mit verständlichem Grund (z. B. „Benutzer oder Passwort falsch“, „Speicher am Ziel voll“, „Prüfsumme am Ziel weicht ab“).</li>
+<li><em>Alte Sicherungen am Ziel löschen</em> gibt es nur als bewusste Wahl (Vorgabe aus).</li>
+<li><em>Verbindung testen</em> mit den gespeicherten Einstellungen.</li>
+<li>Braucht DMS ab 0.142.0.</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.142.0</td><td><a href="../../archive/sicherung_webdav-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="sicherung_webdav@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>

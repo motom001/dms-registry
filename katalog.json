@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T14:32:57Z",
+  "erstellt": "2026-11-02T14:35:23Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1997,6 +1997,37 @@
       ],
       "name": "Office und E-Mail",
       "beschreibung": "Macht Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und E-Mails (.eml, .msg) im Volltext durchsuchbar. Makros und eingebettete Objekte führt es nie aus. Abgeschottet im Paket-Läufer, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0"
+    },
+    {
+      "id": "sicherung_webdav",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.142.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/sicherung_webdav-1.0.0.zip",
+          "sha256": "466f62493f6c038c613b99f68274b0bcf9be3407eda7287dbb52060b878e9600",
+          "groesse": 78421,
+          "veroeffentlicht": "2026-11-02T14:35:23Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sicherung_webdav",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sicherung_webdav/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sicherung_webdav/CHANGELOG.md"
+        }
+      ],
+      "name": "Sicherungsziel WebDAV",
+      "beschreibung": "Bringt jede Sicherung des DMS außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
