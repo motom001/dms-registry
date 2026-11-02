@@ -210,9 +210,11 @@ EREIGNISSE = {
     'post.angelegt': ('Neue Post ist angelegt', 'ereignis-post-angelegt'),
     'dokument.hochgeladen': ('Ein Dokument wurde hochgeladen', 'ereignis-dokument-hochgeladen'),
     'texterkennung.fertig': ('Die Texterkennung eines Dokuments ist fertig', 'ereignis-texterkennung-fertig'),
+    'volltext.fertig': ('Der Volltext eines Dokuments ist da', 'ereignis-volltext-fertig'),
     'paket.einstellungen_geaendert': ('Die Einstellungen des Pakets wurden geändert', 'ereignis-einstellungen-geandert'),
 }
 DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und Volltext schreiben'}
+SCHNITTSTELLEN = {'dms:vektoren': ('Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)', 'recht-vektoren')}
 
 
 def netz_text(netz: list) -> str:
@@ -251,6 +253,9 @@ def rechte_text(code: dict, typen: dict | None = None) -> str:
     dok = r.get('dokumente', 'keine')
     if dok in DOKUMENT_RECHTE:
         zeilen.append(DOKUMENT_RECHTE[dok] + hilfe('recht-dokumente', DOKUMENT_RECHTE[dok]))
+    for x in r.get('schnittstellen') or []:
+        if x in SCHNITTSTELLEN:
+            zeilen.append(e(SCHNITTSTELLEN[x][0]) + hilfe(SCHNITTSTELLEN[x][1], 'Vektoren zu Dokumenten'))
     zeilen.append(netz_text(code.get('netz') or []) + hilfe('recht-netzwerk-und-internet', 'Zugriff auf Netzwerk und Internet'))
     ereignisse = code.get('ereignisse') or []
     if ereignisse:

@@ -1,0 +1,26 @@
+# Paket KI lokal – Ähnlichkeit (Stufe 1 des KI-Pakets, #31/#44). Schema: schema/manifest.schema.json
+schema: 1
+id: ki_aehnlich
+name: KI lokal – Ähnlichkeit
+version: 1.0.0
+beschreibung: Findet ähnliche Dokumente und sucht mit eigenen Worten – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# 0.122.0: Schnittstelle dms:vektoren und Ereignis volltext.fertig (DMS #442)
+dms: ">=0.122.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  # Für jedes Dokument mit Volltext, auch für den Bestand (das DMS schickt ihn gedrosselt nach).
+  ereignisse: [volltext.fertig]
+  rechte:
+    lesen: ["*"]                       # Dokumente liegen in Mappen beliebiger Typen
+    dokumente: lesen                   # nur den Volltext lesen – nichts ändern
+    schnittstellen: ["dms:vektoren"]   # je Dokument einen Vektor ablegen; Suche fragt nach dem Vektor eines Begriffs
+  netz: []
+  # Speicher und Zeit: Die Standardgrenzen des Läufers (256 MB, 120 s je Aufruf) reichen – ein Aufruf braucht
+  # etwa 30 MB (Modell 28 MB) und für einen Suchbegriff rund 50 ms, für ein Dokument mit 50 000 Zeichen rund
+  # 90 ms (amd64, 2 Kerne). Deshalb verlangt das Paket keine höheren Grenzen.
