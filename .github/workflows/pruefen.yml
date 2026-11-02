@@ -36,6 +36,14 @@ jobs:
           else
             python3 werkzeuge/bauen.py --alle
           fi
+      # Tests, die ein gebautes Modul brauchen (z. B. das echte Modell von ki_aehnlich): tests/ci.sh je gebautem Paket.
+      - name: Tests der gebauten Pakete
+        run: |
+          for t in pakete/*/tests/ci.sh; do
+            [ -e "$t" ] || continue
+            p="${t%/tests/ci.sh}"
+            if [ -f "$p/code/modul.wasm" ]; then echo "▸ $p"; bash "$t"; fi
+          done
       - name: Vorlage und Pakete prüfen
         run: |
           basis=""

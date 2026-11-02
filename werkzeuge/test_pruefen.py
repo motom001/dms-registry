@@ -110,6 +110,21 @@ class Einstellungen(unittest.TestCase):
         self.assertEqual(self.paket(post, dms='^0.95.1'), [])
         self.assertTrue(any('erst ab 0.94.0' in f for f in self.paket(post, dms='>=0.93.9')))
 
+    def test_schnittstelle_vektoren(self):
+        # dms:vektoren und volltext.fertig (DMS #442): ab DMS 0.122.0, Vektoren nur mit Recht auf Dokumente.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen', 'schnittstellen': ['dms:vektoren']}
+        c['ereignisse'] = ['volltext.fertig']
+        self.assertEqual(self.paket(c, dms='>=0.122.0'), [])
+        alt = self.paket(c, dms='>=0.121.0')
+        self.assertTrue(any('dms:vektoren kennt das DMS erst ab 0.122.0' in f for f in alt), alt)
+        self.assertTrue(any('volltext.fertig kennt das DMS erst ab 0.122.0' in f for f in alt), alt)
+        c['rechte']['dokumente'] = 'keine'
+        self.assertTrue(any('braucht auch code.rechte.dokumente: lesen' in f for f in self.paket(c, dms='>=0.122.0')))
+        c['rechte'] = {'dokumente': 'lesen', 'schnittstellen': ['dms:alles']}
+        self.assertTrue(any('schnittstellen' in f for f in self.paket(c, dms='>=0.122.0')))
+
     def test_dms_untergrenze(self):
         self.assertEqual(pruefen.dms_untergrenze('>=0.94.0'), (0, 94, 0))
         self.assertEqual(pruefen.dms_untergrenze('>0.93.0 <1.0.0'), (0, 93, 1))

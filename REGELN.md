@@ -33,6 +33,7 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 Vor der Installation zeigt das DMS die Rechte eines Pakets mit Code, die Katalog-Webseite genauso:
 
 - „Mappen lesen: …“, „Mappen anlegen und ändern: …“, „Dokumente lesen“ bzw. „Dokumente lesen und Volltext schreiben“
+- „Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)“ – nur mit `code.rechte.schnittstellen` und `dms: ">=0.122.0"`
 - „kein Zugriff auf Netzwerk und Internet“ bzw. „Zugriff auf Netzwerk/Internet nur zu: …“
 - „Reagiert auf diese Ereignisse:“ mit einem Ereignis je Zeile
 
