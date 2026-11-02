@@ -425,9 +425,10 @@ def detail(p: dict, pakete: list) -> str:
     inhalt = (f'    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>\n'
               f'    <div class="paketkopf">\n'
               f'      <span class="symbol gross" aria-hidden="true">{e(p["name"][:1].upper())}</span>\n'
-              f'      <div class="titel"><h1>{e(p["name"])}</h1><p class="kurztext">{e(p["beschreibung"])}</p>\n'
+              f'      <div class="titel"><h1>{e(p["name"])}</h1>\n'
+              f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
+              f'        <p class="kurztext">{e(p["beschreibung"])}</p>\n'
               f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p></div>\n'
-              f'      <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
               f'    </div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
     return seite(f'{p["name"]} – DMS-Pakete', inhalt, 2, p['beschreibung'])
 
@@ -474,7 +475,12 @@ a.kachel:hover, a.kachel:focus-visible { border-color: var(--a); }
 .paketkopf { display: flex; gap: 16px; align-items: flex-start; margin: 8px 0 20px; }
 .paketkopf .titel { flex: 1; min-width: 0; }
 .paketkopf .kurztext { font-size: 1.08rem; margin: 4px 0; }
-.paketkopf .installieren { flex: none; margin-top: 6px; white-space: nowrap; padding: 7px 14px; font-size: .95rem; }
+.paketkopf .titel { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'name knopf' 'text text' 'meta meta'; align-items: center; column-gap: 16px; }
+.paketkopf h1 { grid-area: name; }
+.paketkopf .installieren { grid-area: knopf; }
+.paketkopf .kurztext { grid-area: text; }
+.paketkopf .titel > .leise { grid-area: meta; }
+.paketkopf .installieren { flex: none; white-space: nowrap; padding: 7px 14px; font-size: .95rem; }
 .paketkopf h1 { font-size: 1.6rem; }
 p.klein { font-size: .9rem; margin: 2px 0; }
 a.gh { color: var(--leise); font-size: .9em; text-decoration: none; }
@@ -495,7 +501,7 @@ a.mini { display: flex; gap: 10px; align-items: flex-start; background: var(--fl
 a.mini:hover, a.mini:focus-visible { border-color: var(--a); }
 .kurzfassung { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .symbol.klein { width: 32px; height: 32px; font-size: 1rem; border-radius: 8px; flex: none; }
-@media (max-width: 640px) { .paketkopf { flex-wrap: wrap; } .paketkopf .installieren { width: 100%; order: 3; } .spalten { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .paketkopf { gap: 12px; } .paketkopf .titel { grid-template-columns: 1fr; grid-template-areas: 'name' 'text' 'meta' 'knopf'; } .paketkopf .installieren { width: 100%; margin-top: 12px; } .paketkopf .symbol.gross { width: 48px; height: 48px; font-size: 1.4rem; } .spalten { grid-template-columns: 1fr; } }
 .knoepfe { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
 .knopf { display: inline-block; font: inherit; font-weight: 600; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--linie); background: var(--flaeche); color: var(--tinte); text-decoration: none; cursor: pointer; }
 .knopf.primaer { background: var(--a); border-color: var(--a); color: #fff; }
