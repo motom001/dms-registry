@@ -1,6 +1,6 @@
-# Texterkennung – Französisch
+# Texterkennung – Zusatzsprache Französisch
 
-Dieses **Zusatzpaket** bringt dem Paket [Texterkennung](../texterkennung/) Französisch bei. Es enthält nur die Sprachdaten (`fra.traineddata` aus [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast)) und ein Modul, das nichts tut.
+Dieses **Zusatzpaket** bringt dem Grundpaket [Texterkennung](../texterkennung/) (Deutsch und Englisch) Französisch bei. Es enthält nur die Sprachdaten (`fra.traineddata` aus [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast)) und ein Modul, das nichts tut.
 
 Mit **Sprache: Automatisch** erkennt das Paket Texterkennung, wenn ein Brief französisch ist, und liest unsichere Seiten dann ein zweites Mal auf Französisch – das bessere Ergebnis gilt. Ohne dieses Zusatzpaket meldet es „Sprachdaten fehlen: fra (Zusatzpaket texterkennung_fra)“ im Protokoll des Pakets und am Ergebnis des Aufrufs.
 
@@ -20,7 +20,7 @@ Das Paket Texterkennung liest die Sprachdaten, weil dieses Paket von ihm abhäng
 
 ## Weitere Sprachen
 
-Dieses Paket ist das Muster. Für eine weitere Sprache den Ordner kopieren (`texterkennung_<kennung>`, z. B. `texterkennung_tur`), in `manifest.yaml` Id und Namen und in `code/bauen.sh` `SPRACHE` und `SHA256` ändern. Kennungen wie bei Tesseract; die Spracherkennung des Pakets kennt Französisch (`fra`), Spanisch (`spa`), Italienisch (`ita`), Niederländisch (`nld`), Türkisch (`tur`), Polnisch (`pol`), Portugiesisch (`por`), Russisch (`rus`), Ukrainisch (`ukr`) und Arabisch (`ara`). Eine Sprachdatei aus tessdata_fast ist 1–2 MB groß; die Grenze von 32 MB je Paket ist weit weg.
+Dieses Paket ist das Muster; fertig im Katalog sind außerdem Spanisch, Italienisch, Niederländisch, Portugiesisch, Polnisch, Türkisch, Russisch, Ukrainisch und Arabisch. Für eine weitere Sprache den Ordner kopieren (`texterkennung_<kennung>`, z. B. `texterkennung_tur`), in `manifest.yaml` Id und Namen und in `code/bauen.sh` `SPRACHE` und `SHA256` ändern. Kennungen wie bei Tesseract; die Spracherkennung des Pakets kennt Französisch (`fra`), Spanisch (`spa`), Italienisch (`ita`), Niederländisch (`nld`), Türkisch (`tur`), Polnisch (`pol`), Portugiesisch (`por`), Russisch (`rus`), Ukrainisch (`ukr`) und Arabisch (`ara`). Eine Sprachdatei aus tessdata_fast ist 1–2 MB groß; die Grenze von 32 MB je Paket ist weit weg.
 
 ## Lizenz
 

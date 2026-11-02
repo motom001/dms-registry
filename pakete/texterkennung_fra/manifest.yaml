@@ -1,9 +1,9 @@
 # Zusatzpaket: Französisch für das Paket Texterkennung (Muster für weitere Sprachen). Schema: schema/manifest.schema.json
 schema: 1
 id: texterkennung_fra
-name: Texterkennung – Französisch
-version: 1.0.0
-beschreibung: Bringt dem Paket Texterkennung Französisch bei – die Sprachdaten (tessdata_fast) liest das Paket Texterkennung bei „Sprache automatisch“ selbst. Ohne eigene Rechte, ohne Netz.
+name: Texterkennung – Zusatzsprache Französisch
+version: 1.0.1
+beschreibung: Zusatzsprache Französisch für das Grundpaket Texterkennung – damit auch französische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001

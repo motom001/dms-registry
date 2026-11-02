@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.1.1
+
+- Name „Texterkennung (Deutsch und Englisch)“ und neue Beschreibung: Das Paket ist das Grundpaket, weitere Sprachen kommen als Zusatzsprachen (Französisch, Spanisch, Italienisch, Niederländisch, Portugiesisch, Polnisch, Türkisch, Russisch, Ukrainisch, Arabisch). Sonst unverändert.
+
 ## 2.1.0
 
 Dokumente in mehreren Sprachen (motom001/dms#579). **Braucht DMS 0.139.0.**
