@@ -26,14 +26,101 @@
     if (b) { e.preventDefault(); oeffne(b.getAttribute('data-installieren')); return; }
     if (e.target.closest('[data-dms-adresse]')) { e.preventDefault(); frage(null); }
   });
-  var suche = document.getElementById('suche'), art = document.getElementById('art');
+  // Passt das Paket zu meinem DMS? (#84) Die Version kommt aus dem Fragment #dms=… (Link aus dem DMS,
+  // motom001/dms#622) oder wird eingetippt – sie bleibt nur in diesem Browser und geht an keinen Server.
+  var BEREICH = /^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$/, VERSION = /^\d+\.\d+\.\d+$/, VSCHL = 'dms-version';
+  var EN = document.documentElement.lang === 'en';
+  function teile(v) { return v.split('.').map(function (x) { return parseInt(x, 10) || 0; }); }
+  function vergleiche(a, b) { var x = teile(a), y = teile(b); for (var i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] - y[i]; return 0; }
+  function passt(v, bereich) {
+    var m = BEREICH.exec((bereich || '').trim()); if (!m) return false;
+    var op = m[1] || '=', basis = m[2], ober = m[4], c = vergleiche(v, basis), b = teile(basis), ok;
+    if (op === '>=') ok = c >= 0; else if (op === '>') ok = c > 0;
+    else if (op === '^') ok = c >= 0 && (b[0] > 0 ? vergleiche(v, (b[0] + 1) + '.0.0') < 0 : vergleiche(v, '0.' + (b[1] + 1) + '.0') < 0);
+    else if (op === '~') ok = c >= 0 && vergleiche(v, b[0] + '.' + (b[1] + 1) + '.0') < 0;
+    else ok = c === 0;
+    return ok && (!ober || vergleiche(v, ober) < 0);
+  }
+  function mindestens(bereich) { var m = BEREICH.exec((bereich || '').trim()); return m ? m[2] : bereich; }
+  function liesVersion() { try { var v = localStorage.getItem(VSCHL) || ''; return VERSION.test(v) ? v : ''; } catch (e) { return ''; } }
+  function merkeVersion(v) { try { if (v) localStorage.setItem(VSCHL, v); else localStorage.removeItem(VSCHL); } catch (e) { /* nur jetzt */ } }
+  (function ausFragment() {
+    var m = /(?:^#|&)dms=(\d+\.\d+\.\d+)(?:&|$)/.exec(location.hash);
+    if (!m) return;
+    merkeVersion(m[1]);
+    // Fragment wieder entfernen, damit die Version nicht mit einem geteilten Link weitergegeben wird.
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* egal */ }
+  })();
+  // Ergebnis je Paket: ja (neueste Version passt) · aelter (eine ältere passt) · nein; null ohne Version.
+  function pruefe(versionen, dms) {
+    if (!dms) return null;
+    if (passt(dms, versionen[0][1])) return { fall: 'ja', version: versionen[0][0] };
+    for (var i = 1; i < versionen.length; i++) if (passt(dms, versionen[i][1])) return { fall: 'aelter', version: versionen[i][0], neu: versionen[0] };
+    return { fall: 'nein', neu: versionen[0] };
+  }
+  function marke(r) {
+    if (!r) return '';
+    if (r.fall === 'ja') return EN ? 'fits your DMS' : 'passt zu deinem DMS';
+    if (r.fall === 'aelter') return EN ? 'DMS update recommended' : 'DMS-Update empfohlen';
+    return (EN ? 'needs DMS ' : 'braucht DMS ') + mindestens(r.neu[1]) + (EN ? '+' : ' oder neuer');
+  }
+  var suche = document.getElementById('suche'), art = document.getElementById('art'), kat = document.getElementById('kategorie'),
+      autor = document.getElementById('autor'), vfeld = document.getElementById('dms-version'), nur = document.getElementById('nur-passend');
   function filtern() {
-    var q = (suche.value || '').trim().toLowerCase(), a = art.value, n = 0;
-    document.querySelectorAll('.kachel').forEach(function (k) {
-      var ok = (!q || k.dataset.suche.indexOf(q) >= 0) && (!a || k.dataset.art === a);
-      k.hidden = !ok; if (ok) n++;
+    var q = (suche.value || '').trim().toLowerCase(), a = art.value, k = kat ? kat.value : '', au = autor ? autor.value : '', n = 0;
+    var dms = vfeld && VERSION.test(vfeld.value.trim()) ? vfeld.value.trim() : '';
+    if (nur) { nur.disabled = !dms; if (!dms) nur.checked = false; }
+    document.querySelectorAll('.kachel').forEach(function (el) {
+      var r = el.dataset.versionen ? pruefe(JSON.parse(el.dataset.versionen), dms) : null, m = el.querySelector('.passt-marke');
+      if (m) { m.hidden = !r; m.textContent = marke(r); m.className = 'passt-marke' + (r ? ' ' + r.fall : ''); }
+      var ok = (!q || el.dataset.suche.indexOf(q) >= 0) && (!a || el.dataset.art === a)
+        && (!k || (' ' + el.dataset.kategorien + ' ').indexOf(' ' + k + ' ') >= 0) && (!au || el.dataset.autor === au)
+        && (!(nur && nur.checked) || (r && r.fall === 'ja'));
+      el.hidden = !ok; if (ok) n++;
     });
     document.getElementById('keine').hidden = n > 0;
+    // Kategorie und Autor stehen in der Adresse (teilbar, Zurück im Browser); die DMS-Version nie.
+    var p = new URLSearchParams(location.search);
+    if (k) p.set('kategorie', k); else p.delete('kategorie');
+    if (au) p.set('autor', au); else p.delete('autor');
+    var ziel = location.pathname + (p.toString() ? '?' + p.toString() : '');
+    if (ziel !== location.pathname + location.search) { try { history.replaceState(null, '', ziel); } catch (e) { /* egal */ } }
   }
-  if (suche) { suche.addEventListener('input', filtern); art.addEventListener('change', filtern); }
+  if (suche) {
+    var p = new URLSearchParams(location.search);
+    if (kat && p.get('kategorie')) kat.value = p.get('kategorie');
+    if (autor && p.get('autor')) autor.value = p.get('autor');
+    if (vfeld) vfeld.value = liesVersion();
+    [suche, art, kat, autor, vfeld, nur].forEach(function (x) { if (x) x.addEventListener(x.tagName === 'INPUT' && x.type !== 'checkbox' ? 'input' : 'change', function () {
+      if (x === vfeld) { var w = vfeld.value.trim(); if (!w || VERSION.test(w)) merkeVersion(w); }
+      filtern();
+    }); });
+    filtern();
+  }
+  // Paketseite: Hinweis „passt / ältere Version / braucht neueres DMS“ unter dem Kopf.
+  var kopf = document.querySelector('.paketkopf[data-versionen]'), feld = document.getElementById('dms-passt');
+  function zeigePaket() {
+    var versionen = JSON.parse(kopf.dataset.versionen), dms = liesVersion(), r = pruefe(versionen, dms), id = kopf.dataset.paket;
+    var knopf = kopf.querySelector('.installieren');
+    feld.className = 'dms-passt'; feld.textContent = ''; if (knopf) knopf.hidden = false;
+    if (!r) {
+      feld.innerHTML = '<p class="leise">Passt das Paket zu deinem DMS? Deine DMS-Version: <input id="dms-version-paket" inputmode="decimal" placeholder="z. B. 0.144.2" aria-label="Deine DMS-Version"> <span class="klein">(steht im DMS unter „Über das DMS“, bleibt nur in diesem Browser)</span></p>';
+      var i = document.getElementById('dms-version-paket');
+      i.addEventListener('change', function () { var w = i.value.trim(); if (VERSION.test(w)) { merkeVersion(w); zeigePaket(); } });
+      return;
+    }
+    var aendern = ' <a href="#" data-dms-version-aendern>ändern</a>';
+    if (r.fall === 'ja') { feld.className += ' ja'; feld.innerHTML = 'Passt zu deinem DMS ' + dms + '.' + aendern; return; }
+    if (knopf) knopf.hidden = true;
+    feld.className += ' warn';
+    var html = '<p><strong>Für Version ' + r.neu[0] + ' brauchst du DMS ' + mindestens(r.neu[1]) + ' oder neuer</strong> – du hast ' + dms + '.' + aendern + '</p>'
+      + '<p>Aktualisiere dein DMS, damit du dieses Paket mit allen Verbesserungen und Fehlerbehebungen nutzen kannst.</p>'
+      + '<p><a class="knopf primaer" href="https://motom001.github.io/dms/admin/aktuell/aktualisieren/">So aktualisierst du dein DMS →</a></p>';
+    if (r.fall === 'aelter') html += '<p class="aelter-link"><a href="#" data-installieren="' + id + '@' + r.version + '">Ältere Version ' + r.version + ' trotzdem installieren</a> <span class="leise">– ihr fehlen Verbesserungen und Fehlerbehebungen. Nach dem DMS-Update holst du die neue Version über die Paketverwaltung nach.</span></p>';
+    feld.innerHTML = html;
+  }
+  if (kopf && feld) {
+    feld.addEventListener('click', function (e) { if (e.target.closest('[data-dms-version-aendern]')) { e.preventDefault(); merkeVersion(''); zeigePaket(); } });
+    zeigePaket();
+  }
 })();

@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T22:45:59Z",
+  "erstellt": "2026-11-02T23:04:35Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -399,7 +399,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.4.0"
+      "aktuell": "1.4.0",
+      "kategorien": [
+        "vorlagen"
+      ]
     },
     {
       "id": "bildformate",
@@ -448,7 +451,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1"
+      "aktuell": "1.0.1",
+      "kategorien": [
+        "dateiformate"
+      ]
     },
     {
       "id": "fahrzeuge",
@@ -790,7 +796,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.3.0"
+      "aktuell": "1.3.0",
+      "kategorien": [
+        "vorlagen"
+      ]
     },
     {
       "id": "hallo_post",
@@ -839,7 +848,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1"
+      "aktuell": "1.0.1",
+      "kategorien": [
+        "entwickler"
+      ]
     },
     {
       "id": "haus",
@@ -1104,7 +1116,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.1.0"
+      "aktuell": "1.1.0",
+      "kategorien": [
+        "vorlagen"
+      ]
     },
     {
       "id": "haushalt",
@@ -1873,7 +1888,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0"
+      "aktuell": "1.2.0",
+      "kategorien": [
+        "vorlagen"
+      ]
     },
     {
       "id": "ki_aehnlich",
@@ -1904,7 +1922,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "ki"
+      ]
     },
     {
       "id": "ki_assistent",
@@ -1989,7 +2010,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0"
+      "aktuell": "1.2.0",
+      "kategorien": [
+        "ki"
+      ]
     },
     {
       "id": "office_email",
@@ -2020,7 +2044,11 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "dateiformate",
+        "volltext"
+      ]
     },
     {
       "id": "sicherung_webdav",
@@ -2051,7 +2079,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sicherung"
+      ]
     },
     {
       "id": "texterkennung",
@@ -2118,7 +2149,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "2.1.0"
+      "aktuell": "2.1.0",
+      "kategorien": [
+        "volltext"
+      ]
     },
     {
       "id": "texterkennung_fra",
@@ -2151,7 +2185,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0"
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen"
+      ]
     },
     {
       "id": "trennblatt",
@@ -2200,7 +2237,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1"
+      "aktuell": "1.0.1",
+      "kategorien": [
+        "post"
+      ]
     },
     {
       "id": "vermietung",
@@ -2693,7 +2733,10 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0"
+      "aktuell": "1.2.0",
+      "kategorien": [
+        "vorlagen"
+      ]
     }
   ]
 }
