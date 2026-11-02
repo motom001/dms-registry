@@ -1,5 +1,16 @@
 # Änderungen
 
+## 1.2.0
+
+- Neue Einstellung **Kontextlänge (Tokens)**, Standard 8 192 (DMS #564): Anfrage und Antwort passen zusammen hinein. Ist eine Anfrage länger, **kürzt das Paket selbst**, statt dass Ollama ohne Grafikkarte still vorne abschneidet – und meldet es dem DMS:
+  - *Frag deine Ablage:* Ausschnitte in der Reihenfolge des DMS, solange sie passen (der erste notfalls angeschnitten), danach der Chat von hinten. Ergebnis mit `"gekuerzt": { "geschickt": [Nummern], "verlauf": weggelassene Einträge }` – das DMS zeigt „An die KI geschickt: 6 von 9 Ausschnitten (gekürzt)“.
+  - *Aus Dokument ausfüllen:* Text hinten gekürzt, Antwort höchstens ein Viertel der Kontextlänge (Standard weiter 2 048 Token); Ergebnis `{ "vorschlaege": …, "gekuerzt": true }` – das DMS zeigt „Dokumenttext gekürzt“.
+  - Token schätzt das Paket vorsichtig (Ziffern einzeln, Satzzeichen paarweise, sonst 2,5 Bytes je Token, 5 % Reserve) – Begründung und Messung in der Beschreibung unter „Kontextlänge“.
+  - Reicht die Kontextlänge nicht einmal für Frage und Antwort bzw. für die Feldbeschreibung, eine verständliche Meldung statt einer Anfrage.
+- *Aus Dokument ausfüllen:* Antwortet der Dienst, aber ohne passenden Wert – gültiges JSON ohne passende Angabe **oder gar kein JSON** (auch abgeschnitten) –, gibt das Paket ein leeres Ergebnis statt eines Fehlers zurück – das DMS sagt dann „KI-Assistent hat nichts Brauchbares geliefert“ statt „hat nicht geantwortet“ und nimmt die eingebaute Erkennung. Die Ursache steht nur im Protokoll („kein JSON-Objekt (… Zeichen)“ bzw. die Anzahl verworfener Angaben, nie Werte). Fehler bleiben Fehler: Dienst nicht erreichbar, Zeitgrenze, HTTP-Fehler, gar keine Antwort.
+- Die Attrappe kennt das Modell `kurz:1b`, das wie Ollama ohne Grafikkarte nur 2 048 Token liest.
+- Braucht **DMS ab 0.138.0** (Anzeige des Kürzens, „nichts Brauchbares“).
+
 ## 1.1.1
 
 - Kein „Nachdenken“ vor der Antwort: Jede Anfrage an den KI-Dienst (Frag deine Ablage, Aus Dokument ausfüllen, Probefrage von „Verbindung testen“) schickt `"reasoning_effort": "none"` mit – Ollama schaltet damit das Nachdenken von Modellen wie `qwen3` ab, die sonst auf einem NAS lange keine sichtbare Antwort geben. Lehnt ein Dienst das Feld ab (HTTP 400), wiederholt das Paket die Anfrage einmal ohne (DMS #564).
