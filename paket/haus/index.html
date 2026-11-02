@@ -18,17 +18,17 @@
       <span class="symbol gross" aria-hidden="true">H</span>
       <div><h1>Haus</h1><p class="leise">Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="haus@1.0.2">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="haus@1.1.0">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/haus">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.0.2 vom 01.11.2026</dd>
+      <dt>Version</dt><dd>1.1.0 vom 02.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>Apache-2.0</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.79.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.121.0</dd>
       <dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.0.0, <a href="../haushalt/">haushalt</a> &gt;=1.0.0</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
-      <h3>Mappentypen</h3><details><summary><strong>Immobilie</strong> – 11 Felder</summary><ul><li>Bezeichnung <span class="leise">(Text, Pflicht)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Straße <span class="leise">(Text)</span></li><li>Hausnummer <span class="leise">(Text)</span></li><li>PLZ <span class="leise">(Text)</span></li><li>Ort <span class="leise">(Text)</span></li><li>Baujahr <span class="leise">(Text)</span></li><li>Wohnfläche (m²) <span class="leise">(Zahl)</span></li><li>Grundstücksgröße (m²) <span class="leise">(Zahl)</span></li><li>Eigentümer/Vermieter <span class="leise">(Verweis)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Wartung</strong> – 8 Felder</summary><ul><li>Immobilie <span class="leise">(Verweis)</span></li><li>Gegenstand <span class="leise">(Auswahl, Pflicht)</span></li><li>Fachbetrieb <span class="leise">(Verweis)</span></li><li>Wartungsvertrag <span class="leise">(Verweis)</span></li><li>Zuletzt am <span class="leise">(Datum)</span></li><li>Turnus (Monate) <span class="leise">(Zahl)</span></li><li>Nächste fällig <span class="leise">(Datum)</span></li><li>Notiz <span class="leise">(Langtext)</span></li></ul></details><details><summary><strong>Zählerstand</strong> – 6 Felder</summary><ul><li>Immobilie <span class="leise">(Verweis)</span></li><li>Zählerart <span class="leise">(Auswahl, Pflicht)</span></li><li>Zählernummer <span class="leise">(Text)</span></li><li>Abgelesen am <span class="leise">(Datum, Pflicht)</span></li><li>Stand <span class="leise">(Zahl, Pflicht)</span></li><li>Einheit <span class="leise">(Auswahl)</span></li></ul></details>
+      <h3>Mappentypen</h3><details><summary><strong>Immobilie</strong> – 12 Felder</summary><ul><li>Bezeichnung <span class="leise">(Text, Pflicht)</span></li><li>Art <span class="leise">(Auswahl, Pflicht)</span></li><li>Straße <span class="leise">(Text)</span></li><li>Hausnummer <span class="leise">(Text)</span></li><li>PLZ <span class="leise">(Text)</span></li><li>Ort <span class="leise">(Text)</span></li><li>Land <span class="leise">(Text)</span></li><li>Baujahr <span class="leise">(Text)</span></li><li>Wohnfläche (m²) <span class="leise">(Zahl)</span></li><li>Grundstücksgröße (m²) <span class="leise">(Zahl)</span></li><li>Eigentümer/Vermieter <span class="leise">(Verweis)</span></li><li>Verbleib Originaldokumente <span class="leise">(Verweis)</span></li></ul></details><details><summary><strong>Wartung</strong> – 8 Felder</summary><ul><li>Immobilie <span class="leise">(Verweis)</span></li><li>Gegenstand <span class="leise">(Auswahl, Pflicht)</span></li><li>Fachbetrieb <span class="leise">(Verweis)</span></li><li>Wartungsvertrag <span class="leise">(Verweis)</span></li><li>Zuletzt am <span class="leise">(Datum)</span></li><li>Turnus (Monate) <span class="leise">(Zahl)</span></li><li>Nächste fällig <span class="leise">(Datum)</span></li><li>Notiz <span class="leise">(Langtext)</span></li></ul></details><details><summary><strong>Zählerstand</strong> – 6 Felder</summary><ul><li>Immobilie <span class="leise">(Verweis)</span></li><li>Zählerart <span class="leise">(Auswahl, Pflicht)</span></li><li>Zählernummer <span class="leise">(Text)</span></li><li>Abgelesen am <span class="leise">(Datum, Pflicht)</span></li><li>Stand <span class="leise">(Zahl, Pflicht)</span></li><li>Einheit <span class="leise">(Auswahl)</span></li></ul></details>
       <h3>Sichten</h3><ul><li>Haus</li><li>Immobilien <span class="leise">(unter Haus)</span></li><li>Wartungen <span class="leise">(unter Haus)</span></li><li>Zählerstände <span class="leise">(unter Haus)</span></li><li>Wartung fällig <span class="leise">(unter Haus)</span></li><li>Zählerstände dieses Jahr <span class="leise">(unter Zählerstände)</span></li><li>Zählerstände letztes Jahr <span class="leise">(unter Zählerstände)</span></li></ul>
       <p>7 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
     </section>
@@ -78,7 +78,7 @@
 <p><strong>Beispiele (optional):</strong> das Einfamilienhaus Musterweg 1 der Familie Muster mit Heizungs- und Rauchmelderwartung sowie je zwei Ablesungen von Strom- und Gaszähler. Wartungen und Zählerstände hängen schon am Haus; Fachbetrieb, Wartungsvertrag und Ablageort setzt du selbst.</p>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS ab Version 0.79 (Verweis auf den Ablageort des DMS, Verweise zwischen Beispielen)</li>
+<li>DMS ab Version 0.121 (Feldformate und Datumsgrenzen)</li>
 <li>Pakete <strong>Basis</strong> ab 1.0.0 und <strong>Haushalt</strong> ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert</li>
 </ul>
 <h3>Rechte und Netz</h3>
@@ -93,7 +93,13 @@
 <p>Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.</p>
 <h3>Pflege</h3>
 <p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Haus“ im Titel.</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.0.2</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.1.0</h3>
+<ul>
+<li><strong>Formate</strong> (dms-registry #55, DMS #535): Neues Feld <strong>Land</strong> an der Immobilie (Vorgabe Deutschland). Die PLZ hat in Deutschland genau 5 Ziffern, bei einem anderen Land ist sie frei.</li>
+<li><strong>Zuletzt am</strong> (Wartung) und <strong>Abgelesen am</strong> (Zählerstand) dürfen nicht in der Zukunft liegen.</li>
+<li>Braucht DMS ab 0.121.0. Gespeicherte Angaben bleiben gültig; das Update ergänzt das Feld Land und übernimmt Formate und Grenzen nur an Feldern, an denen du nichts davon eingestellt hast.</li>
+</ul>
+<h3>1.0.2</h3>
 <ul>
 <li>Lizenz: ab dieser Version <strong>Apache-2.0</strong> (vorher MIT), wie alle Pakete von motom001. Inhalt unverändert.</li>
 </ul>
@@ -107,7 +113,7 @@
 <li>Erste Fassung.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.2</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/haus-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haus@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/haus-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haus@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/haus-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haus@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.1.0</td><td>02.11.2026</td><td>&gt;=0.121.0</td><td><a href="../../archive/haus-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haus@1.1.0">installieren</button></td></tr><tr><td>1.0.2</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/haus-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haus@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/haus-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haus@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/haus-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="haus@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>

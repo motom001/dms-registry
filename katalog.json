@@ -1,12 +1,80 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T05:34:54Z",
+  "erstellt": "2026-11-02T05:36:07Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
     {
       "id": "basis",
       "versionen": [
+        {
+          "version": "1.3.0",
+          "dms": ">=0.121.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "organisation",
+                "name": "Organisation"
+              },
+              {
+                "schluessel": "niederlassung",
+                "name": "Niederlassung"
+              },
+              {
+                "schluessel": "person",
+                "name": "Person"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "organisationen",
+                "name": "Organisationen"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "banken",
+                "name": "Banken"
+              },
+              {
+                "schluessel": "behoerden",
+                "name": "Behörden"
+              },
+              {
+                "schluessel": "aerzte",
+                "name": "Ärzte und Praxen"
+              },
+              {
+                "schluessel": "niederlassungen",
+                "name": "Niederlassungen"
+              },
+              {
+                "schluessel": "personen",
+                "name": "Personen"
+              },
+              {
+                "schluessel": "familie",
+                "name": "Familie und Freunde"
+              },
+              {
+                "schluessel": "ansprechpartner",
+                "name": "Ansprechpartner"
+              }
+            ],
+            "beispiele": 8
+          },
+          "code": false,
+          "archiv": "archive/basis-1.3.0.zip",
+          "sha256": "9833cb027ecae0e23eff1c9547e07256c7f95a46836551ee7461209aa5a79283",
+          "groesse": 12646,
+          "veroeffentlicht": "2026-11-02T05:36:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/basis",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/CHANGELOG.md"
+        },
         {
           "version": "1.2.0",
           "dms": ">=0.113.0",
@@ -263,11 +331,58 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0"
+      "aktuell": "1.3.0"
     },
     {
       "id": "fahrzeuge",
       "versionen": [
+        {
+          "version": "1.2.0",
+          "dms": ">=0.121.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.1.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "fahrzeug",
+                "name": "Fahrzeug"
+              },
+              {
+                "schluessel": "werkstattrechnung",
+                "name": "Werkstattrechnung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "fahrzeuge",
+                "name": "Fahrzeuge"
+              },
+              {
+                "schluessel": "alle_fahrzeuge",
+                "name": "Alle Fahrzeuge"
+              },
+              {
+                "schluessel": "werkstattrechnungen",
+                "name": "Werkstattrechnungen"
+              },
+              {
+                "schluessel": "hu_faellig",
+                "name": "HU fällig"
+              }
+            ],
+            "beispiele": 3
+          },
+          "code": false,
+          "archiv": "archive/fahrzeuge-1.2.0.zip",
+          "sha256": "ee6c1fb06b96b6aed1ed372d3d150333e7884dd32e870ce153bba52222dbef64",
+          "groesse": 119447,
+          "veroeffentlicht": "2026-11-02T05:36:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/CHANGELOG.md"
+        },
         {
           "version": "1.1.0",
           "dms": ">=0.120.0",
@@ -511,7 +626,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.1.0"
+      "aktuell": "1.2.0"
     },
     {
       "id": "hallo_post",
@@ -565,6 +680,69 @@
     {
       "id": "haus",
       "versionen": [
+        {
+          "version": "1.1.0",
+          "dms": ">=0.121.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.0.0",
+            "haushalt": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "immobilie",
+                "name": "Immobilie"
+              },
+              {
+                "schluessel": "wartung",
+                "name": "Wartung"
+              },
+              {
+                "schluessel": "zaehlerstand",
+                "name": "Zählerstand"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haus",
+                "name": "Haus"
+              },
+              {
+                "schluessel": "immobilien",
+                "name": "Immobilien"
+              },
+              {
+                "schluessel": "wartungen",
+                "name": "Wartungen"
+              },
+              {
+                "schluessel": "zaehlerstaende",
+                "name": "Zählerstände"
+              },
+              {
+                "schluessel": "wartung_faellig",
+                "name": "Wartung fällig"
+              },
+              {
+                "schluessel": "zaehler_dieses_jahr",
+                "name": "Zählerstände dieses Jahr"
+              },
+              {
+                "schluessel": "zaehler_letztes_jahr",
+                "name": "Zählerstände letztes Jahr"
+              }
+            ],
+            "beispiele": 7
+          },
+          "code": false,
+          "archiv": "archive/haus-1.1.0.zip",
+          "sha256": "a765244fe59efa7555b3b2b050c42f5db8dbde9b874135c3a35b92a8cd568ca4",
+          "groesse": 155710,
+          "veroeffentlicht": "2026-11-02T05:36:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haus",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/CHANGELOG.md"
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.79.0",
@@ -762,11 +940,137 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2"
+      "aktuell": "1.1.0"
     },
     {
       "id": "haushalt",
       "versionen": [
+        {
+          "version": "1.2.0",
+          "dms": ">=0.121.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "konto",
+                "name": "Konto"
+              },
+              {
+                "schluessel": "vertrag",
+                "name": "Vertrag"
+              },
+              {
+                "schluessel": "versicherung",
+                "name": "Versicherung"
+              },
+              {
+                "schluessel": "steuerjahr",
+                "name": "Steuerjahr"
+              },
+              {
+                "schluessel": "arbeitsverhaeltnis",
+                "name": "Arbeitsverhältnis"
+              },
+              {
+                "schluessel": "vorsorge",
+                "name": "Vorsorge"
+              },
+              {
+                "schluessel": "ausweis",
+                "name": "Ausweis & Urkunde"
+              },
+              {
+                "schluessel": "gesundheit",
+                "name": "Gesundheit"
+              },
+              {
+                "schluessel": "anschaffung",
+                "name": "Anschaffung"
+              },
+              {
+                "schluessel": "bildung",
+                "name": "Bildung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haushalt",
+                "name": "Haushalt"
+              },
+              {
+                "schluessel": "konten",
+                "name": "Konten"
+              },
+              {
+                "schluessel": "vertraege",
+                "name": "Verträge"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "steuerjahre",
+                "name": "Steuerjahre"
+              },
+              {
+                "schluessel": "arbeit",
+                "name": "Arbeitsverhältnisse"
+              },
+              {
+                "schluessel": "vorsorge",
+                "name": "Vorsorge"
+              },
+              {
+                "schluessel": "ausweise",
+                "name": "Ausweise & Urkunden"
+              },
+              {
+                "schluessel": "gesundheit",
+                "name": "Gesundheit"
+              },
+              {
+                "schluessel": "anschaffungen",
+                "name": "Anschaffungen"
+              },
+              {
+                "schluessel": "bildung",
+                "name": "Bildung"
+              },
+              {
+                "schluessel": "sachversicherungen",
+                "name": "Sachversicherungen"
+              },
+              {
+                "schluessel": "personenversicherungen",
+                "name": "Personenversicherungen"
+              },
+              {
+                "schluessel": "kuendigung_bald",
+                "name": "Kündigung in den nächsten 3 Monaten"
+              },
+              {
+                "schluessel": "laeuft_ab",
+                "name": "Läuft bald ab"
+              },
+              {
+                "schluessel": "garantie_bald",
+                "name": "Garantie läuft ab"
+              }
+            ],
+            "beispiele": 18
+          },
+          "code": false,
+          "archiv": "archive/haushalt-1.2.0.zip",
+          "sha256": "f387049edec4e528bf5663dd035622ea1249ff31671241ef86ee86bf40c98b08",
+          "groesse": 373968,
+          "veroeffentlicht": "2026-11-02T05:36:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haushalt",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haushalt/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haushalt/CHANGELOG.md"
+        },
         {
           "version": "1.1.0",
           "dms": ">=0.120.0",
@@ -1405,7 +1709,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.1.0"
+      "aktuell": "1.2.0"
     },
     {
       "id": "texterkennung",
@@ -1490,6 +1794,102 @@
     {
       "id": "vermietung",
       "versionen": [
+        {
+          "version": "1.1.0",
+          "dms": ">=0.121.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.0.0",
+            "haus": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "mietobjekt",
+                "name": "Mietobjekt"
+              },
+              {
+                "schluessel": "wohnung",
+                "name": "Wohnung"
+              },
+              {
+                "schluessel": "mietvertrag",
+                "name": "Mietvertrag"
+              },
+              {
+                "schluessel": "nebenkostenabrechnung",
+                "name": "Nebenkostenabrechnung"
+              },
+              {
+                "schluessel": "ausgabe",
+                "name": "Ausgabe Mietobjekt"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "vermietung",
+                "name": "Vermietung"
+              },
+              {
+                "schluessel": "mietobjekte",
+                "name": "Mietobjekte"
+              },
+              {
+                "schluessel": "wohnungen",
+                "name": "Wohnungen"
+              },
+              {
+                "schluessel": "mietvertraege",
+                "name": "Mietverträge"
+              },
+              {
+                "schluessel": "mietvertraege_laufend",
+                "name": "Laufende Mietverträge"
+              },
+              {
+                "schluessel": "nebenkosten",
+                "name": "Nebenkostenabrechnungen"
+              },
+              {
+                "schluessel": "ausgaben",
+                "name": "Ausgaben"
+              },
+              {
+                "schluessel": "ausgaben_dieses_jahr",
+                "name": "Ausgaben dieses Jahr"
+              },
+              {
+                "schluessel": "ausgaben_letztes_jahr",
+                "name": "Ausgaben letztes Jahr"
+              },
+              {
+                "schluessel": "ausgaben_umlagefaehig",
+                "name": "Umlagefähig letztes Jahr"
+              },
+              {
+                "schluessel": "abrechnung_offen",
+                "name": "Abrechnung offen"
+              },
+              {
+                "schluessel": "mieterhoehung",
+                "name": "Mieterhöhung möglich"
+              },
+              {
+                "schluessel": "vertrag_endet",
+                "name": "Vertrag endet bald"
+              }
+            ],
+            "beispiele": 11
+          },
+          "code": false,
+          "archiv": "archive/vermietung-1.1.0.zip",
+          "sha256": "294b7f36cf3c1df5ad4282cf1667d64a60eeb877d230a87da0e780917344151e",
+          "groesse": 340639,
+          "veroeffentlicht": "2026-11-02T05:36:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/vermietung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/CHANGELOG.md"
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.113.0",
@@ -1786,7 +2186,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2"
+      "aktuell": "1.1.0"
     }
   ]
 }
