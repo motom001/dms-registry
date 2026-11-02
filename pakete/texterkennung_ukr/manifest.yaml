@@ -1,0 +1,22 @@
+# Zusatzpaket: Ukrainisch für das Paket Texterkennung (nach dem Muster texterkennung_fra). Schema: schema/manifest.schema.json
+schema: 1
+id: texterkennung_ukr
+name: Texterkennung – Zusatzsprache Ukrainisch
+version: 1.0.0
+beschreibung: Zusatzsprache Ukrainisch für das Grundpaket Texterkennung – damit auch ukrainische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# 0.133.0: Ein Paket liest die Daten der Pakete, die von ihm abhängen (<paket>/<datei>).
+dms: ">=0.133.0"
+abhaengigkeiten:
+  texterkennung: ">=2.0.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: []
+  rechte:
+    dokumente: keine
+  netz: []

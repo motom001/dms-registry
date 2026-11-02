@@ -1,6 +1,6 @@
-# Texterkennung
+# Texterkennung (Deutsch und Englisch)
 
-Das Paket **Texterkennung** ist die Texterkennung des DMS: Es erkennt Text in gescannten PDFs und Fotos und schreibt ihn als **Volltext** ins DMS – damit findet die Suche auch Wörter aus Scans. Es nutzt [Tesseract](https://github.com/tesseract-ocr/tesseract) 5.5.1 als WebAssembly und läuft im **Paket-Läufer** des DMS: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit.
+Das Paket **Texterkennung** ist das **Grundpaket** für die Texterkennung des DMS – mit Deutsch und Englisch. Für weitere Sprachen installierst du zusätzlich eine **Zusatzsprache** (siehe unten). Es erkennt Text in gescannten PDFs und Fotos und schreibt ihn als **Volltext** ins DMS – damit findet die Suche auch Wörter aus Scans. Es nutzt [Tesseract](https://github.com/tesseract-ocr/tesseract) 5.5.1 als WebAssembly und läuft im **Paket-Läufer** des DMS: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit.
 
 Seit DMS 0.133 liest das DMS selbst nur noch die **Textebene** von PDFs (poppler); seit DMS 0.134 steckt im DMS-Image keine Texterkennung mehr. Scans und Fotos bekommen ihren Text von diesem Paket. Ohne das Paket bleiben sie ohne Volltext („wartet auf Texterkennung – kein Paket installiert“).
 
@@ -46,7 +46,7 @@ Wer in Version 1 „Nur Dokumente ohne Text“ ausgeschaltet hatte, schaltet nac
 
 ## Weitere Sprachen
 
-Im Paket stecken Deutsch, Englisch und die Lageerkennung (osd). Weitere Sprachen kommen als **Zusatzpakete** `texterkennung_<sprache>` dazu, z. B. [Texterkennung – Französisch](../texterkennung_fra/). Ein Zusatzpaket hängt von diesem Paket ab; das DMS gibt diesem Paket seine Sprachdaten (`texterkennung_fra/fra.traineddata`). So bleibt jedes Paket weit unter der Grenze von 32 MB.
+Im Paket stecken Deutsch, Englisch und die Lageerkennung (osd). Weitere Sprachen kommen als **Zusatzpakete** `texterkennung_<sprache>` dazu: [Französisch](../texterkennung_fra/), [Spanisch](../texterkennung_spa/), [Italienisch](../texterkennung_ita/), [Niederländisch](../texterkennung_nld/), [Portugiesisch](../texterkennung_por/), [Polnisch](../texterkennung_pol/), [Türkisch](../texterkennung_tur/), [Russisch](../texterkennung_rus/), [Ukrainisch](../texterkennung_ukr/), [Arabisch](../texterkennung_ara/). Ein Zusatzpaket hängt von diesem Paket ab; das DMS gibt diesem Paket seine Sprachdaten (`texterkennung_fra/fra.traineddata`). So bleibt jedes Paket weit unter der Grenze von 32 MB.
 
 ## Messung
 

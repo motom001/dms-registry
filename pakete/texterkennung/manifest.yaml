@@ -1,9 +1,9 @@
 # Paket Texterkennung – Tesseract als WebAssembly, Referenzpaket für den Paket-Läufer. Schema: schema/manifest.schema.json
 schema: 1
 id: texterkennung
-name: Texterkennung
-version: 2.1.0
-beschreibung: Die Texterkennung des DMS – erkennt Text in gescannten PDFs und Bildern mit Tesseract als WebAssembly (Sprache je Seite, auch Mischseiten, Seiten aufrichten, lange Dokumente abschnittsweise) und schreibt ihn als Volltext ins DMS. Abgeschottet im Paket-Läufer, ohne Netz.
+name: Texterkennung (Deutsch und Englisch)
+version: 2.1.1
+beschreibung: Das Grundpaket für die Texterkennung des DMS – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -31,7 +31,7 @@ code:
           typ: auswahl
           optionen: [Automatisch, Deutsch, Englisch, Deutsch und Englisch]
           standard: Automatisch
-          hilfe: Automatisch – das Paket erkennt die Sprache jeder Seite einzeln. Es liest eine Seite zuerst in der Sprache der Seite davor (am Anfang Deutsch), erkennt die Sprache des Texts und liest die Seite in einer anderen erkannten Sprache ein zweites Mal, wenn deren Sprachdaten da sind – die sicherere Lesung gilt (Englisch immer, weitere über Zusatzpakete wie „Texterkennung – Französisch“). Stehen auf einer Seite zwei Sprachen, liest es sie mit beiden zugleich. Das DMS bekommt die Sprachen je Seite und durchsucht jede Seite mit den Wortstämmen ihrer Sprache. Bei „Deutsch und Englisch“ liest es jede Seite zweimal und nimmt die sicherere Lesung – das dauert doppelt so lang.
+          hilfe: Automatisch – das Paket erkennt die Sprache jeder Seite einzeln. Es liest eine Seite zuerst in der Sprache der Seite davor (am Anfang Deutsch), erkennt die Sprache des Texts und liest die Seite in einer anderen erkannten Sprache ein zweites Mal, wenn deren Sprachdaten da sind – die sicherere Lesung gilt (Englisch immer, weitere über Zusatzsprachen wie „Texterkennung – Zusatzsprache Französisch“). Stehen auf einer Seite zwei Sprachen, liest es sie mit beiden zugleich. Das DMS bekommt die Sprachen je Seite und durchsucht jede Seite mit den Wortstämmen ihrer Sprache. Bei „Deutsch und Englisch“ liest es jede Seite zweimal und nimmt die sicherere Lesung – das dauert doppelt so lang.
         - schluessel: verwerfen
           name: Vorhandenen Volltext verwerfen und neu erkennen
           typ: janein
