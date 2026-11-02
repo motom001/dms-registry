@@ -168,6 +168,12 @@ code:
 - **Nichts ausführen:** Makros, Skripte und eingebettete Objekte werden weder gestartet noch ausgewertet; aus Office-Dateien nur die Teile mit dem Text lesen, XML ohne DTD und externe Entitäten, Grenzen gegen ZIP-Bomben.
 - **Kein Netz**, wie beim Umwandeln. Der Typ zählt am Inhalt, nicht am Namen; Dateien, die das DMS selbst liest (PDF, JPEG, PNG), lässt das Paket aus.
 
+## Signierter Katalog
+
+- Der veröffentlichte Katalog ist signiert (siehe [README, „Katalog signieren“](README.md#katalog-signieren)). Pull Requests ändern daran nichts: Signiert wird nur in der CI auf `main`.
+- **Private Schlüssel** (`*.pem`) gehören nie ins Repository, in Issues oder in Pull Requests. Gerät einer doch hinein: sofort dem Maintainer melden (vertraulich, siehe [SECURITY.md](SECURITY.md)).
+- `schluessel/*.pub`, `werkzeuge/signieren.py` und der Workflow „Katalog veröffentlichen“ ändert nur der Maintainer (CODEOWNERS).
+
 ## Verwaiste Pakete
 
 Antwortet der Pfleger auf Fehler oder nötige Anpassungen drei Monate lang nicht, wird das Paket als *verwaist* markiert und kann von jemand anderem übernommen werden.

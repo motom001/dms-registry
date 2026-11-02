@@ -469,9 +469,9 @@ SAMMEL_INHALT = r'''    <h1>Pakete ohne Internet</h1>
     <p id="sammel-laden" class="leise">Lade den Katalog …</p>
     <section><h2>So prüft das DMS die Sammeldatei</h2>
       <ul>
-        <li>Die Sammeldatei enthält die Archive aus diesem Katalog Byte für Byte unverändert, dazu das Verzeichnis <code>sammeldatei.json</code> mit Größe und SHA-256 je Archiv. Diese Seite prüft jedes Archiv schon beim Zusammenstellen gegen <code>katalog.json</code>.</li>
+        <li>Die Sammeldatei enthält die Archive aus diesem Katalog Byte für Byte unverändert, dazu das Verzeichnis <code>sammeldatei.json</code> mit Größe und SHA-256 je Archiv und eine Kopie des signierten Katalogs (<code>katalog.json</code> mit <code>katalog.sig</code>). Diese Seite prüft jedes Archiv schon beim Zusammenstellen gegen <code>katalog.json</code>.</li>
         <li>Das DMS nimmt die Datei nur an, wenn jedes Archiv genau zu seiner Prüfsumme passt, nichts anderes darin liegt und jedes Paket gültig ist – sonst installiert es gar nichts. Kennt es den offiziellen Katalog schon, vergleicht es die Prüfsummen auch damit.</li>
-        <li>Die Prüfsummen zeigen, dass die Datei vollständig und unverändert ist – nicht, wer sie zusammengestellt hat. Nimm deshalb nur eine Sammeldatei, die du selbst hier geladen hast. Zum Vergleich zeigt diese Seite den SHA-256 der ganzen Datei, das DMS nach dem Hochladen ebenfalls.</li>
+        <li>Das DMS prüft die Signatur des Katalogs auch ohne Internet. Ist sie gültig und steht jedes Archiv mit seiner Prüfsumme darin, zeigt es „aus dem offiziellen Katalog vom …“, und du musst die Herkunft nicht bestätigen. Ist der Katalog nicht signiert, beweisen die Prüfsummen nur, dass die Datei vollständig und unverändert ist – nicht, wer sie zusammengestellt hat; dann bestätigst du die Herkunft im DMS. Zum Vergleich zeigt diese Seite den SHA-256 der ganzen Datei, das DMS nach dem Hochladen ebenfalls.</li>
         <li>Rechte von Paketen mit Code bestätigst du im DMS je Paket – eine Sammelbestätigung gibt es nicht.</li>
       </ul>
     </section>
@@ -503,14 +503,15 @@ fieldset.sammel-pakete { border: 0; padding: 0; margin: 0; min-width: 0; }
 
 SAMMEL_SKRIPT = r'''
 // Sammeldatei im Browser (motom001/dms#461): wie werkzeuge/sammeldatei.py – Auswahl samt Abhängigkeiten,
-// passend zur DMS-Version; jedes Archiv gegen katalog.json geprüft; ZIP mit sammeldatei.json, LIESMICH.txt
-// und den Archiven unter pakete/. Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser.
+// passend zur DMS-Version; jedes Archiv gegen katalog.json geprüft; ZIP mit sammeldatei.json, LIESMICH.txt,
+// dem signierten Katalog (katalog.json und katalog.sig Byte für Byte, #74) und den Archiven unter pakete/.
+// Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser.
 (function () {
   var VORAUSWAHL = ['texterkennung'];
   var KATALOG_URL = 'https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json';
   var BEREICH = /^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$/;
   var VERSION = /^\d+\.\d+\.\d+$/;
-  var katalog = null, gewaehlt = [];
+  var katalog = null, katalogRoh = null, signatur = null, gewaehlt = [];
   function teile(v) { return v.split('.').map(function (x) { return parseInt(x, 10) || 0; }); }
   function vergleiche(a, b) { var x = teile(a), y = teile(b); for (var i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] - y[i]; return 0; }
   function passt(v, bereich) {
@@ -635,7 +636,9 @@ SAMMEL_SKRIPT = r'''
       var jetzt = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
       var vz = { format: 1, art: 'dms-sammeldatei', erstellt: jetzt, quelle: katalog.quelle || 'https://github.com/motom001/dms-registry', katalog: KATALOG_URL, dms: dmsVersion(), pakete: eintraege };
       var enc = new TextEncoder();
-      var blob = zip([{ name: 'sammeldatei.json', daten: enc.encode(JSON.stringify(vz, null, 2) + '\n') }, { name: 'LIESMICH.txt', daten: enc.encode(LIESMICH) }].concat(dateien));
+      // Signierter Katalog (#74): genau die geladenen Bytes – die Signatur gilt nur für sie.
+      var mitKatalog = signatur ? [{ name: 'katalog.json', daten: katalogRoh }, { name: 'katalog.sig', daten: signatur }] : [];
+      var blob = zip([{ name: 'sammeldatei.json', daten: enc.encode(JSON.stringify(vz, null, 2) + '\n') }, { name: 'LIESMICH.txt', daten: enc.encode(LIESMICH) }].concat(mitKatalog, dateien));
       var summe = hex(await crypto.subtle.digest('SHA-256', await blob.arrayBuffer()));
       var dateiname = 'dms-pakete-' + jetzt.slice(0, 10) + '.zip';
       var a = el('a', { href: URL.createObjectURL(blob), download: dateiname, className: 'knopf' }, ['Noch einmal speichern']);
@@ -650,7 +653,15 @@ SAMMEL_SKRIPT = r'''
   async function start() {
     var form = document.getElementById('sammel');
     if (!form) return;
-    try { katalog = await (await fetch('katalog.json', { cache: 'no-store' })).json(); }
+    try {
+      // Erst die Signatur, dann den Katalog: Wird dazwischen neu veröffentlicht, passt die Signatur nicht, und das DMS fragt nach der Herkunft.
+      var s = await fetch('katalog.sig', { cache: 'no-store' }).catch(function () { return null; });
+      signatur = s && s.ok ? new Uint8Array(await s.arrayBuffer()) : null;
+      var k = await fetch('katalog.json', { cache: 'no-store' });
+      if (!k.ok) throw new Error(String(k.status));
+      katalogRoh = new Uint8Array(await k.arrayBuffer());
+      katalog = JSON.parse(new TextDecoder().decode(katalogRoh));
+    }
     catch (e) { document.getElementById('sammel-laden').textContent = 'Der Katalog lässt sich nicht laden: ' + e.message; return; }
     var feld = document.getElementById('dms-version'), q = new URLSearchParams(location.search).get('dms');
     if (q && VERSION.test(q)) feld.value = q;

@@ -1,4 +1,4 @@
-# Veröffentlicht den Katalog (katalog.json und Archive) auf dem Branch gh-pages,
+# Veröffentlicht den Katalog (katalog.json, katalog.sig und Archive) auf dem Branch gh-pages,
 # erreichbar unter https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json
 # (und über GitHub Pages, sobald es für den Branch gh-pages eingeschaltet ist).
 name: Katalog veröffentlichen
@@ -18,6 +18,9 @@ concurrency:
 jobs:
   katalog:
     runs-on: ubuntu-latest
+    # Der Signierschlüssel liegt nur als Secret KATALOG_SIGNIERSCHLUESSEL in dieser Environment; sie ist auf den
+    # Branch main beschränkt (Settings → Environments → katalog). Anleitung: README, „Katalog signieren“.
+    environment: katalog
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -43,6 +46,12 @@ jobs:
         run: python3 werkzeuge/bauen.py --unveroeffentlicht site
       - name: Katalog bauen
         run: python3 werkzeuge/katalog.py site
+      # Ed25519 über die Bytes von katalog.json (#74). Ohne Secret (Fork, oder bevor es angelegt ist) bleibt der
+      # Lauf grün: unsigniert, mit deutlicher Warnung. Danach prüft das Werkzeug die Signatur mit schluessel/*.pub.
+      - name: Katalog signieren
+        env:
+          KATALOG_SIGNIERSCHLUESSEL: ${{ secrets.KATALOG_SIGNIERSCHLUESSEL }}
+        run: python3 werkzeuge/signieren.py signieren site --schluessel-env KATALOG_SIGNIERSCHLUESSEL
       - name: Webseite bauen
         run: python3 werkzeuge/webseite.py site
       - name: Veröffentlichen

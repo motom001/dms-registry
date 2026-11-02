@@ -168,6 +168,12 @@ code:
 - **Run nothing:** macros, scripts and embedded objects are neither started nor evaluated; only read the parts of Office files that hold the text, XML without DTD and external entities, limits against ZIP bombs.
 - **No network**, as with converting. The file type is determined by the content, not the name; files the DMS reads itself (PDF, JPEG, PNG) are left alone.
 
+## Signed catalogue
+
+- The published catalogue is signed (see [README, "Signing the catalogue"](README.en.md#signing-the-catalogue)). Pull requests do not change that: signing happens only in the CI on `main`.
+- **Private keys** (`*.pem`) never belong in the repository, in issues or in pull requests. If one ends up there anyway: report it to the maintainer immediately (confidentially, see [SECURITY.en.md](SECURITY.en.md)).
+- Only the maintainer changes `schluessel/*.pub`, `werkzeuge/signieren.py` and the workflow "Katalog veröffentlichen" (CODEOWNERS).
+
 ## Orphaned packages
 
 If the maintainer of a package does not respond to bugs or necessary adjustments for three months, the package is marked as *orphaned* and can be taken over by someone else.

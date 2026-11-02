@@ -19,7 +19,8 @@ In the DMS you install packages under **Werkbank → Pakete**. Package managemen
 pakete/<paket>/        one folder per package, name = package id
 vorlage/               template for a new package – copy it and get started
 schema/                JSON schemas for manifest.yaml and the contents
-werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, webseite.py, sammeldatei.py (also run in the CI)
+werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (also run in the CI)
+schluessel/            public keys the catalogue is signed with (see "Signing the catalogue")
 REGELN.md              what is allowed, what is not, which licences (English: REGELN.en.md)
 CONTRIBUTING.md        how a package gets here (English: CONTRIBUTING.en.md)
 ```
@@ -44,10 +45,11 @@ With every merge to `main`, the CI builds the **catalogue** and puts it on the b
 
 - **`https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json`** – the default catalogue address in the DMS
 - `…/gh-pages/archive/<id>-<version>.zip` – one archive per package version containing exactly the files of the package folder (without a folder in front)
+- `…/gh-pages/katalog.sig` – the signature of the catalogue (see [Signing the catalogue](#signing-the-catalogue))
 
 The same branch holds the **catalogue website** (`werkzeuge/webseite.py`): browse packages like in an app store – an overview with search and filters, and one page per package with description, what gets created, permissions, changes and older versions. **"In meinem DMS installieren"** (install in my DMS) asks for the address of your DMS the first time (remembered only in your browser, changeable) and opens `/werkbank/pakete?installieren=<id>@<version>` there; nothing is installed until you confirm it in the DMS. The website sends nothing to your DMS. The overview is available in German and English (`en/index.html`, switch "Deutsch · English" at the top, works without JavaScript); package pages and package descriptions are in German for now.
 
-**Packages without internet** (`sammeldatei.html`, motom001/dms#461; page in German for now): tick packages, choose the DMS version (default: the newest; the DMS links here with `?dms=<version>`), dependencies are added automatically. The browser downloads the archives, checks each against SHA-256 and size from `katalog.json` and packs them together with the index `sammeldatei.json` (format: [`schema/sammeldatei.schema.json`](schema/sammeldatei.schema.json)) into **one bundle file** – nothing is uploaded. When uploading, the DMS checks every archive against size and checksum in the index (and against the official catalogue if it has already fetched it), rejects unknown files and then installs package by package with a confirmation for each. `werkzeuge/sammeldatei.py` creates the same file on the command line and checks a bundle the way the DMS does (`--pruefen <file> [--katalog katalog.json]`).
+**Packages without internet** (`sammeldatei.html`, motom001/dms#461; page in German for now): tick packages, choose the DMS version (default: the newest; the DMS links here with `?dms=<version>`), dependencies are added automatically. The browser downloads the archives, checks each against SHA-256 and size from `katalog.json` and packs them together with the index `sammeldatei.json` (format: [`schema/sammeldatei.schema.json`](schema/sammeldatei.schema.json)) into **one bundle file**, together with the signed catalogue (`katalog.json` and `katalog.sig`) – nothing is uploaded. When uploading, the DMS checks every archive against size and checksum in the index and against the signed catalogue (and against the official catalogue if it has already fetched it), rejects unknown files and then installs package by package. If the signature is valid, nobody needs to confirm the origin any more. `werkzeuge/sammeldatei.py` creates the same file on the command line and checks a bundle the way the DMS does (`--pruefen <file> [--katalog katalog.json] [--oeffentlich <x.pub> …]`).
 
 With GitHub Pages (source: branch `gh-pages`), the website is available at **`https://motom001.github.io/dms-registry/`**, and the catalogue also at `…/katalog.json`.
 
@@ -68,7 +70,52 @@ With GitHub Pages (source: branch `gh-pages`), the website is available at **`ht
 }
 ```
 
-Older versions remain in the catalogue and available as archives. An archive with the same id and version never changes: if a package changes without a new version, the check in the pull request fails. Locally, you build the catalogue with `python3 werkzeuge/katalog.py <folder>`. The field `signatur` is reserved for a later signature of the catalogue and is `null` today.
+Older versions remain in the catalogue and available as archives. An archive with the same id and version never changes: if a package changes without a new version, the check in the pull request fails. Locally, you build the catalogue with `python3 werkzeuge/katalog.py <folder>`. The field `signatur` stays `null`: the signature is kept separately in `katalog.sig`.
+
+## Signing the catalogue
+
+The CI **signs** every published catalogue (#74; in the DMS: motom001/dms#594). Because `katalog.json` contains the checksum of every archive, **one** signature proves that all packages come from the DMS project – also offline in a bundle file.
+
+- **Method:** Ed25519 over the **exact bytes** of `katalog.json`, using `openssl pkeyutl` (`werkzeuge/signieren.py`).
+- **`katalog.sig`** sits next to `katalog.json` (separate, so older DMS versions read the catalogue unchanged):
+
+    ```json
+    { "format": 1, "verfahren": "ed25519", "schluessel": "<key id>", "signatur": "<base64>", "erstellt": "2026-11-02T10:00:00Z" }
+    ```
+
+- **`erstellt`** is part of `katalog.json` (time of the build). Online, the DMS rejects signed catalogues that are older than the newest one it has seen.
+- **Key id and fingerprint:** SHA-256 over the 32 bytes of the public key, in hex – key id = the first 16 characters, fingerprint = all 64 in groups of four (`python3 werkzeuge/signieren.py fingerabdruck <file.pub>`).
+- **Two keys:** the **signing key** exists only as the secret `KATALOG_SIGNIERSCHLUESSEL` in the environment `katalog` (branch `main` only). The **backup key** is kept offline by the maintainer. Both public keys are built into the DMS and stored here as `schluessel/signier.pub` and `schluessel/reserve.pub`; after signing, the CI verifies the signature with them.
+- **Without the secret** (in forks, or as long as it has not been created), the build continues **without** a signature and prints a clear warning in the run. An old `katalog.sig` is removed, because it would no longer match.
+- **Bundle files** contain the signed catalogue (`katalog.json` and `katalog.sig`, byte for byte). The DMS then no longer asks to confirm the origin. `python3 werkzeuge/sammeldatei.py --pruefen <file> --oeffentlich schluessel/signier.pub --oeffentlich schluessel/reserve.pub` verifies the signature as well.
+
+**Fingerprints:** the real keys do not exist yet. As soon as the maintainer has generated them, their fingerprints are listed here and in the [SECURITY.md of the DMS](https://github.com/motom001/dms/blob/main/SECURITY.en.md). Until then, the DMS verifies with test keys and says so in the preview.
+
+### What only the maintainer can do (once)
+
+On **your own computer** – not in a chat session, not in the CI:
+
+```sh
+openssl genpkey -algorithm ed25519 -out signier.pem
+openssl pkey -in signier.pem -pubout -out signier.pub
+openssl genpkey -algorithm ed25519 -out reserve.pem
+openssl pkey -in reserve.pem -pubout -out reserve.pub
+python3 werkzeuge/signieren.py fingerabdruck signier.pub reserve.pub
+```
+
+1. In dms-registry, go to **Settings → Environments → New environment** and create the environment `katalog` (the CI also creates it on its first run; then only configure it). Under **Deployment branches and tags**, choose "Selected branches and tags" and allow only `main`.
+2. In this environment, under **Environment secrets → Add secret**, create the secret `KATALOG_SIGNIERSCHLUESSEL`. Content: the **complete** file `signier.pem` (including the lines `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`).
+3. Keep `reserve.pem` **offline** (a safe place, plus a printout) – **never** on GitHub.
+4. Post `signier.pub` and `reserve.pub` as a comment in #74 (public keys are not sensitive). They then go into `schluessel/` here and into `server/src/projektschluessel.ts` of the DMS; the fingerprints go into this README and into the SECURITY.md of the DMS.
+5. Afterwards, delete `signier.pem` and `reserve.pem` from your computer. The backup stays only in its safe place.
+
+The next run of "Katalog veröffentlichen" (push to `main` or **Actions → Katalog veröffentlichen → Run workflow**) then signs. If the key in the secret does not match `schluessel/*.pub`, the run fails – nothing is published with a wrong key.
+
+**Key lost or leaked?** Put the backup key into the secret; the DMS accepts it without an update. Then generate a new backup pair and ship it with a DMS release.
+
+### Your own catalogue with your own key
+
+If you run your own catalogue, you can sign it with `werkzeuge/signieren.py` in the same way and put your public key next to it as `katalog.schluessel`. When adding the catalogue, the DMS shows the fingerprint and only accepts it after confirmation (like SSH on first contact). A key change is announced with `katalog.schluessel.sig` (the new key, signed with the old one: `signieren.py signieren-datei`). Instructions: [DMS developer manual](https://motom001.github.io/dms/entwickler/aktuell/pakete/#eigener-katalog-mit-eigenem-schluessel) (German).
 
 ## Creating a package
 
