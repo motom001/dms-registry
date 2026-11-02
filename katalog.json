@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T05:38:19Z",
+  "erstellt": "2026-11-02T05:39:02Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -1735,6 +1735,37 @@
       ],
       "name": "KI lokal – Ähnlichkeit",
       "beschreibung": "Findet ähnliche Dokumente und sucht mit eigenen Worten – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0"
+    },
+    {
+      "id": "ki_assistent",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.124.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/ki_assistent-1.0.0.zip",
+          "sha256": "df195c0f45954d92cce4ef7fff950ce3e256a395393ed95e92d30bd5697c9858",
+          "groesse": 49593,
+          "veroeffentlicht": "2026-11-02T05:39:02Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/ki_assistent",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_assistent/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_assistent/CHANGELOG.md"
+        }
+      ],
+      "name": "KI-Assistent",
+      "beschreibung": "Beantwortet Fragen an die Ablage („Frag deine Ablage“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"

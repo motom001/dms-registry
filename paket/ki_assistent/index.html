@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KI-Assistent – DMS-Pakete</title>
+  <meta name="description" content="Beantwortet Fragen an die Ablage („Frag deine Ablage“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.">
+  <link rel="stylesheet" href="../../stil.css">
+  <script src="../../dms.js" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke">DMS-Pakete</a>
+    <nav><a href="../../sammeldatei.html">Ohne Internet</a><a href="https://motom001.github.io/dms/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>DMS-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf">
+      <span class="symbol gross" aria-hidden="true">K</span>
+      <div><h1>KI-Assistent</h1><p class="leise">Beantwortet Fragen an die Ablage („Frag deine Ablage“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.</p></div>
+    </div>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="ki_assistent@1.0.0">In meinem DMS installieren</button>
+      <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/ki_assistent">Quellcode</a></div>
+    <dl class="eckdaten">
+      <dt>Version</dt><dd>1.0.0 vom 02.11.2026</dd>
+      <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
+      <dt>Lizenz</dt><dd>Apache-2.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.124.0</dd>
+      <dt>Abhängigkeiten</dt><dd>keine</dd>
+    </dl>
+    <section><h2>Was angelegt wird</h2>
+      <h3>Mappentypen</h3><ul></ul>
+      <h3>Sichten</h3><ul></ul>
+      <p>0 Beispiel-Mappen mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>
+    </section>
+    <section><h2>Rechte und Netzwerkzugriff</h2><ul class="rechte"><li>Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten) <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#recht-antworten" title="Erklärung: Fragen an die Ablage beantworten" aria-label="Erklärung: Fragen an die Ablage beantworten (Administratorhandbuch)">?</a></li><li>Zugriff auf Netzwerk/Internet nur zu: der Adresse aus der Einstellung „Dienst-Adresse“ (trägst du ein und bestätigst sie) <a class="hilfe" href="https://motom001.github.io/dms/admin/aktuell/pakete/#dienst-adresse" title="Erklärung: Dienst-Adresse" aria-label="Erklärung: Dienst-Adresse (Administratorhandbuch)">?</a></li></ul></section>
+    <section class="readme"><h2>Beschreibung</h2><p>Das Paket <strong>KI-Assistent</strong> beantwortet Fragen an deine Ablage: Auf der Startseite des DMS erscheint das Feld <strong>„Frag deine Ablage“</strong>. Du fragst in eigenen Worten – „Wann läuft die Kfz-Versicherung aus?“ – und bekommst eine Antwort mit Links zu den passenden Mappen.</p>
+<p>Das Paket <strong>rechnet nicht selbst</strong>. Es ist ein Adapter zu einem <strong>KI-Dienst, den du betreibst oder bewusst wählst</strong> – zum Beispiel <a href="https://ollama.com">Ollama</a> auf deinem Heimserver. Es spricht die verbreitete <strong>OpenAI-kompatible Schnittstelle</strong> (Chat Completions); damit gehen auch LocalAI, der Server von llama.cpp und – wenn du das willst – Anbieter im Internet.</p>
+<h3>Was geht wann wohin</h3>
+<ol>
+<li>Du stellst im DMS eine Frage. Der Browser schickt sie mit dem bisherigen Chat an <strong>dein DMS</strong>.</li>
+<li><strong>Das DMS selbst</strong> sucht passende Stellen – im Volltext deiner Dokumente, in Titeln und Feldern der Mappen und, mit dem Paket <a href="../ki_aehnlich/">KI lokal – Ähnlichkeit</a>, nach Ähnlichkeit. Es sucht <strong>nur in Mappen, die du lesen darfst</strong>; Passwortfelder und Benutzer sind nie dabei.</li>
+<li>Es schneidet <strong>wenige Ausschnitte</strong> heraus – höchstens so viele, wie der Administrator unter <em>Werkbank → Pakete → KI-Assistent → Frag deine Ablage</em> einstellt (Standard: 8 Ausschnitte, zusammen 6 000 Zeichen). <strong>Nie der ganze Bestand.</strong></li>
+<li>Das DMS gibt Frage, bisherigen Chat und Ausschnitte an dieses Paket im <strong>Paket-Läufer</strong>. Das Paket schickt sie an den KI-Dienst unter der <strong>Dienst-Adresse</strong> – an keine andere Adresse; das erzwingt der Läufer.</li>
+<li>Der Dienst antwortet Stück für Stück; das Paket gibt die Stücke weiter, und die Antwort entsteht beim Schreiben.</li>
+<li>Das DMS zeigt die Antwort <strong>nur als Text</strong> und darunter die <strong>Quellen</strong>. Unter jeder Antwort steht aufklappbar <strong>„An die KI geschickt: n Ausschnitte aus m Mappen“</strong> mit genau den Stellen, die beim Dienst angekommen sind.</li>
+</ol>
+<p>Das Paket liest <strong>nichts selbst</strong> aus deiner Ablage, speichert nichts und schreibt nichts vom Inhalt ins Protokoll. Das DMS speichert weder Fragen noch Antworten; der Chat bleibt im Browser, bis du die Seite neu lädst.</p>
+<blockquote>
+<p><strong>Betrieb und Hosting des KI-Dienstes liegen außerhalb des DMS.</strong> Läuft der Dienst bei dir im eigenen Netz, verlassen die Ausschnitte das Haus nicht. Bindest du einen Dienst bei einem <strong>anderen Anbieter</strong> an, ist das eine <strong>Vertrauensbeziehung zu diesem Dienstleister</strong> – wie beim Hosten des DMS selbst: Wo stehen die Rechner (Standort)? Gibt es einen Vertrag zur Auftragsverarbeitung? Speichert der Anbieter die Anfragen, und nutzt er sie zum Training? Das entscheidest du bewusst, indem du das Paket installierst, die Adresse einträgst und den Hinweis bestätigst. Voreingestellt ist nie eine Adresse im Internet.</p>
+</blockquote>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten).</strong> Keine Rechte an Mappen und keine an Dokumenten: Das Paket bekommt nur, was das DMS je Frage heraussucht.</li>
+<li><strong>Zugriff auf Netzwerk/Internet nur zu: der Adresse aus der Einstellung „Dienst-Adresse“ (trägst du ein und bestätigst sie).</strong> Das Paket bringt keine feste Adresse mit.</li>
+<li>Es reagiert auf <strong>keine Ereignisse</strong> – es läuft nur, wenn jemand fragt oder du „Verbindung testen“ drückst.</li>
+</ul>
+<h3>Einrichten</h3>
+<h4>1. Einen KI-Dienst bereitstellen</h4>
+<p><strong>Ollama aus dem App-Store deines Heimservers</strong> – am einfachsten:</p>
+<ul>
+<li><strong>Umbrel:</strong> App Store → <em>Ollama</em> installieren. Adresse für das DMS meist <code>http://&lt;umbrel&gt;:11434/v1</code>.</li>
+<li><strong>CasaOS / ZimaOS:</strong> App Store → <em>Ollama</em> installieren. Adresse <code>http://&lt;rechner&gt;:11434/v1</code>.</li>
+</ul>
+<p>Danach ein Modell holen, z. B. im Terminal des Ollama-Containers: <code>ollama pull qwen2.5:3b</code>.</p>
+<p><strong>Docker Compose neben dem DMS</strong> – dann erreicht das DMS Ollama im selben Netz unter <code>http://ollama:11434/v1</code>:</p>
+<pre><code class="language-yaml">services:
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ./ollama:/root/.ollama
+    restart: unless-stopped
+    # Mit NVIDIA-Grafikkarte zusätzlich:
+    # deploy: { resources: { reservations: { devices: [{ driver: nvidia, count: all, capabilities: [gpu] }] } } }
+</code></pre>
+<p>Ins Compose-Projekt des DMS eintragen (oder beide Projekte in ein gemeinsames Netzwerk hängen), dann <code>docker compose exec ollama ollama pull qwen2.5:3b</code>. Einen Port nach außen braucht Ollama dafür nicht.</p>
+<p><strong>Ein anderer Rechner mit Grafikkarte</strong> im Heimnetz ist oft deutlich schneller als ein NAS: Ollama dort installieren, mit <code>OLLAMA_HOST=0.0.0.0</code> starten und im DMS <code>http://&lt;ip-des-rechners&gt;:11434/v1</code> eintragen. Die Verbindung im Heimnetz ist dann unverschlüsselt (<code>http://</code>) – das ist bei einem eigenen Netz üblich; über das Internet nimm immer <code>https://</code>.</p>
+<h4>2. Paket installieren und einstellen</h4>
+<ol>
+<li><em>Werkbank → Pakete → KI-Assistent → Installieren</em> und die Rechte bestätigen.</li>
+<li>Reiter <strong>Einstellungen</strong>:</li>
+<li><strong>Dienst-Adresse</strong>, z. B. <code>http://ollama:11434/v1</code> – im leeren Feld steht das nur als Beispiel.</li>
+<li><strong>Modell</strong>, z. B. <code>qwen2.5:3b</code>.</li>
+<li><strong>Schlüssel (API-Key)</strong> nur, wenn der Dienst eine Anmeldung verlangt (Ollama nicht). Das DMS speichert ihn verschlüsselt.</li>
+<li><strong>Antwort höchstens (Tokens)</strong>, Standard 800 – kleiner ist schneller.</li>
+<li><strong>Speichern</strong> – das DMS fragt „Daten an diese Adresse schicken?“. Mit <strong>Adresse bestätigen und speichern</strong> gilt die Adresse; erst dann darf das Paket dorthin.</li>
+<li><strong>Verbindung testen</strong>: Das Paket fragt den Dienst nach seinen Modellen und stellt eine kurze Probefrage. Die Meldung sagt, ob der Dienst erreichbar ist, ob das Modell da ist (sonst: welche es gibt) und wie lange eine Antwort dauerte.</li>
+</ol>
+<p>Unter <em>Werkbank → Pakete → KI-Assistent</em> stellst du außerdem die <strong>Höchstmenge je Frage</strong> ein.</p>
+<h3>Welches Modell?</h3>
+<p>Kleine Modelle mit 1–4 Milliarden Parametern (quantisiert, z. B. Q4) laufen auch ohne Grafikkarte; gute Kandidaten für deutsche Fragen sind <code>qwen2.5:3b</code>, <code>llama3.2:3b</code> und <code>gemma2:2b</code>. Größere Modelle (7–8 Milliarden) antworten besser, brauchen aber eine Grafikkarte oder viel Geduld.</p>
+<h3>Messung</h3>
+<p>Gemessen im <strong>Paket-Läufer des DMS</strong> (DMS 0.124.0, Standardgrenzen) auf <strong>amd64 mit 2 Kernen</strong>, mit der Attrappe eines Dienstes (<code>tests/attrappe.mjs</code>), die ihre Antwort in Stücken alle 20 ms schickt:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Eigenanteil des Pakets je Frage (Worker starten, Nachrichten bauen, erstes Stück weitergeben)</td>
+<td>≈ 100–120 ms</td>
+</tr>
+<tr>
+<td>Ganze Frage mit Suche der Ausschnitte, 9 Stücke</td>
+<td>310–360 ms</td>
+</tr>
+<tr>
+<td>Verbindung testen (Modellliste)</td>
+<td>4–50 ms</td>
+</tr>
+</tbody>
+</table>
+<p>Die Zeit bestimmt also fast nur der KI-Dienst. <strong>Messungen mit echten Modellen auf typischer Hardware (Intel N100, Raspberry Pi 5, NAS, Rechner mit Grafikkarte) stehen noch aus</strong> und kommen hier dazu – mit Zeit bis zum ersten Wort und Wörtern je Sekunde. Die Zeitgrenze des Läufers (2 Minuten je Aufruf) gilt auch für eine Antwort; auf einem langsamen NAS hilft eine kleinere <strong>Antwort höchstens (Tokens)</strong>.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>DMS <strong>0.124.0</strong> oder neuer (Schnittstelle <code>dms:antworten</code>, Dienst-Adresse als Einstellung, Antwort Stück für Stück).</li>
+<li>Ein KI-Dienst mit OpenAI-kompatibler Schnittstelle (<code>/v1/models</code>, <code>/v1/chat/completions</code>).</li>
+<li>Dokumente mit Volltext – ohne Text findet das DMS keine Ausschnitte. Mit <a href="../ki_aehnlich/">KI lokal – Ähnlichkeit</a> findet es auch Stellen ohne gleiche Wörter.</li>
+</ul>
+<h3>Für Entwickler</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/assistent.cpp"><code>code/assistent.cpp</code></a></td>
+<td>das Modul (DMS-Paket-ABI 1): Aktionen <code>dms:antworten</code> (Chat Completions mit <code>"stream": true</code> über <code>netz_strom</code>/<code>netz_weiter</code>, Stücke mit <code>teil</code>) und <code>verbindung_testen</code></td>
+</tr>
+<tr>
+<td><a href="code/json.h"><code>code/json.h</code></a></td>
+<td>kleiner JSON-Leser (wie bei KI lokal – Ähnlichkeit)</td>
+</tr>
+<tr>
+<td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
+<td>Bau mit wasi-sdk – ohne fremde Bibliotheken und ohne Daten</td>
+</tr>
+<tr>
+<td><a href="tests/modul_test.mjs"><code>tests/modul_test.mjs</code></a></td>
+<td>Ablauf mit einer Nachbildung des DMS und eines Dienstes: Stücke, Nachrichten, Fehler, Verbindung testen</td>
+</tr>
+<tr>
+<td><a href="tests/attrappe.mjs"><code>tests/attrappe.mjs</code></a></td>
+<td>Attrappe eines OpenAI-kompatiblen Dienstes zum Ausprobieren ohne Modell</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sh">pakete/ki_assistent/tests/pruefen.sh          # bauen und prüfen, ohne Netz
+node pakete/ki_assistent/tests/attrappe.mjs   # Attrappe auf Port 11434 – im DMS als Dienst-Adresse eintragen
+</code></pre>
+<p>Das Paket gibt dem Dienst den Hinweis des DMS unverändert als Systemnachricht, die Ausschnitte als eigene, als Daten gekennzeichnete Nachricht und die Frage getrennt davon. Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter <a href="https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#fragen-beantworten">Pakete mit Code → Fragen beantworten</a>.</p>
+<p><strong>Adapter für weitere Anbieter sind ausdrücklich willkommen</strong> – als eigenes Paket mit dem Recht <code>dms:antworten</code> und einer Dienst-Adresse als Einstellung (siehe <a href="../../REGELN.md">REGELN</a>). Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“, DMS #511) kann dieses Paket noch nicht; das kommt in einer späteren Version.</p>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>).</p></section>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: beantwortet Fragen an die Ablage („Frag deine Ablage“, DMS 0.124.0) über einen Dienst mit OpenAI-kompatibler Schnittstelle (Chat Completions, Antwort Stück für Stück), Netz nur zur bestätigten Dienst-Adresse, „Verbindung testen“ mit Modellliste und Antwortzeit.</li>
+</ul></section>
+    <section><h2>Versionen</h2>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.124.0</td><td><a href="../../archive/ki_assistent-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_assistent@1.0.0">installieren</button></td></tr></tbody></table></div>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines DMS</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.de</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../katalog.json">katalog.json</a></footer>
+</body>
+</html>
