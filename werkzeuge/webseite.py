@@ -217,6 +217,8 @@ EREIGNISSE = {
     'texterkennung.fertig': ('Die Texterkennung eines Dokuments ist fertig', 'ereignis-texterkennung-fertig'),
     'volltext.fertig': ('Der Volltext eines Dokuments ist da', 'ereignis-volltext-fertig'),
     'paket.einstellungen_geaendert': ('Die Einstellungen des Pakets wurden geändert', 'ereignis-einstellungen-geandert'),
+    # DMS #577, ab 0.137.0
+    'datei.umwandeln': ('Eine Datei soll umgewandelt werden (Dateitypen, die das DMS nicht selbst liest)', 'ereignis-datei-umwandeln'),
 }
 DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und Volltext schreiben'}
 SCHNITTSTELLEN = {
@@ -225,7 +227,13 @@ SCHNITTSTELLEN = {
     'dms:antworten': ('Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten)', 'recht-antworten', 'Fragen an die Ablage beantworten'),
     # DMS #511, ab 0.125.0
     'dms:erkennen': ('Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)', 'recht-erkennen', 'Felder aus Dokumenten vorschlagen'),
+    # DMS #458, ab 0.133.0
+    'dms:texterkennung': ('Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)', 'recht-texterkennung', 'Texterkennung übernehmen'),
+    # DMS #577, ab 0.137.0 – dahinter die Dateitypen aus code.umwandeln
+    'dms:umwandeln': ('Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln)', 'recht-umwandeln', 'Dateien umwandeln'),
 }
+# Kurze Namen der Dateitypen hinter dms:umwandeln (wie DATEITYP_NAMEN im DMS, shared/src/dateiumwandlung.ts).
+DATEITYP_NAMEN = {'image/tiff': 'TIFF', 'image/webp': 'WebP', 'image/gif': 'GIF', 'image/bmp': 'BMP', 'image/heic': 'HEIC', 'image/heif': 'HEIF', 'image/avif': 'AVIF'}
 
 
 def adressen(code: dict) -> list[str]:
@@ -273,7 +281,8 @@ def rechte_text(code: dict, typen: dict | None = None) -> str:
         zeilen.append(DOKUMENT_RECHTE[dok] + hilfe('recht-dokumente', DOKUMENT_RECHTE[dok]))
     for x in r.get('schnittstellen') or []:
         if x in SCHNITTSTELLEN:
-            zeilen.append(e(SCHNITTSTELLEN[x][0]) + hilfe(SCHNITTSTELLEN[x][1], SCHNITTSTELLEN[x][2]))
+            typen_ = list(dict.fromkeys(DATEITYP_NAMEN.get(m, m) for m in code.get('umwandeln') or [])) if x == 'dms:umwandeln' else []
+            zeilen.append(e(SCHNITTSTELLEN[x][0] + (': ' + ', '.join(typen_) if typen_ else '')) + hilfe(SCHNITTSTELLEN[x][1], SCHNITTSTELLEN[x][2]))
     a = adressen(code)
     zeilen.append(netz_text(code.get('netz') or [], a)
                   + (hilfe('dienst-adresse', 'Dienst-Adresse') if a else hilfe('recht-netzwerk-und-internet', 'Zugriff auf Netzwerk und Internet')))

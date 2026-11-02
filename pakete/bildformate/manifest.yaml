@@ -1,0 +1,34 @@
+# Paket Bildformate – wandelt TIFF, WebP, GIF und BMP in eine Fassung, die das DMS liest (PDF, JPEG, PNG): daraus
+# entstehen Vorschaubild und Volltext. Schema: schema/manifest.schema.json
+schema: 1
+id: bildformate
+name: Bildformate
+version: 1.0.0
+beschreibung: Vorschaubild und Volltext für TIFF-Scans (auch mehrseitig), WebP, GIF und BMP – das Paket wandelt sie in ein PDF, JPEG oder PNG, das das DMS liest. Das Original bleibt das Dokument. Abgeschottet im Paket-Läufer, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# 0.137.0: Schnittstelle dms:umwandeln, code.umwandeln, Ereignis datei.umwandeln, PUT /dokumente/{id}/fassung (DMS #577)
+dms: ">=0.137.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: [datei.umwandeln]
+  umwandeln: [image/tiff, image/webp, image/gif, image/bmp]
+  rechte:
+    lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen
+    dokumente: lesen      # die Originaldatei lesen; das Paket ändert keine Dokumente
+    schnittstellen: ["dms:umwandeln"]  # Fassung (PDF, JPEG, PNG) an das DMS zurückgeben
+  netz: []
+  einstellungen:
+    - abschnitt: Umwandeln
+      felder:
+        - schluessel: max_seiten
+          name: Höchstens so viele Seiten
+          typ: zahl
+          min: 1
+          max: 1000
+          standard: 200
+          hilfe: Mehrseitige TIFF-Dateien wandelt das Paket bis zu dieser Seite in ein PDF; am Ergebnis steht „nur die ersten … von …“.

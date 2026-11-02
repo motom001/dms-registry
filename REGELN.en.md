@@ -39,6 +39,7 @@ Before installation, the DMS shows the permissions of a package with code, and t
 - „Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten)“ (answer questions about the files, only from excerpts the DMS passes along) – only with `code.rechte.schnittstellen` and `dms: ">=0.124.0"`
 - „Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)“ (suggest fields from documents for “fill from document”, only from the text the DMS passes along) – only with `code.rechte.schnittstellen` and `dms: ">=0.125.0"`
 - „Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)“ (take over text recognition for scans and images – the DMS reports documents without text and shows „waiting for text recognition“ until the package writes the full text) – only with `code.rechte.schnittstellen`, `dokumente: schreiben` and `dms: ">=0.133.0"`
+- „Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln): TIFF, WebP, …“ (convert files the DMS cannot read itself – the package reads the original file and returns a version as PDF, PNG or JPEG for thumbnail and full text; the original stays unchanged) – only with `code.rechte.schnittstellen`, `code.umwandeln`, the event `datei.umwandeln`, `dokumente: lesen` and `dms: ">=0.137.0"` (see [Converting files](#converting-files))
 - „kein Zugriff auf Netzwerk und Internet“ (no access to network and internet) or „Zugriff auf Netzwerk/Internet nur zu: …“ (access to network/internet only to: …); with a service address as a setting additionally „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“ (the address from the setting „…“, which you enter and confirm)
 - „Reagiert auf diese Ereignisse:“ (reacts to these events) with one event per line
 
@@ -141,6 +142,26 @@ A package can bring **synonyms** for the search (from DMS 0.127.0): whoever sear
 - General words found in every archive (Rechnung/Beleg, Vertrag/Vereinbarung) belong in the **Basis** package; subject packages only bring their subject-specific words. A word appears in at most one package of the catalogue (checked by `werkzeuge/test_pruefen.py`).
 - `tests/erwartung.yaml` states the number of groups: `wortlisten: 5`.
 - The DMS creates the groups on installation, replaces them with those of the package on an update and removes them together with the package.
+
+## Converting files
+
+The DMS itself only reads PDF, JPEG and PNG (DMS #577). A package with the permission `dms:umwandeln` turns other file types into a **version** (“Fassung”) from which the DMS creates the thumbnail and the full text – e.g. [Bildformate](pakete/bildformate/) for TIFF, WebP, GIF and BMP:
+
+```yaml
+dms: ">=0.137.0"
+code:
+  ereignisse: [datei.umwandeln]
+  umwandeln: [image/tiff, image/webp]      # file types (MIME) the package handles; not PDF, JPEG or PNG
+  rechte:
+    lesen: ["*"]
+    dokumente: lesen                       # read the original – no write access needed
+    schnittstellen: ["dms:umwandeln"]
+```
+
+- It may only **return** what the DMS reads itself: the version as **PDF, PNG or JPEG** (`PUT /dokumente/{id}/fassung`, at most 50 MB) and, if it likes, a thumbnail as **JPEG or PNG**. Multi-page files as PDF. It never changes the original.
+- **No network:** converting happens inside the package. Sending a file to an outside service to convert it is not allowed.
+- **Third-party libraries** (decoders, encoders) need a suitable licence (see [Licences](#licences)), are built from fixed commits, with their licence texts under `code/lizenzen/` and a note in the README. Formats whose decoders require patent licences (e.g. HEVC in HEIC) only go into the catalogue after consulting the maintainers; the README says so openly.
+- The interface (flow, event, formats, limits, responses) is described in the DMS developer manual under [Dateien umwandeln](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#dateien-umwandeln) (German).
 
 ## Orphaned packages
 
