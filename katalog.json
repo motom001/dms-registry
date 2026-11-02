@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-02T05:39:02Z",
+  "erstellt": "2026-11-02T06:41:05Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -337,6 +337,53 @@
       "id": "fahrzeuge",
       "versionen": [
         {
+          "version": "1.3.0",
+          "dms": ">=0.127.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.1.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "fahrzeug",
+                "name": "Fahrzeug"
+              },
+              {
+                "schluessel": "werkstattrechnung",
+                "name": "Werkstattrechnung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "fahrzeuge",
+                "name": "Fahrzeuge"
+              },
+              {
+                "schluessel": "alle_fahrzeuge",
+                "name": "Alle Fahrzeuge"
+              },
+              {
+                "schluessel": "werkstattrechnungen",
+                "name": "Werkstattrechnungen"
+              },
+              {
+                "schluessel": "hu_faellig",
+                "name": "HU fällig"
+              }
+            ],
+            "beispiele": 3
+          },
+          "code": false,
+          "archiv": "archive/fahrzeuge-1.3.0.zip",
+          "sha256": "19b9ea756bf89048823edffc26af80c2aeb106a167d22e48670ceb1207df98db",
+          "groesse": 120096,
+          "veroeffentlicht": "2026-11-02T06:41:05Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/CHANGELOG.md"
+        },
+        {
           "version": "1.2.0",
           "dms": ">=0.121.0",
           "abhaengigkeiten": {
@@ -626,7 +673,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0"
+      "aktuell": "1.3.0"
     },
     {
       "id": "hallo_post",
@@ -1857,6 +1904,102 @@
       "id": "vermietung",
       "versionen": [
         {
+          "version": "1.2.0",
+          "dms": ">=0.127.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.0.0",
+            "haus": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "mietobjekt",
+                "name": "Mietobjekt"
+              },
+              {
+                "schluessel": "wohnung",
+                "name": "Wohnung"
+              },
+              {
+                "schluessel": "mietvertrag",
+                "name": "Mietvertrag"
+              },
+              {
+                "schluessel": "nebenkostenabrechnung",
+                "name": "Nebenkostenabrechnung"
+              },
+              {
+                "schluessel": "ausgabe",
+                "name": "Ausgabe Mietobjekt"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "vermietung",
+                "name": "Vermietung"
+              },
+              {
+                "schluessel": "mietobjekte",
+                "name": "Mietobjekte"
+              },
+              {
+                "schluessel": "wohnungen",
+                "name": "Wohnungen"
+              },
+              {
+                "schluessel": "mietvertraege",
+                "name": "Mietverträge"
+              },
+              {
+                "schluessel": "mietvertraege_laufend",
+                "name": "Laufende Mietverträge"
+              },
+              {
+                "schluessel": "nebenkosten",
+                "name": "Nebenkostenabrechnungen"
+              },
+              {
+                "schluessel": "ausgaben",
+                "name": "Ausgaben"
+              },
+              {
+                "schluessel": "ausgaben_dieses_jahr",
+                "name": "Ausgaben dieses Jahr"
+              },
+              {
+                "schluessel": "ausgaben_letztes_jahr",
+                "name": "Ausgaben letztes Jahr"
+              },
+              {
+                "schluessel": "ausgaben_umlagefaehig",
+                "name": "Umlagefähig letztes Jahr"
+              },
+              {
+                "schluessel": "abrechnung_offen",
+                "name": "Abrechnung offen"
+              },
+              {
+                "schluessel": "mieterhoehung",
+                "name": "Mieterhöhung möglich"
+              },
+              {
+                "schluessel": "vertrag_endet",
+                "name": "Vertrag endet bald"
+              }
+            ],
+            "beispiele": 11
+          },
+          "code": false,
+          "archiv": "archive/vermietung-1.2.0.zip",
+          "sha256": "6442f44420fa2ab1b96604617b9b3623b30e98e6797bac494f78416285446ee7",
+          "groesse": 341237,
+          "veroeffentlicht": "2026-11-02T06:41:05Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/vermietung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/CHANGELOG.md"
+        },
+        {
           "version": "1.1.0",
           "dms": ">=0.121.0",
           "abhaengigkeiten": {
@@ -2248,7 +2391,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.1.0"
+      "aktuell": "1.2.0"
     }
   ]
 }

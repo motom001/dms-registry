@@ -18,13 +18,13 @@
       <span class="symbol gross" aria-hidden="true">F</span>
       <div><h1>Fahrzeuge</h1><p class="leise">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="fahrzeuge@1.2.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="fahrzeuge@1.3.0">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.2.0 vom 02.11.2026</dd>
+      <dt>Version</dt><dd>1.3.0 vom 02.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>Apache-2.0</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.121.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.127.0</dd>
       <dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.1.0, <a href="../haushalt/">haushalt</a> &gt;=1.1.0</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
@@ -69,10 +69,11 @@
 <li><strong>Verbleib Originaldokumente</strong> zeigt auf einen <strong>Ablageort</strong> des DMS – beim Fahrzeug der Fahrzeugbrief (Zulassungsbescheinigung Teil II), z. B. im Safe.</li>
 </ul>
 <p><strong>Ansichten:</strong> <em>Fahrzeuge</em> mit allem und darunter <em>Alle Fahrzeuge</em>, <em>Werkstattrechnungen</em> und <em>HU fällig</em> – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist.</p>
+<p><strong>Gleichbedeutende Wörter für die Suche:</strong> <em>Kfz, Auto, PKW, Fahrzeug</em> · <em>HU, Hauptuntersuchung, TÜV</em> · <em>Fahrzeugbrief, Zulassungsbescheinigung Teil II</em> · <em>Fahrzeugschein, Zulassungsbescheinigung Teil I</em> · <em>Werkstattrechnung, Reparaturrechnung</em>. Sie stehen im DMS unter Werkbank → Suche.</p>
 <p><strong>Beispiele (optional):</strong> das Familienauto der Familie Muster und zwei Werkstattrechnungen. Die Rechnungen hängen am Auto, das Auto zeigt auf die Kfz-Versicherung und den Halter Tom Muster aus Haushalt (wenn deren Beispiele installiert sind). Werkstatt und Ablageort „Safe“ setzt du selbst.</p>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS ab Version 0.121 (Halter als Verweis, Umwandlung von Text in Verweise nach dem Update, Feldformate und Datumsgrenzen)</li>
+<li>DMS ab Version 0.127 (Wortlisten für die Suche; vorher 0.121 für Halter als Verweis, Umwandlung von Text in Verweise, Feldformate und Datumsgrenzen)</li>
 <li>Pakete <strong>Basis</strong> ab 1.1.0 (Person) und <strong>Haushalt</strong> ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert</li>
 </ul>
 <h3>Rechte und Netz</h3>
@@ -88,7 +89,12 @@
 <p><strong>Update von 1.0.x:</strong> Der Halter war bis 1.0.x ein Textfeld. Das Update legt den Verweis dazu, der Text bleibt. Unter <strong>Werkbank → Pakete → Fahrzeuge → Text in Verweise umwandeln</strong> siehst du in einer Vorschau je Name, welche Person das DMS vorschlägt oder neu anlegt; erst dann wird umgewandelt. Das lässt sich rückgängig machen.</p>
 <h3>Pflege</h3>
 <p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Fahrzeuge“ im Titel.</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.2.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.3.0</h3>
+<ul>
+<li>Neu: <strong>gleichbedeutende Wörter</strong> für die Suche – wer „Kfz“ sucht, findet auch „Auto“ und „PKW“; dazu HU/TÜV, Fahrzeugbrief und Fahrzeugschein mit ihren amtlichen Namen, Werkstatt- und Reparaturrechnung.</li>
+<li>Braucht DMS ab 0.127.0 (Wortlisten).</li>
+</ul>
+<h3>1.2.0</h3>
 <ul>
 <li><strong>Grenzen</strong> (dms-registry #55, DMS #535): Die <strong>Erstzulassung</strong> darf nicht in der Zukunft liegen. „HU fällig“ bleibt ohne Grenze.</li>
 <li>Braucht DMS ab 0.121.0. Gespeicherte Angaben bleiben gültig; das Update übernimmt die Grenze nur, wenn du am Feld nichts davon eingestellt hast.</li>
@@ -120,7 +126,7 @@
 <li>Erste Fassung.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.2.0</td><td>02.11.2026</td><td>&gt;=0.121.0</td><td><a href="../../archive/fahrzeuge-1.2.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.2.0">installieren</button></td></tr><tr><td>1.1.0</td><td>02.11.2026</td><td>&gt;=0.120.0</td><td><a href="../../archive/fahrzeuge-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.1.0">installieren</button></td></tr><tr><td>1.0.3</td><td>02.11.2026</td><td>&gt;=0.113.0</td><td><a href="../../archive/fahrzeuge-1.0.3.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.3">installieren</button></td></tr><tr><td>1.0.2</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/fahrzeuge-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.3.0</td><td>02.11.2026</td><td>&gt;=0.127.0</td><td><a href="../../archive/fahrzeuge-1.3.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.3.0">installieren</button></td></tr><tr><td>1.2.0</td><td>02.11.2026</td><td>&gt;=0.121.0</td><td><a href="../../archive/fahrzeuge-1.2.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.2.0">installieren</button></td></tr><tr><td>1.1.0</td><td>02.11.2026</td><td>&gt;=0.120.0</td><td><a href="../../archive/fahrzeuge-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.1.0">installieren</button></td></tr><tr><td>1.0.3</td><td>02.11.2026</td><td>&gt;=0.113.0</td><td><a href="../../archive/fahrzeuge-1.0.3.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.3">installieren</button></td></tr><tr><td>1.0.2</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/fahrzeuge-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.75.0</td><td><a href="../../archive/fahrzeuge-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>

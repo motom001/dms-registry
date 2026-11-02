@@ -18,13 +18,13 @@
       <span class="symbol gross" aria-hidden="true">V</span>
       <div><h1>Vermietung</h1><p class="leise">Mietobjekte, Wohnungen, Mietverträge, Nebenkostenabrechnungen und Ausgaben – für Vermieter mit wenigen Wohnungen, mit Fristen für Abrechnung, Mieterhöhung und Vertragsende.</p></div>
     </div>
-    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="vermietung@1.1.0">In meinem DMS installieren</button>
+    <div class="knoepfe"><button type="button" class="knopf primaer" data-installieren="vermietung@1.2.0">In meinem DMS installieren</button>
       <a class="knopf" href="https://github.com/motom001/dms-registry/tree/main/pakete/vermietung">Quellcode</a></div>
     <dl class="eckdaten">
-      <dt>Version</dt><dd>1.1.0 vom 02.11.2026</dd>
+      <dt>Version</dt><dd>1.2.0 vom 02.11.2026</dd>
       <dt>Autor</dt><dd>Thomas Meissner (<a href="https://github.com/motom001">@motom001</a>)</dd>
       <dt>Lizenz</dt><dd>Apache-2.0</dd>
-      <dt>Nötige DMS-Version</dt><dd>&gt;=0.121.0</dd>
+      <dt>Nötige DMS-Version</dt><dd>&gt;=0.127.0</dd>
       <dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.1.0, <a href="../haushalt/">haushalt</a> &gt;=1.0.0, <a href="../haus/">haus</a> &gt;=1.0.0</dd>
     </dl>
     <section><h2>Was angelegt wird</h2>
@@ -96,10 +96,11 @@
 <li><strong>Ende</strong> am Mietvertrag: bei befristeten oder gekündigten Verträgen, mit Zeit für Übergabe und Nachmieter.</li>
 </ul>
 <p><strong>Ansichten:</strong> <em>Vermietung</em> mit allem und darunter <em>Mietobjekte</em>, <em>Wohnungen</em>, <em>Mietverträge</em> (darunter <em>Laufende Mietverträge</em>), <em>Nebenkostenabrechnungen</em>, <em>Ausgaben</em> (darunter <em>dieses Jahr</em>, <em>letztes Jahr</em> für die Anlage V und <em>Umlagefähig letztes Jahr</em> für die nächste Abrechnung) sowie <em>Abrechnung offen</em>, <em>Mieterhöhung möglich</em> und <em>Vertrag endet bald</em>.</p>
+<p><strong>Gleichbedeutende Wörter für die Suche:</strong> <em>Nebenkosten, Betriebskosten</em> · <em>Nebenkostenabrechnung, Betriebskostenabrechnung</em> · <em>Kaltmiete, Nettokaltmiete, Grundmiete</em> · <em>Kaution, Mietkaution, Mietsicherheit</em> · <em>Mieter, Mietpartei</em>. Sie stehen im DMS unter Werkbank → Suche.</p>
 <p><strong>Beispiele (optional):</strong> das Zweifamilienhaus Gartenstraße 8 der Familie Muster mit zwei Wohnungen, zwei Mietern (einer hat gekündigt), der noch offenen Nebenkostenabrechnung 2025 und drei Ausgaben. Mieter und Verträge hängen schon zusammen; Kautionskonto und Steuerjahr zeigen auf die Beispiele aus Basis und Haushalt, wenn du sie mitinstallierst.</p>
 <h3>Voraussetzungen</h3>
 <ul>
-<li>DMS ab Version 0.121 (Feldformate und Datumsgrenzen)</li>
+<li>DMS ab Version 0.127 (Wortlisten für die Suche; vorher 0.121 für Feldformate und Datumsgrenzen)</li>
 <li>Pakete <strong>Basis</strong> ab 1.1.0 (Person), <strong>Haushalt</strong> ab 1.0.0 und <strong>Haus</strong> ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert</li>
 </ul>
 <h3>Rechte und Netz</h3>
@@ -114,7 +115,12 @@
 <p>Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.</p>
 <h3>Pflege</h3>
 <p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Vermietung“ im Titel.</p></section>
-    <section class="changelog"><h2>Änderungen</h2><h3>1.1.0</h3>
+    <section class="changelog"><h2>Änderungen</h2><h3>1.2.0</h3>
+<ul>
+<li>Neu: <strong>gleichbedeutende Wörter</strong> für die Suche – wer „Nebenkosten“ sucht, findet auch „Betriebskosten“; dazu Abrechnung, Kaltmiete, Kaution und Mieter.</li>
+<li>Braucht DMS ab 0.127.0 (Wortlisten).</li>
+</ul>
+<h3>1.1.0</h3>
 <ul>
 <li><strong>Formate</strong> (dms-registry #55, DMS #535): Neues Feld <strong>Land</strong> am Mietobjekt (Vorgabe Deutschland). Die PLZ hat in Deutschland genau 5 Ziffern, bei einem anderen Land ist sie frei.</li>
 <li><strong>Gekündigt am</strong>, <strong>Kaution zurückgezahlt am</strong> (Mietvertrag) und <strong>Versendet am</strong> (Nebenkostenabrechnung) dürfen nicht in der Zukunft liegen.</li>
@@ -134,7 +140,7 @@
 <li>Erste Fassung: Mietobjekt, Wohnung, Mietvertrag, Nebenkostenabrechnung und Ausgabe Mietobjekt mit Fristen und Ansichten.</li>
 </ul></section>
     <section><h2>Versionen</h2>
-      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.1.0</td><td>02.11.2026</td><td>&gt;=0.121.0</td><td><a href="../../archive/vermietung-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.1.0">installieren</button></td></tr><tr><td>1.0.2</td><td>02.11.2026</td><td>&gt;=0.113.0</td><td><a href="../../archive/vermietung-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/vermietung-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/vermietung-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.0.0">installieren</button></td></tr></tbody></table></div>
+      <div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead><tbody><tr><td>1.2.0</td><td>02.11.2026</td><td>&gt;=0.127.0</td><td><a href="../../archive/vermietung-1.2.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.2.0">installieren</button></td></tr><tr><td>1.1.0</td><td>02.11.2026</td><td>&gt;=0.121.0</td><td><a href="../../archive/vermietung-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.1.0">installieren</button></td></tr><tr><td>1.0.2</td><td>02.11.2026</td><td>&gt;=0.113.0</td><td><a href="../../archive/vermietung-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>01.11.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/vermietung-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>31.10.2026</td><td>&gt;=0.79.0</td><td><a href="../../archive/vermietung-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="vermietung@1.0.0">installieren</button></td></tr></tbody></table></div>
     </section>
 
   </main>
