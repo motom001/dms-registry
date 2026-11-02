@@ -91,6 +91,8 @@ TEXTE = {
         'dms_version_platzhalter': 'z. B. 0.144.2',
         'dms_version_hilfe': 'Steht im DMS unter „Über das DMS“. Bleibt nur in diesem Browser.',
         'nur_passend': 'Nur Pakete, die zu meinem DMS passen',
+        'nur_lokal': 'Nur Pakete, die alles lokal machen',
+        'netz': {'lokal': 'läuft nur lokal', 'dienst': 'verbindet sich mit deinem Dienst', 'internet': 'nutzt das Internet'},
         'stand': 'Stand',
         'anzahl': ('Paket', 'Pakete'),
         'datum': '%d.%m.%Y',
@@ -131,6 +133,8 @@ TEXTE = {
         'dms_version_platzhalter': 'e.g. 0.144.2',
         'dms_version_hilfe': 'Shown in the DMS under “About the DMS”. Stays in this browser only.',
         'nur_passend': 'Only packages that fit my DMS',
+        'nur_lokal': 'Only packages that work fully locally',
+        'netz': {'lokal': 'runs locally only', 'dienst': 'connects to your service', 'internet': 'uses the internet'},
         'stand': 'As of',
         'anzahl': ('package', 'packages'),
         'datum': '%Y-%m-%d',
@@ -204,9 +208,11 @@ def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
     # Pakettexte sind deutsch – auch auf der englischen Übersicht als lang="de" ausgezeichnet (Vorlesen, Silbentrennung).
     de = '' if sprache == 'de' else ' lang="de"'
     mit_code = f' · {e(TEXTE[sprache]["kachel_code"])}' if v['code'] else ''
+    netz = netz_art(p['id'])
+    mit_code += f' · <span class="netz {netz}">{e(TEXTE[sprache]["netz"][netz])}</span>'
     kats = p.get('kategorien') or []
     chips = ''.join(f'<span class="chip">{e(KATEGORIEN[k][sprache])}</span>' for k in kats if k in KATEGORIEN)
-    return f'''      <a class="kachel" href="{vor}paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}" data-kategorien="{e(' '.join(kats))}" data-autor="{e(p['autor']['github'])}" data-versionen="{e(versionen_daten(p))}">
+    return f'''      <a class="kachel" href="{vor}paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}" data-kategorien="{e(' '.join(kats))}" data-autor="{e(p['autor']['github'])}" data-netz="{netz}" data-versionen="{e(versionen_daten(p))}">
         <span class="symbol" aria-hidden="true">{e(p['name'][:1].upper())}</span>
         <span class="name"{de}>{e(p['name'])}</span>
         <span class="text"{de}>{e(p['beschreibung'])}</span>
@@ -242,6 +248,7 @@ def uebersicht(katalog: dict, pakete: list, sprache: str) -> str:
       <label for="dms-version">{e(t['dms_version'])}</label>
       <input id="dms-version" inputmode="decimal" autocomplete="off" placeholder="{e(t['dms_version_platzhalter'])}" aria-describedby="dms-version-hilfe">
       <label class="haken"><input type="checkbox" id="nur-passend" disabled> {e(t['nur_passend'])}</label>
+      <label class="haken"><input type="checkbox" id="nur-lokal"> {e(t['nur_lokal'])}</label>
       <span id="dms-version-hilfe" class="leise klein">{e(t['dms_version_hilfe'])}</span>
     </div>
     <div class="kacheln">
@@ -304,6 +311,17 @@ def adressen(code: dict) -> list[str]:
     """Namen der Einstellungen vom Typ adresse (Dienst-Adresse, DMS #444) in den Abschnitten."""
     return [str(f.get('name') or f.get('schluessel')) for b in code.get('einstellungen') or [] if isinstance(b, dict) and 'liste' not in b
             for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
+
+
+def netz_art(pid: str) -> str:
+    """lokal · dienst · internet – automatisch aus dem Manifest (#95), damit es kein Autor falsch angeben kann."""
+    try:
+        code = manifest(pid).get('code') or {}
+    except FileNotFoundError:
+        return 'lokal'
+    if code.get('netz'):
+        return 'internet'
+    return 'dienst' if adressen(code) else 'lokal'
 
 
 def netz_text(netz: list, adresse: list | None = None) -> str:
@@ -580,7 +598,8 @@ def detail(p: dict, pakete: list) -> str:
               f'      <div class="titel"><h1>{e(p["name"])}</h1>\n'
               f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
               f'        <p class="kurztext">{e(p["beschreibung"])}</p>\n'
-              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p>\n'
+              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")} · '
+              f'<span class="netz {netz_art(p["id"])}">{e(TEXTE["de"]["netz"][netz_art(p["id"])])}</span></p>\n'
               f'        <p class="chips">{kats}</p></div>\n'
               f'    </div>\n'
               f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
@@ -684,6 +703,11 @@ a.chip:hover, a.chip:focus-visible { border-color: var(--a); color: var(--a); }
 .dmsversion { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: -8px 0 18px; }
 .dmsversion input#dms-version { font: inherit; padding: 6px 10px; border: 1px solid var(--linie); border-radius: 8px; background: var(--flaeche); color: var(--tinte); width: 9em; }
 .dmsversion .haken { display: inline-flex; gap: 6px; align-items: center; }
+.netz::before { content: ""; display: inline-block; width: .7em; height: .7em; margin-right: 4px; border-radius: 2px; vertical-align: -1px; border: 1.5px solid currentColor; }
+.netz.lokal::before { background: currentColor; }
+.netz.dienst::before { border-radius: 50%; }
+.netz.internet { color: var(--warn); }
+.netz.internet::before { border-radius: 50%; background: currentColor; }
 .dms-passt:empty { display: none; }
 .dms-passt { margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--linie); background: var(--flaeche); }
 .dms-passt.ja { padding: 6px 12px; font-size: .92rem; }
@@ -790,7 +814,8 @@ SKRIPT = '''
     return (EN ? 'needs DMS ' : 'braucht DMS ') + mindestens(r.neu[1]) + (EN ? '+' : ' oder neuer');
   }
   var suche = document.getElementById('suche'), art = document.getElementById('art'), kat = document.getElementById('kategorie'),
-      autor = document.getElementById('autor'), vfeld = document.getElementById('dms-version'), nur = document.getElementById('nur-passend');
+      autor = document.getElementById('autor'), vfeld = document.getElementById('dms-version'), nur = document.getElementById('nur-passend'),
+      lokal = document.getElementById('nur-lokal');
   function filtern() {
     var q = (suche.value || '').trim().toLowerCase(), a = art.value, k = kat ? kat.value : '', au = autor ? autor.value : '', n = 0;
     var dms = vfeld && VERSION.test(vfeld.value.trim()) ? vfeld.value.trim() : '';
@@ -800,7 +825,7 @@ SKRIPT = '''
       if (m) { m.hidden = !r; m.textContent = marke(r); m.className = 'passt-marke' + (r ? ' ' + r.fall : ''); el.classList.toggle('mit-marke', !!r); }
       var ok = (!q || el.dataset.suche.indexOf(q) >= 0) && (!a || el.dataset.art === a)
         && (!k || (' ' + el.dataset.kategorien + ' ').indexOf(' ' + k + ' ') >= 0) && (!au || el.dataset.autor === au)
-        && (!(nur && nur.checked) || (r && r.fall === 'ja'));
+        && (!(nur && nur.checked) || (r && r.fall === 'ja')) && (!(lokal && lokal.checked) || el.dataset.netz === 'lokal');
       el.hidden = !ok; if (ok) n++;
     });
     document.getElementById('keine').hidden = n > 0;
@@ -816,7 +841,7 @@ SKRIPT = '''
     if (kat && p.get('kategorie')) kat.value = p.get('kategorie');
     if (autor && p.get('autor')) autor.value = p.get('autor');
     if (vfeld) vfeld.value = liesVersion();
-    [suche, art, kat, autor, vfeld, nur].forEach(function (x) { if (x) x.addEventListener(x.tagName === 'INPUT' && x.type !== 'checkbox' ? 'input' : 'change', function () {
+    [suche, art, kat, autor, vfeld, nur, lokal].forEach(function (x) { if (x) x.addEventListener(x.tagName === 'INPUT' && x.type !== 'checkbox' ? 'input' : 'change', function () {
       if (x === vfeld) { var w = vfeld.value.trim(); if (!w || VERSION.test(w)) merkeVersion(w); }
       filtern();
     }); });
