@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/motom001/dms-registry/schema/sammeldatei.schema.json",
   "title": "sammeldatei.json – Verzeichnis einer Sammeldatei (mehrere Pakete in einer Datei)",
-  "description": "Eine Sammeldatei ist ein ZIP mit genau: sammeldatei.json, optional LIESMICH.txt und je Paket pakete/<id>-<version>.zip – das unveränderte Archiv aus dem Katalog. Das DMS prüft Größe und SHA-256 jedes Archivs gegen dieses Verzeichnis und, wenn es den offiziellen Katalog kennt, auch gegen katalog.json.",
+  "description": "Eine Sammeldatei ist ein ZIP mit genau: sammeldatei.json, optional LIESMICH.txt, optional katalog.json mit katalog.sig (der signierte Katalog, Byte für Byte) und je Paket pakete/<id>-<version>.zip – das unveränderte Archiv aus dem Katalog. Das DMS prüft Größe und SHA-256 jedes Archivs gegen dieses Verzeichnis, gegen den mitgelieferten Katalog, wenn dessen Signatur gültig ist (dann muss die Herkunft nicht bestätigt werden), und gegen den offiziellen Katalog, wenn es ihn kennt.",
   "type": "object",
   "additionalProperties": false,
   "required": ["format", "art", "erstellt", "quelle", "katalog", "dms", "pakete"],

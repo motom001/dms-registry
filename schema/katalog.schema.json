@@ -57,9 +57,9 @@
   },
   "properties": {
     "format": { "const": 1 },
-    "erstellt": { "type": "string", "format": "date-time" },
+    "erstellt": { "type": "string", "format": "date-time", "description": "Zeitpunkt des Baus; das DMS lehnt signierte Kataloge ab, die älter sind als der zuletzt gesehene" },
     "quelle": { "type": "string", "format": "uri" },
-    "signatur": { "type": ["null", "object"], "description": "Vorbereitet für eine spätere Stufe; heute immer null" },
+    "signatur": { "type": ["null", "object"], "description": "Immer null: Die Signatur (Ed25519 über die Bytes dieser Datei) steht getrennt in katalog.sig daneben" },
     "pakete": { "type": "array", "items": { "$ref": "#/$defs/paket" } }
   }
 }

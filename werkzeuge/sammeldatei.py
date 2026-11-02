@@ -3,7 +3,7 @@
 Sammeldatei: mehrere Pakete aus dem Katalog in einer Datei – für ein DMS ohne Internet (motom001/dms#461).
 
     python3 werkzeuge/sammeldatei.py <katalogordner> <ziel.zip> [--dms 0.107.1] <id> [<id> …]
-    python3 werkzeuge/sammeldatei.py --pruefen <datei.zip> [--katalog <katalog.json>]
+    python3 werkzeuge/sammeldatei.py --pruefen <datei.zip> [--katalog <katalog.json>] [--oeffentlich <x.pub> …]
 
 Die Katalog-Webseite (sammeldatei.html) stellt dieselbe Datei im Browser zusammen; dieses Skript ist die
 Referenz dafür und prüft eine Sammeldatei genau so, wie das DMS sie prüft.
@@ -12,6 +12,8 @@ Aufbau (Schema: schema/sammeldatei.schema.json):
 
     sammeldatei.json              Verzeichnis: je Paket Id, Version, Archiv, SHA-256, Größe, gewählt/Abhängigkeit
     LIESMICH.txt                  kurze Anleitung (optional)
+    katalog.json, katalog.sig     der signierte Katalog, Byte für Byte (wenn er signiert ist, #74) – damit prüft das
+                                  DMS ohne Internet, dass jedes Archiv aus dem offiziellen Katalog stammt
     pakete/<id>-<version>.zip     das Archiv aus dem Katalog, Byte für Byte unverändert
 
 Auswahl: je Paket die neueste Version, deren „dms“ zur angegebenen DMS-Version passt (ohne --dms: die neueste);
@@ -26,8 +28,11 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
+import signieren  # noqa: E402 – liegt daneben (werkzeuge/)
+
 WURZEL = Path(__file__).resolve().parent.parent
 VERZEICHNIS, LIESMICH = 'sammeldatei.json', 'LIESMICH.txt'
+KATALOG, SIGNATUR = 'katalog.json', 'katalog.sig'
 REPO = 'https://github.com/motom001/dms-registry'
 KATALOG_URL = 'https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json'
 # Grenzen wie im DMS (server/src/pakete.ts).
@@ -126,7 +131,9 @@ def auswahl(katalog: dict, ids: list[str], dms: str | None) -> list[dict]:
 
 def erzeuge(katalogordner: Path, ids: list[str], dms: str | None, jetzt: str | None = None) -> bytes:
     """Sammeldatei aus einem gebauten Katalog (katalog.json und archive/)."""
-    katalog = json.loads((katalogordner / 'katalog.json').read_text(encoding='utf-8'))
+    katalog_roh = (katalogordner / KATALOG).read_bytes()
+    katalog = json.loads(katalog_roh.decode('utf-8'))
+    sig = katalogordner / SIGNATUR
     liste = auswahl(katalog, ids, dms)
     if len(liste) > PAKETE_MAX:
         raise ValueError(f'Höchstens {PAKETE_MAX} Pakete je Sammeldatei')
@@ -148,14 +155,22 @@ def erzeuge(katalogordner: Path, ids: list[str], dms: str | None, jetzt: str | N
     with zipfile.ZipFile(puffer, 'w') as z:
         z.writestr(zipfile.ZipInfo(VERZEICHNIS, (1980, 1, 1, 0, 0, 0)), json.dumps(verzeichnis, ensure_ascii=False, indent=2) + '\n', compress_type=zipfile.ZIP_DEFLATED)
         z.writestr(zipfile.ZipInfo(LIESMICH, (1980, 1, 1, 0, 0, 0)), LIESMICH_TEXT, compress_type=zipfile.ZIP_DEFLATED)
+        # Signierter Katalog (#74): genau die Bytes, über die die Signatur geht.
+        if sig.exists():
+            z.writestr(zipfile.ZipInfo(KATALOG, (1980, 1, 1, 0, 0, 0)), katalog_roh, compress_type=zipfile.ZIP_DEFLATED)
+            z.writestr(zipfile.ZipInfo(SIGNATUR, (1980, 1, 1, 0, 0, 0)), sig.read_bytes(), compress_type=zipfile.ZIP_DEFLATED)
         # Archive sind schon komprimiert: gespeichert, Byte für Byte wie im Katalog.
         for name, daten in archive.items():
             z.writestr(zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0)), daten, compress_type=zipfile.ZIP_STORED)
     return puffer.getvalue()
 
 
-def pruefe(daten: bytes, katalog: dict | None = None) -> list[str]:
-    """Prüft eine Sammeldatei wie das DMS: Verzeichnis, nur erwartete Dateien, Größe und SHA-256 je Archiv, optional gegen katalog.json."""
+def pruefe(daten: bytes, katalog: dict | None = None, oeffentlich: list[str] | None = None) -> list[str]:
+    """
+    Prüft eine Sammeldatei wie das DMS: Verzeichnis, nur erwartete Dateien, Größe und SHA-256 je Archiv, optional
+    gegen katalog.json. Mit oeffentlich (PEM-Texte): Signatur des mitgelieferten Katalogs prüfen und jedes Archiv
+    gegen ihn.
+    """
     if len(daten) > DATEI_MAX:
         return [f'Die Datei ist größer als {DATEI_MAX // 1048576} MB']
     try:
@@ -163,15 +178,15 @@ def pruefe(daten: bytes, katalog: dict | None = None) -> list[str]:
     except zipfile.BadZipFile:
         return ['Kein gültiges ZIP']
     infos = [i for i in z.infolist() if not i.is_dir()]
-    if len(infos) > PAKETE_MAX + 2:
-        return [f'Mehr als {PAKETE_MAX + 2} Dateien']
+    if len(infos) > PAKETE_MAX + 4:
+        return [f'Mehr als {PAKETE_MAX + 4} Dateien']
     namen = [i.filename for i in infos]
     if len(set(namen)) != len(namen):
         return ['Eine Datei steht zweimal im Archiv']
     if VERZEICHNIS not in namen:
         return [f'{VERZEICHNIS} fehlt']
     for i in infos:
-        grenze = 1024 * 1024 if not i.filename.startswith('pakete/') else ARCHIV_MAX
+        grenze = ARCHIV_MAX if i.filename.startswith('pakete/') or i.filename == KATALOG else 1024 * 1024
         if i.file_size > grenze:
             return [f'{i.filename}: zu groß']
         if i.flag_bits & 1:
@@ -187,8 +202,17 @@ def pruefe(daten: bytes, katalog: dict | None = None) -> list[str]:
     ids = [p['id'] for p in vz['pakete']]
     if len(set(ids)) != len(ids):
         fehler.append('Ein Paket steht zweimal im Verzeichnis')
-    erwartet = {VERZEICHNIS, LIESMICH} | {p['archiv'] for p in vz['pakete']}
+    erwartet = {VERZEICHNIS, LIESMICH, KATALOG, SIGNATUR} | {p['archiv'] for p in vz['pakete']}
     fehler += [f'{n}: steht nicht im Verzeichnis' for n in namen if n not in erwartet]
+    if oeffentlich is not None:
+        if KATALOG not in namen or SIGNATUR not in namen:
+            fehler.append(f'{KATALOG} mit {SIGNATUR} fehlt – die Sammeldatei ist nicht signiert')
+        else:
+            try:
+                signieren.pruefe(z.read(KATALOG), z.read(SIGNATUR), oeffentlich)
+                katalog = json.loads(z.read(KATALOG).decode('utf-8'))
+            except (signieren.Fehler, ValueError) as e:
+                fehler.append(f'{SIGNATUR}: {e}')
     versionen = {(p['id'], v['version']): v for p in (katalog or {}).get('pakete', []) for v in p['versionen']}
     for p in vz['pakete']:
         m = ARCHIVNAME.match(p['archiv'])
@@ -211,14 +235,19 @@ def pruefe(daten: bytes, katalog: dict | None = None) -> list[str]:
 
 def main():
     args = sys.argv[1:]
+    oeffentlich = None
+    while '--oeffentlich' in args:
+        i = args.index('--oeffentlich')
+        oeffentlich = (oeffentlich or []) + [Path(args[i + 1]).read_text(encoding='utf-8')]
+        args = args[:i] + args[i + 2:]
     if args[:1] == ['--pruefen'] and len(args) in (2, 4):
         katalog = json.loads(Path(args[3]).read_text(encoding='utf-8')) if len(args) == 4 and args[2] == '--katalog' else None
-        fehler = pruefe(Path(args[1]).read_bytes(), katalog)
+        fehler = pruefe(Path(args[1]).read_bytes(), katalog, oeffentlich)
         for f in fehler:
             print(f'✗ {f}')
         if not fehler:
             vz = json.loads(zipfile.ZipFile(args[1]).read(VERZEICHNIS))
-            print('✓ Sammeldatei in Ordnung: ' + ', '.join(f'{p["id"]} {p["version"]}' for p in vz['pakete']) + (' (gegen katalog.json geprüft)' if katalog else ''))
+            print('✓ Sammeldatei in Ordnung: ' + ', '.join(f'{p["id"]} {p["version"]}' for p in vz['pakete']) + (' (Signatur geprüft)' if oeffentlich else ' (gegen katalog.json geprüft)' if katalog else ''))
         sys.exit(1 if fehler else 0)
     dms = None
     if '--dms' in args:

@@ -11,6 +11,7 @@ Pakete mit Code (code/bauen.sh) baut vorher werkzeuge/bauen.py; ohne code/modul.
 Im Ausgabeordner liegen danach:
 
     katalog.json                    alle Pakete mit allen Versionen (Format: schema/katalog.schema.json)
+                                    – signiert danach werkzeuge/signieren.py (katalog.sig)
     archive/<id>-<version>.zip      genau die Dateien des Paketordners, ohne Unterordner davor
 
 Ältere Versionen bleiben erhalten. Ein Archiv mit gleicher Id und Version ändert sich nie: Ist der Inhalt
@@ -135,7 +136,8 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         'format': FORMAT,
         'erstellt': jetzt,
         'quelle': REPO,
-        # Platz für eine Signatur in einer späteren Stufe.
+        # Die Signatur steht getrennt in katalog.sig (werkzeuge/signieren.py, #74), damit ältere DMS-Versionen
+        # diesen Katalog unverändert lesen; das Feld bleibt null.
         'signatur': None,
         'pakete': sorted(pakete.values(), key=lambda p: p['id']),
     }

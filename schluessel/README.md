@@ -1,0 +1,5 @@
+# Öffentliche Schlüssel des Katalogs · Public catalogue keys
+
+**Deutsch:** Hier liegen die beiden **öffentlichen** Ed25519-Schlüssel, mit denen das DMS den Katalog prüft: `signier.pub` (Signierschlüssel, privat nur als Secret in der CI) und `reserve.pub` (Reserveschlüssel, privat offline beim Maintainer). `werkzeuge/signieren.py` prüft jede neue `katalog.sig` gegen diese Dateien. Solange hier noch keine liegen, prüft es nur mit dem Schlüssel aus dem Secret und warnt. **Private Schlüssel (`*.pem`) gehören nie hierher.** Anleitung: [README, „Katalog signieren“](../README.md#katalog-signieren).
+
+**English:** This folder holds the two **public** Ed25519 keys the DMS uses to verify the catalogue: `signier.pub` (signing key; the private key exists only as a CI secret) and `reserve.pub` (backup key; the private key is kept offline by the maintainer). `werkzeuge/signieren.py` verifies every new `katalog.sig` against these files. As long as there are none yet, it verifies only with the key from the secret and prints a warning. **Private keys (`*.pem`) never belong here.** Instructions: [README, "Signing the catalogue"](../README.en.md#signing-the-catalogue).
