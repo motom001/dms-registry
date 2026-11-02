@@ -4,7 +4,9 @@ Erlaubt sind nur Importe aus wasi_snapshot_preview1 (Funktionen), dms (die Funkt
 Speicher env.memory; das Modul muss dms_puffer und dms_ereignis exportieren.
 """
 DMS_FUNKTIONEN = {'api', 'api_binaer', 'netz', 'datei', 'antwort_laenge', 'antwort_lesen', 'ergebnis', 'log',
-                  'speicher_lesen', 'speicher_schreiben'}
+                  'speicher_lesen', 'speicher_schreiben',
+                  # ab DMS 0.124.0 (DMS #444): Antwort Stück für Stück lesen und weitergeben
+                  'netz_strom', 'netz_weiter', 'teil'}
 ARTEN = {0: 'function', 1: 'table', 2: 'memory', 3: 'global', 4: 'tag'}
 
 
@@ -53,6 +55,15 @@ def lies(b: bytes):
                 exporte[name] = ARTEN.get(art, str(art))
         l.p = ende
     return importe, exporte
+
+
+def dms_importe(b: bytes) -> set[str]:
+    """Namen der importierten Funktionen aus dms (leer, wenn das Modul sich nicht lesen lässt)."""
+    try:
+        importe, _ = lies(b)
+    except (ValueError, IndexError, UnicodeDecodeError):
+        return set()
+    return {n for m, n, a in importe if m == 'dms' and a == 'function'}
 
 
 def pruefe(b: bytes) -> list[str]:

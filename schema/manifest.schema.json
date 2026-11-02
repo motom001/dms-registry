@@ -47,7 +47,8 @@
             "feld",
             "benutzer",
             "rolle",
-            "sicht"
+            "sicht",
+            "adresse"
           ]
         },
         "hilfe": {
@@ -74,6 +75,11 @@
           "type": "string",
           "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$",
           "description": "bei typ feld: Mappentyp, aus dem ein Feld gewählt wird"
+        },
+        "beispiel": {
+          "type": "string",
+          "pattern": "^https?://[^\\s@?#]+$",
+          "description": "bei typ adresse (DMS >=0.124.0): Beispiel im leeren Feld, z. B. http://ollama:11434/v1 – nie eine gespeicherte Vorgabe"
         }
       }
     },
@@ -250,6 +256,7 @@
               "post.angelegt",
               "dokument.hochgeladen",
               "texterkennung.fertig",
+              "volltext.fertig",
               "paket.einstellungen_geaendert"
             ]
           },
@@ -279,6 +286,17 @@
                 "lesen",
                 "schreiben"
               ]
+            },
+            "schnittstellen": {
+              "type": "array",
+              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0",
+              "items": {
+                "enum": [
+                  "dms:vektoren",
+                  "dms:antworten"
+                ]
+              },
+              "uniqueItems": true
             }
           }
         },

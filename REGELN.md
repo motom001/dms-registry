@@ -23,7 +23,8 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 - **Fertige Programmdateien** jeder Art (`.wasm`, `.so`, `.dll`, `.exe`, `.jar`, `.bin` …). Gebaut wird in der CI aus dem Quellcode.
 - Verschleierter oder minifizierter Quellcode
 - Telemetrie, Tracking, Werbung
-- Zugriff auf Netzwerk/Internet zu Adressen, die nicht im Manifest stehen
+- Zugriff auf Netzwerk/Internet zu Adressen, die nicht im Manifest stehen – außer zur Dienst-Adresse, die der Administrator in einer Einstellung vom Typ `adresse` einträgt und bestätigt
+- Eine voreingestellte Dienst-Adresse eines fremden Anbieters (Cloud) – auch nicht als `beispiel`
 - Mehr Rechte als nötig, z. B. Schreibrecht, wo Lesen reicht
 - Echte persönliche Daten in Beispielen, Tests oder Screenshots
 - Löschen von Feldern, Registern oder Mappen bei einem Update
@@ -33,7 +34,9 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 Vor der Installation zeigt das DMS die Rechte eines Pakets mit Code, die Katalog-Webseite genauso:
 
 - „Mappen lesen: …“, „Mappen anlegen und ändern: …“, „Dokumente lesen“ bzw. „Dokumente lesen und Volltext schreiben“
-- „kein Zugriff auf Netzwerk und Internet“ bzw. „Zugriff auf Netzwerk/Internet nur zu: …“
+- „Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)“ – nur mit `code.rechte.schnittstellen` und `dms: ">=0.122.0"`
+- „Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten)“ – nur mit `code.rechte.schnittstellen` und `dms: ">=0.124.0"`
+- „kein Zugriff auf Netzwerk und Internet“ bzw. „Zugriff auf Netzwerk/Internet nur zu: …“; mit einer Dienst-Adresse als Einstellung zusätzlich „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“
 - „Reagiert auf diese Ereignisse:“ mit einem Ereignis je Zeile
 
 Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://motom001.github.io/dms/admin/aktuell/pakete/#rechte-eines-pakets). Schreibe im README eines Pakets mit Code im Abschnitt „Rechte und Netzwerkzugriff“ (wie in der [Vorlage](vorlage/README.md)) mit denselben Worten, was das Paket darf und wozu.
@@ -50,6 +53,7 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://motom
 
 - Pakete mit Code **beschreiben** ihre Einstellungen im Manifest (`code.einstellungen`, `code.aktionen`). Das DMS zeigt das Formular, prüft die Werte, speichert sie (Teil der Sicherung) und gibt sie dem Paket.
 - **Zugangsdaten nur als `geheim`**, nie als `text` und nie als `standard`. Das DMS verschlüsselt Geheimnisse und zeigt sie nach dem Speichern nicht mehr an.
+- **Dienst-Adresse** (ab DMS 0.124.0, `dms: ">=0.124.0"`): Braucht ein Paket einen Dienst, den jeder Haushalt woanders betreibt (z. B. einen KI-Dienst), verlangt es die Adresse als Einstellung vom Typ `adresse` statt einer festen Adresse in `code.netz`. Höchstens eine je Paket, nur in einem Abschnitt, **ohne** `standard` – höchstens ein `beispiel` für einen Dienst im eigenen Netz (z. B. `http://ollama:11434/v1`). Der Administrator bestätigt die Adresse beim Speichern; nur dorthin lässt der Paket-Läufer das Paket ins Netz. Das README erklärt, was wann dorthin geht.
 - Einstellungen ändern ist Sache des DMS. Ein Paket speichert seine Einstellungen nicht selbst irgendwo anders und bringt keine eigene Oberfläche dafür mit.
 
 ## Namen

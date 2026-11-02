@@ -72,6 +72,13 @@ def dms_fehler(v: str, wo: str) -> str | None:
 # Verweisen – post (ab DMS 0.94.0). dms:benutzer ist verboten: Pakete sehen keine Benutzer.
 DMS_RECHTE_TYPEN = {'ablageort', 'rolle', 'post'}
 DMS_POST_RECHT_AB = (0, 94, 0)
+# Schnittstelle dms:vektoren und Ereignis volltext.fertig gibt es im DMS ab 0.122.0 (DMS #442).
+DMS_VEKTOREN_AB = (0, 122, 0)
+# Schnittstelle dms:antworten, Einstellung vom Typ adresse (Dienst-Adresse) und die Läufer-Funktionen
+# netz_strom, netz_weiter und teil gibt es im DMS ab 0.124.0 (DMS #444).
+DMS_ANTWORTEN_AB = (0, 124, 0)
+# Läufer-Funktionen, die erst ab DMS 0.124.0 da sind: Ein Modul, das sie importiert, lädt in älteren nicht.
+DMS_FUNKTIONEN_ANTWORTEN = {'netz_strom', 'netz_weiter', 'teil'}
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -103,6 +110,23 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
         ab = dms_untergrenze(dms_bereich)
         if ab is None or ab < DMS_POST_RECHT_AB:
             fehler.append('code.rechte: dms:post kennt das DMS erst ab 0.94.0 – bitte dms: ">=0.94.0" angeben')
+    # Schnittstellen des Kerns (DMS #442): Vektoren gehören zu Dokumenten, das Paket muss sie lesen dürfen.
+    ab = dms_untergrenze(dms_bereich)
+    neu = 'neu' if ab is None or ab < DMS_VEKTOREN_AB else ''
+    if 'dms:vektoren' in (rechte.get('schnittstellen') or []):
+        if rechte.get('dokumente', 'keine') == 'keine':
+            fehler.append('code.rechte.schnittstellen: dms:vektoren braucht auch code.rechte.dokumente: lesen – Vektoren gehören zu Dokumenten')
+        if neu:
+            fehler.append('code.rechte.schnittstellen: dms:vektoren kennt das DMS erst ab 0.122.0 – bitte dms: ">=0.122.0" angeben')
+    if 'volltext.fertig' in (code.get('ereignisse') or []) and neu:
+        fehler.append('code.ereignisse: volltext.fertig kennt das DMS erst ab 0.122.0 – bitte dms: ">=0.122.0" angeben')
+    # dms:antworten und die Dienst-Adresse (DMS #444): ab 0.124.0.
+    vor_antworten = ab is None or ab < DMS_ANTWORTEN_AB
+    if 'dms:antworten' in (rechte.get('schnittstellen') or []) and vor_antworten:
+        fehler.append('code.rechte.schnittstellen: dms:antworten kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')
+    adressen = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
+    if adressen and vor_antworten:
+        fehler.append('code.einstellungen: Einstellungen vom Typ adresse kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')
     return fehler
 
 
@@ -166,9 +190,9 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> lis
         elif v not in typen:
             fehler.append(f'{wo}: Mappentyp „{v}“ gibt es in diesem Paket nicht (anderes Paket: <paket>:<schluessel>)')
 
-    def felder(liste: list, wo: str):
+    def felder(eintraege: list, wo: str, liste: bool = False):
         gesehen = set()
-        for f in liste or []:
+        for f in eintraege or []:
             if not isinstance(f, dict):
                 continue
             s, typ, w = f.get('schluessel'), f.get('typ'), f'{wo}/{f.get("schluessel")}'
@@ -177,6 +201,14 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> lis
             gesehen.add(s)
             if typ in ('auswahl', 'mehrfachauswahl') and not f.get('optionen'):
                 fehler.append(f'{w}: {typ} braucht optionen')
+            if f.get('beispiel') is not None and typ != 'adresse':
+                fehler.append(f'{w}: beispiel gibt es nur bei typ adresse')
+            if typ == 'adresse':
+                if liste:
+                    fehler.append(f'{w}: adresse geht nur in einem Abschnitt, nicht in einer Liste')
+                if 'standard' in f:
+                    fehler.append(f'{w}: adresse hat keine Vorgabe – der Administrator trägt die Dienst-Adresse selbst ein und bestätigt sie (höchstens beispiel)')
+                    continue
             if f.get('mappentyp') is not None:
                 if typ != 'feld':
                     fehler.append(f'{w}: mappentyp gibt es nur bei typ feld')
@@ -211,12 +243,15 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> lis
             if b['liste'] in oben:
                 fehler.append(f'code.einstellungen: Schlüssel „{b["liste"]}“ doppelt')
             oben.add(b['liste'])
-            felder(b.get('felder'), f'code.einstellungen/{b["liste"]}')
+            felder(b.get('felder'), f'code.einstellungen/{b["liste"]}', liste=True)
         else:
             for s in felder(b.get('felder'), f'code.einstellungen/{b.get("abschnitt")}'):
                 if s in oben:
                     fehler.append(f'code.einstellungen: Schlüssel „{s}“ doppelt')
                 oben.add(s)
+    anzahl = sum(1 for b in code.get('einstellungen') or [] if isinstance(b, dict) and 'liste' not in b for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse')
+    if anzahl > 1:
+        fehler.append('code.einstellungen: höchstens eine Einstellung vom Typ adresse je Paket')
     aktionen = [a.get('schluessel') for a in code.get('aktionen') or [] if isinstance(a, dict)]
     for s in {x for x in aktionen if aktionen.count(x) > 1}:
         fehler.append(f'code.aktionen: Schlüssel „{s}“ doppelt')
@@ -381,6 +416,11 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             sys.path.insert(0, str(Path(__file__).resolve().parent))
             import wasm  # erst hier: pruefen.py läuft auch allein (z. B. kopiert im Test des DMS)
             fehler += wasm.pruefe(modul.read_bytes())
+            # netz_strom, netz_weiter und teil (DMS #444): Ältere DMS lehnen ein solches Modul ab.
+            neu = sorted(wasm.dms_importe(modul.read_bytes()) & DMS_FUNKTIONEN_ANTWORTEN)
+            ab = dms_untergrenze(str(m.get('dms', '')))
+            if neu and (ab is None or ab < DMS_ANTWORTEN_AB):
+                fehler.append(f'code/modul.wasm: {", ".join(neu)} kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')
 
     if basis and not vorlage and geaendert(basis, ordner):
         alt = version_von(basis, m_pfad)
