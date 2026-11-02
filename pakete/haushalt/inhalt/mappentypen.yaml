@@ -3,7 +3,8 @@
 #
 # Gemeinsame Felder (gleicher Schlüssel in allen Typen, damit Ansichten über mehrere Typen gehen):
 #   art                Auswahl je Typ
-#   person             wer im Haushalt (vorerst Text)
+#   person_verweis     wer im Haushalt – Verweis auf eine Person aus Basis (bis 1.0.x Textfeld person; aus_text,
+#                      ein Update legt den Verweis dazu, umgewandelt wird mit Vorschau in der Werkbank, DMS #534)
 #   verbleib_original  „Verbleib Originaldokumente“, Verweis auf den Ablageort des DMS
 #   kuendigen_bis      Frist bei Vertrag und Versicherung
 #   steuerjahr         Verweis auf das Steuerjahr; das Steuerjahr zeigt diese Mappen unter „Belege“
@@ -11,7 +12,7 @@
 - schluessel: konto
   name: Konto
   beschreibung: Girokonto, Sparkonto, Depot, Kreditkarte, Kredit oder Bausparvertrag.
-  titelVorlage: "{art} – {bank} – {inhaber}"
+  titelVorlage: "{art} – {bank} – {inhaber_verweis}"
   felder:
     - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
     - key: art
@@ -19,7 +20,7 @@
       typ: auswahl
       pflicht: true
       optionen: [Girokonto, Sparkonto, Depot, Kreditkarte, Kredit, Bausparvertrag]
-    - { key: inhaber, label: Inhaber, typ: text, maxLen: 120, hilfe: "Wem das Konto gehört, z. B. „Erika Muster“ oder „gemeinsam“" }
+    - { key: inhaber_verweis, label: Inhaber, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, aus_text: inhaber, hilfe: Wem das Konto gehört – beim Gemeinschaftskonto mehrere Personen }
     - key: iban
       label: IBAN
       typ: text
@@ -31,11 +32,11 @@
     - { key: gekuendigt_am, label: Gekündigt am, typ: datum }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kontovertrag auf Papier liegt }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bank, art, inhaber, iban, online_zugang, eroeffnet_am, gekuendigt_am, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bank, art, inhaber_verweis, iban, online_zugang, eroeffnet_am, gekuendigt_am, verbleib_original] }
     - { key: dokumente, name: Dokumente, art: dokumente }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
     - { key: protokoll, name: Historie, art: protokoll }
-  trefferliste: [art, bank, inhaber, iban]
+  trefferliste: [art, bank, inhaber_verweis, iban]
 
 - schluessel: vertrag
   name: Vertrag
@@ -80,7 +81,8 @@
       pflicht: true
       optionen: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz, Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall, Sonstige]
     - { key: versicherungsnummer, label: Versicherungsnummer, typ: text, maxLen: 60, erkennung: { art: nummer } }
-    - { key: versichert, label: Versichert, typ: text, maxLen: 120, hilfe: "Wer oder was versichert ist, z. B. „Familie“ oder „Auto MU-ST 123“" }
+    # Sachen (z. B. ein Fahrzeug) verweisen selbst auf die Versicherung und stehen dort unter „Verknüpfungen“.
+    - { key: versichert_verweis, label: Versichert, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, aus_text: versichert, hilfe: Versicherte Personen. Ein Fahrzeug verweist selbst auf seine Versicherung und steht hier unter „Verknüpfungen“. }
     - { key: beitrag, label: Beitrag, typ: betrag, min: 0, waehrung: EUR }
     - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig] }
     - key: hauptfaelligkeit
@@ -95,11 +97,11 @@
       frist: { vorlauf: 30, einheit: tage }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Versicherungsschein auf Papier liegt }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [versicherer, art, versicherungsnummer, versichert, beitrag, zahlweise, hauptfaelligkeit, kuendigen_bis, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [versicherer, art, versicherungsnummer, versichert_verweis, beitrag, zahlweise, hauptfaelligkeit, kuendigen_bis, verbleib_original] }
     - { key: dokumente, name: Dokumente, art: dokumente }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
     - { key: protokoll, name: Historie, art: protokoll }
-  trefferliste: [art, versicherer, versichert, beitrag, kuendigen_bis]
+  trefferliste: [art, versicherer, versichert_verweis, beitrag, kuendigen_bis]
 
 - schluessel: steuerjahr
   name: Steuerjahr
@@ -134,26 +136,26 @@
 - schluessel: arbeitsverhaeltnis
   name: Arbeitsverhältnis
   beschreibung: Anstellung, Minijob oder Ausbildung – mit Arbeitsvertrag, Gehaltsabrechnungen und Zeugnis.
-  titelVorlage: "{person} – {arbeitgeber}"
+  titelVorlage: "{person_verweis} – {arbeitgeber}"
   felder:
     - { key: arbeitgeber, label: Arbeitgeber, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
-    - { key: person, label: Person, typ: text, pflicht: true, maxLen: 120 }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
     - { key: taetigkeit, label: Tätigkeit, typ: text, maxLen: 120 }
     - { key: beginn, label: Beginn, typ: datum }
     - { key: ende, label: Ende, typ: datum }
     - { key: steuerjahr, label: Steuerjahre, typ: referenz, ziel: steuerjahr, mehrfach: true, verweisart: bezug, hilfe: In welchen Steuerjahren es zählt; dort erscheint es unter „Belege“ }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Arbeitsvertrag auf Papier liegt }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [arbeitgeber, person, taetigkeit, beginn, ende, steuerjahr, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [arbeitgeber, person_verweis, taetigkeit, beginn, ende, steuerjahr, verbleib_original] }
     - { key: dokumente, name: Dokumente, art: dokumente }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
     - { key: protokoll, name: Historie, art: protokoll }
-  trefferliste: [person, arbeitgeber, taetigkeit, beginn, ende]
+  trefferliste: [person_verweis, arbeitgeber, taetigkeit, beginn, ende]
 
 - schluessel: vorsorge
   name: Vorsorge
   beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester, Rürup und Bausparen.
-  titelVorlage: "{art} – {person} – {anbieter}"
+  titelVorlage: "{art} – {person_verweis} – {anbieter}"
   felder:
     - key: art
       label: Art
@@ -162,27 +164,27 @@
       optionen: [gesetzliche Rente, betriebliche Altersvorsorge, Riester, Rürup, private Rente, Bausparen, Sonstige]
     - { key: anbieter, label: Anbieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
     - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, hilfe: Bei der gesetzlichen Rente die Versicherungsnummer, erkennung: { art: nummer } }
-    - { key: person, label: Person, typ: text, maxLen: 120 }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
     - { key: beginn, label: Beginn, typ: datum }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [art, anbieter, vertragsnummer, person, beginn, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, anbieter, vertragsnummer, person_verweis, beginn, verbleib_original] }
     - { key: dokumente, name: Dokumente, art: dokumente }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
     - { key: protokoll, name: Historie, art: protokoll }
-  trefferliste: [art, person, anbieter, vertragsnummer]
+  trefferliste: [art, person_verweis, anbieter, vertragsnummer]
 
 - schluessel: ausweis
   name: Ausweis & Urkunde
   beschreibung: Personalausweis, Reisepass, Führerschein, Geburts- und Heiratsurkunde, Zeugnisse.
-  titelVorlage: "{art} – {person}"
+  titelVorlage: "{art} – {person_verweis}"
   felder:
     - key: art
       label: Art
       typ: auswahl
       pflicht: true
       optionen: [Personalausweis, Reisepass, Führerschein, Geburtsurkunde, Heiratsurkunde, Zeugnis, Sonstige]
-    - { key: person, label: Person, typ: text, pflicht: true, maxLen: 120 }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
     - { key: nummer, label: Nummer, typ: text, maxLen: 60 }
     - { key: ausgestellt_am, label: Ausgestellt am, typ: datum }
     - key: gueltig_bis
@@ -192,18 +194,18 @@
       frist: { vorlauf: 90, einheit: tage }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [art, person, nummer, ausgestellt_am, gueltig_bis, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, person_verweis, nummer, ausgestellt_am, gueltig_bis, verbleib_original] }
     - { key: dokumente, name: Dokumente, art: dokumente }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
     - { key: protokoll, name: Historie, art: protokoll }
-  trefferliste: [art, person, gueltig_bis, verbleib_original]
+  trefferliste: [art, person_verweis, gueltig_bis, verbleib_original]
 
 - schluessel: gesundheit
   name: Gesundheit
   beschreibung: Arztbriefe, Befunde, Impfungen, Rezepte und Rechnungen.
-  titelVorlage: "{art} – {person} – {praxis}"
+  titelVorlage: "{art} – {person_verweis} – {praxis}"
   felder:
-    - { key: person, label: Person, typ: text, pflicht: true, maxLen: 120 }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
     - key: art
       label: Art
       typ: auswahl
@@ -214,11 +216,11 @@
     - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, hilfe: Bei Rechnungen }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du die Kosten in der Steuererklärung angibst }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [person, art, datum, praxis, betrag, steuerjahr] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, datum, praxis, betrag, steuerjahr] }
     - { key: dokumente, name: Dokumente, art: dokumente }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
     - { key: protokoll, name: Historie, art: protokoll }
-  trefferliste: [person, art, datum, praxis]
+  trefferliste: [person_verweis, art, datum, praxis]
 
 - schluessel: anschaffung
   name: Anschaffung
@@ -247,9 +249,9 @@
 - schluessel: bildung
   name: Bildung
   beschreibung: Schule, Ausbildung, Studium und Kurse – mit Zeugnissen und Bescheinigungen.
-  titelVorlage: "{art} – {person} – {einrichtung}"
+  titelVorlage: "{art} – {person_verweis} – {einrichtung}"
   felder:
-    - { key: person, label: Person, typ: text, pflicht: true, maxLen: 120 }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
     - key: art
       label: Art
       typ: auswahl
@@ -262,8 +264,8 @@
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Zeugnisse und Urkunden auf Papier liegen }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [person, art, einrichtung, von, bis, abschluss, steuerjahr, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, einrichtung, von, bis, abschluss, steuerjahr, verbleib_original] }
     - { key: dokumente, name: Dokumente, art: dokumente }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
     - { key: protokoll, name: Historie, art: protokoll }
-  trefferliste: [person, art, einrichtung, abschluss]
+  trefferliste: [person_verweis, art, einrichtung, abschluss]

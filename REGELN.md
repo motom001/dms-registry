@@ -26,7 +26,7 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 - Zugriff auf Netzwerk/Internet zu Adressen, die nicht im Manifest stehen
 - Mehr Rechte als nötig, z. B. Schreibrecht, wo Lesen reicht
 - Echte persönliche Daten in Beispielen, Tests oder Screenshots
-- Löschen von Feldern, Registern oder Mappen bei einem Update
+- Löschen von Feldern, Registern oder Mappen bei einem Update (ein Textfeld, das ein Verweis mit `aus_text` ablöst, darf aus dem Paket – siehe [Text in Verweis umwandeln](#text-in-verweis-umwandeln))
 
 ## So sehen Administratoren die Rechte
 
@@ -77,6 +77,24 @@ Das DMS erkennt Post und füllt Mappen aus Dokumenten (DMS #336, #391) – ohne 
 - Wer `erkennung` nutzt, schreibt im Manifest `dms: ">=0.113.0"`. Ein Update des Pakets übernimmt die Markierung an installierten Feldern, an denen der Administrator nichts zur Erkennung eingestellt hat; das ist eine Patch-Version (mit neuen Feldern eine Minor-Version).
 
 `werkzeuge/pruefen.py` prüft Feldart, Art und DMS-Version.
+
+## Text in Verweis umwandeln
+
+Steht in einem Paket ein Mensch, eine Firma oder ein anderes Ding als **Text**, wo ein **Verweis** hingehört (z. B. „Halter: Lena Muster“ am Fahrzeug), machst du daraus in einer neuen Version ein Verweisfeld und sagst mit `aus_text`, aus welchem bisherigen Textfeld es sich füllen lässt (DMS #534):
+
+```yaml
+- { key: halter_verweis, label: Halter, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: halter }
+```
+
+- **Neue Kennung:** Das Verweisfeld bekommt eine eigene Kennung – üblich ist die alte mit `_verweis` dahinter. Das alte Textfeld nimmst du aus dem Paket (Feld, Register, Trefferliste, Titel-Vorlage). Neue Installationen bekommen nur noch den Verweis.
+- **Nichts geht verloren:** Bei einem Update legt das DMS das Verweisfeld **zusätzlich** an; das alte Textfeld bleibt mit allen Werten. Das gilt nicht als Löschen eines Felds. Erst in der Werkbank (Pakete → Paket → *Text in Verweise umwandeln*) schlägt das DMS je Name eine vorhandene Mappe vor, legt auf Wunsch eine neue an oder überspringt; erst dann wird umgewandelt, mit Eintrag in der Historie und rückgängig zu machen. Updates ändern nichts heimlich.
+- **Keine Pflicht:** Ein Verweisfeld mit `aus_text` ist nie `pflicht` – sonst passten vorhandene Mappen nach dem Update nicht mehr.
+- **Verweisart:** Für Personen und Organisationen `bezug` – wer eine Person löscht, löscht damit nicht Auto oder Konto.
+- **Mehrere Namen:** Steht im Text oft mehr als einer („Lena und Tom Muster“), nimm `mehrfach: true`; das DMS teilt den Text dann an „und“, Komma, Schrägstrich oder „&“.
+- Nur bei Verweisfeldern; `aus_text` nennt ein anderes Feld, und steht das noch im Paket, ist es `text` oder `langtext`.
+- Wer `aus_text` nutzt, schreibt im Manifest `dms: ">=0.120.0"`. Neue Felder bzw. die Umwandlung sind eine **Minor-Version**.
+
+`werkzeuge/pruefen.py` prüft Feldart, Quelle, Pflicht und DMS-Version.
 
 ## Verwaiste Pakete
 

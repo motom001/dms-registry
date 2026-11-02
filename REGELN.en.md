@@ -26,7 +26,7 @@ The full licence text is in the package folder as `LICENSE`. Third-party code in
 - Access to the network/internet to addresses not listed in the manifest
 - More permissions than necessary, e.g. write access where read access is enough
 - Real personal data in samples, tests or screenshots
-- Deleting fields, tabs or Mappen during an update
+- Deleting fields, tabs or Mappen during an update (a text field replaced by a reference with `aus_text` may leave the package – see [Turning text into a reference](#turning-text-into-a-reference))
 
 ## How administrators see the permissions
 
@@ -77,6 +77,24 @@ The DMS recognises incoming post and fills Mappen from documents (DMS #336, #391
 - If you use `erkennung`, write `dms: ">=0.113.0"` in the manifest. A package update applies the marking to installed fields where the administrator has not set anything for recognition; that is a patch version (with new fields a minor version).
 
 `werkzeuge/pruefen.py` checks field type, `art` and DMS version.
+
+## Turning text into a reference
+
+If a package holds a person, a company or another thing as **text** where a **reference** belongs (e.g. "Halter: Lena Muster" on a vehicle), you turn it into a reference field in a new version and state with `aus_text` from which previous text field it can be filled (DMS #534):
+
+```yaml
+- { key: halter_verweis, label: Halter, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: halter }
+```
+
+- **New key:** The reference field gets its own key – usually the old one with `_verweis` appended. You remove the old text field from the package (field, tab, result list, title template). New installations only get the reference.
+- **Nothing is lost:** On an update the DMS creates the reference field **in addition**; the old text field stays with all its values. This does not count as deleting a field. Only in the Werkbank (Pakete → package → *Text in Verweise umwandeln*) does the DMS suggest an existing Mappe per name, create a new one on request or skip it; only then is anything converted, recorded in the history and reversible. Updates change nothing behind your back.
+- **Not mandatory:** A reference field with `aus_text` is never `pflicht` – otherwise existing Mappen would no longer fit after the update.
+- **Reference kind:** For persons and organisations use `bezug` – deleting a person does not delete the car or the account.
+- **Several names:** If the text often holds more than one ("Lena und Tom Muster"), use `mehrfach: true`; the DMS then splits the text at "und", comma, slash or "&".
+- Only for reference fields; `aus_text` names another field, and if that is still in the package, it is `text` or `langtext`.
+- If you use `aus_text`, write `dms: ">=0.120.0"` in the manifest. New fields or the conversion are a **minor version**.
+
+`werkzeuge/pruefen.py` checks field type, source, `pflicht` and DMS version.
 
 ## Orphaned packages
 

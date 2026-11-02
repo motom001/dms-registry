@@ -141,6 +141,40 @@ def pruefe_erkennung(typen: list, dms_bereich: str) -> list[str]:
     return fehler
 
 
+# Text → Verweis (DMS #534, ab 0.120.0): Ein Verweisfeld nennt mit aus_text das bisherige Textfeld. Das DMS legt den
+# Verweis beim Update zusätzlich an; der Administrator wandelt die Angaben danach mit Vorschau um.
+DMS_AUS_TEXT_AB = (0, 120, 0)
+
+
+def pruefe_aus_text(typen: list, dms_bereich: str) -> list[str]:
+    """aus_text nur an Verweisfeldern, nicht Pflicht, nennt ein anderes Feld (falls noch im Paket: Text); dms: ">=0.120.0"."""
+    fehler: list[str] = []
+    benutzt = False
+    for t in typen:
+        if not isinstance(t, dict):
+            continue
+        felder = {f.get('key'): f for f in t.get('felder') or [] if isinstance(f, dict)}
+        for f in felder.values():
+            if 'aus_text' not in f:
+                continue
+            benutzt = True
+            wo = f'mappentypen/{t.get("schluessel")}/{f.get("key")}'
+            quelle = felder.get(f['aus_text'])
+            if f.get('typ') != 'referenz':
+                fehler.append(f'{wo}: aus_text gibt es nur bei Verweisfeldern (typ: referenz)')
+            elif f['aus_text'] == f.get('key'):
+                fehler.append(f'{wo}: aus_text muss ein anderes Feld nennen – das bisherige Textfeld')
+            elif quelle is not None and quelle.get('typ') not in ('text', 'langtext'):
+                fehler.append(f'{wo}: aus_text „{f["aus_text"]}“ ist kein Textfeld (text oder langtext)')
+            if f.get('pflicht'):
+                fehler.append(f'{wo}: ein Verweisfeld mit aus_text darf keine Pflicht sein – sonst passen vorhandene Mappen nach dem Update nicht mehr')
+    if benutzt:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_AUS_TEXT_AB:
+            fehler.append('mappentypen: aus_text kennt das DMS erst ab 0.120.0 – bitte dms: ">=0.120.0" angeben')
+    return fehler
+
+
 def beispiel_verweise(werte: dict) -> list[str]:
     """Verweise auf andere Beispiele in den Werten (#347 im DMS): { beispiel: x } oder Listen davon."""
     erg = []
@@ -367,6 +401,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
                 fehler.append(f'mappentypen/{s}: Trefferliste nennt unbekanntes Feld „{k}“')
 
     fehler += pruefe_erkennung(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
+    fehler += pruefe_aus_text(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
 
     sichten = {s.get('schluessel') for s in geladen.get('sichten', []) if isinstance(s, dict)}
     for s in geladen.get('sichten', []):
