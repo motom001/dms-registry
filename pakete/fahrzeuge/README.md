@@ -18,17 +18,17 @@ Das Paket **Fahrzeuge** bringt die Mappentypen **Fahrzeug** und **Werkstattrechn
 - **Versicherung** ist eine **Versicherung** und **Finanzierung/Leasing** ein **Vertrag** aus dem Paket Haushalt.
 - **Werkstatt** ist eine **Organisation** aus dem Paket Basis.
 - **Halter** ist eine **Person** aus dem Paket Basis (Verweisart Bezug). An der Person und an der Versicherung siehst du unter *Verknüpfungen*, welche Fahrzeuge auf sie verweisen.
-- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** des DMS – beim Fahrzeug der Fahrzeugbrief (Zulassungsbescheinigung Teil II), z. B. im Safe.
+- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** von Ablago – beim Fahrzeug der Fahrzeugbrief (Zulassungsbescheinigung Teil II), z. B. im Safe.
 
 **Ansichten:** *Fahrzeuge* mit allem und darunter *Alle Fahrzeuge*, *Werkstattrechnungen* und *HU fällig* – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist.
 
-**Gleichbedeutende Wörter für die Suche:** *Kfz, Auto, PKW, Fahrzeug* · *HU, Hauptuntersuchung, TÜV* · *Fahrzeugbrief, Zulassungsbescheinigung Teil II* · *Fahrzeugschein, Zulassungsbescheinigung Teil I* · *Werkstattrechnung, Reparaturrechnung*. Sie stehen im DMS unter Werkbank → Suche.
+**Gleichbedeutende Wörter für die Suche:** *Kfz, Auto, PKW, Fahrzeug* · *HU, Hauptuntersuchung, TÜV* · *Fahrzeugbrief, Zulassungsbescheinigung Teil II* · *Fahrzeugschein, Zulassungsbescheinigung Teil I* · *Werkstattrechnung, Reparaturrechnung*. Sie stehen in Ablago unter Werkbank → Suche.
 
 **Beispiele (optional):** das Familienauto der Familie Muster und zwei Werkstattrechnungen. Die Rechnungen hängen am Auto, das Auto zeigt auf die Kfz-Versicherung und den Halter Tom Muster aus Haushalt (wenn deren Beispiele installiert sind). Werkstatt und Ablageort „Safe“ setzt du selbst.
 
 ## Voraussetzungen
 
-- DMS ab Version 0.127 (Wortlisten für die Suche; vorher 0.121 für Halter als Verweis, Umwandlung von Text in Verweise, Feldformate und Datumsgrenzen)
+- Ablago ab Version 0.127 (Wortlisten für die Suche; vorher 0.121 für Halter als Verweis, Umwandlung von Text in Verweise, Feldformate und Datumsgrenzen)
 - Pakete **Basis** ab 1.1.0 (Person) und **Haushalt** ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
@@ -44,7 +44,7 @@ Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Ansichten und auf Wu
 
 Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.
 
-**Update von 1.0.x:** Der Halter war bis 1.0.x ein Textfeld. Das Update legt den Verweis dazu, der Text bleibt. Unter **Werkbank → Pakete → Fahrzeuge → Text in Verweise umwandeln** siehst du in einer Vorschau je Name, welche Person das DMS vorschlägt oder neu anlegt; erst dann wird umgewandelt. Das lässt sich rückgängig machen.
+**Update von 1.0.x:** Der Halter war bis 1.0.x ein Textfeld. Das Update legt den Verweis dazu, der Text bleibt. Unter **Werkbank → Pakete → Fahrzeuge → Text in Verweise umwandeln** siehst du in einer Vorschau je Name, welche Person Ablago vorschlägt oder neu anlegt; erst dann wird umgewandelt. Das lässt sich rückgängig machen.
 
 ## Pflege
 

@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.2.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 2.2.0
 
 Wortpositionen für die Archivfassung (dms-registry #29, motom001/dms#631).

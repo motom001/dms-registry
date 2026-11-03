@@ -1,17 +1,17 @@
 # Trennblatt
 
-Mit dem Paket **Trennblatt** scannst du einen ganzen Stapel Briefe auf einmal, und im DMS wird trotzdem **jeder Brief eine eigene Post**. Du legst zwischen zwei Briefe ein Trennblatt mit Barcode. Der Sammelscan kommt wie gewohnt als eine Post ins DMS. Das Paket findet die Trennblätter, teilt den Scan dort und lässt die Trennblätter weg.
+Mit dem Paket **Trennblatt** scannst du einen ganzen Stapel Briefe auf einmal, und in Ablago wird trotzdem **jeder Brief eine eigene Post**. Du legst zwischen zwei Briefe ein Trennblatt mit Barcode. Der Sammelscan kommt wie gewohnt als eine Post in Ablago. Das Paket findet die Trennblätter, teilt den Scan dort und lässt die Trennblätter weg.
 
-Klebt auf einem Brief ein **Archivnummer-Aufkleber** des DMS, bekommt das Dokument der neuen Post gleich diese Archivnummer.
+Klebt auf einem Brief ein **Archivnummer-Aufkleber** von Ablago, bekommt das Dokument der neuen Post gleich diese Archivnummer.
 
-Das Paket läuft im **Paket-Läufer** des DMS: abgeschottet als WebAssembly, ohne Netz.
+Das Paket läuft im **Paket-Läufer** von Ablago: abgeschottet als WebAssembly, ohne Netz.
 
 ## So geht’s
 
 1. **Trennblatt drucken:** [`vorlage/trennblatt.pdf`](vorlage/trennblatt.pdf) (A4, mit 100 % drucken). Ein paar Blätter reichen, du kannst sie immer wieder verwenden.
 2. **Stapel vorbereiten:** Lege zwischen je zwei Briefe ein Trennblatt. Vor den ersten Brief brauchst du keins, schadet aber auch nicht.
 3. **Scannen:** Scanne den ganzen Stapel in ein PDF. Scannst du beidseitig, ist das kein Problem: Die leere Rückseite eines Trennblatts fällt mit weg.
-4. **Ins DMS:** Das PDF kommt wie jede andere Post ins DMS, über den Eingangsordner, das E-Mail-Postfach oder **+ Post**.
+4. **In Ablago:** Das PDF kommt wie jede andere Post in Ablago, über den Eingangsordner, das E-Mail-Postfach oder **+ Post**.
 5. **Fertig:** Nach ein paar Sekunden siehst du unter **Post** für jeden Brief eine neue Post „*Betreff* (Teil 1)“, „(Teil 2)“ … mit Stand **Neu**. Die ursprüngliche Post hat danach Stand **Erledigt**, behält den ganzen Scan und verweist auf die neuen Posts. Es geht also nichts verloren.
 
 ```
@@ -40,7 +40,7 @@ Findet es kein Trennblatt oder nur einen Brief, ändert es nichts.
 
 ## Was das Paket darf
 
-Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:
+Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 
 - **Mappen lesen, anlegen und ändern: Post.** Das Paket liest die Post, in die der Scan kam, und legt beim Teilen neue Posts an. Andere Mappen sieht es nicht. Löschen kann ein Paket nie.
 - **Dokumente schreiben.** Das Paket holt die Seiten als Graustufenbild, teilt das PDF und setzt die Archivnummer.
@@ -75,37 +75,37 @@ Das Skript braucht nur Python 3, keine weiteren Pakete. Jedes Trennblatt mit ein
 
 ## Messung
 
-Im DMS 0.91 (Paket-Läufer mit Standardgrenzen: 256 MB, 120 s) auf amd64 mit 300 dpi:
+In Ablago 0.91 (Paket-Läufer mit Standardgrenzen: 256 MB, 120 s) auf amd64 mit 300 dpi:
 
 | Scan | Dauer eines Aufrufs | Speicher |
 | --- | --- | --- |
 | 5 Seiten (3 Briefe, 2 Trennblätter) | 1,8 s | 9 MB |
 | 8 Seiten, beidseitig und schief gescannt | etwa 6 s | 9 MB |
 
-Den größten Teil der Zeit braucht das DMS, um die Seiten zu rastern. Mit dem Standard von 60 Seiten bleibt ein Aufruf deutlich unter der Zeitgrenze. Willst du längere Stapel teilen, setz die Auflösung auf 150 dpi (Archivnummer-Aufkleber werden dann oft nicht mehr gelesen).
+Den größten Teil der Zeit braucht Ablago, um die Seiten zu rastern. Mit dem Standard von 60 Seiten bleibt ein Aufruf deutlich unter der Zeitgrenze. Willst du längere Stapel teilen, setz die Auflösung auf 150 dpi (Archivnummer-Aufkleber werden dann oft nicht mehr gelesen).
 
 ## Grenzen
 
-- Das Paket liest **Code 128**, so wie das DMS seine Aufkleber druckt. QR-Codes liest es nicht.
-- Barcodes auf stark schiefen Seiten (mehr als etwa 15°) oder auf sehr kleinen Aufklebern bei niedriger Auflösung findet es unter Umständen nicht. Dann bleibt der Scan ungeteilt, und du kannst ihn im DMS von Hand teilen (**Post → Dokument → Seiten bearbeiten**).
+- Das Paket liest **Code 128**, so wie Ablago seine Aufkleber druckt. QR-Codes liest es nicht.
+- Barcodes auf stark schiefen Seiten (mehr als etwa 15°) oder auf sehr kleinen Aufklebern bei niedriger Auflösung findet es unter Umständen nicht. Dann bleibt der Scan ungeteilt, und du kannst ihn in Ablago von Hand teilen (**Post → Dokument → Seiten bearbeiten**).
 - Eine Post mit mehreren Dokumenten teilt das Paket nicht.
 
 ## Voraussetzungen
 
-- DMS **0.94.0** oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API, Recht nur für Post).
+- Ablago **0.94.0** oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API, Recht nur für Post).
 
 ## Für Entwickler
 
 | Datei | Inhalt |
 | --- | --- |
-| [`code/trennblatt.cpp`](code/trennblatt.cpp) | das Modul (DMS-Paket-ABI 1): Ereignis → Seiten über die API → Barcodes → Post teilen, Archivnummer setzen |
+| [`code/trennblatt.cpp`](code/trennblatt.cpp) | das Modul (Ablago-Paket-ABI 1): Ereignis → Seiten über die API → Barcodes → Post teilen, Archivnummer setzen |
 | [`code/barcode.c`](code/barcode.c), [`code/barcode.h`](code/barcode.h) | eigener, kleiner Code-128-Leser (Zeichensätze A, B, C) für Graustufenbilder: tastet Zeilen und Spalten ab, örtliche Schwelle, Kanten auf Bruchteile eines Bildpunkts, liest in beide Richtungen, Prüfziffer |
 | [`code/json.h`](code/json.h) | kleiner JSON-Leser (aus dem Paket Texterkennung) |
 | [`code/bauen.sh`](code/bauen.sh) | Bau mit dem WASI-SDK, ohne fremde Bibliotheken; danach der Test des Barcode-Lesers, wenn ein C-Compiler da ist |
 | [`vorlage/trennblatt.py`](vorlage/trennblatt.py), [`vorlage/pdf.py`](vorlage/pdf.py) | erzeugen [`vorlage/trennblatt.pdf`](vorlage/trennblatt.pdf), nur mit der Standardbibliothek |
 | [`tests/barcode_test.c`](tests/barcode_test.c) | künstliche Scans: schief, verrauscht, unscharf, verlaufene Tinte, auf dem Kopf, quer, kleinste Aufkleber; Textseiten ohne Fehllesung |
 | [`tests/beispiel.py`](tests/beispiel.py) | Beispiel-PDFs: 3 Briefe mit 2 Trennblättern, dasselbe beidseitig und schief „gescannt“, ein Scan ohne Trennblatt |
-| [`tests/modul_test.mjs`](tests/modul_test.mjs) | das gebaute Modul in Node mit einer Nachbildung der DMS-Importe und der API |
+| [`tests/modul_test.mjs`](tests/modul_test.mjs) | das gebaute Modul in Node mit einer Nachbildung der Ablago-Importe und der API |
 | [`tests/pruefen.sh`](tests/pruefen.sh) | alles zusammen |
 
 ```sh
@@ -113,7 +113,7 @@ WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/trennblatt  
 pakete/trennblatt/tests/pruefen.sh                                                # alle Tests (braucht node und Poppler)
 ```
 
-Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter [Pakete mit Code](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/).
+Die Schnittstelle beschreibt das Entwicklerhandbuch von Ablago unter [Pakete mit Code](https://help.ablago.app/entwickler/aktuell/pakete-code/).
 
 ## Lizenz
 

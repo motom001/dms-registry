@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.4.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.4.0
 
 - Neu: **gleichbedeutende Wörter** für die Suche (DMS #356) – wer „Rechnung“ sucht, findet auch „Beleg“; dazu Quittung/Kassenbon/Kassenzettel, Vertrag/Vereinbarung, Kündigung/Beendigung, Police/Versicherungsschein, Mahnung/Zahlungserinnerung, Gutschrift/Erstattung, Lastschrift/Abbuchung und Anschrift/Adresse. Nur allgemeine Wörter; fachliche bringen die Fachpakete mit (z. B. Fahrzeuge, Vermietung).

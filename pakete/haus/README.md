@@ -18,9 +18,9 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 - **Eigentümer/Vermieter** und **Fachbetrieb** sind **Organisationen** aus dem Paket Basis.
 - **Wartungsvertrag** ist ein **Vertrag** aus dem Paket Haushalt (Art z. B. „Sonstiges“).
-- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** des DMS – wo Grundbuchauszug, Kauf- oder Mietvertrag liegen.
+- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** von Ablago – wo Grundbuchauszug, Kauf- oder Mietvertrag liegen.
 
-**Fristen:** Trag nach jeder Wartung *Zuletzt am* und *Nächste fällig* ein („Zuletzt am“ plus Turnus). Das DMS erinnert 30 Tage vorher unter **Zu erledigen** und in der Ansicht **Anstehend**.
+**Fristen:** Trag nach jeder Wartung *Zuletzt am* und *Nächste fällig* ein („Zuletzt am“ plus Turnus). Ablago erinnert 30 Tage vorher unter **Zu erledigen** und in der Ansicht **Anstehend**.
 
 **Ansichten:** *Haus* mit allem und darunter *Immobilien*, *Wartungen*, *Zählerstände* (darunter *dieses Jahr* und *letztes Jahr* zum Vergleich) sowie *Wartung fällig* – Wartungen, die in den nächsten drei Monaten fällig oder schon überfällig sind.
 
@@ -28,7 +28,7 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 ## Voraussetzungen
 
-- DMS ab Version 0.121 (Feldformate und Datumsgrenzen)
+- Ablago ab Version 0.121 (Feldformate und Datumsgrenzen)
 - Pakete **Basis** ab 1.0.0 und **Haushalt** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz

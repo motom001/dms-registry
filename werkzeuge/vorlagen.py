@@ -197,13 +197,13 @@ body:
     id: paketversion
     attributes:
       label: Paketversion · Package version
-      description: Steht im DMS unter Werkbank → Pakete · Shown in the DMS under Workbench → Packages
+      description: Steht in Ablago unter Werkbank → Pakete · Shown in Ablago under Workbench → Packages
       placeholder: z. B. 1.3.0
   - type: input
     id: dmsversion
     attributes:
-      label: DMS-Version · DMS version
-      description: Steht im DMS unter „Über das DMS“ (Benutzermenü) · Shown under “About the DMS” (user menu)
+      label: Ablago-Version · Ablago version
+      description: Steht in Ablago unter „Über Ablago“ (Benutzermenü) · Shown under “About Ablago” (user menu)
       placeholder: z. B. 0.144.2
   - type: checkboxes
     id: betrifft

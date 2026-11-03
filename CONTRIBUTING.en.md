@@ -10,7 +10,7 @@
 4. **Fill it in:** `manifest.yaml`, `README.md`, `LICENSE` (year and name), `CHANGELOG.md`, contents under `inhalt/`, expectations under `tests/`. Examples are given as comments in the template.
 5. **Check:** `python3 werkzeuge/pruefen.py pakete/<id>` (requires `pip install --require-hashes -r werkzeuge/requirements.txt`). The same check runs in the pull request.
 6. **Pull request** with `Closes #…`. Every commit carries a `Signed-off-by:` (`git commit -s`). With it you confirm, according to the [Developer Certificate of Origin](https://developercertificate.org/), that you have the right to submit the contribution under the licence of the package.
-7. **Maintenance:** Add yourself to `.github/CODEOWNERS` for your package. You take care of bugs and new DMS versions; the maintainer approves and merges.
+7. **Maintenance:** Add yourself to `.github/CODEOWNERS` for your package. You take care of bugs and new Ablago versions; the maintainer approves and merges.
 
 What to watch out for is in the [rules for packages](REGELN.en.md) – licences, permissions, what is forbidden.
 
@@ -18,7 +18,7 @@ What to watch out for is in the [rules for packages](REGELN.en.md) – licences,
 
 Contributions to the tools, schemas, website and template are licensed under the [Apache-2.0](LICENSE) of this repository. Please do not commit real documents or personal data.
 
-How work on the DMS itself is done is described in the [developer manual](https://motom001.github.io/dms/entwickler/aktuell/) (German) and in [CONTRIBUTING.en.md of the DMS](https://github.com/motom001/dms/blob/main/CONTRIBUTING.en.md).
+How work on Ablago itself is done is described in the [developer manual](https://help.ablago.app/entwickler/aktuell/) (German) and in [CONTRIBUTING.en.md of Ablago](https://github.com/motom001/dms/blob/main/CONTRIBUTING.en.md).
 
 ## Code of conduct
 

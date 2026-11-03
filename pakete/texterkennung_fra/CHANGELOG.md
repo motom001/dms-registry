@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.0.4
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.0.3
 
 - Im Manifest steht jetzt `ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }` (motom001/dms#405): Ab DMS 0.151.0 erscheint die Sprache beim Installieren der Texterkennung als Häkchen unter „Weitere Sprachen?“ – im selben Schritt, auch nachträglich und im Einrichtungsassistenten. Ältere DMS ignorieren das Feld; am Paket ändert sich sonst nichts.

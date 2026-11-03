@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.0.2
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.0.1
 
 - Kurzbeschreibung für Einsteiger (#80): sagt jetzt klar, dass das Paket Dateien sichtbar macht und für durchsuchbaren Text bei Scans zusätzlich die Texterkennung nötig ist. Am Paket selbst ändert sich nichts.

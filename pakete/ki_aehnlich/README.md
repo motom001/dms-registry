@@ -1,8 +1,8 @@
 # KI lokal – Ähnlichkeit
 
-Das Paket **KI lokal – Ähnlichkeit** lässt das DMS **ähnliche Dokumente** finden und **mit eigenen Worten** suchen: „Rechnung für die Heizung“ findet so auch die Mappe mit „Wartung Gastherme“, obwohl kein Wort übereinstimmt. Es rechnet mit einem kleinen mehrsprachigen Embedding-Modell im **Paket-Läufer** des DMS – abgeschottet, **ohne Netz** und ohne zusätzlichen Dienst. Deine Daten verlassen das DMS nicht.
+Das Paket **KI lokal – Ähnlichkeit** lässt Ablago **ähnliche Dokumente** finden und **mit eigenen Worten** suchen: „Rechnung für die Heizung“ findet so auch die Mappe mit „Wartung Gastherme“, obwohl kein Wort übereinstimmt. Es rechnet mit einem kleinen mehrsprachigen Embedding-Modell im **Paket-Läufer** von Ablago – abgeschottet, **ohne Netz** und ohne zusätzlichen Dienst. Deine Daten verlassen Ablago nicht.
 
-Im DMS siehst du danach:
+In Ablago siehst du danach:
 
 - an jeder Mappe mit Dokumenten **„Ähnliche Dokumente“** aus anderen Mappen,
 - in der Suche der Startseite mit **„auch in Dokumenten“** zusätzlich **„Ähnliche Treffer“** mit dem Kennzeichen **ähnlich**,
@@ -12,11 +12,11 @@ Jeder sieht nur Mappen, die er lesen darf. Was die KI tut, ist ein Vorschlag: Si
 
 ## Rechte und Netzwerkzugriff
 
-Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:
+Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 
 - **Mappen lesen: alle Mappentypen** – Dokumente liegen in Mappen beliebiger Typen; das Paket liest nur deren Volltext.
 - **Dokumente lesen** – den Volltext eines Dokuments. Dateien und Volltext ändert es nicht.
-- **Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)** – zu jedem Dokument eine Liste von Zahlen, die seinen Inhalt beschreibt. Das DMS vergleicht sie; die Suche fragt das Paket nach dem Vektor des Suchbegriffs.
+- **Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)** – zu jedem Dokument eine Liste von Zahlen, die seinen Inhalt beschreibt. Ablago vergleicht sie; die Suche fragt das Paket nach dem Vektor des Suchbegriffs.
 - **kein Zugriff auf Netzwerk und Internet.** Das Modell liegt im Paket.
 - Es reagiert auf **Der Volltext eines Dokuments ist da** – für neue Dokumente und, gedrosselt, für den Bestand.
 
@@ -24,9 +24,9 @@ Bei der Installation zeigt das DMS diese Rechte und lässt sie dich bestätigen:
 
 ## So arbeitet es
 
-1. Steht der Volltext eines Dokuments fest (eingebaute Texterkennung, Textebene des PDFs oder ein Paket wie **Texterkennung**), holt das Paket ihn, zerlegt ihn in Wortteile (Tokens) und bildet den Mittelwert ihrer Vektoren. Den Vektor legt es im DMS ab.
-2. Den **Bestand** schickt das DMS nach der Installation gedrosselt nach (alle 30 Sekunden bis zu 50 Dokumente, solange das Paket nichts anderes zu tun hat). Den Fortschritt zeigt die Werkbank.
-3. In der Suche fragt das DMS das Paket nach dem Vektor des Suchbegriffs (höchstens 1,5 Sekunden) und vergleicht ihn mit den gespeicherten.
+1. Steht der Volltext eines Dokuments fest (eingebaute Texterkennung, Textebene des PDFs oder ein Paket wie **Texterkennung**), holt das Paket ihn, zerlegt ihn in Wortteile (Tokens) und bildet den Mittelwert ihrer Vektoren. Den Vektor legt es in Ablago ab.
+2. Den **Bestand** schickt Ablago nach der Installation gedrosselt nach (alle 30 Sekunden bis zu 50 Dokumente, solange das Paket nichts anderes zu tun hat). Den Fortschritt zeigt die Werkbank.
+3. In der Suche fragt Ablago das Paket nach dem Vektor des Suchbegriffs (höchstens 1,5 Sekunden) und vergleicht ihn mit den gespeicherten.
 
 Berücksichtigt wird höchstens der erste Megabyte Volltext eines Dokuments.
 
@@ -50,7 +50,7 @@ Im Paket stecken die ersten **256 von 1024 Dimensionen**, auf 8 Bit gerundet: 28
 
 ## Messung
 
-Gemessen mit `tests/modul_test.mjs` und im Paket-Läufer des DMS (DMS 0.122.0, Standardgrenzen) auf **amd64 mit 2 Kernen** – mit einem Zufallsmodell gleicher Größe (105 879 Wortteile × 256), denn die Rechenzeit hängt nicht von den Zahlen ab:
+Gemessen mit `tests/modul_test.mjs` und im Paket-Läufer von Ablago (Ablago 0.122.0, Standardgrenzen) auf **amd64 mit 2 Kernen** – mit einem Zufallsmodell gleicher Größe (105 879 Wortteile × 256), denn die Rechenzeit hängt nicht von den Zahlen ab:
 
 | | Modul allein | im Paket-Läufer (mit Start des Workers und Laden des Modells) |
 | --- | --- | --- |
@@ -62,14 +62,14 @@ Auf einem **Intel N100** erwarten wir ähnliche Werte, also deutlich unter einer
 
 ## Voraussetzungen
 
-- DMS **0.122.0** oder neuer (Schnittstelle `dms:vektoren`, Ereignis „Der Volltext eines Dokuments ist da“).
+- Ablago **0.122.0** oder neuer (Schnittstelle `dms:vektoren`, Ereignis „Der Volltext eines Dokuments ist da“).
 - Dokumente mit Volltext – ohne Volltext gibt es keinen Vektor.
 
 ## Für Entwickler
 
 | Datei | Inhalt |
 | --- | --- |
-| [`code/aehnlich.cpp`](code/aehnlich.cpp) | das Modul (DMS-Paket-ABI 1): Tokenizer (BertNormalizer, BertPreTokenizer, WordPiece wie in `tokenizers`), Mittelwert der Vektoren, Ereignis und Aktion `dms:vektor` |
+| [`code/aehnlich.cpp`](code/aehnlich.cpp) | das Modul (Ablago-Paket-ABI 1): Tokenizer (BertNormalizer, BertPreTokenizer, WordPiece wie in `tokenizers`), Mittelwert der Vektoren, Ereignis und Aktion `dms:vektor` |
 | [`code/umwandeln.py`](code/umwandeln.py) | beim Bau: Modell und Tokenizer → `code/daten/` (256 Dimensionen, 8 Bit), Zeichentabellen aus Unicode |
 | [`code/bauen.sh`](code/bauen.sh) | Bau: Modul mit wasi-sdk; Modell von Hugging Face auf einem festen Commit, große Datei gegen die SHA-256 aus ihrem Git-LFS-Zeiger geprüft (feste Prüfsummen lassen sich zusätzlich eintragen) |
 | [`code/json.h`](code/json.h) | kleiner JSON-Leser (wie bei Trennblatt) |
@@ -81,7 +81,7 @@ WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/ki_aehnlich 
 pakete/ki_aehnlich/tests/pruefen.sh                                                 # ohne Netz
 ```
 
-Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter [Pakete mit Code → Vektoren und Ähnlichkeit](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#vektoren-und-ahnlichkeit).
+Die Schnittstelle beschreibt das Entwicklerhandbuch von Ablago unter [Pakete mit Code → Vektoren und Ähnlichkeit](https://help.ablago.app/entwickler/aktuell/pakete-code/#vektoren-und-ahnlichkeit).
 
 ## Lizenz
 

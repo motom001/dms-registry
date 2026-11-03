@@ -2,7 +2,7 @@
 
 Wie wir entscheiden, welche Pakete als Nächstes in den Katalog kommen – und wo du den aktuellen Stand siehst.
 
-**Der aktuelle Fahrplan steht in den [Meilensteinen](https://github.com/motom001/dms-registry/milestones?direction=asc&sort=title&state=open).** Was das DMS selbst dafür braucht (zum Beispiel den Paket-Läufer für Pakete mit Code), steht in den [Meilensteinen von motom001/dms](https://github.com/motom001/dms/milestones?direction=asc&sort=title&state=open) – beide nutzen dieselben Nummern. Diese Seite erklärt nur, wie man sie liest; sie wird nicht bei jeder Änderung angepasst.
+**Der aktuelle Fahrplan steht in den [Meilensteinen](https://github.com/motom001/dms-registry/milestones?direction=asc&sort=title&state=open).** Was Ablago selbst dafür braucht (zum Beispiel den Paket-Läufer für Pakete mit Code), steht in den [Meilensteinen von motom001/dms](https://github.com/motom001/dms/milestones?direction=asc&sort=title&state=open) – beide nutzen dieselben Nummern. Diese Seite erklärt nur, wie man sie liest; sie wird nicht bei jeder Änderung angepasst.
 
 ## Etappen statt Einzelstücke
 
@@ -18,10 +18,10 @@ Zusammengehörige Wünsche werden zu einer **Etappe** gebündelt – zum Beispie
 ## Eine Etappe nach der anderen
 
 - In den Katalog kommt nur, was der Maintainer mit dem Label **`freigegeben`** versieht – in der Regel die Issues der aktuellen Etappe.
-- Die nächste Etappe ist schon beschrieben und sortiert, wird aber erst freigegeben, wenn die aktuelle fertig ist. So bauen spätere Pakete auf dem auf, was das DMS dann wirklich kann.
+- Die nächste Etappe ist schon beschrieben und sortiert, wird aber erst freigegeben, wenn die aktuelle fertig ist. So bauen spätere Pakete auf dem auf, was Ablago dann wirklich kann.
 - Korrekturen an bestehenden Paketen (neue Patch-Version) gehen jederzeit dazwischen.
 
-> **Etappe oder Paket?** Ein **Paket** ist das, was hier im Katalog liegt und im DMS installiert wird. Eine **Etappe** ist ein Abschnitt im Fahrplan.
+> **Etappe oder Paket?** Ein **Paket** ist das, was hier im Katalog liegt und in Ablago installiert wird. Eine **Etappe** ist ein Abschnitt im Fahrplan.
 
 ## Wünsche und eigene Pakete einbringen
 

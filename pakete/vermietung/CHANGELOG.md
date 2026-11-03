@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.2.0
 
 - Neu: **gleichbedeutende Wörter** für die Suche – wer „Nebenkosten“ sucht, findet auch „Betriebskosten“; dazu Abrechnung, Kaltmiete, Kaution und Mieter.

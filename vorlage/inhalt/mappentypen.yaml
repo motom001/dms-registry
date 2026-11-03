@@ -1,5 +1,5 @@
 # Mappentypen dieses Pakets. Schema: schema/inhalt.schema.json
-# Schlüssel sind im Paket lokal; das DMS legt den Typ als <paket-id>_<schluessel> an.
+# Schlüssel sind im Paket lokal; Ablago legt den Typ als <paket-id>_<schluessel> an.
 # Feldtypen: text, langtext, formatiert, zahl, betrag, datum, janein, auswahl, referenz, passwort
 # Registerarten: felder, dokumente, verknuepfungen, protokoll
 
@@ -33,11 +33,11 @@
     # Grenzen eines Datumsfelds: min/max als "JJJJ-MM-TT" oder heute, z. B. max: heute für einen Geburtstag
     # Für die Erkennung nutzen (braucht dms: ">=0.113.0", siehe REGELN.md): z. B. an einer Vertragsnummer
     #   erkennung: { art: nummer, hinweis: "Steht oben rechts, Muster VN-######" }
-    # oder ohne Art – das DMS schließt sie aus Feldart und Bezeichnung:
+    # oder ohne Art – Ablago schließt sie aus Feldart und Bezeichnung:
     #   erkennung: {}
     # Verweis auf einen Typ dieses Pakets: ziel: beispiel
     # Verweis auf ein anderes Paket:      ziel: basis:organisation (dann unter abhaengigkeiten nennen)
-    # Verweis auf einen Typ des DMS:      ziel: dms:ablageort (auch dms:benutzer, dms:rolle; braucht dms: ">=0.75.0")
+    # Verweis auf einen Typ von Ablago:      ziel: dms:ablageort (auch dms:benutzer, dms:rolle; braucht dms: ">=0.75.0")
     # - key: organisation
     #   label: Organisation
     #   typ: referenz

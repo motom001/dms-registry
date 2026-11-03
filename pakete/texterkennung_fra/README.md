@@ -6,16 +6,16 @@ Mit **Sprache: Automatisch** erkennt das Paket Texterkennung, wenn ein Brief fra
 
 ## Rechte und Netzwerkzugriff
 
-Bei der Installation zeigt das DMS:
+Bei der Installation zeigt Ablago:
 
 - **kein Zugriff auf Netzwerk und Internet**
 - keine Rechte an Mappen und Dokumenten, keine Ereignisse
 
-Das Paket Texterkennung liest die Sprachdaten, weil dieses Paket von ihm abhängt (DMS ab 0.133.0: ein Paket liest die Daten der Pakete, die von ihm abhängen, als `texterkennung_fra/fra.traineddata`). Wird das Zusatzpaket installiert oder entfernt, lädt der Paket-Läufer die Texterkennung neu – du musst nichts weiter tun. Dokumente, die schon ohne Französisch erkannt wurden, erkennt **Werkbank → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente** neu.
+Das Paket Texterkennung liest die Sprachdaten, weil dieses Paket von ihm abhängt (Ablago ab 0.133.0: ein Paket liest die Daten der Pakete, die von ihm abhängen, als `texterkennung_fra/fra.traineddata`). Wird das Zusatzpaket installiert oder entfernt, lädt der Paket-Läufer die Texterkennung neu – du musst nichts weiter tun. Dokumente, die schon ohne Französisch erkannt wurden, erkennt **Werkbank → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente** neu.
 
 ## Voraussetzungen
 
-- DMS **0.133.0** oder neuer
+- Ablago **0.133.0** oder neuer
 - Paket **Texterkennung 2.0.0** oder neuer (kommt als Abhängigkeit mit)
 
 ## Weitere Sprachen

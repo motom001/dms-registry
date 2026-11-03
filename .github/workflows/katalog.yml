@@ -1,6 +1,5 @@
-# Veröffentlicht den Katalog (katalog.json, katalog.sig und Archive) auf dem Branch gh-pages,
-# erreichbar unter https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json
-# (und über GitHub Pages, sobald es für den Branch gh-pages eingeschaltet ist).
+# Veröffentlicht den Katalog (katalog.json, katalog.sig und Archive) und die Katalog-Webseite auf dem
+# Branch gh-pages, erreichbar über GitHub Pages unter https://catalog.ablago.app/ (eigene Domain, Datei CNAME).
 name: Katalog veröffentlichen
 
 on:
@@ -58,6 +57,8 @@ jobs:
         run: |
           cd site
           touch .nojekyll
+          # Eigene Domain bei jeder Veröffentlichung mitschreiben (dms-registry#111), sonst schaltet Pages sie ab.
+          echo catalog.ablago.app > CNAME
           git add -A
           if git diff --cached --quiet; then echo "Keine Änderung."; exit 0; fi
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Katalog ${GITHUB_SHA::7}"

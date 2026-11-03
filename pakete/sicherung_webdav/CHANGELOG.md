@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.0.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.0.0
 
 - Erste Fassung (DMS #585, dms-registry #71, Stufe 1): bringt jede Sicherung des DMS nach dem Ereignis *Sicherung fertig* auf einen WebDAV-Speicher und prüft sie dort – **Nextcloud** (Hochladen in Teilen mit Chunking v2, auch für Sicherungen mit mehreren GB), **Nextcloud-Dateiablage** („Nur Hochladen“, bis 128 MB am Stück, ohne Lese- und Löschrecht) und **WebDAV allgemein** (Teile mit `Content-Range`, kleine Sicherungen am Stück).
