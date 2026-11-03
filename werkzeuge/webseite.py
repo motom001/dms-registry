@@ -13,6 +13,10 @@ Im Ausgabeordner entstehen:
     stil.css, dms.js             Aussehen wie die Handbücher; „In meinem DMS installieren“
     sammeldatei.js               stellt die Sammeldatei im Browser zusammen (nur aus katalog.json und archive/)
 
+Die DMS-Version kommt aus dem DMS nur im Fragment (#dms=<X.Y.Z>, motom001/dms#622), nie als Query: Das
+Fragment geht an keinen Server und landet nicht im Zugriffsprotokoll. dms.js liest es auf jeder Seite (auch
+sammeldatei.html), merkt die Version im localStorage (dms-version) und entfernt das Fragment aus der Adresse.
+
 Die Adresse des eigenen DMS merkt sich die Seite nur im Browser (localStorage); sie sendet nichts an
 das DMS und speichert keine Zugangsdaten. Der Knopf öffnet <dms>/werkbank/pakete?installieren=<id>@<version>.
 
@@ -158,7 +162,7 @@ def seite(titel: str, inhalt: str, tiefe: int, beschreibung: str = '', sprache: 
             f'<a href="{vor}{o}index.html" lang="{s}" hreflang="{s}"' + (' aria-current="page"' if s == sprache else '') + f'>{e(TEXTE[s]["name"])}</a>'
             for s, o in SPRACHEN.items()) + '</nav>')
     start = f'{vor}{SPRACHEN[sprache]}index.html'
-    mehr = ''.join(f'\n  <script src="{vor}{x}" defer></script>' for x in skripte)
+    mehr = ''.join(f'\n  <script src="{vor}{x}?v={STAND}" defer></script>' for x in skripte)
     return f'''<!doctype html>
 <html lang="{sprache}">
 <head>
@@ -791,6 +795,8 @@ SKRIPT = '''
     // Fragment wieder entfernen, damit die Version nicht mit einem geteilten Link weitergegeben wird.
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* egal */ }
   })();
+  // Für sammeldatei.js (läuft nach dms.js): dieselbe gemerkte Version, kein zweites Lesen der Adresse.
+  window.dmsVersion = { lies: liesVersion, merke: merkeVersion };
   // Ergebnis je Paket: ja (neueste Version passt) · aelter (eine ältere passt) · nein; null ohne Version.
   function pruefe(versionen, dms) {
     if (!dms) return null;
@@ -880,7 +886,7 @@ SAMMEL_INHALT = r'''    <h1>Pakete herunterladen</h1>
       <div class="sammel-dms">
         <label for="dms-version"><strong>DMS-Version</strong> <span class="leise">– dazu passende Paketversionen</span></label>
         <input id="dms-version" inputmode="decimal" placeholder="z. B. 0.107.1" pattern="\d+\.\d+\.\d+" autocomplete="off" aria-describedby="dms-version-hilfe">
-        <p id="dms-version-hilfe" class="leise klein">Steht im DMS unter „Über das DMS“. Vorgabe: die neueste Version. Leer: die neueste Version jedes Pakets.</p>
+        <p id="dms-version-hilfe" class="leise klein">Steht im DMS unter „Über das DMS“ (der Link aus dem DMS bringt sie mit). Sie bleibt nur in diesem Browser. Vorgabe: die neueste Version. Leer: die neueste Version jedes Pakets.</p>
       </div>
       <fieldset class="sammel-pakete"><legend><strong>Pakete</strong> <span class="leise">– Abhängigkeiten kommen automatisch mit</span></legend>
         <ul id="sammel-liste" class="sammel-liste"></ul>
@@ -924,15 +930,13 @@ fieldset.sammel-pakete { border: 0; padding: 0; margin: 0; min-width: 0; }
 #sammel-ergebnis code { overflow-wrap: anywhere; word-break: break-all; }
 '''
 
-# Stand von Stil und Skript im Dateinamen-Anhang, damit Browser nach Änderungen nicht die alte Fassung zeigen
-STAND = hashlib.sha256((STIL + SAMMEL_STIL + SKRIPT).encode()).hexdigest()[:10]
-
 
 SAMMEL_SKRIPT = r'''
 // Sammeldatei im Browser (motom001/dms#461): wie werkzeuge/sammeldatei.py – Auswahl samt Abhängigkeiten,
 // passend zur DMS-Version; jedes Archiv gegen katalog.json geprüft; ZIP mit sammeldatei.json, LIESMICH.txt,
 // dem signierten Katalog (katalog.json und katalog.sig Byte für Byte, #74) und den Archiven unter pakete/.
-// Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser.
+// Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser. Die DMS-Version kommt aus dms.js
+// (Fragment #dms=…, gemerkt nur in diesem Browser) – die Adresse liest diese Seite selbst nicht.
 (function () {
   var VORAUSWAHL = ['texterkennung'];
   var KATALOG_URL = 'https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json';
@@ -1090,8 +1094,8 @@ SAMMEL_SKRIPT = r'''
       katalog = JSON.parse(new TextDecoder().decode(katalogRoh));
     }
     catch (e) { document.getElementById('sammel-laden').textContent = 'Der Katalog lässt sich nicht laden: ' + e.message; return; }
-    var feld = document.getElementById('dms-version'), q = new URLSearchParams(location.search).get('dms');
-    if (q && VERSION.test(q)) feld.value = q;
+    var gemerkt = window.dmsVersion ? window.dmsVersion.lies() : '', feld = document.getElementById('dms-version');
+    if (gemerkt) feld.value = gemerkt;
     else {
       // Vorgabe: die neueste DMS-Version (Releases auf GitHub); klappt das nicht, bleibt das Feld leer.
       fetch('https://api.github.com/repos/motom001/dms/releases/latest').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
@@ -1100,7 +1104,11 @@ SAMMEL_SKRIPT = r'''
       }).catch(function () {});
     }
     gewaehlt = VORAUSWAHL.filter(function (id) { return paket(id); });
-    feld.addEventListener('input', function () { document.getElementById('sammel-ergebnis').textContent = ''; zeichne(); });
+    feld.addEventListener('input', function () {
+      // Wie die Übersicht: eine gültige (oder leere) Eingabe merkt sich der Browser für die anderen Katalogseiten.
+      var w = feld.value.trim(); if (window.dmsVersion && (!w || VERSION.test(w))) window.dmsVersion.merke(w);
+      document.getElementById('sammel-ergebnis').textContent = ''; zeichne();
+    });
     form.addEventListener('submit', herunterladen);
     document.getElementById('sammel-laden').hidden = true;
     form.hidden = false;
@@ -1109,6 +1117,10 @@ SAMMEL_SKRIPT = r'''
   start();
 })();
 '''
+
+
+# Stand von Stil und Skripten im Dateinamen-Anhang, damit Browser nach Änderungen nicht die alte Fassung zeigen
+STAND = hashlib.sha256((STIL + SAMMEL_STIL + SKRIPT + SAMMEL_SKRIPT).encode()).hexdigest()[:10]
 
 
 def main():
