@@ -67,8 +67,10 @@ class Liste(unittest.TestCase):
                     'sicherung_webdav': 'cloud-upload', 'texterkennung': 'scan-text', 'trennblatt': 'scan-barcode', 'vermietung': 'key-round'}
         for pid, s in erwartet.items():
             self.assertEqual(vorlagen.symbol_von(pid, daten)[0], s, pid)
-        self.assertEqual(vorlagen.symbol_von('texterkennung_fra', daten), ('languages', 'FR'))
-        self.assertEqual(vorlagen.symbol_von('texterkennung_ukr', daten), ('languages', 'UK'))
+        # Zusatzsprachen: im Manifest, Kürzel = ISO-639-1-Code der Sprache (UK = Ukrainisch, nicht das Land).
+        manifeste = {p['id']: p['manifest'] for p in vorlagen.pakete()}
+        self.assertEqual(vorlagen.symbol_von('texterkennung_fra', daten, manifeste['texterkennung_fra']), ('languages', 'FR'))
+        self.assertEqual(vorlagen.symbol_von('texterkennung_ukr', daten, manifeste['texterkennung_ukr']), ('languages', 'UK'))
 
 
 class ManifestGewinnt(unittest.TestCase):
@@ -119,6 +121,13 @@ class Pruefen(unittest.TestCase):
             self.assertTrue(any('kuerzel nur zusammen mit symbol' in f for f in pruefen.pruefe(probe(tmp, kuerzel='FR'), None)))
         with tempfile.TemporaryDirectory() as tmp:
             self.assertTrue(any('kuerzel' in f for f in pruefen.pruefe(probe(tmp, symbol='languages', kuerzel='fr'), None)))
+
+    def test_kuerzel_hoechstens_drei_zeichen(self):
+        for falsch in ('FRAN', 'F', 'F1', 1):
+            with tempfile.TemporaryDirectory() as tmp:
+                self.assertTrue(any('kuerzel hat 2–3 Großbuchstaben' in f for f in pruefen.pruefe(probe(tmp, symbol='languages', kuerzel=falsch), None)), falsch)
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(pruefen.pruefe(probe(tmp, symbol='languages', kuerzel='UK'), None), [])
 
     def test_kategorien(self):
         for falsch in (['rakete'], ['ki', 'ki'], ['ki', 'suche', 'post'], []):

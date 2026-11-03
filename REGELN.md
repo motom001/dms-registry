@@ -72,10 +72,11 @@ Im Katalog steht bei jedem Paket ein kleines **Symbol**, damit man auf einen Bli
 
 ```yaml
 symbol: languages
-kuerzel: FR        # optional, nur mit symbol: 2–3 Großbuchstaben unten rechts am Symbol
+kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unten rechts am Symbol
 ```
 
 - **Wählen:** Nimm das Symbol, das zeigt, **was das Paket für den Anwender tut** – nicht, wie es das technisch macht. Keine Logos, keine Emoji, keine Flaggen (Flaggen stehen für Länder, nicht für Sprachen). Zusatzsprachen nehmen `languages` mit dem Sprachkürzel als `kuerzel` (FR, ES, IT …).
+- **Kürzel:** höchstens 3 Großbuchstaben; Schema und `pruefen.py` lehnen längere ab. Bei Sprachen steht dort der **ISO-639-Code der Sprache, nicht des Landes**: zweistellig nach ISO 639-1 in Großbuchstaben (FR Französisch, PT Portugiesisch, AR Arabisch, **UK Ukrainisch** – nicht UA), dreistellig nach ISO 639-2/3 nur für Sprachen ohne zweistelligen Code.
 - **Erlaubt** sind genau die SVG-Dateien in [`werkzeuge/symbole/`](werkzeuge/symbole/) (dieselbe Liste steht im Schema):
 
 | Symbol | passt zu |

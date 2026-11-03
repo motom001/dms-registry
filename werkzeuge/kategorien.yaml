@@ -51,15 +51,5 @@ symbole:
   office_email: file-text
   sicherung_webdav: cloud-upload
   texterkennung: scan-text
-  texterkennung_ara: { symbol: languages, kuerzel: AR }
-  texterkennung_fra: { symbol: languages, kuerzel: FR }
-  texterkennung_ita: { symbol: languages, kuerzel: IT }
-  texterkennung_nld: { symbol: languages, kuerzel: NL }
-  texterkennung_pol: { symbol: languages, kuerzel: PL }
-  texterkennung_por: { symbol: languages, kuerzel: PT }
-  texterkennung_rus: { symbol: languages, kuerzel: RU }
-  texterkennung_spa: { symbol: languages, kuerzel: ES }
-  texterkennung_tur: { symbol: languages, kuerzel: TR }
-  texterkennung_ukr: { symbol: languages, kuerzel: UK }
   trennblatt: scan-barcode
   vermietung: key-round

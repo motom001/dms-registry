@@ -2,12 +2,15 @@
 schema: 1
 id: texterkennung_ara
 name: Texterkennung – Zusatzsprache Arabisch
-version: 1.0.0
+version: 1.0.1
 beschreibung: Zusatzsprache Arabisch für das Grundpaket Texterkennung – damit auch arabische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
+# Symbol im Katalog (#98): Kürzel = ISO-639-1-Code der Sprache, nicht des Landes.
+symbol: languages
+kuerzel: AR
 # 0.133.0: Ein Paket liest die Daten der Pakete, die von ihm abhängen (<paket>/<datei>).
 dms: ">=0.133.0"
 abhaengigkeiten:
