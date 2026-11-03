@@ -15,6 +15,8 @@ Je Seite erkennt das Paket die **Lage** (quer, auf dem Kopf) und die **Schrift**
 
 Das DMS bekommt den Text mit den **Sprachen je Seite**: Am Dokument steht dann z. B. „Deutsch, enthält auch Französisch“, die Suche nimmt je Seite die Wortstämme ihrer Sprache, und wechselt die Sprache zwischen zwei Seiten ganz, schlägt das DMS an der Post „Post teilen?“ vor (geteilt wird nie von selbst). Fehlen Sprachdaten (z. B. Französisch), steht das im Ergebnis und im Protokoll des Pakets: „Sprachdaten fehlen: fra (Zusatzpaket texterkennung_fra)“.
 
+Seit 2.2.0 bekommt das DMS zu jedem erkannten Wort auch seine **Lage auf der Seite** (Wortpositionen). Damit legt das Paket [PDF/A](../pdfa/) die unsichtbare Textebene seiner Archivfassung genau auf die Wörter – Suchen und Markieren treffen dort das gedruckte Wort. Hat das Paket eine Seite zum Lesen gedreht, rechnet es die Lage auf die Seite zurück, wie das DMS sie zeigt. Ältere DMS-Versionen übergehen die Angabe; nimmt ein DMS sie nicht an (bis 0.144 höchstens 2 MB je Anfrage), schickt das Paket den Text ohne sie.
+
 Lange Dokumente erkennt es **abschnittsweise**: Nach etwa einer Minute gibt es seinen Stand an den Läufer zurück, der es gleich wieder aufruft. Die Zeitgrenze des Läufers (2 Minuten je Aufruf) greift so nicht.
 
 ## Rechte und Netzwerkzugriff
@@ -75,17 +77,20 @@ Vergleich mit der früheren eingebauten Texterkennung des DMS (bis 0.133: Tesser
 - Bilder: JPEG und PNG. TIFF, WebP, GIF und BMP liefert das DMS nicht als Seitenbild – sie bleiben ohne Volltext.
 - Office-Dateien und E-Mails erkennt es nicht.
 - Ein Dokument mit mehr Seiten als eingestellt wird nur bis zu dieser Seite erkannt.
+- Wortpositionen wandern bei langen Dokumenten mit dem Zwischenstand von Abschnitt zu Abschnitt; nach etwa 2,5 MB (grob 150 bis 200 dicht beschriebene Seiten) schickt das Paket für die übrigen Seiten keine mehr. Am Ergebnis steht dann „Wortpositionen nur für einen Teil der Seiten“, und das Paket PDF/A legt für dieses Dokument keine Archivfassung ab.
 - Schlägt ein Aufruf fehl, versucht es das DMS später erneut (1, 5, 30, 120, 360 Minuten) und zeigt das unter **Werkbank → Pakete → Texterkennung → Paket-Läufer**; danach steht das Dokument auf „Fehler“.
 
 ## Voraussetzungen
 
-- DMS **0.139.0** oder neuer (Sprachen je Seite, Text je Seite bei gemischten PDFs); seit 0.133.0: Ereignis „Volltext fertig“ auch ohne Text, Recht „Texterkennung übernehmen“, Fortsetzung langer Aufgaben, Seitenbild für JPEG und PNG, Daten aus Zusatzpaketen. Für ältere DMS-Versionen bleibt Version 2.0.0 im Katalog.
+- DMS **0.139.0** oder neuer; die Wortpositionen nutzt erst DMS **0.149.0** (Archivfassung) (Sprachen je Seite, Text je Seite bei gemischten PDFs); seit 0.133.0: Ereignis „Volltext fertig“ auch ohne Text, Recht „Texterkennung übernehmen“, Fortsetzung langer Aufgaben, Seitenbild für JPEG und PNG, Daten aus Zusatzpaketen. Für ältere DMS-Versionen bleibt Version 2.0.0 im Katalog.
 
 ## Für Entwickler
 
 | Datei | Inhalt |
 | --- | --- |
-| [`code/texterkennung.cpp`](code/texterkennung.cpp) | das Modul (DMS-Paket-ABI 1): Ereignis → entscheiden → Seiten über die API → Lage (osd) → Tesseract mit Sprache je Seite und Mischseiten → Volltext mit `seitensprachen`; Fortsetzung mit `weiter` |
+| [`code/texterkennung.cpp`](code/texterkennung.cpp) | das Modul (DMS-Paket-ABI 1): Ereignis → entscheiden → Seiten über die API → Lage (osd) → Tesseract mit Sprache je Seite und Mischseiten → Volltext mit `seitensprachen` und `woerter`; Fortsetzung mit `weiter` |
+| [`code/woerter.h`](code/woerter.h) | Wortpositionen: Lage aus dem gedrehten Bild zurückrechnen, als `[Text, x, y, b, h]` relativ zur Seite; Test in [`tests/woerter_test.cpp`](tests/woerter_test.cpp) |
+| [`tests/`](tests/) | `beispiele.py` (zwei erfundene Scanseiten, eine quer), `modul_test.mjs` (das Modul mit einer Nachbildung des DMS: Text und Wortpositionen), `ci.sh` (CI) |
 | [`code/sprache.h`](code/sprache.h) | Spracherkennung aus dem Text (wie im DMS), Sprachen einer Seite (Mischseite), Sprache passend zur Schrift; Test in [`tests/sprache_test.cpp`](tests/sprache_test.cpp) |
 | [`code/json.h`](code/json.h) | kleiner JSON-Leser ohne Ausnahmen |
 | [`code/bauen.sh`](code/bauen.sh) | Bau: Leptonica 1.85.0 und Tesseract 5.5.1 aus den Quellen (feste Commits), Sprachdaten deu, eng, osd aus tessdata_fast (feste Prüfsummen) |
@@ -96,7 +101,7 @@ Vergleich mit der früheren eingebauten Texterkennung des DMS (bis 0.133: Tesser
 WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/texterkennung   # beim ersten Mal einige Minuten
 ```
 
-Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter [Pakete mit Code](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/) (Volltext fertig, Texterkennung übernehmen, Sprachen je Seite, Fortsetzung).
+Die Schnittstelle beschreibt das Entwicklerhandbuch des DMS unter [Pakete mit Code](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/) (Volltext fertig, Texterkennung übernehmen, Sprachen je Seite, Fortsetzung, [Wortpositionen](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#wortpositionen)).
 
 ## Lizenz
 

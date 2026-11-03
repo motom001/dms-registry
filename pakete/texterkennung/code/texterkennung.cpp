@@ -4,13 +4,15 @@
 // „Vorhandenen Volltext verwerfen und neu erkennen“ oder ausdrücklich `neu`) → Seiten als Graustufenbild über die
 // API holen → Lage und Schrift erkennen (osd), Seite aufrichten → Tesseract, bei „Automatisch“ mit Spracherkennung
 // je Seite, zweitem Durchgang und Mischseiten (zwei Sprachen in einem Durchgang) → Volltext mit den Sprachen je Seite
-// per API zurückschreiben (ab DMS 0.139.0, motom001/dms#579). Lange Dokumente abschnittsweise: nach etwa einer Minute
-// antwortet das Modul mit {"weiter": …} und der Läufer ruft es gleich wieder auf.
+// per API zurückschreiben (ab DMS 0.139.0, motom001/dms#579), dazu die Lage jedes Worts (`woerter`, ab DMS 0.149.0 für
+// die Archivfassung, motom001/dms#631 – ältere DMS übergehen das Feld). Lange Dokumente abschnittsweise: nach etwa
+// einer Minute antwortet das Modul mit {"weiter": …} und der Läufer ruft es gleich wieder auf.
 // Kein Netz, kein Dateisystem; die Sprachdaten liegen im Paket (code/daten/*.traineddata) bzw. in Zusatzpaketen
 // texterkennung_<sprache> und kommen über dms.datei.
 #include <leptonica/allheaders.h>
 #include <tesseract/baseapi.h>
 #include <tesseract/osdetect.h>
+#include <tesseract/resultiterator.h>
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
@@ -25,6 +27,7 @@
 
 #include "json.h"
 #include "sprache.h"
+#include "woerter.h"
 
 #define DMS(name) __attribute__((import_module("dms"), import_name(#name)))
 extern "C" {
@@ -47,6 +50,9 @@ constexpr float DREHUNG_SICHER = 2.0f;
 // Mischseite (#579): Der Durchgang mit beiden Sprachen zugleich gilt nur, wenn er um mindestens so viele Prozentpunkte
 // sicherer ist als der beste mit einer Sprache – dann nennt das Paket für die Seite beide Sprachen.
 constexpr int MISCH_DEUTLICH = 2;
+// Wortpositionen (#631) wandern mit dem Text durch die Fortsetzung (höchstens 4 MB je „weiter“). Werden sie mehr als
+// das hier, schickt das Paket für die übrigen Seiten keine mehr (null) – das DMS nennt dann „Wortpositionen fehlen“.
+constexpr size_t WOERTER_MAX_BYTES = 2500u * 1024u;
 
 void log(int stufe, const std::string &t) { dms_log(stufe, t.data(), (int32_t)t.size()); }
 void ergebnis(const std::string &t) { dms_ergebnis(t.data(), (int32_t)t.size()); }
@@ -184,13 +190,27 @@ PixPtr pgm(const std::string &b) {
   return PixPtr(p);
 }
 
-struct Lesung { std::string text; int sicherheit = -1; };
+// Eine Lesung: Text, Sicherheit und die Wörter mit ihrem Kasten im gelesenen Bild (Bildpunkte).
+struct Wort { std::string text; woerter::Kasten k; };
+struct Lesung { std::string text; int sicherheit = -1; std::vector<Wort> woerter; };
 
 Lesung lies(tesseract::TessBaseAPI *a, Pix *bild, int dpi) {
   a->SetImage(bild);
   a->SetSourceResolution(dpi);
   std::unique_ptr<char[]> t(a->GetUTF8Text());
-  Lesung r{t ? t.get() : "", a->MeanTextConf()};
+  Lesung r{t ? t.get() : "", a->MeanTextConf(), {}};
+  // Wortpositionen (#631): je Wort Text und Kasten, wie Tesseract sie beim Lesen gefunden hat.
+  std::unique_ptr<tesseract::ResultIterator> it(a->GetIterator());
+  if (it) {
+    do {
+      if (it->Empty(tesseract::RIL_WORD)) continue;
+      std::unique_ptr<char[]> w(it->GetUTF8Text(tesseract::RIL_WORD));
+      Wort x;
+      if (!w || !it->BoundingBox(tesseract::RIL_WORD, &x.k.links, &x.k.oben, &x.k.rechts, &x.k.unten)) continue;
+      x.text = w.get();
+      r.woerter.push_back(std::move(x));
+    } while (it->Next(tesseract::RIL_WORD));
+  }
   a->Clear();
   return r;
 }
@@ -208,6 +228,8 @@ struct Stand {
   int zweite = 0;           // Seiten mit zweitem Durchgang in einer anderen Sprache
   int misch = 0;            // Mischseiten (zwei Sprachen in einem Durchgang)
   int anzahl = 0;           // erkannte Seiten
+  std::string woerter;      // Wortpositionen je erkannter Seite als JSON, durch Komma getrennt: „[[…],…],[…]“ (#631)
+  bool ohneWoerter = false; // zu viele für die Fortsetzung: ab hier keine mehr (null)
 };
 
 std::vector<std::string> teileAn(const std::string &s, char z, bool leere = false) {
@@ -240,9 +262,10 @@ Lesung liesMit(const std::string &sprachen, Pix *bild, int dpi) {
   return beste;
 }
 
-// Lage und Schrift einer Seite; dreht sie bei Bedarf (gedreht = true).
-PixPtr richteAuf(PixPtr bild, int dpi, bool &gedreht, std::string &schrift) {
+// Lage und Schrift einer Seite; dreht sie bei Bedarf (gedreht = true, vierteln: viertel Umdrehungen im Uhrzeigersinn).
+PixPtr richteAuf(PixPtr bild, int dpi, bool &gedreht, std::string &schrift, int &vierteln) {
   gedreht = false;
+  vierteln = 0;
   tesseract::TessBaseAPI *o = osd();
   if (!o) return bild;
   o->SetImage(bild.get());
@@ -258,6 +281,7 @@ PixPtr richteAuf(PixPtr bild, int dpi, bool &gedreht, std::string &schrift) {
   Pix *neu = pixRotateOrth(bild.get(), drehen / 90);
   if (!neu) return bild;
   gedreht = true;
+  vierteln = drehen / 90;
   return PixPtr(neu);
 }
 
@@ -329,6 +353,24 @@ std::string sprachenMeldung(const std::vector<std::string> &seiten) {
   return r;
 }
 
+// Die Wortpositionen aus dem Stand (je Seite „[…]“ oder „null“, durch Komma getrennt) wieder je Seite.
+std::vector<std::string> seitenWoerter(const std::string &s) {
+  std::vector<std::string> r;
+  int tiefe = 0;
+  bool text = false, flucht = false;
+  size_t a = 0;
+  for (size_t i = 0; i < s.size(); i++) {
+    char c = s[i];
+    if (text) { if (flucht) flucht = false; else if (c == '\\') flucht = true; else if (c == '"') text = false; continue; }
+    if (c == '"') text = true;
+    else if (c == '[') tiefe++;
+    else if (c == ']') tiefe--;
+    else if (c == ',' && tiefe == 0) { r.push_back(s.substr(a, i - a)); a = i + 1; }
+  }
+  if (!s.empty()) r.push_back(s.substr(a));
+  return r;
+}
+
 bool typErlaubt(const Json &einstellungen, const std::string &mappe) {
   const Json &liste = einstellungen["typen"];
   if (liste.art != Json::LISTE || liste.l.empty()) return true;
@@ -377,8 +419,9 @@ int verarbeite(const Json &e) {
   const std::string wahl = einst["sprache"].text("Automatisch");
   const bool automatisch = wahl == "Automatisch";
   Stand s;
-  // Fortsetzung eines Abschnitts. Ein Stand aus Version 2.0 (ohne Sprachen je Seite) fängt neu an.
-  if (fortsetzung && weiter["seiten"].art == Json::TEXT) {
+  // Fortsetzung eines Abschnitts. Ein Stand aus Version 2.0 oder 2.1 (ohne Sprachen bzw. Wortpositionen je Seite) fängt
+  // neu an.
+  if (fortsetzung && weiter["seiten"].art == Json::TEXT && weiter["woerter"].art == Json::TEXT) {
     s.seite = std::max(1, (int)weiter["seite"].zahl(1));
     s.text = weiter["text"].text();
     s.seiten = weiter["seiten"].text();
@@ -387,6 +430,8 @@ int verarbeite(const Json &e) {
     s.zweite = (int)weiter["zweite"].zahl(0);
     s.misch = (int)weiter["misch"].zahl(0);
     s.anzahl = (int)weiter["anzahl"].zahl(0);
+    s.woerter = weiter["woerter"].text();
+    s.ohneWoerter = weiter["ohneWoerter"].wahr();
     for (const Json &k : weiter["fehlen"].l) fehlen.insert(k.text());
   }
   if (!automatisch) s.sprachen = wahl == "Englisch" ? "eng" : wahl == "Deutsch und Englisch" ? "deu+eng" : "deu";
@@ -416,7 +461,8 @@ int verarbeite(const Json &e) {
     b.body.clear();
     std::string schrift;
     bool gedreht = false;
-    PixPtr aufrecht = drehen ? richteAuf(PixPtr(pixClone(bild.get())), dpi, gedreht, schrift) : PixPtr(pixClone(bild.get()));
+    int vierteln = 0;
+    PixPtr aufrecht = drehen ? richteAuf(PixPtr(pixClone(bild.get())), dpi, gedreht, schrift, vierteln) : PixPtr(pixClone(bild.get()));
     Seite seite;
     if (automatisch) {
       seite = liesAutomatisch(aufrecht.get(), dpi, s, schrift);
@@ -442,6 +488,25 @@ int verarbeite(const Json &e) {
     if (s.anzahl > 0) { s.text += '\f'; s.seiten += '|'; }
     s.text += t;
     s.seiten += seite.sprachen;
+    // Wortpositionen (#631) relativ zur Seite, wie das DMS sie liefert: aus dem gedrehten Bild zurückgerechnet.
+    if (s.anzahl > 0) s.woerter += ',';
+    if (s.ohneWoerter) s.woerter += "null";
+    else {
+      const int W = pixGetWidth(bild.get()), H = pixGetHeight(bild.get());
+      std::string liste = "[";
+      for (const Wort &w : seite.l.woerter) {
+        const std::string j = gedreht ? woerter::json(w.text, woerter::zurueck(vierteln, W, H, w.k), W, H) : woerter::json(w.text, w.k, W, H);
+        if (j.empty()) continue;
+        if (liste.size() > 1) liste += ',';
+        liste += j;
+      }
+      liste += ']';
+      if (s.woerter.size() + liste.size() > WOERTER_MAX_BYTES) {
+        s.ohneWoerter = true;
+        s.woerter += "null";
+        log(WARNUNG, "Wortpositionen: ab Seite " + std::to_string(nr) + " zu viele für die Fortsetzung – für die übrigen Seiten keine");
+      } else s.woerter += liste;
+    }
     s.anzahl++;
     log(DEBUG, "Seite " + std::to_string(nr) + ": " + std::to_string(t.size()) + " Zeichen, Sicherheit " + std::to_string(seite.l.sicherheit) + " % (" + (seite.sprachen.empty() ? "Sprache unbekannt" : seite.sprachen) + (gedreht ? ", gedreht" : "") + ")");
   }
@@ -454,7 +519,8 @@ int verarbeite(const Json &e) {
     std::string fort = "Seite " + std::to_string(seiten) + (gesamt ? " von " + std::to_string(gesamt) : "");
     ergebnis("{\"weiter\":{\"seite\":" + std::to_string(pos) + ",\"text\":" + jsonText(s.text) + ",\"seiten\":" + jsonText(s.seiten) +
              ",\"sprachen\":" + jsonText(s.sprachen) + ",\"gedreht\":" + std::to_string(s.gedreht) + ",\"zweite\":" + std::to_string(s.zweite) +
-             ",\"misch\":" + std::to_string(s.misch) + ",\"anzahl\":" + std::to_string(s.anzahl) + ",\"fehlen\":" + f + ",\"fortschritt\":" + jsonText(fort) + "}}");
+             ",\"misch\":" + std::to_string(s.misch) + ",\"anzahl\":" + std::to_string(s.anzahl) + ",\"woerter\":" + jsonText(s.woerter) +
+             ",\"ohneWoerter\":" + (s.ohneWoerter ? "true" : "false") + ",\"fehlen\":" + f + ",\"fortschritt\":" + jsonText(fort) + "}}");
     return 0;
   }
   if (seiten == 0 || s.anzahl == 0) { ergebnis("keine Seiten"); return 0; }
@@ -464,6 +530,8 @@ int verarbeite(const Json &e) {
   std::vector<std::string> texte = teileAn(s.text, '\f', true);
   std::vector<std::string> sprachenJe = teileAn(s.seiten, '|', true);
   sprachenJe.resize(texte.size());
+  std::vector<std::string> woerterJe = seitenWoerter(s.woerter);
+  woerterJe.resize(texte.size(), "null");
   int alleSeiten = seiten;
   std::string body;
   if (liste) {
@@ -473,7 +541,7 @@ int verarbeite(const Json &e) {
     alleSeiten = std::max(seiten, (int)d["seiten"].zahl(seiten));
     const Json &vom = j["seiten"];
     if (vom.art == Json::LISTE && (int)vom.l.size() >= alleSeiten) {
-      std::vector<std::string> t2((size_t)alleSeiten), s2((size_t)alleSeiten);
+      std::vector<std::string> t2((size_t)alleSeiten), s2((size_t)alleSeiten), w2((size_t)alleSeiten, "null");
       for (int i = 0; i < alleSeiten; i++) {
         t2[(size_t)i] = vom.l[(size_t)i]["text"].text();
         std::vector<std::string> k;
@@ -484,19 +552,32 @@ int verarbeite(const Json &e) {
         if (nurSeiten[i] < 1 || nurSeiten[i] > alleSeiten) continue;
         t2[(size_t)nurSeiten[i] - 1] = texte[i];
         s2[(size_t)nurSeiten[i] - 1] = sprachenJe[i];
+        w2[(size_t)nurSeiten[i] - 1] = woerterJe[i];  // Seiten mit Textebene: null – deren Wörter liest das DMS selbst
       }
       for (std::string &x : t2) x.erase(std::remove(x.begin(), x.end(), '\f'), x.end());
       texte = t2;
       sprachenJe = s2;
+      woerterJe = w2;
     } else {
       std::string alt = j["text"].text();
       alt.erase(std::remove(alt.begin(), alt.end(), '\f'), alt.end());
       texte.insert(texte.begin(), alt);
       sprachenJe.insert(sprachenJe.begin(), "");
+      woerterJe.insert(woerterJe.begin(), "null");
     }
   }
-  body = "{\"text\":" + jsonText(verbinde(texte, "\f")) + ",\"seiten\":" + std::to_string(alleSeiten) + ",\"seitensprachen\":" + seitenJson(sprachenJe) + "}";
-  Antwort r = api("PUT", "/dokumente/" + dok + "/volltext", body);
+  body = "{\"text\":" + jsonText(verbinde(texte, "\f")) + ",\"seiten\":" + std::to_string(alleSeiten) + ",\"seitensprachen\":" + seitenJson(sprachenJe);
+  // Wortpositionen (#631) für die Archivfassung: je Seite eine Liste oder null. Ältere DMS übergehen das Feld; nimmt
+  // ein DMS sie nicht (zu groß für 0.139–0.144 mit 2 MB je Anfrage, oder abgelehnt), geht der Text ohne sie.
+  const std::string mitWoertern = body + ",\"woerter\":[" + verbinde(woerterJe, ",") + "]}";
+  body += "}";
+  Antwort r = api("PUT", "/dokumente/" + dok + "/volltext", mitWoertern);
+  bool ohneWp = false;
+  if (r.status == 413 || r.status == 422) {
+    log(WARNUNG, "Volltext mit Wortpositionen nicht angenommen (HTTP " + std::to_string(r.status) + " " + r.body.substr(0, 200) + ") – ohne Wortpositionen");
+    r = api("PUT", "/dokumente/" + dok + "/volltext", body);
+    ohneWp = true;
+  }
   if (r.status != 200) { log(FEHLER, "Volltext schreiben: HTTP " + std::to_string(r.status) + " " + r.body.substr(0, 200)); return 4; }
   const size_t zeichen = s.text.size() - (size_t)(s.anzahl - 1); // ohne die Seitenvorschübe
   std::string meldung = seitenText(s.anzahl) + (liste ? " ohne Text erkannt" : "") + ", " + std::to_string(zeichen) + " Zeichen";
@@ -506,6 +587,7 @@ int verarbeite(const Json &e) {
   if (s.gedreht) meldung += ", " + seitenText(s.gedreht) + " gedreht";
   if (s.zweite) meldung += ", " + std::to_string(s.zweite) + "× zweiter Durchgang";
   if (!liste && seiten == maxSeiten && !ende) meldung += " (Grenze erreicht)";
+  if (ohneWp || s.ohneWoerter) meldung += ohneWp ? ", ohne Wortpositionen" : ", Wortpositionen nur für einen Teil der Seiten";
   if (!fehlen.empty()) { meldung += " – Sprachdaten fehlen: " + fehlendText(); log(WARNUNG, "Sprachdaten fehlen: " + fehlendText()); }
   log(INFO, "Dokument " + dok + ": " + meldung);
   ergebnis(meldung);

@@ -2,16 +2,19 @@
 schema: 1
 id: texterkennung
 name: Texterkennung (Deutsch und Englisch)
-version: 2.1.1
+version: 2.2.0
 beschreibung: Das Grundpaket für die Texterkennung des DMS – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
+kategorien: [volltext, suche]
+symbol: scan-text
 # 0.133.0: Ereignis „Volltext fertig“ auch ohne Text, Schnittstelle dms:texterkennung, Fortsetzung („weiter“),
 # Seitenbild auch für JPEG und PNG, Sprachdaten aus Zusatzpaketen (texterkennung_<sprache>)
 # 0.139.0: Sprachen je Seite beim Volltext schreiben (seitensprachen, Seiten durch \f getrennt), Text je Seite beim
-# Lesen des Volltexts (motom001/dms#579)
+# Lesen des Volltexts (motom001/dms#579). Wortpositionen (woerter, motom001/dms#631) nimmt erst 0.149.0 an; ältere
+# übergehen das Feld – deshalb bleibt die Grenze.
 dms: ">=0.139.0"
 inhalt: {}
 code:

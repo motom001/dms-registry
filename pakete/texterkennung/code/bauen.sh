@@ -80,9 +80,12 @@ echo "$DEU_SHA256  $CODE/daten/deu.traineddata
 $ENG_SHA256  $CODE/daten/eng.traineddata
 $OSD_SHA256  $CODE/daten/osd.traineddata" | sha256sum -c --quiet -
 
-# Test der Spracherkennung (code/sprache.h) – nativ, wenn ein C++-Compiler da ist.
+# Tests der Spracherkennung (code/sprache.h) und der Wortpositionen (code/woerter.h) – nativ, wenn ein C++-Compiler da ist.
 if command -v c++ >/dev/null 2>&1; then
   c++ -std=c++17 -O2 -Wall -Werror -I "$CODE" "$CODE/../tests/sprache_test.cpp" -o "$BAU/sprache_test"
   "$BAU/sprache_test" >"$BAU/sprache_test.log" || { cat "$BAU/sprache_test.log"; exit 1; }
   echo "  Spracherkennung: $(grep -c '^ok' "$BAU/sprache_test.log") Prüfungen bestanden"
+  c++ -std=c++17 -O2 -Wall -Werror -I "$CODE" "$CODE/../tests/woerter_test.cpp" -o "$BAU/woerter_test"
+  "$BAU/woerter_test" >"$BAU/woerter_test.log" || { cat "$BAU/woerter_test.log"; exit 1; }
+  echo "  Wortpositionen: $(grep -c '^ok' "$BAU/woerter_test.log") Prüfungen bestanden"
 fi
