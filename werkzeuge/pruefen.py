@@ -568,6 +568,9 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         fehler.append('manifest.yaml: id „dms“ ist reserviert (Verweise auf Mappentypen des DMS)')
     if not vorlage and m.get('id') != ordner.name:
         fehler.append(f"manifest.yaml: id „{m.get('id')}“ muss wie der Ordner heißen („{ordner.name}“)")
+    # Symbol (#98): Name prüft das Schema (feste Liste = werkzeuge/symbole/*.svg); das Kürzel gehört zum Symbol.
+    if 'kuerzel' in m and 'symbol' not in m:
+        fehler.append('manifest.yaml: kuerzel nur zusammen mit symbol')
 
     # Lizenztext passt grob zur Kennung.
     lizenz = (ordner / 'LICENSE').read_text(encoding='utf-8', errors='replace') if (ordner / 'LICENSE').exists() else ''
@@ -719,6 +722,31 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     return fehler
 
 
+def hinweise(ordner: Path) -> list[str]:
+    """Hinweise ohne Fehler (#98): Paket ohne Symbol, Manifest und werkzeuge/kategorien.yaml verschieden.
+
+    Leer, wenn pruefen.py allein läuft (ohne vorlagen.py und kategorien.yaml, z. B. im Test des DMS)."""
+    if ordner.name == 'vorlage' or not (ordner / 'manifest.yaml').exists():
+        return []
+    if not (WURZEL / 'werkzeuge' / 'vorlagen.py').exists() or not (WURZEL / 'werkzeuge' / 'kategorien.yaml').exists():
+        return []
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import vorlagen  # erst hier: pruefen.py läuft auch allein
+    try:
+        m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
+    except Exception:  # noqa: BLE001 – meldet schon pruefe()
+        return []
+    if not isinstance(m, dict):
+        return []
+    daten = vorlagen.lies_kategorien()
+    pid = str(m.get('id', ordner.name))
+    h = vorlagen.abweichungen(pid, m, daten)
+    if not vorlagen.symbol_von(pid, daten, m)[0]:
+        h.append('symbol: Das Paket hat kein Symbol – der Katalog zeigt den Anfangsbuchstaben. '
+                 f'Bitte ein Symbol im Manifest setzen (symbol: …), erlaubt: {", ".join(vorlagen.symbolnamen())} (REGELN.md, „Symbol“)')
+    return h
+
+
 def main():
     args = sys.argv[1:]
     basis = None
@@ -738,6 +766,10 @@ def main():
                     print(f'::error file={name}/manifest.yaml,title={name}::{x}')
         else:
             print(f'✓ {name}')
+        for x in hinweise(o):
+            print(f'    Hinweis: {x}')
+            if 'GITHUB_ACTIONS' in __import__('os').environ:
+                print(f'::warning file={name}/manifest.yaml,title={name}::{x}')
     sys.exit(1 if gesamt else 0)
 
 

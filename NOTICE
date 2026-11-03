@@ -5,3 +5,7 @@ Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen ab dem
 01.11.2026 unter der Apache License, Version 2.0 (siehe LICENSE); vorher unter
 der GNU Affero General Public License v3.0. Jedes Paket unter pakete/ steht
 unter der Lizenz in seinem eigenen Ordner (LICENSE, manifest.yaml).
+
+Die Symbole in werkzeuge/symbole/ (auch eingebettet in die Katalog-Webseite) stammen
+aus Lucide (https://lucide.dev, lucide-static 1.59.0) und stehen unter der ISC-Lizenz:
+Copyright (c) 2026 Lucide Icons and Contributors. Lizenztext: werkzeuge/symbole/LICENSE.

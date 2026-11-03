@@ -64,7 +64,39 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://motom
 
 ## Kategorien
 
-Jedes Paket gehört zu **einer oder zwei Kategorien** aus einer festen Liste in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml) (Vorlagen für die Ablage, Dateiformate, Texterkennung und Volltext, Sprachen, KI, Suche, Post und Scannen, Sicherung, Für Entwickler). Danach filtert die Katalog-Webseite, und „Ähnliche Pakete“ zeigt Pakete derselben Kategorie. Ein neues Paket trägst du dort unter `pakete:` ein; die CI prüft es (`python3 werkzeuge/vorlagen.py --pruefen`). Eine neue Kategorie kommt nur über ein Issue dazu, freie Schlagwörter gibt es nicht. Die Kategorien stehen (noch) nicht im Manifest, das DMS braucht sie nicht. Ob ein Paket **nur lokal** läuft, sich mit **einem eingetragenen Dienst** verbindet (Einstellung vom Typ `adresse`) oder **feste Adressen im Internet** nutzt (`code.netz`), liest die Webseite selbst aus dem Manifest – dafür gibt es keine Kategorie.
+Jedes Paket gehört zu **einer oder zwei Kategorien** aus einer festen Liste in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml) (Vorlagen für die Ablage, Dateiformate, Texterkennung und Volltext, Sprachen, KI, Suche, Post und Scannen, Sicherung, Für Entwickler). Danach filtert die Katalog-Webseite, und „Ähnliche Pakete“ zeigt Pakete derselben Kategorie. Ein neues Paket nennt sie im Manifest, z. B. `kategorien: [dateiformate, volltext]`; die CI prüft es (`python3 werkzeuge/vorlagen.py --pruefen`). Pakete, deren Manifest das Feld noch nicht hat, stehen übergangsweise unter `pakete:` in `kategorien.yaml` – **das Manifest gewinnt**, und `pruefen.py` weist auf Abweichungen hin. Eine neue Kategorie kommt nur über ein Issue dazu, freie Schlagwörter gibt es nicht. Das DMS liest das Feld nicht; es liest das Manifest Feld für Feld und übergeht Felder, die es nicht kennt – auch ältere DMS-Versionen installieren solche Pakete. Ob ein Paket **nur lokal** läuft, sich mit **einem eingetragenen Dienst** verbindet (Einstellung vom Typ `adresse`) oder **feste Adressen im Internet** nutzt (`code.netz`), liest die Webseite selbst aus dem Manifest – dafür gibt es keine Kategorie.
+
+## Symbol
+
+Im Katalog steht bei jedem Paket ein kleines **Symbol**, damit man auf einen Blick sieht, worum es geht. Du wählst es im Manifest mit `symbol:` aus einer **festen Liste** von [Lucide](https://lucide.dev)-Symbolen – denselben einfarbigen Strichsymbolen wie im DMS. Alle Symbole haben **dieselbe Farbe**; die Farbe zeigt keine Kategorie (dafür gibt es die Kategorie-Chips). Ohne `symbol` zeigt der Katalog den Anfangsbuchstaben, und `pruefen.py` gibt einen Hinweis aus (keinen Fehler). Ein unbekannter Name ist ein Fehler.
+
+```yaml
+symbol: languages
+kuerzel: FR        # optional, nur mit symbol: 2–3 Großbuchstaben unten rechts am Symbol
+```
+
+- **Wählen:** Nimm das Symbol, das zeigt, **was das Paket für den Anwender tut** – nicht, wie es das technisch macht. Keine Logos, keine Emoji, keine Flaggen (Flaggen stehen für Länder, nicht für Sprachen). Zusatzsprachen nehmen `languages` mit dem Sprachkürzel als `kuerzel` (FR, ES, IT …).
+- **Erlaubt** sind genau die SVG-Dateien in [`werkzeuge/symbole/`](werkzeuge/symbole/) (dieselbe Liste steht im Schema):
+
+| Symbol | passt zu |
+| --- | --- |
+| `car` | Fahrzeuge |
+| `cloud-upload` | Sicherung, Hochladen |
+| `contact` | Personen, Kontakte, Grundausstattung |
+| `file-text` | Dokumente, Office |
+| `files` | mehrere Dokumente, Ähnlichkeit |
+| `house` | Haus, Wohnung |
+| `image` | Bilder, Bildformate |
+| `key-round` | Vermietung, Schlüssel |
+| `languages` | Sprachen (mit `kuerzel`) |
+| `mail` | Post, E-Mail |
+| `message-circle-question-mark` | Fragen, Assistent |
+| `scan-barcode` | Trennblätter, Barcodes |
+| `scan-text` | Texterkennung |
+| `wallet` | Geld, Haushalt |
+
+- **Neues Symbol:** über ein Issue. Dann kommt das SVG unverändert aus `lucide-static` nach `werkzeuge/symbole/<name>.svg` und der Name in `schema/manifest.schema.json` (`symbol`); die CI prüft, dass beides übereinstimmt und das SVG nur einfache Formen enthält. Die Webseite bettet das SVG direkt in die Seite ein, nichts wird aus dem Internet geladen. Lizenz der Symbole: ISC ([`werkzeuge/symbole/LICENSE`](werkzeuge/symbole/LICENSE), NOTICE).
+- **Bestehende Pakete:** Ihre Symbole stehen übergangsweise unter `symbole:` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml); mit der nächsten Version wandert das Symbol ins Manifest. Das Manifest gewinnt. Wie `kategorien` liest das DMS `symbol` und `kuerzel` nicht; ältere DMS-Versionen installieren solche Pakete weiter.
 
 ## Namen
 

@@ -35,7 +35,7 @@ import yaml
 from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vorlagen import lies_kategorien, option as vorlagen_option  # noqa: E402
+from vorlagen import lies_kategorien, option as vorlagen_option, symbol_svg  # noqa: E402
 
 KATEGORIEN = {k['kennung']: k for k in lies_kategorien()['kategorien']}
 HANDBUCH_AKTUALISIEREN = 'https://motom001.github.io/dms/admin/aktuell/aktualisieren/'
@@ -76,6 +76,7 @@ TEXTE = {
         'abbrechen': 'Abbrechen',
         'regeln': 'Regeln für Pakete',
         'regeln_url': f'{REGISTRY}/blob/main/REGELN.md',
+        'symbole': 'Symbole: Lucide (ISC-Lizenz)',
         'titel': 'Pakete für das DMS',
         'einleitung_html': 'Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">DMS</a> – Open Source und vom DMS-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.',
         'hinweis_html': '',
@@ -117,6 +118,7 @@ TEXTE = {
         'abbrechen': 'Cancel',
         'regeln': 'Rules for packages',
         'regeln_url': f'{REGISTRY}/blob/main/REGELN.en.md',
+        'symbole': 'Icons: Lucide (ISC licence)',
         'titel': 'Packages for the DMS',
         'einleitung_html': 'Ready-made Mappe types and views for your <a href="https://github.com/motom001/dms">DMS</a> – open source and approved by the DMS project. Install them in the DMS under <strong>Werkbank → Pakete</strong> (Workbench → Packages) or right from here.',
         'hinweis_html': '<strong>Note:</strong> Package names and descriptions come from the packages themselves and are in German for now, as are the package pages (multilingual package content will follow). Where the German and English wording differ, the German one applies.',
@@ -189,7 +191,7 @@ def seite(titel: str, inhalt: str, tiefe: int, beschreibung: str = '', sprache: 
       <div class="knoepfe"><button value="ok" class="knopf primaer">{e(t['speichern'])}</button><button value="abbruch" class="textknopf" formnovalidate>{e(t['abbrechen'])}</button></div>
     </form>
   </dialog>
-  <footer><a href="{t['regeln_url']}">{e(t['regeln'])}</a> · <a href="{vor}katalog.json">katalog.json</a></footer>
+  <footer><a href="{t['regeln_url']}">{e(t['regeln'])}</a> · <a href="{vor}katalog.json">katalog.json</a> · <a href="{REGISTRY}/blob/main/werkzeuge/symbole/LICENSE">{e(t['symbole'])}</a></footer>
 </body>
 </html>
 '''
@@ -199,6 +201,16 @@ def lies_yaml(ordner: Path, rel: str | None):
     if not rel or not (ordner / rel).exists():
         return []
     return yaml.safe_load((ordner / rel).read_text(encoding='utf-8')) or []
+
+
+def symbol(p: dict, klasse: str = '') -> str:
+    """Symbol eines Pakets (#98): Lucide-SVG direkt in der Seite, bei Zusatzsprachen mit Kürzel; ohne Symbol der Anfangsbuchstabe."""
+    svg = symbol_svg(p['symbol']) if p.get('symbol') else None
+    klassen = ' '.join(['symbol', *([klasse] if klasse else [])])
+    if not svg:
+        return f'<span class="{klassen}" aria-hidden="true">{e(p["name"][:1].upper())}</span>'
+    kuerzel = f'<span class="kuerzel">{e(p["kuerzel"])}</span>' if p.get('kuerzel') else ''
+    return f'<span class="{klassen} bild" aria-hidden="true">{svg}{kuerzel}</span>'
 
 
 def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
@@ -214,7 +226,7 @@ def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
     kats = p.get('kategorien') or []
     chips = ''.join(f'<span class="chip">{e(KATEGORIEN[k][sprache])}</span>' for k in kats if k in KATEGORIEN)
     return f'''      <a class="kachel" href="{vor}paket/{e(p['id'])}/" data-art="{code}" data-suche="{e(suche)}" data-kategorien="{e(' '.join(kats))}" data-autor="{e(p['autor']['github'])}" data-netz="{netz}" data-versionen="{e(versionen_daten(p))}">
-        <span class="symbol" aria-hidden="true">{e(p['name'][:1].upper())}</span>
+        {symbol(p)}
         <span class="name"{de}>{e(p['name'])}</span>
         <span class="text"{de}>{e(p['beschreibung'])}</span>
         <span class="unter">{e(p['aktuell'])} · {e(p['autor']['name'])}{mit_code}</span>
@@ -423,7 +435,7 @@ def beziehungen(p: dict, pakete: list) -> list:
 
 
 def mini(x: dict, vor: str) -> str:
-    return (f'<a class="mini" href="{vor}paket/{e(x["id"])}/"><span class="symbol klein" aria-hidden="true">{e(x["name"][:1].upper())}</span>'
+    return (f'<a class="mini" href="{vor}paket/{e(x["id"])}/">{symbol(x, "klein")}'
             f'<span><strong>{e(x["name"])}</strong><br><span class="leise kurzfassung">{e(x["beschreibung"])}</span></span></a>')
 
 
@@ -595,7 +607,7 @@ def detail(p: dict, pakete: list) -> str:
     passt_html = f'\n    <section class="passt"><h2>Passt dazu</h2>{passt}</section>' if passt else ''
     inhalt = (f'    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>\n'
               f'    <div class="paketkopf" data-paket="{e(p["id"])}" data-versionen="{e(versionen_daten(p))}">\n'
-              f'      <span class="symbol gross" aria-hidden="true">{e(p["name"][:1].upper())}</span>\n'
+              f'      {symbol(p, "gross")}\n'
               f'      <div class="titel"><h1>{e(p["name"])}</h1>\n'
               f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
               f'        <p class="kurztext">{e(p["beschreibung"])}</p>\n'
@@ -618,8 +630,8 @@ def autorseite(name: str, github: str, liste: list) -> str:
 
 
 STIL = '''
-:root { --grund: #f6f7f8; --flaeche: #fff; --tinte: #1c2328; --leise: #5b6670; --linie: #dde2e6; --a: #00796b; --warn: #b26a00; }
-@media (prefers-color-scheme: dark) { :root { --grund: #14181b; --flaeche: #1d2226; --tinte: #e8ecef; --leise: #9aa5ae; --linie: #2e353a; --a: #4db6ac; --warn: #ffb74d; } }
+:root { --grund: #f6f7f8; --flaeche: #fff; --tinte: #1c2328; --leise: #5b6670; --linie: #dde2e6; --a: #00796b; --auf-a: #fff; --warn: #b26a00; }
+@media (prefers-color-scheme: dark) { :root { --grund: #14181b; --flaeche: #1d2226; --tinte: #e8ecef; --leise: #9aa5ae; --linie: #2e353a; --a: #4db6ac; --auf-a: #0b2522; --warn: #ffb74d; } }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--grund); color: var(--tinte); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 a { color: var(--a); }
@@ -644,8 +656,14 @@ a.kachel:hover, a.kachel:focus-visible { border-color: var(--a); }
 .kachel .symbol { grid-row: span 3; }
 .kachel .name { font-weight: 700; }
 .kachel .text, .kachel .unter { grid-column: 2; color: var(--leise); font-size: .92rem; }
-.symbol { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--a); color: #fff; font-weight: 700; font-size: 1.3rem; }
+.symbol { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--a); color: var(--auf-a); font-weight: 700; font-size: 1.3rem; }
 .symbol.gross { width: 64px; height: 64px; font-size: 1.8rem; border-radius: 16px; flex: none; }
+/* Symbol je Paket (#98): Lucide, eine Farbe für alle; Kürzel (z. B. Sprache) unten rechts */
+.symbol.bild { position: relative; }
+.symbol svg { width: 55%; height: 55%; display: block; }
+.symbol .kuerzel { position: absolute; right: -5px; bottom: -5px; min-width: 1.9em; padding: 1px 3px; border-radius: 6px; background: var(--flaeche); color: var(--tinte); border: 1.5px solid var(--a); font-size: .62rem; font-weight: 700; line-height: 1.2; letter-spacing: .02em; text-align: center; }
+.symbol.gross .kuerzel { font-size: .78rem; right: -6px; bottom: -6px; }
+.symbol.klein .kuerzel { font-size: .6rem; min-width: 1.8em; right: -7px; bottom: -7px; padding: 0 2px; border-radius: 5px; }
 .paketkopf { display: flex; gap: 16px; align-items: flex-start; margin: 8px 0 20px; }
 .paketkopf .titel { flex: 1; min-width: 0; }
 .paketkopf .kurztext { font-size: 1.08rem; margin: 4px 0; }

@@ -12,6 +12,12 @@ autor:
   github: dein-github-name
 lizenz: MIT                         # SPDX-Kennung aus REGELN.md, Text in LICENSE
 
+# Für den Katalog (REGELN.md, „Kategorien“ und „Symbol“) – bitte einkommentieren und passend wählen.
+# Das DMS liest beide Felder nicht; ohne symbol zeigt der Katalog den Anfangsbuchstaben.
+# kategorien: [vorlagen]            # 1–2 aus werkzeuge/kategorien.yaml
+# symbol: file-text                 # Lucide-Name aus werkzeuge/symbole/, z. B. car, house, image, mail
+# kuerzel: FR                       # optional, nur mit symbol: 2–3 Großbuchstaben unten rechts (z. B. Sprache)
+
 # Ab welcher DMS-Version das Paket läuft (SemVer-Bereich).
 dms: ">=0.41.0"
 

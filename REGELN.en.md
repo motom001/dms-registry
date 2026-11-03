@@ -64,7 +64,39 @@ They are explained in the administrator manual under [Pakete mit Code](https://m
 
 ## Categories
 
-Every package belongs to **one or two categories** from a fixed list in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml). The catalog website filters by them, and “Similar packages” shows packages of the same category. Add a new package there under `pakete:`; CI checks it (`python3 werkzeuge/vorlagen.py --pruefen`). New categories only via an issue; there are no free tags. Categories are not (yet) part of the manifest; the DMS does not need them. Whether a package runs **locally only**, connects to **a service you enter** (setting of type `adresse`) or uses **fixed internet addresses** (`code.netz`) is read from the manifest by the website – there is no category for that.
+Every package belongs to **one or two categories** from a fixed list in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml). The catalog website filters by them, and “Similar packages” shows packages of the same category. A new package names them in its manifest, e.g. `kategorien: [dateiformate, volltext]`; CI checks it (`python3 werkzeuge/vorlagen.py --pruefen`). Packages whose manifest does not have the field yet are listed under `pakete:` in `kategorien.yaml` for the time being – **the manifest wins**, and `pruefen.py` points out differences. New categories only via an issue; there are no free tags. The DMS does not read the field; it reads the manifest field by field and skips fields it does not know – older DMS versions install such packages as well. Whether a package runs **locally only**, connects to **a service you enter** (setting of type `adresse`) or uses **fixed internet addresses** (`code.netz`) is read from the manifest by the website – there is no category for that.
+
+## Icon
+
+In the catalogue every package has a small **icon**, so you can see at a glance what it is about. You choose it in the manifest with `symbol:` from a **fixed list** of [Lucide](https://lucide.dev) icons – the same single-colour line icons as in the DMS. All icons have **the same colour**; the colour does not stand for a category (the category chips do that). Without `symbol` the catalogue shows the first letter, and `pruefen.py` prints a notice (not an error). An unknown name is an error.
+
+```yaml
+symbol: languages
+kuerzel: FR        # optional, only with symbol: 2–3 capital letters at the bottom right of the icon
+```
+
+- **Choosing:** take the icon that shows **what the package does for the user** – not how it does it technically. No logos, no emoji, no flags (flags stand for countries, not languages). Additional languages use `languages` with the language code as `kuerzel` (FR, ES, IT …).
+- **Allowed** are exactly the SVG files in [`werkzeuge/symbole/`](werkzeuge/symbole/) (the schema has the same list):
+
+| Icon | fits |
+| --- | --- |
+| `car` | vehicles |
+| `cloud-upload` | backup, upload |
+| `contact` | people, contacts, basics |
+| `file-text` | documents, office |
+| `files` | several documents, similarity |
+| `house` | house, flat |
+| `image` | images, image formats |
+| `key-round` | renting, keys |
+| `languages` | languages (with `kuerzel`) |
+| `mail` | post, e-mail |
+| `message-circle-question-mark` | questions, assistant |
+| `scan-barcode` | separator sheets, barcodes |
+| `scan-text` | text recognition |
+| `wallet` | money, household |
+
+- **New icon:** via an issue. The SVG is then copied unchanged from `lucide-static` to `werkzeuge/symbole/<name>.svg` and the name added to `schema/manifest.schema.json` (`symbol`); CI checks that both match and that the SVG contains only simple shapes. The website embeds the SVG directly in the page; nothing is loaded from the internet. Licence of the icons: ISC ([`werkzeuge/symbole/LICENSE`](werkzeuge/symbole/LICENSE), NOTICE).
+- **Existing packages:** their icons are listed under `symbole:` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml) for the time being; with the next version the icon moves into the manifest. The manifest wins. Like `kategorien`, the DMS does not read `symbol` and `kuerzel`; older DMS versions keep installing such packages.
 
 ## Names
 

@@ -200,6 +200,50 @@
       "type": "string",
       "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$"
     },
+    "symbol": {
+      "description": "Optional (#98, #80 Stufe 2): Symbol im Katalog statt des Anfangsbuchstabens – Name eines Lucide-Symbols aus werkzeuge/symbole/ (REGELN.md, „Symbol“). Ein neues Symbol kommt nur über ein Issue dazu. Das DMS liest das Feld nicht.",
+      "enum": [
+        "car",
+        "cloud-upload",
+        "contact",
+        "file-text",
+        "files",
+        "house",
+        "image",
+        "key-round",
+        "languages",
+        "mail",
+        "message-circle-question-mark",
+        "scan-barcode",
+        "scan-text",
+        "wallet"
+      ]
+    },
+    "kuerzel": {
+      "description": "Optional (#98): kurzes Zeichen unten rechts am Symbol, z. B. das Sprachkürzel FR bei Zusatzsprachen – nur zusammen mit symbol. Keine Flaggen.",
+      "type": "string",
+      "pattern": "^[A-Z]{2,3}$"
+    },
+    "kategorien": {
+      "description": "Optional (#84 Stufe 2): 1–2 Kategorien aus werkzeuge/kategorien.yaml. Gewinnt vor der Zuordnung dort. Das DMS liest das Feld nicht.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "vorlagen",
+          "dateiformate",
+          "volltext",
+          "sprachen",
+          "ki",
+          "suche",
+          "post",
+          "sicherung",
+          "entwickler"
+        ]
+      }
+    },
     "abhaengigkeiten": {
       "type": "object",
       "propertyNames": {
