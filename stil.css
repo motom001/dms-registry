@@ -1,5 +1,5 @@
-:root { --grund: #f6f7f8; --flaeche: #fff; --tinte: #1c2328; --leise: #5b6670; --linie: #dde2e6; --a: #00796b; --warn: #b26a00; }
-@media (prefers-color-scheme: dark) { :root { --grund: #14181b; --flaeche: #1d2226; --tinte: #e8ecef; --leise: #9aa5ae; --linie: #2e353a; --a: #4db6ac; --warn: #ffb74d; } }
+:root { --grund: #f6f7f8; --flaeche: #fff; --tinte: #1c2328; --leise: #5b6670; --linie: #dde2e6; --a: #00796b; --auf-a: #fff; --warn: #b26a00; }
+@media (prefers-color-scheme: dark) { :root { --grund: #14181b; --flaeche: #1d2226; --tinte: #e8ecef; --leise: #9aa5ae; --linie: #2e353a; --a: #4db6ac; --auf-a: #0b2522; --warn: #ffb74d; } }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--grund); color: var(--tinte); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 a { color: var(--a); }
@@ -24,8 +24,14 @@ a.kachel:hover, a.kachel:focus-visible { border-color: var(--a); }
 .kachel .symbol { grid-row: span 3; }
 .kachel .name { font-weight: 700; }
 .kachel .text, .kachel .unter { grid-column: 2; color: var(--leise); font-size: .92rem; }
-.symbol { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--a); color: #fff; font-weight: 700; font-size: 1.3rem; }
+.symbol { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--a); color: var(--auf-a); font-weight: 700; font-size: 1.3rem; }
 .symbol.gross { width: 64px; height: 64px; font-size: 1.8rem; border-radius: 16px; flex: none; }
+/* Symbol je Paket (#98): Lucide, eine Farbe für alle; Kürzel (z. B. Sprache) unten rechts */
+.symbol.bild { position: relative; }
+.symbol svg { width: 55%; height: 55%; display: block; }
+.symbol .kuerzel { position: absolute; right: -5px; bottom: -5px; min-width: 1.9em; padding: 1px 3px; border-radius: 6px; background: var(--flaeche); color: var(--tinte); border: 1.5px solid var(--a); font-size: .62rem; font-weight: 700; line-height: 1.2; letter-spacing: .02em; text-align: center; }
+.symbol.gross .kuerzel { font-size: .78rem; right: -6px; bottom: -6px; }
+.symbol.klein .kuerzel { font-size: .6rem; min-width: 1.8em; right: -7px; bottom: -7px; padding: 0 2px; border-radius: 5px; }
 .paketkopf { display: flex; gap: 16px; align-items: flex-start; margin: 8px 0 20px; }
 .paketkopf .titel { flex: 1; min-width: 0; }
 .paketkopf .kurztext { font-size: 1.08rem; margin: 4px 0; }

@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-03T00:35:00Z",
+  "erstellt": "2026-11-03T00:38:14Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -402,7 +402,8 @@
       "aktuell": "1.4.0",
       "kategorien": [
         "vorlagen"
-      ]
+      ],
+      "symbol": "contact"
     },
     {
       "id": "bildformate",
@@ -454,7 +455,8 @@
       "aktuell": "1.0.1",
       "kategorien": [
         "dateiformate"
-      ]
+      ],
+      "symbol": "image"
     },
     {
       "id": "fahrzeuge",
@@ -799,7 +801,8 @@
       "aktuell": "1.3.0",
       "kategorien": [
         "vorlagen"
-      ]
+      ],
+      "symbol": "car"
     },
     {
       "id": "hallo_post",
@@ -851,7 +854,8 @@
       "aktuell": "1.0.1",
       "kategorien": [
         "entwickler"
-      ]
+      ],
+      "symbol": "mail"
     },
     {
       "id": "haus",
@@ -1119,7 +1123,8 @@
       "aktuell": "1.1.0",
       "kategorien": [
         "vorlagen"
-      ]
+      ],
+      "symbol": "house"
     },
     {
       "id": "haushalt",
@@ -1891,7 +1896,8 @@
       "aktuell": "1.2.0",
       "kategorien": [
         "vorlagen"
-      ]
+      ],
+      "symbol": "wallet"
     },
     {
       "id": "ki_aehnlich",
@@ -1926,7 +1932,8 @@
       "kategorien": [
         "ki",
         "suche"
-      ]
+      ],
+      "symbol": "files"
     },
     {
       "id": "ki_assistent",
@@ -2015,7 +2022,8 @@
       "kategorien": [
         "ki",
         "suche"
-      ]
+      ],
+      "symbol": "message-circle-question-mark"
     },
     {
       "id": "office_email",
@@ -2068,7 +2076,8 @@
       "kategorien": [
         "dateiformate",
         "volltext"
-      ]
+      ],
+      "symbol": "file-text"
     },
     {
       "id": "sicherung_webdav",
@@ -2102,7 +2111,8 @@
       "aktuell": "1.0.0",
       "kategorien": [
         "sicherung"
-      ]
+      ],
+      "symbol": "cloud-upload"
     },
     {
       "id": "texterkennung",
@@ -2191,7 +2201,8 @@
       "kategorien": [
         "volltext",
         "suche"
-      ]
+      ],
+      "symbol": "scan-text"
     },
     {
       "id": "texterkennung_ara",
@@ -2228,7 +2239,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "AR"
     },
     {
       "id": "texterkennung_fra",
@@ -2285,7 +2298,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "FR"
     },
     {
       "id": "texterkennung_ita",
@@ -2322,7 +2337,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "IT"
     },
     {
       "id": "texterkennung_nld",
@@ -2359,7 +2376,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "NL"
     },
     {
       "id": "texterkennung_pol",
@@ -2396,7 +2415,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "PL"
     },
     {
       "id": "texterkennung_por",
@@ -2433,7 +2454,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "PT"
     },
     {
       "id": "texterkennung_rus",
@@ -2470,7 +2493,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "RU"
     },
     {
       "id": "texterkennung_spa",
@@ -2507,7 +2532,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "ES"
     },
     {
       "id": "texterkennung_tur",
@@ -2544,7 +2571,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "TR"
     },
     {
       "id": "texterkennung_ukr",
@@ -2581,7 +2610,9 @@
       "kategorien": [
         "sprachen",
         "volltext"
-      ]
+      ],
+      "symbol": "languages",
+      "kuerzel": "UK"
     },
     {
       "id": "trennblatt",
@@ -2633,7 +2664,8 @@
       "aktuell": "1.0.1",
       "kategorien": [
         "post"
-      ]
+      ],
+      "symbol": "scan-barcode"
     },
     {
       "id": "vermietung",
@@ -3129,7 +3161,8 @@
       "aktuell": "1.2.0",
       "kategorien": [
         "vorlagen"
-      ]
+      ],
+      "symbol": "key-round"
     }
   ]
 }
