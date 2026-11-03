@@ -1,7 +1,9 @@
-# Kategorien der Pakete (dms-registry #84, Stufe 1) – feste Liste, keine freien Schlagwörter.
-# Jedes Paket in pakete/ steht unten unter „pakete“ mit 1–2 Kategorien; die CI prüft das
-# (python3 werkzeuge/vorlagen.py --pruefen). Neue Kategorie nur über ein Issue.
-# Später (Stufe 2) setzt der Autor die Kategorien im Manifest selbst.
+# Kategorien und Symbole der Pakete (dms-registry #84, #98) – feste Listen, keine freien Schlagwörter.
+# Jedes Paket hat 1–2 Kategorien und möglichst ein Symbol; die CI prüft das
+# (python3 werkzeuge/vorlagen.py --pruefen, python3 werkzeuge/pruefen.py). Neue Kategorie nur über ein Issue.
+# Stufe 2 (#80, #84, #98): Der Autor setzt `kategorien` und `symbol` im Manifest selbst – das Manifest
+# gewinnt. Die Einträge unten sind der Übergang für Pakete, deren Manifest die Felder noch nicht hat;
+# mit der nächsten Version eines Pakets wandern sie ins Manifest und können hier weg.
 kategorien:
   - { kennung: vorlagen, de: Vorlagen für die Ablage, en: Filing templates }
   - { kennung: dateiformate, de: Dateiformate, en: File formats }
@@ -36,3 +38,28 @@ pakete:
   trennblatt: [post]
   sicherung_webdav: [sicherung]
   hallo_post: [entwickler]
+# Symbole (#98): Name eines Lucide-Symbols aus werkzeuge/symbole/, bei Zusatzsprachen mit Sprachkürzel.
+symbole:
+  basis: contact
+  bildformate: image
+  fahrzeuge: car
+  hallo_post: mail
+  haus: house
+  haushalt: wallet
+  ki_aehnlich: files
+  ki_assistent: message-circle-question-mark
+  office_email: file-text
+  sicherung_webdav: cloud-upload
+  texterkennung: scan-text
+  texterkennung_ara: { symbol: languages, kuerzel: AR }
+  texterkennung_fra: { symbol: languages, kuerzel: FR }
+  texterkennung_ita: { symbol: languages, kuerzel: IT }
+  texterkennung_nld: { symbol: languages, kuerzel: NL }
+  texterkennung_pol: { symbol: languages, kuerzel: PL }
+  texterkennung_por: { symbol: languages, kuerzel: PT }
+  texterkennung_rus: { symbol: languages, kuerzel: RU }
+  texterkennung_spa: { symbol: languages, kuerzel: ES }
+  texterkennung_tur: { symbol: languages, kuerzel: TR }
+  texterkennung_ukr: { symbol: languages, kuerzel: UK }
+  trennblatt: scan-barcode
+  vermietung: key-round

@@ -20,6 +20,7 @@ pakete/<paket>/        one folder per package, name = package id
 vorlage/               template for a new package – copy it and get started
 schema/                JSON schemas for manifest.yaml and the contents
 werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (also run in the CI)
+werkzeuge/symbole/     allowed icons for the catalogue (Lucide, ISC) – see REGELN.en.md, “Icon”
 schluessel/            public keys the catalogue is signed with (see "Signing the catalogue")
 REGELN.md              what is allowed, what is not, which licences (English: REGELN.en.md)
 CONTRIBUTING.md        how a package gets here (English: CONTRIBUTING.en.md)
@@ -31,7 +32,7 @@ Every package contains at least:
 
 | File | Content |
 | --- | --- |
-| `manifest.yaml` | id, name, version, licence, required DMS version, dependencies, contents, code with permissions if any |
+| `manifest.yaml` | id, name, version, licence, required DMS version, dependencies, contents, code with permissions if any; for the catalogue `kategorien` and `symbol` ([REGELN.en.md](REGELN.en.md#icon)) |
 | `README.md` | what the package does, for whom, with an example |
 | `LICENSE` | licence text (open source, see [REGELN.en.md](REGELN.en.md)) |
 | `CHANGELOG.md` | changes per version |
@@ -157,7 +158,7 @@ A **field** has `schluessel`, `name`, `typ` and optionally `hilfe`, `pflicht`, `
 
 ## Licence
 
-The tools, schemas, website and template of this repository are licensed under the [Apache-2.0](LICENSE), notices in [NOTICE](NOTICE) (until 1 November 2026: AGPL-3.0). **Every package has its own licence** in its folder – the allowed licences are listed in [REGELN.en.md](REGELN.en.md). The packages we (motom001) publish ourselves are licensed under **Apache-2.0**.
+The tools, schemas, website and template of this repository are licensed under the [Apache-2.0](LICENSE), notices in [NOTICE](NOTICE) (until 1 November 2026: AGPL-3.0). The icons in `werkzeuge/symbole/` come from [Lucide](https://lucide.dev) and are licensed under the ISC licence ([`werkzeuge/symbole/LICENSE`](werkzeuge/symbole/LICENSE)). **Every package has its own licence** in its folder – the allowed licences are listed in [REGELN.en.md](REGELN.en.md). The packages we (motom001) publish ourselves are licensed under **Apache-2.0**.
 
 Anyone may use, modify and redistribute what is licensed under Apache-2.0, including in their own products. Whoever redistributes it includes the licence and the notices from NOTICE and marks modified files. Publishing the source code of a modified version is not required.
 

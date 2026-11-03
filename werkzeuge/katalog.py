@@ -26,7 +26,7 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vorlagen import kategorien_von, lies_kategorien  # noqa: E402
+from vorlagen import kategorien_von, lies_kategorien, symbol_von  # noqa: E402
 from jsonschema import Draft202012Validator
 
 WURZEL = Path(__file__).resolve().parent.parent
@@ -109,6 +109,7 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
     pakete = {p['id']: p for p in alt.get('pakete', [])}
     jetzt = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
     neu: list[tuple[str, bytes]] = []
+    manifeste: dict[str, dict] = {}  # Manifest der neuesten Version je Paket (für Kategorien und Symbol)
 
     for ordner in sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir()):
         m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
@@ -134,11 +135,21 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         # Angaben des Pakets aus der neuesten Version.
         if p['versionen'][0]['version'] == version:
             p.update({'name': m['name'], 'beschreibung': m['beschreibung'], 'autor': m['autor'], 'lizenz': m['lizenz'], 'aktuell': version})
-    # Kategorien (#84, Stufe 1) stehen in werkzeuge/kategorien.yaml, nicht im Paket; das DMS ignoriert das Feld.
+            manifeste[pid] = m
+    # Kategorien (#84) und Symbol (#98): aus dem Manifest der neuesten Version, sonst aus werkzeuge/kategorien.yaml
+    # (Übergang, bis die Pakete die Felder mit ihrer nächsten Version mitbringen). Das DMS ignoriert die Felder.
     kat = lies_kategorien()
     for pid, p in pakete.items():
-        if kategorien_von(pid, kat):
-            p['kategorien'] = kategorien_von(pid, kat)
+        m = manifeste.get(pid)
+        werte = {'kategorien': kategorien_von(pid, kat, m)}
+        werte['symbol'], werte['kuerzel'] = symbol_von(pid, kat, m)
+        if not werte['symbol']:
+            werte['kuerzel'] = None
+        for feld, wert in werte.items():
+            if wert:
+                p[feld] = wert
+            else:
+                p.pop(feld, None)
 
     katalog = {
         'format': FORMAT,

@@ -18,6 +18,7 @@ pakete/<paket>/        ein Ordner je Paket, Name = Paket-Id
 vorlage/               Vorlage für ein neues Paket – kopieren und loslegen
 schema/                JSON-Schemas für manifest.yaml und die Inhalte
 werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (laufen auch in der CI)
+werkzeuge/symbole/     erlaubte Symbole für den Katalog (Lucide, ISC) – siehe REGELN.md, „Symbol“
 schluessel/            öffentliche Schlüssel, mit denen der Katalog signiert ist (siehe „Katalog signieren“)
 REGELN.md              was erlaubt ist, was nicht, welche Lizenzen
 CONTRIBUTING.md        wie ein Paket hierher kommt
@@ -28,7 +29,7 @@ Jedes Paket enthält mindestens:
 
 | Datei | Inhalt |
 | --- | --- |
-| `manifest.yaml` | Id, Name, Version, Lizenz, nötige DMS-Version, Abhängigkeiten, Inhalt, ggf. Code mit Rechten |
+| `manifest.yaml` | Id, Name, Version, Lizenz, nötige DMS-Version, Abhängigkeiten, Inhalt, ggf. Code mit Rechten; für den Katalog `kategorien` und `symbol` ([REGELN.md](REGELN.md#symbol)) |
 | `README.md` | was das Paket kann, für wen, mit Beispiel |
 | `LICENSE` | Lizenztext (Open Source, siehe [REGELN.md](REGELN.md)) |
 | `CHANGELOG.md` | Änderungen je Version |
@@ -152,7 +153,7 @@ Ein **Feld** hat `schluessel`, `name`, `typ` und optional `hilfe`, `pflicht`, `s
 
 ## Lizenz
 
-Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen unter der [Apache-2.0](LICENSE), Hinweise in [NOTICE](NOTICE) (bis 01.11.2026: AGPL-3.0). **Jedes Paket hat seine eigene Lizenz** in seinem Ordner – erlaubt sind die Lizenzen aus [REGELN.md](REGELN.md). Die Pakete, die wir selbst (motom001) veröffentlichen, stehen unter **Apache-2.0**.
+Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen unter der [Apache-2.0](LICENSE), Hinweise in [NOTICE](NOTICE) (bis 01.11.2026: AGPL-3.0). Die Symbole in `werkzeuge/symbole/` stammen aus [Lucide](https://lucide.dev) und stehen unter der ISC-Lizenz ([`werkzeuge/symbole/LICENSE`](werkzeuge/symbole/LICENSE)). **Jedes Paket hat seine eigene Lizenz** in seinem Ordner – erlaubt sind die Lizenzen aus [REGELN.md](REGELN.md). Die Pakete, die wir selbst (motom001) veröffentlichen, stehen unter **Apache-2.0**.
 
 Was unter Apache-2.0 steht, darf jeder nutzen, verändern und weitergeben – auch in eigenen Produkten. Wer es weitergibt, legt die Lizenz und die Hinweise aus NOTICE bei und kennzeichnet geänderte Dateien. Den Quellcode einer veränderten Fassung offenzulegen ist nicht Pflicht.
 
