@@ -1,7 +1,8 @@
 // Sammeldatei im Browser (motom001/dms#461): wie werkzeuge/sammeldatei.py – Auswahl samt Abhängigkeiten,
 // passend zur DMS-Version; jedes Archiv gegen katalog.json geprüft; ZIP mit sammeldatei.json, LIESMICH.txt,
 // dem signierten Katalog (katalog.json und katalog.sig Byte für Byte, #74) und den Archiven unter pakete/.
-// Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser.
+// Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser. Die DMS-Version kommt aus dms.js
+// (Fragment #dms=…, gemerkt nur in diesem Browser) – die Adresse liest diese Seite selbst nicht.
 (function () {
   var VORAUSWAHL = ['texterkennung'];
   var KATALOG_URL = 'https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json';
@@ -159,8 +160,8 @@
       katalog = JSON.parse(new TextDecoder().decode(katalogRoh));
     }
     catch (e) { document.getElementById('sammel-laden').textContent = 'Der Katalog lässt sich nicht laden: ' + e.message; return; }
-    var feld = document.getElementById('dms-version'), q = new URLSearchParams(location.search).get('dms');
-    if (q && VERSION.test(q)) feld.value = q;
+    var gemerkt = window.dmsVersion ? window.dmsVersion.lies() : '', feld = document.getElementById('dms-version');
+    if (gemerkt) feld.value = gemerkt;
     else {
       // Vorgabe: die neueste DMS-Version (Releases auf GitHub); klappt das nicht, bleibt das Feld leer.
       fetch('https://api.github.com/repos/motom001/dms/releases/latest').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
@@ -169,7 +170,11 @@
       }).catch(function () {});
     }
     gewaehlt = VORAUSWAHL.filter(function (id) { return paket(id); });
-    feld.addEventListener('input', function () { document.getElementById('sammel-ergebnis').textContent = ''; zeichne(); });
+    feld.addEventListener('input', function () {
+      // Wie die Übersicht: eine gültige (oder leere) Eingabe merkt sich der Browser für die anderen Katalogseiten.
+      var w = feld.value.trim(); if (window.dmsVersion && (!w || VERSION.test(w))) window.dmsVersion.merke(w);
+      document.getElementById('sammel-ergebnis').textContent = ''; zeichne();
+    });
     form.addEventListener('submit', herunterladen);
     document.getElementById('sammel-laden').hidden = true;
     form.hidden = false;

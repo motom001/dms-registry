@@ -51,6 +51,8 @@
     // Fragment wieder entfernen, damit die Version nicht mit einem geteilten Link weitergegeben wird.
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* egal */ }
   })();
+  // Für sammeldatei.js (läuft nach dms.js): dieselbe gemerkte Version, kein zweites Lesen der Adresse.
+  window.dmsVersion = { lies: liesVersion, merke: merkeVersion };
   // Ergebnis je Paket: ja (neueste Version passt) · aelter (eine ältere passt) · nein; null ohne Version.
   function pruefe(versionen, dms) {
     if (!dms) return null;
