@@ -1,0 +1,45 @@
+"""Tests für webseite.py: Die DMS-Version kommt nur im Fragment #dms=…, nie als Query (motom001/dms#622).
+
+    python3 -m unittest werkzeuge/test_webseite.py
+
+Ein Query (?dms=…) ginge an GitHub Pages und stünde dort im Zugriffsprotokoll – das Fragment nicht.
+"""
+import re, sys, unittest
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import webseite as w  # noqa: E402
+
+FRAGMENT = r"/(?:^#|&)dms=(\d+\.\d+\.\d+)(?:&|$)/.exec(location.hash)"
+
+
+class VersionNurImFragment(unittest.TestCase):
+    def test_dms_js_liest_fragment_merkt_und_entfernt_es(self):
+        self.assertIn(FRAGMENT, w.SKRIPT)
+        self.assertIn("VSCHL = 'dms-version'", w.SKRIPT)
+        self.assertIn("history.replaceState(null, '', location.pathname + location.search)", w.SKRIPT)
+        self.assertIn('window.dmsVersion = { lies: liesVersion, merke: merkeVersion }', w.SKRIPT)
+
+    def test_sammelseite_nutzt_dms_js_und_liest_die_adresse_nicht(self):
+        html = w.sammelseite()
+        # dms.js (liest das Fragment) muss vor sammeldatei.js laufen: beide „defer“, also Reihenfolge im Kopf.
+        dms, sammel = html.index('dms.js?v='), html.index('sammeldatei.js?v=')
+        self.assertLess(dms, sammel)
+        self.assertIn('window.dmsVersion.lies()', w.SAMMEL_SKRIPT)
+        self.assertIn('window.dmsVersion.merke(', w.SAMMEL_SKRIPT)
+        for verboten in ('location.search', 'location.hash', 'location.href', 'URLSearchParams', 'localStorage'):
+            self.assertNotIn(verboten, w.SAMMEL_SKRIPT, verboten)
+
+    def test_kein_skript_erwartet_die_version_als_query(self):
+        for name, quelltext in (('dms.js', w.SKRIPT), ('sammeldatei.js', w.SAMMEL_SKRIPT)):
+            self.assertIsNone(re.search(r"""get\(\s*['"]dms['"]\s*\)|[?&]dms=""", quelltext), name)
+            # Query nur für Kategorie und Autor (teilbare Filter), nie für die Version.
+            for feld in re.findall(r"""\.(?:get|set)\(\s*['"]([^'"]+)['"]""", quelltext):
+                self.assertIn(feld, {'kategorie', 'autor'}, (name, feld))
+
+    def test_stand_haengt_auch_am_sammelskript(self):
+        self.assertIn(f'sammeldatei.js?v={w.STAND}', w.sammelseite())
+
+
+if __name__ == '__main__':
+    unittest.main()
