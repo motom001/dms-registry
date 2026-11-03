@@ -288,6 +288,8 @@ EREIGNISSE = {
     'sicherung.fertig': ('Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden', 'ereignis-sicherung-fertig'),
     # DMS #614, ab 0.145.0
     'datei.volltext': ('Eine Datei braucht ihren Volltext (Dateitypen, die das DMS nicht selbst liest)', 'ereignis-datei-volltext'),
+    # DMS #631, ab 0.149.0
+    'datei.archivfassung': ('Ein Dokument mit fertigem Volltext braucht seine Archivfassung (PDF/A)', 'ereignis-datei-archivfassung'),
 }
 DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und Volltext schreiben'}
 SCHNITTSTELLEN = {
@@ -304,9 +306,13 @@ SCHNITTSTELLEN = {
     'dms:sicherung-lesen': ('Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)', 'recht-sicherung-lesen', 'Sicherung lesen'),
     # DMS #614, ab 0.145.0 – dahinter die Dateitypen aus code.volltext
     'dms:volltext': ('Volltext für Dateien liefern, die das DMS nicht selbst lesen kann – das Paket liest die Datei und schreibt nur ihren Volltext; Dokumente ändern, ersetzen oder löschen kann es nicht (dms:volltext)', 'recht-volltext', 'Volltext liefern'),
+    # DMS #631, ab 0.149.0 – dahinter die Dateitypen aus code.archivfassung.typen
+    'dms:archivfassung': ('Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung)', 'recht-archivfassung', 'Archivfassung ablegen'),
 }
-# Kurze Namen der Dateitypen hinter dms:umwandeln und dms:volltext (wie DATEITYP_NAMEN im DMS, shared/src/dateiumwandlung.ts).
+# Kurze Namen der Dateitypen hinter dms:umwandeln, dms:volltext und dms:archivfassung (wie DATEITYP_NAMEN im DMS,
+# shared/src/dateiumwandlung.ts).
 DATEITYP_NAMEN = {
+    'application/pdf': 'PDF', 'image/jpeg': 'JPEG', 'image/png': 'PNG',
     'image/tiff': 'TIFF', 'image/webp': 'WebP', 'image/gif': 'GIF', 'image/bmp': 'BMP', 'image/heic': 'HEIC', 'image/heif': 'HEIF', 'image/avif': 'AVIF',
     'application/msword': 'Word', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Word',
     'application/vnd.ms-excel': 'Excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'Excel',
@@ -376,8 +382,9 @@ def rechte_text(code: dict, typen: dict | None = None) -> str:
         zeilen.append(DOKUMENT_RECHTE[dok] + hilfe('recht-dokumente', DOKUMENT_RECHTE[dok]))
     for x in r.get('schnittstellen') or []:
         if x in SCHNITTSTELLEN:
-            feld = {'dms:umwandeln': 'umwandeln', 'dms:volltext': 'volltext'}.get(x)
-            typen_ = list(dict.fromkeys(DATEITYP_NAMEN.get(m, m) for m in code.get(feld) or [])) if feld else []
+            feld = {'dms:umwandeln': 'umwandeln', 'dms:volltext': 'volltext', 'dms:archivfassung': 'archivfassung'}.get(x)
+            mimes = code.get(feld) if feld != 'archivfassung' else (code.get('archivfassung') or {}).get('typen')
+            typen_ = list(dict.fromkeys(DATEITYP_NAMEN.get(m, m) for m in mimes or [])) if feld else []
             zeilen.append(e(SCHNITTSTELLEN[x][0] + (': ' + ', '.join(typen_) if typen_ else '')) + hilfe(SCHNITTSTELLEN[x][1], SCHNITTSTELLEN[x][2]))
     a = adressen(code)
     zeilen.append(netz_text(code.get('netz') or [], a)

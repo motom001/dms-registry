@@ -309,7 +309,8 @@
               "paket.einstellungen_geaendert",
               "datei.umwandeln",
               "sicherung.fertig",
-              "datei.volltext"
+              "datei.volltext",
+              "datei.archivfassung"
             ]
           },
           "uniqueItems": true
@@ -341,7 +342,7 @@
             },
             "schnittstellen": {
               "type": "array",
-              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0. dms:erkennen (DMS #511) – Felder für „Aus Dokument ausfüllen“ aus Text und JSON Schema des Kerns vorschlagen; braucht dms: >=0.125.0. dms:texterkennung (DMS #458) – Texterkennung für Scans und Bilder übernehmen; braucht dokumente: schreiben und dms: >=0.133.0. dms:umwandeln (DMS #577) – Dateien, die das DMS nicht selbst liest, in eine Fassung (PDF, PNG, JPEG) umwandeln; braucht dokumente: lesen, code.umwandeln, das Ereignis datei.umwandeln und dms: >=0.137.0. dms:sicherung-lesen (DMS #585) – die verschlüsselte Sicherung in Stücken lesen, außer Haus kopieren und je Sicherung zurückmelden; braucht das Ereignis sicherung.fertig und dms: >=0.142.0. dms:volltext (DMS #614) – den Volltext für Dateien liefern, die das DMS nicht selbst liest, ohne Schreibrecht auf Dokumente; braucht dokumente: lesen, code.volltext, das Ereignis datei.volltext und dms: >=0.145.0",
+              "description": "Schnittstellen des Kerns: dms:vektoren (DMS #442) – Vektoren zu Dokumenten speichern und ähnliche finden; braucht dokumente: lesen und dms: >=0.122.0. dms:antworten (DMS #444) – Fragen an die Ablage aus Ausschnitten des Kerns beantworten; braucht dms: >=0.124.0. dms:erkennen (DMS #511) – Felder für „Aus Dokument ausfüllen“ aus Text und JSON Schema des Kerns vorschlagen; braucht dms: >=0.125.0. dms:texterkennung (DMS #458) – Texterkennung für Scans und Bilder übernehmen; braucht dokumente: schreiben und dms: >=0.133.0. dms:umwandeln (DMS #577) – Dateien, die das DMS nicht selbst liest, in eine Fassung (PDF, PNG, JPEG) umwandeln; braucht dokumente: lesen, code.umwandeln, das Ereignis datei.umwandeln und dms: >=0.137.0. dms:sicherung-lesen (DMS #585) – die verschlüsselte Sicherung in Stücken lesen, außer Haus kopieren und je Sicherung zurückmelden; braucht das Ereignis sicherung.fertig und dms: >=0.142.0. dms:volltext (DMS #614) – den Volltext für Dateien liefern, die das DMS nicht selbst liest, ohne Schreibrecht auf Dokumente; braucht dokumente: lesen, code.volltext, das Ereignis datei.volltext und dms: >=0.145.0. dms:archivfassung (DMS #631) – zu Dokumenten mit fertigem Volltext ein durchsuchbares PDF/A (Archivfassung) ablegen, das Original bleibt unverändert; braucht dokumente: lesen, code.archivfassung, das Ereignis datei.archivfassung und dms: >=0.149.0",
               "items": {
                 "enum": [
                   "dms:vektoren",
@@ -350,7 +351,8 @@
                   "dms:texterkennung",
                   "dms:umwandeln",
                   "dms:sicherung-lesen",
-                  "dms:volltext"
+                  "dms:volltext",
+                  "dms:archivfassung"
                 ]
               },
               "uniqueItems": true
@@ -400,6 +402,30 @@
           "minItems": 1,
           "maxItems": 40,
           "uniqueItems": true
+        },
+        "archivfassung": {
+          "type": "object",
+          "description": "Archivfassung (DMS #631, nur mit dms:archivfassung): die Dateitypen (MIME), zu denen das Paket ein PDF/A ablegt – PDF, JPEG und PNG sind erlaubt –, und optional nur_scans: der Schlüssel einer Einstellung vom Typ janein (an: PDFs mit vollständiger Textebene bekommen keine Archivfassung).",
+          "additionalProperties": false,
+          "required": [
+            "typen"
+          ],
+          "properties": {
+            "typen": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]{0,62}/[a-z0-9][a-z0-9!#$&^_.+-]{0,62}$"
+              },
+              "minItems": 1,
+              "maxItems": 40,
+              "uniqueItems": true
+            },
+            "nur_scans": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,39}$"
+            }
+          }
         },
         "einstellungen": {
           "type": "array",

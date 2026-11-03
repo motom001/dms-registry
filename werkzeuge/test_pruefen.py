@@ -232,6 +232,55 @@ class Einstellungen(unittest.TestCase):
         kern['volltext'] = [f'application/x-{i}' for i in range(41)]
         self.assertTrue(self.paket(kern, dms='>=0.145.0'))
 
+    def test_schnittstelle_archivfassung(self):
+        # dms:archivfassung (DMS #631): ab DMS 0.149.0, nur mit code.archivfassung.typen, dem Ereignis datei.archivfassung
+        # und Lesen; PDF, JPEG und PNG erlaubt; nur_scans nennt eine Ja/Nein-Einstellung eines Abschnitts.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen', 'schnittstellen': ['dms:archivfassung']}
+        c['ereignisse'] = ['datei.archivfassung']
+        c['archivfassung'] = {'typen': ['application/pdf', 'image/jpeg', 'image/png', 'image/tiff'], 'nur_scans': 'nur_scans'}
+        c['einstellungen'] = [{'abschnitt': 'Archivfassung', 'felder': [{'schluessel': 'nur_scans', 'name': 'Nur Scans und Bilder', 'typ': 'janein', 'standard': False}]}]
+        self.assertEqual(self.paket(c, dms='>=0.149.0'), [])
+        alt = self.paket(c, dms='>=0.148.1')
+        self.assertTrue(any('dms:archivfassung kennt das DMS erst ab 0.149.0' in f for f in alt), alt)
+        ohne = copy.deepcopy(c)
+        del ohne['archivfassung']
+        self.assertTrue(any('braucht code.archivfassung.typen' in f for f in self.paket(ohne, dms='>=0.149.0')))
+        ohne = copy.deepcopy(c)
+        ohne['ereignisse'] = []
+        self.assertTrue(any('braucht das Ereignis datei.archivfassung' in f for f in self.paket(ohne, dms='>=0.149.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte']['dokumente'] = 'keine'
+        self.assertTrue(any('dms:archivfassung braucht auch code.rechte.dokumente: lesen' in f for f in self.paket(ohne, dms='>=0.149.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen'}
+        self.assertTrue(any('code.archivfassung: braucht' in f for f in self.paket(ohne, dms='>=0.149.0')))
+        ohne = copy.deepcopy(c)
+        ohne['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen'}
+        del ohne['archivfassung']
+        self.assertTrue(any('datei.archivfassung gibt es nur mit' in f for f in self.paket(ohne, dms='>=0.149.0')))
+        # nur_scans: unbekannter Schlüssel, falscher Typ; ohne nur_scans gültig.
+        falsch = copy.deepcopy(c)
+        falsch['archivfassung']['nur_scans'] = 'gibtsnicht'
+        self.assertTrue(any('nur_scans: der Schlüssel einer Einstellung vom Typ janein' in f for f in self.paket(falsch, dms='>=0.149.0')))
+        falsch = copy.deepcopy(c)
+        falsch['einstellungen'][0]['felder'][0]['typ'] = 'text'
+        del falsch['einstellungen'][0]['felder'][0]['standard']
+        self.assertTrue(any('nur_scans: der Schlüssel einer Einstellung vom Typ janein' in f for f in self.paket(falsch, dms='>=0.149.0')))
+        ohne = copy.deepcopy(c)
+        del ohne['archivfassung']['nur_scans']
+        self.assertEqual(self.paket(ohne, dms='>=0.149.0'), [])
+        # Schema: unbekannte Angaben, keine Dateitypen, Dateitypen in Kurzform.
+        kern = copy.deepcopy(c)
+        kern['archivfassung']['stufe'] = 'B'
+        self.assertTrue(self.paket(kern, dms='>=0.149.0'))
+        kern = copy.deepcopy(c)
+        kern['archivfassung']['typen'] = []
+        self.assertTrue(self.paket(kern, dms='>=0.149.0'))
+        kern['archivfassung']['typen'] = ['PDF']
+        self.assertTrue(self.paket(kern, dms='>=0.149.0'))
+
     def test_schnittstelle_sicherung(self):
         # dms:sicherung-lesen (DMS #585): ab DMS 0.142.0, nur zusammen mit dem Ereignis sicherung.fertig; keine Mappen nötig.
         import copy
