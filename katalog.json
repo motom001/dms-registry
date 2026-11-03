@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-03T01:12:00Z",
+  "erstellt": "2026-11-03T01:37:44Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -2080,6 +2080,41 @@
       "symbol": "file-text"
     },
     {
+      "id": "pdfa",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.149.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/pdfa-1.0.0.zip",
+          "sha256": "3131b3f355829f3b201d60dac45171cc76e843b1e25c02e329d8db25dd4fbd77",
+          "groesse": 178781,
+          "veroeffentlicht": "2026-11-03T01:37:44Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/pdfa",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/pdfa/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/pdfa/CHANGELOG.md"
+        }
+      ],
+      "name": "PDF/A",
+      "beschreibung": "Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "dateiformate"
+      ],
+      "symbol": "file-text"
+    },
+    {
       "id": "sicherung_webdav",
       "versionen": [
         {
@@ -2117,6 +2152,24 @@
     {
       "id": "texterkennung",
       "versionen": [
+        {
+          "version": "2.2.0",
+          "dms": ">=0.139.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung-2.2.0.zip",
+          "sha256": "c121b570af3e26c6fa198ad2a1ec4d8d95de68d97bc23880ecdf6ecbd4859c0b",
+          "groesse": 8129433,
+          "veroeffentlicht": "2026-11-03T01:37:44Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/CHANGELOG.md"
+        },
         {
           "version": "2.1.1",
           "dms": ">=0.139.0",
@@ -2197,7 +2250,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "2.1.1",
+      "aktuell": "2.2.0",
       "kategorien": [
         "volltext",
         "suche"

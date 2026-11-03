@@ -21,7 +21,7 @@
     <p class="hinweis"><strong>Note:</strong> Package names and descriptions come from the packages themselves and are in German for now, as are the package pages (multilingual package content will follow). Where the German and English wording differ, the German one applies.</p>
     <div class="werkzeuge">
       <input type="search" id="suche" placeholder="Search packages …" aria-label="Search packages">
-      <select id="kategorie" aria-label="Category"><option value="">All categories</option><option value="vorlagen">Filing templates (5)</option><option value="dateiformate">File formats (2)</option><option value="volltext">Text recognition and full text (12)</option><option value="sprachen">Languages (10)</option><option value="ki">AI (2)</option><option value="suche">Search (3)</option><option value="post">Mail and scanning (1)</option><option value="sicherung">Backup (1)</option><option value="entwickler">For developers (1)</option></select>
+      <select id="kategorie" aria-label="Category"><option value="">All categories</option><option value="vorlagen">Filing templates (5)</option><option value="dateiformate">File formats (3)</option><option value="volltext">Text recognition and full text (12)</option><option value="sprachen">Languages (10)</option><option value="ki">AI (2)</option><option value="suche">Search (3)</option><option value="post">Mail and scanning (1)</option><option value="sicherung">Backup (1)</option><option value="entwickler">For developers (1)</option></select>
       <select id="autor" aria-label="Author"><option value="">All authors</option><option value="motom001">Thomas Meissner</option></select>
       <select id="art" aria-label="Type"><option value="">All packages</option><option value="konfiguration">Configuration</option><option value="code">With code</option></select>
     </div>
@@ -105,6 +105,14 @@
         <span class="chips"><span class="chip">File formats</span><span class="chip">Text recognition and full text</span></span>
         <span class="passt-marke" hidden></span>
       </a>
+      <a class="kachel" href="../paket/pdfa/" data-art="code" data-suche="pdfa pdf/a legt zu jedem dokument zusätzlich ein durchsuchbares pdf/a ab – das format für die langzeitaufbewahrung, auch in vielen jahren noch lesbar. für scans und fotos braucht es das paket „texterkennung“. das original bleibt unverändert, ohne netz. thomas meissner" data-kategorien="dateiformate" data-autor="motom001" data-netz="lokal" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.149.0&quot;]]">
+        <span class="symbol bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+        <span class="name" lang="de">PDF/A</span>
+        <span class="text" lang="de">Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · with code</span>
+        <span class="chips"><span class="chip">File formats</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
       <a class="kachel" href="../paket/sicherung_webdav/" data-art="code" data-suche="sicherung_webdav sicherungsziel webdav bringt jede sicherung des dms außer haus – auf nextcloud, ein nas oder einen webdav-speicher beim hoster – und prüft dort, dass sie heil angekommen ist. für alle ohne sicherungs-app des nas, z. b. auf einem raspberry pi oder einem gemieteten server. das paket sieht nur die verschlüsselte sicherung. thomas meissner" data-kategorien="sicherung" data-autor="motom001" data-netz="dienst" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.142.0&quot;]]">
         <span class="symbol bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 13v8"/><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m8 17 4-4 4 4"/></svg></span>
         <span class="name" lang="de">Sicherungsziel WebDAV</span>
@@ -113,11 +121,11 @@
         <span class="chips"><span class="chip">Backup</span></span>
         <span class="passt-marke" hidden></span>
       </a>
-      <a class="kachel" href="../paket/texterkennung/" data-art="code" data-suche="texterkennung texterkennung (deutsch und englisch) das grundpaket für die texterkennung des dms – macht gescannte pdfs und fotos durchsuchbar, auf deutsch und englisch. weitere sprachen gibt es als zusatzsprachen (z. b. französisch, spanisch, türkisch). erkennt die sprache je seite, richtet seiten auf, ohne netz. thomas meissner" data-kategorien="volltext suche" data-autor="motom001" data-netz="lokal" data-versionen="[[&quot;2.1.1&quot;,&quot;&gt;=0.139.0&quot;],[&quot;2.1.0&quot;,&quot;&gt;=0.139.0&quot;],[&quot;2.0.0&quot;,&quot;&gt;=0.133.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.88.0&quot;]]">
+      <a class="kachel" href="../paket/texterkennung/" data-art="code" data-suche="texterkennung texterkennung (deutsch und englisch) das grundpaket für die texterkennung des dms – macht gescannte pdfs und fotos durchsuchbar, auf deutsch und englisch. weitere sprachen gibt es als zusatzsprachen (z. b. französisch, spanisch, türkisch). erkennt die sprache je seite, richtet seiten auf, ohne netz. thomas meissner" data-kategorien="volltext suche" data-autor="motom001" data-netz="lokal" data-versionen="[[&quot;2.2.0&quot;,&quot;&gt;=0.139.0&quot;],[&quot;2.1.1&quot;,&quot;&gt;=0.139.0&quot;],[&quot;2.1.0&quot;,&quot;&gt;=0.139.0&quot;],[&quot;2.0.0&quot;,&quot;&gt;=0.133.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.88.0&quot;]]">
         <span class="symbol bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg></span>
         <span class="name" lang="de">Texterkennung (Deutsch und Englisch)</span>
         <span class="text" lang="de">Das Grundpaket für die Texterkennung des DMS – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.</span>
-        <span class="unter">2.1.1 · Thomas Meissner · with code</span>
+        <span class="unter">2.2.0 · Thomas Meissner · with code</span>
         <span class="chips"><span class="chip">Text recognition and full text</span><span class="chip">Search</span></span>
         <span class="passt-marke" hidden></span>
       </a>
@@ -219,7 +227,7 @@
       </a>
     </div>
     <p id="keine" class="leerhinweis" hidden>No package found.</p>
-    <p class="leise">As of: 2026-11-03 · 23 packages</p>
+    <p class="leise">As of: 2026-11-03 · 24 packages</p>
 
   </main>
   <dialog id="dms-dialog">
