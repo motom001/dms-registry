@@ -3,7 +3,7 @@
 schema: 1
 id: pdfa
 name: PDF/A
-version: 1.0.0
+version: 1.0.1
 beschreibung: Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.
 autor:
   name: Thomas Meissner

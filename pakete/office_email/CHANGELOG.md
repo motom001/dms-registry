@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.1.0
 
 - **Eigenes Recht statt Schreibrecht** (DMS #614): Das Paket nutzt das Recht „Volltext liefern“ (`dms:volltext`) mit „Dokumente lesen“ – es darf nur noch den Volltext seiner Dateitypen schreiben, keine Dokumente hochladen oder ersetzen. Braucht DMS 0.145.0.

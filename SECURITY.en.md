@@ -2,13 +2,13 @@
 
 [Deutsch](SECURITY.md) · **English**
 
-This repository belongs to the DMS ([motom001/dms](https://github.com/motom001/dms)) and contains: packages, the catalogue and the check tools.
+This repository belongs to Ablago ([motom001/dms](https://github.com/motom001/dms)) and contains: packages, the catalogue and the check tools.
 
 ## Reporting a vulnerability
 
 Please **do not open a public issue** for security vulnerabilities. Report them confidentially via GitHub: **Security → Report a vulnerability** in this repository ([private vulnerability reporting](https://github.com/motom001/dms-registry/security/advisories/new)). Reports in German or English are welcome.
 
-If the vulnerability affects the DMS itself, please report it directly in the repository [motom001/dms](https://github.com/motom001/dms/security/advisories/new).
+If the vulnerability affects Ablago itself, please report it directly in the repository [motom001/dms](https://github.com/motom001/dms/security/advisories/new).
 
 ## What is checked automatically
 

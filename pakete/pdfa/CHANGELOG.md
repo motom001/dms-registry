@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.0.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.0.0
 
 - Erste Fassung (dms-registry #29, DMS #631): legt zu jedem Dokument mit fertigem Volltext eine **Archivfassung** ab – ein durchsuchbares **PDF/A-2b** mit unsichtbarer Textebene genau auf den Wörtern – über die neue Schnittstelle „Archivfassung ablegen“ (`dms:archivfassung`) des DMS 0.149.0. Das Original bleibt das Dokument.

@@ -24,10 +24,10 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 **Verweise:**
 
 - Bank, Vertragspartner, Versicherer, Arbeitgeber, Anbieter, Praxis, Händler, Einrichtung und Steuerberater sind **Organisationen** aus dem Paket Basis. Eine Organisation legst du einmal an und wählst sie danach überall aus.
-- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** des DMS (z. B. „Arbeitszimmer › Schrank › roter Ordner“). So findest du das Papier, wenn du das Original brauchst. Das Feld heißt in allen Typen gleich (`verbleib_original`), deshalb funktionieren gemeinsame Ansichten wie „Originale nach Ort“.
+- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** von Ablago (z. B. „Arbeitszimmer › Schrank › roter Ordner“). So findest du das Papier, wenn du das Original brauchst. Das Feld heißt in allen Typen gleich (`verbleib_original`), deshalb funktionieren gemeinsame Ansichten wie „Originale nach Ort“.
 - **Inhaber**, **Versichert** und **Person** sind **Personen** aus dem Paket Basis (Verweisart Bezug). An einer Person siehst du unter *Verknüpfungen* alles, was zu ihr gehört: Konten, Versicherungen, Arbeitsverhältnis, Ausweise, Arztbriefe, Zeugnisse – mit dem Paket Fahrzeuge auch ihre Fahrzeuge. Sachen wie das Auto verweisen selbst auf ihre Versicherung und stehen dort unter *Verknüpfungen*.
 
-**Fristen:** An den Datumsfeldern mit Frist erinnert das DMS rechtzeitig unter **Zu erledigen** und in der Ansicht **Anstehend** – bei der Hauptfälligkeit einer Versicherung jedes Jahr wieder.
+**Fristen:** An den Datumsfeldern mit Frist erinnert Ablago rechtzeitig unter **Zu erledigen** und in der Ansicht **Anstehend** – bei der Hauptfälligkeit einer Versicherung jedes Jahr wieder.
 
 **Ansichten:** *Haushalt* mit allen Unterlagen und darunter
 
@@ -40,7 +40,7 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 ## Voraussetzungen
 
-- DMS ab Version 0.121 (Personen als Verweis, Umwandlung von Text in Verweise nach dem Update, Feldformate und Datumsgrenzen)
+- Ablago ab Version 0.121 (Personen als Verweis, Umwandlung von Text in Verweise nach dem Update, Feldformate und Datumsgrenzen)
 - Paket **Basis** ab 1.1.0 (Person) – wird bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
@@ -67,7 +67,7 @@ Wer nur die Passwörter schützen will, entzieht statt **R** nur **P** (Passwör
 
 Bestehende eigene Mappentypen ändert das Paket nicht. Ein Update ergänzt nur neue Felder, Register und Ansichten.
 
-**Update von 1.0.x:** Inhaber, Versichert und Person waren bis 1.0.x Textfelder. Das Update legt die Verweise dazu, die Texte bleiben. Unter **Werkbank → Pakete → Haushalt → Text in Verweise umwandeln** siehst du je Feld in einer Vorschau, welche Person das DMS je Name vorschlägt oder neu anlegt („Lena und Tom Muster“ wird zu zwei Personen); „Familie“ oder „gemeinsam“ überspringst du. Erst dann wird umgewandelt, und es lässt sich rückgängig machen.
+**Update von 1.0.x:** Inhaber, Versichert und Person waren bis 1.0.x Textfelder. Das Update legt die Verweise dazu, die Texte bleiben. Unter **Werkbank → Pakete → Haushalt → Text in Verweise umwandeln** siehst du je Feld in einer Vorschau, welche Person Ablago je Name vorschlägt oder neu anlegt („Lena und Tom Muster“ wird zu zwei Personen); „Familie“ oder „gemeinsam“ überspringst du. Erst dann wird umgewandelt, und es lässt sich rückgängig machen.
 
 ## Pflege
 

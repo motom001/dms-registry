@@ -2,13 +2,13 @@
 
 **Deutsch** · [English](SECURITY.en.md)
 
-Dieses Repository gehört zum DMS ([motom001/dms](https://github.com/motom001/dms)) und enthält: Pakete, Katalog und Prüfwerkzeuge.
+Dieses Repository gehört zu Ablago ([motom001/dms](https://github.com/motom001/dms)) und enthält: Pakete, Katalog und Prüfwerkzeuge.
 
 ## Eine Sicherheitslücke melden
 
 Bitte **kein öffentliches Issue** für Sicherheitslücken. Melde sie vertraulich über GitHub: **Security → Report a vulnerability** in diesem Repository ([Private Vulnerability Reporting](https://github.com/motom001/dms-registry/security/advisories/new)).
 
-Betrifft die Lücke das DMS selbst, melde sie bitte direkt im Repository [motom001/dms](https://github.com/motom001/dms/security/advisories/new).
+Betrifft die Lücke Ablago selbst, melde sie bitte direkt im Repository [motom001/dms](https://github.com/motom001/dms/security/advisories/new).
 
 ## Was automatisch geprüft wird
 

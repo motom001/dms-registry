@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.1.0
 
 - **Formate** (dms-registry #55, DMS #535): Neues Feld **Land** an der Immobilie (Vorgabe Deutschland). Die PLZ hat in Deutschland genau 5 Ziffern, bei einem anderen Land ist sie frei.

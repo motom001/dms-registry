@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.2.0
 
 - Neue Einstellung **Kontextlänge (Tokens)**, Standard 8 192 (DMS #564): Anfrage und Antwort passen zusammen hinein. Ist eine Anfrage länger, **kürzt das Paket selbst**, statt dass Ollama ohne Grafikkarte still vorne abschneidet – und meldet es dem DMS:
@@ -15,7 +19,7 @@
 
 - Kein „Nachdenken“ vor der Antwort: Jede Anfrage an den KI-Dienst (Frag deine Ablage, Aus Dokument ausfüllen, Probefrage von „Verbindung testen“) schickt `"reasoning_effort": "none"` mit – Ollama schaltet damit das Nachdenken von Modellen wie `qwen3` ab, die sonst auf einem NAS lange keine sichtbare Antwort geben. Lehnt ein Dienst das Feld ab (HTTP 400), wiederholt das Paket die Anfrage einmal ohne (DMS #564).
 - Beispielmodell jetzt `ministral-3:3b` (Apache-2.0) statt `qwen2.5:3b` (Qwen Research License, keine offene Lizenz) – in der Beschreibung, der Hilfe zum Feld *Modell* und den Einrichtungsschritten. Alternativen und Lizenzen in der Beschreibung unter „Welches Modell?“.
-- Beschreibung verweist auf die Seite [KI lokal betreiben](https://motom001.github.io/dms/admin/aktuell/ki-lokal/) im Administratorhandbuch des DMS (Ollama per Docker Compose, auch auf einem NAS ohne Grafikkarte).
+- Beschreibung verweist auf die Seite [KI lokal betreiben](https://help.ablago.app/admin/aktuell/ki-lokal/) im Administratorhandbuch des DMS (Ollama per Docker Compose, auch auf einem NAS ohne Grafikkarte).
 - Die Attrappe kennt das Modell `streng:1b`, das `reasoning_effort` ablehnt.
 
 ## 1.1.0

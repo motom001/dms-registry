@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.0.2
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.0.1
 
 - Rechte: nur noch **Post** lesen, anlegen und ändern (`dms:post`) statt aller Mappentypen (`"*"`). Andere Mappen sieht das Paket nicht mehr. Braucht DMS **0.94.0** oder neuer. Verhalten sonst unverändert.

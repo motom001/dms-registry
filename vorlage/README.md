@@ -1,6 +1,6 @@
 # Vorlage
 
-> Ersetze diesen Text. Beantworte kurz: **Was bringt das Paket, für wen, und wie sieht es danach im DMS aus?**
+> Ersetze diesen Text. Beantworte kurz: **Was bringt das Paket, für wen, und wie sieht es danach in Ablago aus?**
 
 ## Inhalt
 
@@ -12,7 +12,7 @@
 
 ## Voraussetzungen
 
-- DMS ab Version 0.41
+- Ablago ab Version 0.41
 - keine weiteren Pakete
 
 ## Rechte und Netzwerkzugriff

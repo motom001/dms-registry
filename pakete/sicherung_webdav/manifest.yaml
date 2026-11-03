@@ -1,11 +1,11 @@
 # Paket Sicherungsziel WebDAV (DMS #585, dms-registry #71, Stufe 1): jede Sicherung außer Haus auf Nextcloud, ein NAS
-# oder zum Hoster – in Teilen hochladen, dort prüfen, dem DMS je Sicherung zurückmelden.
+# oder zum Hoster – in Teilen hochladen, dort prüfen, Ablago je Sicherung zurückmelden.
 # Schema: schema/manifest.schema.json
 schema: 1
 id: sicherung_webdav
 name: Sicherungsziel WebDAV
-version: 1.0.0
-beschreibung: Bringt jede Sicherung des DMS außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.
+version: 1.0.1
+beschreibung: Bringt jede Ablago-Sicherung außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -24,7 +24,7 @@ code:
   netz: []
   einstellungen:
     - abschnitt: Ziel
-      hilfe: Wohin die Sicherungen gehen. Nextcloud lädt auch große Sicherungen in Teilen hoch und liest sie zur Prüfung zurück. Eine Nextcloud-Dateiablage („Nur Hochladen“) ist der beste Schutz gegen Erpressersoftware – das DMS kann dort nichts lesen oder löschen –, nimmt aber nur Sicherungen bis 128 MB und lässt sich nicht zurücklesen.
+      hilfe: Wohin die Sicherungen gehen. Nextcloud lädt auch große Sicherungen in Teilen hoch und liest sie zur Prüfung zurück. Eine Nextcloud-Dateiablage („Nur Hochladen“) ist der beste Schutz gegen Erpressersoftware – Ablago kann dort nichts lesen oder löschen –, nimmt aber nur Sicherungen bis 128 MB und lässt sich nicht zurücklesen.
       felder:
         - schluessel: art
           name: Art des Ziels
@@ -48,7 +48,7 @@ code:
         - schluessel: ordner
           name: Ordner
           typ: text
-          standard: DMS-Sicherung
+          standard: Ablago-Sicherung
           hilfe: Nextcloud – Ordner im Konto des Benutzers; WebDAV allgemein – Unterordner unter der Adresse (leer = die Adresse selbst). Fehlt er, legt ihn das Paket an. Bei der Dateiablage ohne Bedeutung.
         - schluessel: freigabe
           name: Freigabe-Link (Dateiablage)

@@ -44,7 +44,7 @@ class Sammeldatei(unittest.TestCase):
         r = s.auswahl(self.katalog, ['haushalt', 'texterkennung'], '0.107.1')
         self.assertEqual([(p['id'], p['version'], p['gewaehlt']) for p in r], [('basis', '1.1.1', False), ('haushalt', '1.0.2', True), ('texterkennung', '1.0.0', True)])
         self.assertEqual([p['version'] for p in s.auswahl(self.katalog, ['basis'], '0.70.0')], ['1.0.0'])
-        with self.assertRaisesRegex(ValueError, 'texterkennung: keine Version passt zu DMS 0.80.0'):
+        with self.assertRaisesRegex(ValueError, 'texterkennung: keine Version passt zu Ablago 0.80.0'):
             s.auswahl(self.katalog, ['texterkennung'], '0.80.0')
         self.assertTrue(s.passt('0.2.5', '^0.2.0') and not s.passt('0.3.0', '^0.2.0') and s.passt('1.5.0', '>=1.0.0 <2.0.0'))
 

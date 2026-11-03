@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.1
+
+- Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
+
 ## 1.2.0
 
 - **Formate** (dms-registry #55, DMS #535): Die **IBAN** eines Kontos prüft das DMS mit Länge und Prüfziffer und zeigt sie in Vierergruppen. Der Ausweis bleibt bei „Gültig bis“ ohne Grenze – das Datum liegt ja meist in der Zukunft.

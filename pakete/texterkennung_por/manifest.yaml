@@ -2,7 +2,7 @@
 schema: 1
 id: texterkennung_por
 name: Texterkennung – Zusatzsprache Portugiesisch
-version: 1.0.2
+version: 1.0.3
 beschreibung: Zusatzsprache Portugiesisch für das Grundpaket Texterkennung – damit auch portugiesische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
 autor:
   name: Thomas Meissner
@@ -15,7 +15,7 @@ kuerzel: PT
 dms: ">=0.133.0"
 abhaengigkeiten:
   texterkennung: ">=2.0.0"
-# Ergänzung (motom001/dms#405): das DMS ab 0.151.0 zeigt die Sprache als Häkchen „Weitere Sprachen?“ unter der
+# Ergänzung (motom001/dms#405): Ablago ab 0.151.0 zeigt die Sprache als Häkchen „Weitere Sprachen?“ unter der
 # Texterkennung; ältere DMS ignorieren das Feld.
 ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }
 inhalt: {}

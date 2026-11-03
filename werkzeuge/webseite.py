@@ -9,16 +9,16 @@ Im Ausgabeordner entstehen:
     index.html                   Übersicht: Kacheln je Paket, Suche, Filter (Konfiguration / mit Code)
     en/index.html                dieselbe Übersicht auf Englisch (Umschalter „Deutsch · English“ oben)
     paket/<id>/index.html        Detailseite: README, was angelegt wird, Rechte, Changelog, Versionen
-    sammeldatei.html             mehrere Pakete als eine Sammeldatei für ein DMS ohne Internet (motom001/dms#461)
-    stil.css, dms.js             Aussehen wie die Handbücher; „In meinem DMS installieren“
+    sammeldatei.html             mehrere Pakete als eine Sammeldatei für Ablago ohne Internet (motom001/dms#461)
+    stil.css, dms.js             Aussehen wie die Handbücher; „In meinem Ablago installieren“
     sammeldatei.js               stellt die Sammeldatei im Browser zusammen (nur aus katalog.json und archive/)
 
-Die DMS-Version kommt aus dem DMS nur im Fragment (#dms=<X.Y.Z>, motom001/dms#622), nie als Query: Das
+Die Ablago-Version kommt aus Ablago nur im Fragment (#dms=<X.Y.Z>, motom001/dms#622), nie als Query: Das
 Fragment geht an keinen Server und landet nicht im Zugriffsprotokoll. dms.js liest es auf jeder Seite (auch
 sammeldatei.html), merkt die Version im localStorage (dms-version) und entfernt das Fragment aus der Adresse.
 
-Die Adresse des eigenen DMS merkt sich die Seite nur im Browser (localStorage); sie sendet nichts an
-das DMS und speichert keine Zugangsdaten. Der Knopf öffnet <dms>/werkbank/pakete?installieren=<id>@<version>.
+Die Adresse des eigenen Ablago merkt sich die Seite nur im Browser (localStorage); sie sendet nichts an
+Ablago und speichert keine Zugangsdaten. Der Knopf öffnet <dms>/werkbank/pakete?installieren=<id>@<version>.
 
 Sprachen (#54): Die festen Texte von Übersicht und Seitenrahmen stehen gebündelt in TEXTE (deutsch und englisch).
 Paketseiten und Pakettexte aus den Manifesten bleiben vorerst deutsch (Mehrsprachigkeit: dms #357). Ohne
@@ -38,7 +38,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vorlagen import lies_kategorien, option as vorlagen_option, symbol_svg  # noqa: E402
 
 KATEGORIEN = {k['kennung']: k for k in lies_kategorien()['kategorien']}
-HANDBUCH_AKTUALISIEREN = 'https://motom001.github.io/dms/admin/aktuell/aktualisieren/'
+HANDBUCH_AKTUALISIEREN = 'https://help.ablago.app/admin/aktuell/aktualisieren/'
 
 WURZEL = Path(__file__).resolve().parent.parent
 FELDTYPEN = {'text': 'Text', 'langtext': 'Langtext', 'formatiert': 'Formatierter Text', 'zahl': 'Zahl', 'betrag': 'Betrag', 'datum': 'Datum',
@@ -62,23 +62,23 @@ TEXTE = {
     'de': {
         'name': 'Deutsch',
         'sprachwahl': 'Sprache',
-        'marke': 'DMS-Pakete',
-        'beschreibung': 'Pakete für das DMS: fertige Mappentypen und Sichten',
+        'marke': 'Ablago – Paketkatalog',
+        'beschreibung': 'Pakete für Ablago: fertige Mappentypen und Sichten',
         'handbuecher': 'Handbücher',
         'ohne_internet': 'Pakete herunterladen',
         'registry': 'Registry',
         'registry_url': REGISTRY,
-        'dms_adresse': 'DMS-Adresse',
-        'dialog_titel': 'Adresse deines DMS',
-        'dialog_html': 'Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein DMS.',
+        'dms_adresse': 'Ablago-Adresse',
+        'dialog_titel': 'Adresse deines Ablago',
+        'dialog_html': 'Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.',
         'dialog_fehler': 'Bitte eine Adresse mit http:// oder https:// angeben.',
         'speichern': 'Speichern und öffnen',
         'abbrechen': 'Abbrechen',
         'regeln': 'Regeln für Pakete',
         'regeln_url': f'{REGISTRY}/blob/main/REGELN.md',
         'symbole': 'Symbole: Lucide (ISC-Lizenz)',
-        'titel': 'Pakete für das DMS',
-        'einleitung_html': 'Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">DMS</a> – Open Source und vom DMS-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.',
+        'titel': 'Pakete für Ablago',
+        'einleitung_html': 'Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">Ablago</a> – Open Source und vom Ablago-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.',
         'hinweis_html': '',
         'suche': 'Paket suchen …',
         'suche_label': 'Pakete durchsuchen',
@@ -92,10 +92,10 @@ TEXTE = {
         'alle_kategorien': 'Alle Kategorien',
         'autor': 'Autor',
         'alle_autoren': 'Alle Autoren',
-        'dms_version': 'Deine DMS-Version',
+        'dms_version': 'Deine Ablago-Version',
         'dms_version_platzhalter': 'z. B. 0.144.2',
-        'dms_version_hilfe': 'Steht im DMS unter „Über das DMS“. Bleibt nur in diesem Browser.',
-        'nur_passend': 'Nur Pakete, die zu meinem DMS passen',
+        'dms_version_hilfe': 'Steht in Ablago unter „Über Ablago“. Bleibt nur in diesem Browser.',
+        'nur_passend': 'Nur Pakete, die zu meinem Ablago passen',
         'nur_lokal': 'Nur Pakete, die alles lokal machen',
         'stand': 'Stand',
         'anzahl': ('Paket', 'Pakete'),
@@ -104,23 +104,23 @@ TEXTE = {
     'en': {
         'name': 'English',
         'sprachwahl': 'Language',
-        'marke': 'DMS packages',
-        'beschreibung': 'Packages for the DMS: ready-made Mappe types and views',
+        'marke': 'Ablago – package catalogue',
+        'beschreibung': 'Packages for Ablago: ready-made Mappe types and views',
         'handbuecher': 'Manuals',
         'ohne_internet': 'Download packages',
         'registry': 'Registry',
         'registry_url': f'{REGISTRY}/blob/main/README.en.md',
-        'dms_adresse': 'DMS address',
-        'dialog_titel': 'Address of your DMS',
-        'dialog_html': 'For example <code>https://dms.example.com</code> or <code>http://192.168.1.20:3000</code>. The address stays in this browser only; this page sends nothing to your DMS.',
+        'dms_adresse': 'Ablago address',
+        'dialog_titel': 'Address of your Ablago',
+        'dialog_html': 'For example <code>https://dms.example.com</code> or <code>http://192.168.1.20:3000</code>. The address stays in this browser only; this page sends nothing to your Ablago.',
         'dialog_fehler': 'Please enter an address starting with http:// or https://.',
         'speichern': 'Save and open',
         'abbrechen': 'Cancel',
         'regeln': 'Rules for packages',
         'regeln_url': f'{REGISTRY}/blob/main/REGELN.en.md',
         'symbole': 'Icons: Lucide (ISC licence)',
-        'titel': 'Packages for the DMS',
-        'einleitung_html': 'Ready-made Mappe types and views for your <a href="https://github.com/motom001/dms">DMS</a> – open source and approved by the DMS project. Install them in the DMS under <strong>Werkbank → Pakete</strong> (Workbench → Packages) or right from here.',
+        'titel': 'Packages for Ablago',
+        'einleitung_html': 'Ready-made Mappe types and views for your <a href="https://github.com/motom001/dms">Ablago</a> – open source and approved by the Ablago project. Install them in Ablago under <strong>Werkbank → Pakete</strong> (Workbench → Packages) or right from here.',
         'hinweis_html': '<strong>Note:</strong> Package names and descriptions come from the packages themselves and are in German for now, as are the package pages (multilingual package content will follow). Where the German and English wording differ, the German one applies.',
         'suche': 'Search packages …',
         'suche_label': 'Search packages',
@@ -134,10 +134,10 @@ TEXTE = {
         'alle_kategorien': 'All categories',
         'autor': 'Author',
         'alle_autoren': 'All authors',
-        'dms_version': 'Your DMS version',
+        'dms_version': 'Your Ablago version',
         'dms_version_platzhalter': 'e.g. 0.144.2',
-        'dms_version_hilfe': 'Shown in the DMS under “About the DMS”. Stays in this browser only.',
-        'nur_passend': 'Only packages that fit my DMS',
+        'dms_version_hilfe': 'Shown in Ablago under “About Ablago”. Stays in this browser only.',
+        'nur_passend': 'Only packages that fit my Ablago',
         'nur_lokal': 'Only packages that work fully locally',
         'stand': 'As of',
         'anzahl': ('package', 'packages'),
@@ -172,12 +172,15 @@ def seite(titel: str, inhalt: str, tiefe: int, beschreibung: str = '', sprache: 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{e(titel)}</title>
   <meta name="description" content="{e(beschreibung or t['beschreibung'])}">{alternativ}
+  <link rel="icon" href="{vor}favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="{vor}favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="{vor}apple-touch-icon.png">
   <link rel="stylesheet" href="{vor}stil.css?v={STAND}">
   <script src="{vor}dms.js?v={STAND}" defer></script>{mehr}
 </head>
 <body>
-  <header class="kopf"><a href="{start}" class="marke">{e(t['marke'])}</a>
-    <nav><a href="{vor}sammeldatei.html">{e(t['ohne_internet'])}</a><a href="https://motom001.github.io/dms/">{e(t['handbuecher'])}</a><a href="{t['registry_url']}">{e(t['registry'])}</a>
+  <header class="kopf"><a href="{start}" class="marke"><img src="{vor}ablago-zeichen-farbig.svg" alt="" width="28" height="28">{e(t['marke'])}</a>
+    <nav><a href="{vor}sammeldatei.html">{e(t['ohne_internet'])}</a><a href="https://help.ablago.app/">{e(t['handbuecher'])}</a><a href="{t['registry_url']}">{e(t['registry'])}</a>
     <button type="button" class="textknopf" data-dms-adresse>{e(t['dms_adresse'])}</button></nav>{wahl}</header>
   <main>
 {inhalt}
@@ -236,7 +239,7 @@ def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
 
 
 def versionen_daten(p: dict) -> str:
-    """Versionen mit nötiger DMS-Version für den Filter „passt zu meinem DMS“ (#84), neueste zuerst."""
+    """Versionen mit nötiger Ablago-Version für den Filter „passt zu meinem Ablago“ (#84), neueste zuerst."""
     return json.dumps([[x['version'], x['dms']] for x in p['versionen']], separators=(',', ':'))
 
 
@@ -274,7 +277,7 @@ def uebersicht(katalog: dict, pakete: list, sprache: str) -> str:
 
 
 # Wie im DMS (shared/src/pakete.ts, #449): dieselben Formulierungen in der Rechte-Vorschau vor der Installation.
-HANDBUCH_PAKETE = 'https://motom001.github.io/dms/admin/aktuell/pakete/'
+HANDBUCH_PAKETE = 'https://help.ablago.app/admin/aktuell/pakete/'
 DMS_TYPEN = {'dms:ablageort': 'Ablageort', 'dms:rolle': 'Rolle', 'dms:post': 'Post'}
 EREIGNISSE = {
     'post.angelegt': ('Neue Post ist angelegt', 'ereignis-post-angelegt'),
@@ -283,11 +286,11 @@ EREIGNISSE = {
     'volltext.fertig': ('Der Volltext eines Dokuments ist da', 'ereignis-volltext-fertig'),
     'paket.einstellungen_geaendert': ('Die Einstellungen des Pakets wurden geändert', 'ereignis-einstellungen-geandert'),
     # DMS #577, ab 0.137.0
-    'datei.umwandeln': ('Eine Datei soll umgewandelt werden (Dateitypen, die das DMS nicht selbst liest)', 'ereignis-datei-umwandeln'),
+    'datei.umwandeln': ('Eine Datei soll umgewandelt werden (Dateitypen, die Ablago nicht selbst liest)', 'ereignis-datei-umwandeln'),
     # DMS #585, ab 0.142.0
     'sicherung.fertig': ('Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden', 'ereignis-sicherung-fertig'),
     # DMS #614, ab 0.145.0
-    'datei.volltext': ('Eine Datei braucht ihren Volltext (Dateitypen, die das DMS nicht selbst liest)', 'ereignis-datei-volltext'),
+    'datei.volltext': ('Eine Datei braucht ihren Volltext (Dateitypen, die Ablago nicht selbst liest)', 'ereignis-datei-volltext'),
     # DMS #631, ab 0.149.0
     'datei.archivfassung': ('Ein Dokument mit fertigem Volltext braucht seine Archivfassung (PDF/A)', 'ereignis-datei-archivfassung'),
     # DMS #670, ab 0.153.0 – nur zu den Typen aus code.mappentypen
@@ -301,17 +304,17 @@ DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und
 SCHNITTSTELLEN = {
     'dms:vektoren': ('Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)', 'recht-vektoren', 'Vektoren zu Dokumenten'),
     # DMS #444, ab 0.124.0
-    'dms:antworten': ('Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die das DMS mitgibt (dms:antworten)', 'recht-antworten', 'Fragen an die Ablage beantworten'),
+    'dms:antworten': ('Fragen an die Ablage beantworten („Frag deine Ablage“) – nur aus Ausschnitten, die Ablago mitgibt (dms:antworten)', 'recht-antworten', 'Fragen an die Ablage beantworten'),
     # DMS #511, ab 0.125.0
-    'dms:erkennen': ('Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den das DMS mitgibt (dms:erkennen)', 'recht-erkennen', 'Felder aus Dokumenten vorschlagen'),
+    'dms:erkennen': ('Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den Ablago mitgibt (dms:erkennen)', 'recht-erkennen', 'Felder aus Dokumenten vorschlagen'),
     # DMS #458, ab 0.133.0
-    'dms:texterkennung': ('Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)', 'recht-texterkennung', 'Texterkennung übernehmen'),
+    'dms:texterkennung': ('Texterkennung für Scans und Bilder übernehmen – Ablago meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)', 'recht-texterkennung', 'Texterkennung übernehmen'),
     # DMS #577, ab 0.137.0 – dahinter die Dateitypen aus code.umwandeln
-    'dms:umwandeln': ('Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln)', 'recht-umwandeln', 'Dateien umwandeln'),
+    'dms:umwandeln': ('Dateien umwandeln, die Ablago nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln)', 'recht-umwandeln', 'Dateien umwandeln'),
     # DMS #585, ab 0.142.0
     'dms:sicherung-lesen': ('Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)', 'recht-sicherung-lesen', 'Sicherung lesen'),
     # DMS #614, ab 0.145.0 – dahinter die Dateitypen aus code.volltext
-    'dms:volltext': ('Volltext für Dateien liefern, die das DMS nicht selbst lesen kann – das Paket liest die Datei und schreibt nur ihren Volltext; Dokumente ändern, ersetzen oder löschen kann es nicht (dms:volltext)', 'recht-volltext', 'Volltext liefern'),
+    'dms:volltext': ('Volltext für Dateien liefern, die Ablago nicht selbst lesen kann – das Paket liest die Datei und schreibt nur ihren Volltext; Dokumente ändern, ersetzen oder löschen kann es nicht (dms:volltext)', 'recht-volltext', 'Volltext liefern'),
     # DMS #631, ab 0.149.0 – dahinter die Dateitypen aus code.archivfassung.typen
     'dms:archivfassung': ('Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung)', 'recht-archivfassung', 'Archivfassung ablegen'),
 }
@@ -350,7 +353,7 @@ def netz_art(pid: str) -> str:
 
 
 def netz_text(netz: list, adresse: list | None = None) -> str:
-    """Netzwerkzugriff wie im DMS (#449, #444), Adressen als Code."""
+    """Netzwerkzugriff wie in Ablago (#449, #444), Adressen als Code."""
     einst = [f'der Adresse aus der Einstellung „{e(a)}“ (trägst du ein und bestätigst sie)' for a in adresse or []]
     if not netz and not einst:
         return 'kein Zugriff auf Netzwerk und Internet'
@@ -358,12 +361,12 @@ def netz_text(netz: list, adresse: list | None = None) -> str:
 
 
 def hilfe(anker: str, titel: str) -> str:
-    """„?“ zur Erklärung im Administratorhandbuch des DMS."""
+    """„?“ zur Erklärung im Administratorhandbuch von Ablago."""
     return f' <a class="hilfe" href="{HANDBUCH_PAKETE}#{anker}" title="Erklärung: {e(titel)}" aria-label="Erklärung: {e(titel)} (Administratorhandbuch)">?</a>'
 
 
 def rechte_text(code: dict, typen: dict | None = None) -> str:
-    """Rechte und Netzwerkzugriff eines Pakets mit Code – so formuliert wie die Vorschau im DMS (#449)."""
+    """Rechte und Netzwerkzugriff eines Pakets mit Code – so formuliert wie die Vorschau in Ablago (#449)."""
     typen = typen or {}
 
     def name(t: str) -> str:
@@ -377,7 +380,7 @@ def rechte_text(code: dict, typen: dict | None = None) -> str:
 
     r = code.get('rechte') or {}
     schreiben = list(dict.fromkeys(r.get('schreiben') or []))
-    lesen = list(dict.fromkeys((r.get('lesen') or []) + schreiben))  # Schreiben setzt Lesen voraus (wie im DMS).
+    lesen = list(dict.fromkeys((r.get('lesen') or []) + schreiben))  # Schreiben setzt Lesen voraus (wie in Ablago).
     zeilen = []
     if lesen:
         zeilen.append('Mappen lesen: ' + ', '.join(name(t) for t in lesen) + hilfe('recht-mappen-lesen', 'Mappen lesen'))
@@ -481,7 +484,7 @@ EINHEIT_TEXT = {'tage': ('Tag', 'Tage'), 'wochen': ('Woche', 'Wochen'), 'monate'
 
 
 def wert_text(w) -> str:
-    """Wert einer Bedingung in Alltagssprache (wie beschreibeBedingung im DMS, Fassung für Einsteiger)."""
+    """Wert einer Bedingung in Alltagssprache (wie beschreibeBedingung in Ablago, Fassung für Einsteiger)."""
     if isinstance(w, list):
         return ' oder '.join(f'„{x}“' if not isinstance(x, dict) else wert_text(x) for x in w)
     if isinstance(w, dict):
@@ -604,9 +607,9 @@ def detail(p: dict, pakete: list) -> str:
         f'<td><a href="../../{e(x["archiv"])}">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="{e(p["id"])}@{e(x["version"])}">installieren</button></td></tr>'
         for x in p['versionen'])
     technik = (f'<dl class="eckdaten"><dt>Version</dt><dd>{e(v["version"])} vom {datum(v["veroeffentlicht"])}</dd>'
-               f'<dt>Lizenz</dt><dd>{e(p["lizenz"])}</dd><dt>Nötige DMS-Version</dt><dd>{e(v["dms"])}</dd>'
+               f'<dt>Lizenz</dt><dd>{e(p["lizenz"])}</dd><dt>Nötige Ablago-Version</dt><dd>{e(v["dms"])}</dd>'
                f'<dt>Abhängigkeiten</dt><dd>{abh}</dd><dt>Quellcode</dt><dd><a href="{e(v["quelle"])}">auf GitHub ansehen</a></dd></dl>'
-               f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>DMS</th><th>Download</th><th></th></tr></thead>'
+               f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th></th></tr></thead>'
                f'<tbody>{versionen}</tbody></table></div>')
     passt = ''.join((f'<h3><a class="weiter" href="{e(link)}">{e(t)} <span aria-hidden="true">›</span></a></h3>' if link else f'<h3>{e(t)}</h3>')
                     + '<div class="minis">' + ''.join(mini(x, '../../') for x in liste) + '</div>' for t, liste, link in beziehungen(p, pakete))
@@ -626,13 +629,13 @@ def detail(p: dict, pakete: list) -> str:
               f'    <div class="paketkopf" data-paket="{e(p["id"])}" data-versionen="{e(versionen_daten(p))}">\n'
               f'      {symbol(p, "gross")}\n'
               f'      <div class="titel"><h1>{e(p["name"])}</h1>\n'
-              f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem DMS installieren</button>\n'
+              f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem Ablago installieren</button>\n'
               f'        <p class="kurztext">{e(p["beschreibung"])}</p>\n'
               f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p>\n'
               f'        <p class="chips">{kats}</p></div>\n'
               f'    </div>\n'
               f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
-    return seite(f'{p["name"]} – DMS-Pakete', inhalt, 2, p['beschreibung'])
+    return seite(f'{p["name"]} – Ablago-Pakete', inhalt, 2, p['beschreibung'])
 
 
 def autorseite(name: str, github: str, liste: list) -> str:
@@ -642,19 +645,20 @@ def autorseite(name: str, github: str, liste: list) -> str:
               f'    <h1>Pakete von {e(name)}</h1>\n'
               f'    <p class="leise">{mehrzahl(len(liste), "Paket", "Pakete")} · <a class="gh" href="https://github.com/{e(github)}">GitHub-Profil @{e(github)} ↗</a></p>\n'
               f'    <div class="kacheln">\n{kacheln}\n    </div>\n')
-    return seite(f'Pakete von {name} – DMS-Pakete', inhalt, 2, f'Alle DMS-Pakete von {name}')
+    return seite(f'Pakete von {name} – Ablago-Pakete', inhalt, 2, f'Alle Ablago-Pakete von {name}')
 
 
 
 STIL = '''
-:root { --grund: #f6f7f8; --flaeche: #fff; --tinte: #1c2328; --leise: #5b6670; --linie: #dde2e6; --a: #00796b; --auf-a: #fff; --warn: #b26a00; }
-@media (prefers-color-scheme: dark) { :root { --grund: #14181b; --flaeche: #1d2226; --tinte: #e8ecef; --leise: #9aa5ae; --linie: #2e353a; --a: #4db6ac; --auf-a: #0b2522; --warn: #ffb74d; } }
+:root { --grund: #f6f7f8; --flaeche: #fff; --tinte: #1c2328; --leise: #5b6670; --linie: #dde2e6; --a: #1F4E79; --auf-a: #fff; --warn: #b26a00; }
+@media (prefers-color-scheme: dark) { :root { --grund: #14181b; --flaeche: #1d2226; --tinte: #e8ecef; --leise: #9aa5ae; --linie: #2e353a; --a: #8DB8E0; --auf-a: #141A22; --warn: #ffb74d; } }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--grund); color: var(--tinte); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 a { color: var(--a); }
 .kopf { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; max-width: 980px; margin: 0 auto; padding: 14px 16px; }
 .kopf nav { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-.marke { font-weight: 700; font-size: 1.1rem; color: var(--tinte); text-decoration: none; }
+.marke { font-weight: 700; font-size: 1.1rem; color: var(--tinte); text-decoration: none; display: inline-flex; align-items: center; gap: .5rem; }
+.marke img { flex: none; }
 .sprachen { flex-basis: 100%; color: var(--leise); font-size: .92rem; }
 .sprachen a[aria-current] { color: var(--tinte); font-weight: 600; text-decoration: none; }
 .hinweis { background: var(--flaeche); border: 1px solid var(--linie); border-left: 4px solid var(--a); border-radius: 8px; padding: 10px 14px; }
@@ -841,9 +845,9 @@ SKRIPT = '''
   }
   function marke(r) {
     if (!r) return '';
-    if (r.fall === 'ja') return EN ? 'fits your DMS' : 'passt zu deinem DMS';
-    if (r.fall === 'aelter') return EN ? 'DMS update recommended' : 'DMS-Update empfohlen';
-    return (EN ? 'needs DMS ' : 'braucht DMS ') + mindestens(r.neu[1]) + (EN ? '+' : ' oder neuer');
+    if (r.fall === 'ja') return EN ? 'fits your Ablago' : 'passt zu deinem Ablago';
+    if (r.fall === 'aelter') return EN ? 'Ablago update recommended' : 'Ablago-Update empfohlen';
+    return (EN ? 'needs Ablago ' : 'braucht Ablago ') + mindestens(r.neu[1]) + (EN ? '+' : ' oder neuer');
   }
   var suche = document.getElementById('suche'), art = document.getElementById('art'), kat = document.getElementById('kategorie'),
       autor = document.getElementById('autor'), vfeld = document.getElementById('dms-version'), nur = document.getElementById('nur-passend'),
@@ -886,19 +890,19 @@ SKRIPT = '''
     var knopf = kopf.querySelector('.installieren');
     feld.className = 'dms-passt'; feld.textContent = ''; if (knopf) knopf.hidden = false;
     if (!r) {
-      feld.innerHTML = '<p class="leise">Passt das Paket zu deinem DMS? Deine DMS-Version: <input id="dms-version-paket" inputmode="decimal" placeholder="z. B. 0.144.2" aria-label="Deine DMS-Version"> <span class="klein">(steht im DMS unter „Über das DMS“, bleibt nur in diesem Browser)</span></p>';
+      feld.innerHTML = '<p class="leise">Passt das Paket zu deinem Ablago? Deine Ablago-Version: <input id="dms-version-paket" inputmode="decimal" placeholder="z. B. 0.144.2" aria-label="Deine Ablago-Version"> <span class="klein">(steht in Ablago unter „Über Ablago“, bleibt nur in diesem Browser)</span></p>';
       var i = document.getElementById('dms-version-paket');
       i.addEventListener('change', function () { var w = i.value.trim(); if (VERSION.test(w)) { merkeVersion(w); zeigePaket(); } });
       return;
     }
     var aendern = ' <a href="#" data-dms-version-aendern>ändern</a>';
-    if (r.fall === 'ja') { feld.className += ' ja'; feld.innerHTML = 'Passt zu deinem DMS ' + dms + '.' + aendern; return; }
+    if (r.fall === 'ja') { feld.className += ' ja'; feld.innerHTML = 'Passt zu deinem Ablago ' + dms + '.' + aendern; return; }
     if (knopf) knopf.hidden = true;
     feld.className += ' warn';
-    var html = '<p><strong>Für Version ' + r.neu[0] + ' brauchst du DMS ' + mindestens(r.neu[1]) + ' oder neuer</strong> – du hast ' + dms + '.' + aendern + '</p>'
-      + '<p>Aktualisiere dein DMS, damit du dieses Paket mit allen Verbesserungen und Fehlerbehebungen nutzen kannst.</p>'
-      + '<p><a class="knopf primaer" href="'''+HANDBUCH_AKTUALISIEREN+'''">So aktualisierst du dein DMS →</a></p>';
-    if (r.fall === 'aelter') html += '<p class="aelter-link"><a href="#" data-installieren="' + id + '@' + r.version + '">Ältere Version ' + r.version + ' trotzdem installieren</a> <span class="leise">– ihr fehlen Verbesserungen und Fehlerbehebungen. Nach dem DMS-Update holst du die neue Version über die Paketverwaltung nach.</span></p>';
+    var html = '<p><strong>Für Version ' + r.neu[0] + ' brauchst du Ablago ' + mindestens(r.neu[1]) + ' oder neuer</strong> – du hast ' + dms + '.' + aendern + '</p>'
+      + '<p>Aktualisiere dein Ablago, damit du dieses Paket mit allen Verbesserungen und Fehlerbehebungen nutzen kannst.</p>'
+      + '<p><a class="knopf primaer" href="'''+HANDBUCH_AKTUALISIEREN+'''">So aktualisierst du dein Ablago →</a></p>';
+    if (r.fall === 'aelter') html += '<p class="aelter-link"><a href="#" data-installieren="' + id + '@' + r.version + '">Ältere Version ' + r.version + ' trotzdem installieren</a> <span class="leise">– ihr fehlen Verbesserungen und Fehlerbehebungen. Nach Ablago-Update holst du die neue Version über die Paketverwaltung nach.</span></p>';
     feld.innerHTML = html;
   }
   if (kopf && feld) {
@@ -912,16 +916,16 @@ SKRIPT = '''
 # Sammeldatei (motom001/dms#461): Auswahl, Abhängigkeiten und ZIP – alles im Browser aus katalog.json und archive/.
 # Format und Prüfung wie werkzeuge/sammeldatei.py (Referenz) und schema/sammeldatei.schema.json.
 SAMMEL_INHALT = r'''    <h1>Pakete herunterladen</h1>
-    <p><strong>Für ein DMS ohne Internetzugang:</strong> mehrere Pakete als eine Datei, die du im DMS hochlädst.</p>
-    <p class="leise">Kommt dein DMS nicht ins Internet? Wähle hier die Pakete aus und lade sie als <strong>eine Sammeldatei</strong> herunter.
-      Im DMS lädst du sie unter <strong>Werkbank → Pakete → „Ohne Internet …“</strong> hoch (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).
-      Das DMS prüft jedes Paket gegen seine Prüfsumme und installiert dann eins nach dem anderen.</p>
+    <p><strong>Für Ablago ohne Internetzugang:</strong> mehrere Pakete als eine Datei, die du in Ablago hochlädst.</p>
+    <p class="leise">Kommt dein Ablago nicht ins Internet? Wähle hier die Pakete aus und lade sie als <strong>eine Sammeldatei</strong> herunter.
+      In Ablago lädst du sie unter <strong>Werkbank → Pakete → „Ohne Internet …“</strong> hoch (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).
+      Ablago prüft jedes Paket gegen seine Prüfsumme und installiert dann eins nach dem anderen.</p>
     <noscript><p class="fehler">Die Sammeldatei entsteht in deinem Browser – dafür braucht die Seite JavaScript.</p></noscript>
     <form id="sammel" class="stapel" hidden>
       <div class="sammel-dms">
-        <label for="dms-version"><strong>DMS-Version</strong> <span class="leise">– dazu passende Paketversionen</span></label>
+        <label for="dms-version"><strong>Ablago-Version</strong> <span class="leise">– dazu passende Paketversionen</span></label>
         <input id="dms-version" inputmode="decimal" placeholder="z. B. 0.107.1" pattern="\d+\.\d+\.\d+" autocomplete="off" aria-describedby="dms-version-hilfe">
-        <p id="dms-version-hilfe" class="leise klein">Steht im DMS unter „Über das DMS“ (der Link aus dem DMS bringt sie mit). Sie bleibt nur in diesem Browser. Vorgabe: die neueste Version. Leer: die neueste Version jedes Pakets.</p>
+        <p id="dms-version-hilfe" class="leise klein">Steht in Ablago unter „Über Ablago“ (der Link aus Ablago bringt sie mit). Sie bleibt nur in diesem Browser. Vorgabe: die neueste Version. Leer: die neueste Version jedes Pakets.</p>
       </div>
       <fieldset class="sammel-pakete"><legend><strong>Pakete</strong> <span class="leise">– Abhängigkeiten kommen automatisch mit</span></legend>
         <ul id="sammel-liste" class="sammel-liste"></ul>
@@ -931,19 +935,19 @@ SAMMEL_INHALT = r'''    <h1>Pakete herunterladen</h1>
       <div id="sammel-ergebnis" role="status" aria-live="polite"></div>
     </form>
     <p id="sammel-laden" class="leise">Lade den Katalog …</p>
-    <section><h2>So prüft das DMS die Sammeldatei</h2>
+    <section><h2>So prüft Ablago die Sammeldatei</h2>
       <ul>
         <li>Die Sammeldatei enthält die Archive aus diesem Katalog Byte für Byte unverändert, dazu das Verzeichnis <code>sammeldatei.json</code> mit Größe und SHA-256 je Archiv und eine Kopie des signierten Katalogs (<code>katalog.json</code> mit <code>katalog.sig</code>). Diese Seite prüft jedes Archiv schon beim Zusammenstellen gegen <code>katalog.json</code>.</li>
-        <li>Das DMS nimmt die Datei nur an, wenn jedes Archiv genau zu seiner Prüfsumme passt, nichts anderes darin liegt und jedes Paket gültig ist – sonst installiert es gar nichts. Kennt es den offiziellen Katalog schon, vergleicht es die Prüfsummen auch damit.</li>
-        <li>Das DMS prüft die Signatur des Katalogs auch ohne Internet. Ist sie gültig und steht jedes Archiv mit seiner Prüfsumme darin, zeigt es „aus dem offiziellen Katalog vom …“, und du musst die Herkunft nicht bestätigen. Ist der Katalog nicht signiert, beweisen die Prüfsummen nur, dass die Datei vollständig und unverändert ist – nicht, wer sie zusammengestellt hat; dann bestätigst du die Herkunft im DMS. Zum Vergleich zeigt diese Seite den SHA-256 der ganzen Datei, das DMS nach dem Hochladen ebenfalls.</li>
-        <li>Rechte von Paketen mit Code bestätigst du im DMS je Paket – eine Sammelbestätigung gibt es nicht.</li>
+        <li>Ablago nimmt die Datei nur an, wenn jedes Archiv genau zu seiner Prüfsumme passt, nichts anderes darin liegt und jedes Paket gültig ist – sonst installiert es gar nichts. Kennt es den offiziellen Katalog schon, vergleicht es die Prüfsummen auch damit.</li>
+        <li>Ablago prüft die Signatur des Katalogs auch ohne Internet. Ist sie gültig und steht jedes Archiv mit seiner Prüfsumme darin, zeigt es „aus dem offiziellen Katalog vom …“, und du musst die Herkunft nicht bestätigen. Ist der Katalog nicht signiert, beweisen die Prüfsummen nur, dass die Datei vollständig und unverändert ist – nicht, wer sie zusammengestellt hat; dann bestätigst du die Herkunft in Ablago. Zum Vergleich zeigt diese Seite den SHA-256 der ganzen Datei, Ablago nach dem Hochladen ebenfalls.</li>
+        <li>Rechte von Paketen mit Code bestätigst du in Ablago je Paket – eine Sammelbestätigung gibt es nicht.</li>
       </ul>
     </section>
 '''
 
 
 def sammelseite() -> str:
-    return seite('Pakete herunterladen – DMS-Pakete', SAMMEL_INHALT, 0, 'Mehrere Pakete als eine Sammeldatei für ein DMS ohne Internet', skripte=('sammeldatei.js',))
+    return seite('Pakete herunterladen – Ablago-Pakete', SAMMEL_INHALT, 0, 'Mehrere Pakete als eine Sammeldatei für Ablago ohne Internet', skripte=('sammeldatei.js',))
 
 
 SAMMEL_STIL = '''
@@ -974,7 +978,7 @@ SAMMEL_SKRIPT = r'''
 // (Fragment #dms=…, gemerkt nur in diesem Browser) – die Adresse liest diese Seite selbst nicht.
 (function () {
   var VORAUSWAHL = ['texterkennung'];
-  var KATALOG_URL = 'https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json';
+  var KATALOG_URL = 'https://catalog.ablago.app/katalog.json';
   var BEREICH = /^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$/;
   var VERSION = /^\d+\.\d+\.\d+$/;
   var katalog = null, katalogRoh = null, signatur = null, gewaehlt = [];
@@ -1008,7 +1012,7 @@ SAMMEL_SKRIPT = r'''
       var p = paket(id);
       if (!p) { probleme.push('„' + name(von) + '“ braucht „' + id + '“ – das gibt es im Katalog nicht.'); return; }
       var v = neueste(p, bereich, dms);
-      if (!v) { probleme.push(von ? '„' + name(von) + '“ braucht „' + p.name + '“ ' + bereich + '; dazu passt keine Version für DMS ' + dms + '.' : '„' + p.name + '“: keine Version passt zu DMS ' + dms + '.'); return; }
+      if (!v) { probleme.push(von ? '„' + name(von) + '“ braucht „' + p.name + '“ ' + bereich + '; dazu passt keine Version für Ablago ' + dms + '.' : '„' + p.name + '“: keine Version passt zu DMS ' + dms + '.'); return; }
       plan[id] = { id: id, name: p.name, v: v, gewaehlt: !von, fuer: von ? [von] : [] };
       Object.keys(v.abhaengigkeiten || {}).forEach(function (a) { nimm(a, v.abhaengigkeiten[a], id); });
     }
@@ -1040,7 +1044,7 @@ SAMMEL_SKRIPT = r'''
       box.checked = an; box.disabled = !v || mit;
       box.addEventListener('change', function () { document.getElementById('sammel-ergebnis').textContent = ''; if (box.checked) gewaehlt.push(p.id); else gewaehlt = gewaehlt.filter(function (x) { return x !== p.id; }); zeichne(); });
       var zeige = (im && im.v) || v || p.versionen[0];
-      var unter = !v ? 'Braucht DMS ' + p.versionen[0].dms + (dms ? ' – du hast ' + dms + '.' : '.') : (zeige.code ? 'Enthält Code – die Rechte bestätigst du im DMS für dieses Paket einzeln.' : 'Kein Code – legt Mappentypen und Ansichten an.');
+      var unter = !v ? 'Braucht Ablago ' + p.versionen[0].dms + (dms ? ' – du hast ' + dms + '.' : '.') : (zeige.code ? 'Enthält Code – die Rechte bestätigst du in Ablago für dieses Paket einzeln.' : 'Kein Code – legt Mappentypen und Ansichten an.');
       var empfohlen = VORAUSWAHL.indexOf(p.id) >= 0 && v;
       liste.appendChild(el('li', { className: an ? 'an' : '' }, [el('label', { for: 'p-' + p.id }, [box, el('span', {}, [
         el('strong', { text: p.name }), ' ', el('span', { className: 'leise', text: zeige.version }),
@@ -1081,7 +1085,7 @@ SAMMEL_SKRIPT = r'''
     return new Blob(teile.concat(zentral, [e.buffer]), { type: 'application/zip' });
   }
   function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); }
-  var LIESMICH = 'Sammeldatei für das DMS\n=======================\n\nDiese Datei enthält mehrere Pakete aus dem Paketkatalog des DMS-Projekts\n(https://motom001.github.io/dms-registry/) – für ein DMS ohne Internet.\n\nSo installierst du sie:\n  Werkbank → Pakete → „Ohne Internet …“ → Sammeldatei wählen\n  (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).\n\nDas DMS prüft vorher jedes Paket gegen die Prüfsumme in sammeldatei.json und\ninstalliert dann Paket für Paket; Rechte von Paketen mit Code bestätigst du einzeln.\nEntpacken musst du nichts.\n';
+  var LIESMICH = 'Sammeldatei für Ablago\n=======================\n\nDiese Datei enthält mehrere Pakete aus dem Paketkatalog des Ablago-Projekts\n(https://catalog.ablago.app/) – für Ablago ohne Internet.\n\nSo installierst du sie:\n  Werkbank → Pakete → „Ohne Internet …“ → Sammeldatei wählen\n  (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).\n\nAblago prüft vorher jedes Paket gegen die Prüfsumme in sammeldatei.json und\ninstalliert dann Paket für Paket; Rechte von Paketen mit Code bestätigst du einzeln.\nEntpacken musst du nichts.\n';
   async function herunterladen(ev) {
     ev.preventDefault();
     var r = zeichne(), aus = document.getElementById('sammel-ergebnis'), knopf = document.getElementById('sammel-los');
@@ -1110,7 +1114,7 @@ SAMMEL_SKRIPT = r'''
       var a = el('a', { href: URL.createObjectURL(blob), download: dateiname, className: 'knopf' }, ['Noch einmal speichern']);
       aus.textContent = '';
       aus.appendChild(el('p', {}, [el('strong', { text: dateiname }), ' mit ' + eintraege.map(function (e) { return e.name + ' ' + e.version; }).join(', ') + ' (' + (blob.size / 1048576).toFixed(1).replace('.', ',') + ' MB).']));
-      aus.appendChild(el('p', { className: 'leise' }, ['SHA-256 der Datei: ', el('code', { text: summe }), ' – das DMS zeigt denselben Wert nach dem Hochladen.']));
+      aus.appendChild(el('p', { className: 'leise' }, ['SHA-256 der Datei: ', el('code', { text: summe }), ' – Ablago zeigt denselben Wert nach dem Hochladen.']));
       aus.appendChild(a);
       a.click();
     } catch (e) { aus.textContent = 'Das hat nicht geklappt: ' + e.message; }
@@ -1179,6 +1183,9 @@ def main():
         ziel = ausgabe / 'autor' / g
         ziel.mkdir(parents=True, exist_ok=True)
         (ziel / 'index.html').write_text(autorseite(name, g, liste), encoding='utf-8')
+    # Logo und Favicon von Ablago (Quelle: motom001/dms-website, Ordner marke/; Name und Logo nicht unter Apache-2.0)
+    for d in (Path(__file__).parent / 'marke').iterdir():
+        (ausgabe / d.name).write_bytes(d.read_bytes())
     (ausgabe / 'stil.css').write_text((STIL + SAMMEL_STIL).lstrip(), encoding='utf-8')
     (ausgabe / 'dms.js').write_text(SKRIPT.lstrip(), encoding='utf-8')
     (ausgabe / 'sammeldatei.html').write_text(sammelseite(), encoding='utf-8')

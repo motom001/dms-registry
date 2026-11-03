@@ -1,4 +1,4 @@
-DMS Registry
+Ablago – Paketkatalog (dms-registry)
 Copyright 2026 Thomas Meissner
 
 Werkzeuge, Schemas, Webseite und Vorlage dieses Repositorys stehen ab dem
@@ -9,3 +9,7 @@ unter der Lizenz in seinem eigenen Ordner (LICENSE, manifest.yaml).
 Die Symbole in werkzeuge/symbole/ (auch eingebettet in die Katalog-Webseite) stammen
 aus Lucide (https://lucide.dev, lucide-static 1.59.0) und stehen unter der ISC-Lizenz:
 Copyright (c) 2026 Lucide Icons and Contributors. Lizenztext: werkzeuge/symbole/LICENSE.
+
+Name und Logo von Ablago (werkzeuge/marke/, übernommen aus motom001/dms-website, Ordner marke/)
+sind von der Apache License nicht erfasst (Abschnitt 6 der Lizenz). Erlaubt ist, auf Ablago
+hinzuweisen, z. B. „Paket für Ablago“; ein Fork verwendet einen eigenen Namen und ein eigenes Logo.

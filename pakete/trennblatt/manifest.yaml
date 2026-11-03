@@ -2,7 +2,7 @@
 schema: 1
 id: trennblatt
 name: Trennblatt
-version: 1.0.1
+version: 1.0.2
 beschreibung: Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.
 autor:
   name: Thomas Meissner
@@ -53,7 +53,7 @@ code:
           name: Archivnummer aus dem Aufkleber übernehmen
           typ: janein
           standard: true
-          hilfe: Klebt auf einem Brief ein Archivnummer-Aufkleber des DMS (Barcode „DMS-ASN:…“), bekommt das Dokument der neuen Post diese Archivnummer.
+          hilfe: Klebt auf einem Brief ein Archivnummer-Aufkleber von Ablago (Barcode „DMS-ASN:…“), bekommt das Dokument der neuen Post diese Archivnummer.
     - abschnitt: Erkennung
       felder:
         - schluessel: dpi

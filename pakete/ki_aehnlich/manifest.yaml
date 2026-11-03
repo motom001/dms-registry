@@ -2,7 +2,7 @@
 schema: 1
 id: ki_aehnlich
 name: KI lokal – Ähnlichkeit
-version: 1.0.0
+version: 1.0.1
 beschreibung: Findet ähnliche Dokumente und sucht mit eigenen Worten – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.
 autor:
   name: Thomas Meissner
@@ -14,7 +14,7 @@ inhalt: {}
 code:
   sprache: c
   quelle: code/
-  # Für jedes Dokument mit Volltext, auch für den Bestand (das DMS schickt ihn gedrosselt nach).
+  # Für jedes Dokument mit Volltext, auch für den Bestand (Ablago schickt ihn gedrosselt nach).
   ereignisse: [volltext.fertig]
   rechte:
     lesen: ["*"]                       # Dokumente liegen in Mappen beliebiger Typen

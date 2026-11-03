@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 """
-Sammeldatei: mehrere Pakete aus dem Katalog in einer Datei – für ein DMS ohne Internet (motom001/dms#461).
+Sammeldatei: mehrere Pakete aus dem Katalog in einer Datei – für Ablago ohne Internet (motom001/dms#461).
 
     python3 werkzeuge/sammeldatei.py <katalogordner> <ziel.zip> [--dms 0.107.1] <id> [<id> …]
     python3 werkzeuge/sammeldatei.py --pruefen <datei.zip> [--katalog <katalog.json>] [--oeffentlich <x.pub> …]
 
 Die Katalog-Webseite (sammeldatei.html) stellt dieselbe Datei im Browser zusammen; dieses Skript ist die
-Referenz dafür und prüft eine Sammeldatei genau so, wie das DMS sie prüft.
+Referenz dafür und prüft eine Sammeldatei genau so, wie Ablago sie prüft.
 
 Aufbau (Schema: schema/sammeldatei.schema.json):
 
     sammeldatei.json              Verzeichnis: je Paket Id, Version, Archiv, SHA-256, Größe, gewählt/Abhängigkeit
     LIESMICH.txt                  kurze Anleitung (optional)
     katalog.json, katalog.sig     der signierte Katalog, Byte für Byte (wenn er signiert ist, #74) – damit prüft das
-                                  DMS ohne Internet, dass jedes Archiv aus dem offiziellen Katalog stammt
+                                  Ablago ohne Internet, dass jedes Archiv aus dem offiziellen Katalog stammt
     pakete/<id>-<version>.zip     das Archiv aus dem Katalog, Byte für Byte unverändert
 
-Auswahl: je Paket die neueste Version, deren „dms“ zur angegebenen DMS-Version passt (ohne --dms: die neueste);
-Abhängigkeiten kommen mit (neueste Version, die zum Bereich und zur DMS-Version passt). Jedes Archiv wird vor dem
+Auswahl: je Paket die neueste Version, deren „dms“ zur angegebenen Ablago-Version passt (ohne --dms: die neueste);
+Abhängigkeiten kommen mit (neueste Version, die zum Bereich und zur Ablago-Version passt). Jedes Archiv wird vor dem
 Einpacken gegen die Prüfsumme in katalog.json geprüft.
 
 Braucht: pip install jsonschema
@@ -34,23 +34,23 @@ WURZEL = Path(__file__).resolve().parent.parent
 VERZEICHNIS, LIESMICH = 'sammeldatei.json', 'LIESMICH.txt'
 KATALOG, SIGNATUR = 'katalog.json', 'katalog.sig'
 REPO = 'https://github.com/motom001/dms-registry'
-KATALOG_URL = 'https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json'
+KATALOG_URL = 'https://catalog.ablago.app/katalog.json'
 # Grenzen wie im DMS (server/src/pakete.ts).
 PAKETE_MAX, ARCHIV_MAX, DATEI_MAX = 50, 10 * 1024 * 1024, 64 * 1024 * 1024
 BEREICH = re.compile(r'^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$')
 ARCHIVNAME = re.compile(r'^pakete/([a-z][a-z0-9_]{1,19})-(\d+\.\d+\.\d+)\.zip$')
 
-LIESMICH_TEXT = '''Sammeldatei für das DMS
+LIESMICH_TEXT = '''Sammeldatei für Ablago
 =======================
 
-Diese Datei enthält mehrere Pakete aus dem Paketkatalog des DMS-Projekts
-(https://motom001.github.io/dms-registry/) – für ein DMS ohne Internet.
+Diese Datei enthält mehrere Pakete aus dem Paketkatalog des Ablago-Projekts
+(https://catalog.ablago.app/) – für Ablago ohne Internet.
 
 So installierst du sie:
   Werkbank → Pakete → „Ohne Internet …“ → Sammeldatei wählen
   (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).
 
-Das DMS prüft vorher jedes Paket gegen die Prüfsumme in sammeldatei.json und
+Ablago prüft vorher jedes Paket gegen die Prüfsumme in sammeldatei.json und
 installiert dann Paket für Paket; Rechte von Paketen mit Code bestätigst du einzeln.
 Entpacken musst du nichts.
 '''
@@ -61,7 +61,7 @@ def teile(v: str) -> tuple[int, ...]:
 
 
 def passt(version: str, bereich: str) -> bool:
-    """Wie passt() im DMS (shared/src/pakete.ts)."""
+    """Wie passt() in Ablago (shared/src/pakete.ts)."""
     m = BEREICH.match(bereich.strip())
     if not m:
         return False
@@ -101,7 +101,7 @@ def auswahl(katalog: dict, ids: list[str], dms: str | None) -> list[dict]:
         kandidaten = sorted(pakete[pid]['versionen'], key=lambda v: teile(v['version']), reverse=True)
         v = next((v for v in kandidaten if (not bereich or passt(v['version'], bereich)) and dms_passt(dms, v['dms'])), None)
         if not v:
-            bedingungen = [f'zu {bereich}' if bereich else '', f'zu DMS {dms}' if dms else '']
+            bedingungen = [f'zu {bereich}' if bereich else '', f'zu Ablago {dms}' if dms else '']
             raise ValueError(f'{pid}: keine Version passt ' + ' und '.join(b for b in bedingungen if b))
         plan[pid] = {'id': pid, 'name': pakete[pid].get('name', pid), 'gewaehlt': not von, 'v': v, 'version': v['version']}
         for a, b in (v.get('abhaengigkeiten') or {}).items():
@@ -167,7 +167,7 @@ def erzeuge(katalogordner: Path, ids: list[str], dms: str | None, jetzt: str | N
 
 def pruefe(daten: bytes, katalog: dict | None = None, oeffentlich: list[str] | None = None) -> list[str]:
     """
-    Prüft eine Sammeldatei wie das DMS: Verzeichnis, nur erwartete Dateien, Größe und SHA-256 je Archiv, optional
+    Prüft eine Sammeldatei wie Ablago: Verzeichnis, nur erwartete Dateien, Größe und SHA-256 je Archiv, optional
     gegen katalog.json. Mit oeffentlich (PEM-Texte): Signatur des mitgelieferten Katalogs prüfen und jedes Archiv
     gegen ihn.
     """
