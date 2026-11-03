@@ -27,6 +27,7 @@ body:
         - KI lokal – Ähnlichkeit (ki_aehnlich)
         - KI-Assistent (ki_assistent)
         - Office und E-Mail (office_email)
+        - PDF/A (pdfa)
         - Sicherungsziel WebDAV (sicherung_webdav)
         - Texterkennung (Deutsch und Englisch) (texterkennung)
         - Texterkennung – Zusatzsprache Arabisch (texterkennung_ara)

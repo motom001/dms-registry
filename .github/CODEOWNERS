@@ -13,6 +13,7 @@
 /pakete/ki_assistent/  @motom001
 /pakete/texterkennung_fra/  @motom001
 /pakete/bildformate/  @motom001
+/pakete/pdfa/  @motom001
 # Signieren des Katalogs (#74): öffentliche Schlüssel, Werkzeug und Workflow nur durch den Maintainer.
 /schluessel/  @motom001
 /werkzeuge/signieren.py  @motom001
