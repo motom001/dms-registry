@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-03T01:37:44Z",
+  "erstellt": "2026-11-03T02:23:07Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -2261,6 +2261,30 @@
       "id": "texterkennung_ara",
       "versionen": [
         {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ara-1.0.2.zip",
+          "sha256": "845fb7a284d35b000fbb5f56940cc5162a7b9a106ef9c4591710785d9b34ae25",
+          "groesse": 728206,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ara",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ara/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ara/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
+        {
           "version": "1.0.1",
           "dms": ">=0.133.0",
           "abhaengigkeiten": {
@@ -2308,7 +2332,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2319,6 +2343,30 @@
     {
       "id": "texterkennung_fra",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_fra-1.0.3.zip",
+          "sha256": "679340d381f8c1fe45070feab442dd6cb6e398d30cc1f7cb21647121f667c866",
+          "groesse": 618633,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_fra",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -2387,7 +2435,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2398,6 +2446,30 @@
     {
       "id": "texterkennung_ita",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ita-1.0.2.zip",
+          "sha256": "d2a27c6d9f20ab6f1257eb4beec6b71c52cd9e870dd75c8c29b8b8bc78ee3107",
+          "groesse": 1283142,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ita",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ita/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ita/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.133.0",
@@ -2446,7 +2518,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2457,6 +2529,30 @@
     {
       "id": "texterkennung_nld",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_nld-1.0.2.zip",
+          "sha256": "829f064798b864e972d13b3e7dff77def0eb3fb1b82af92fb0186df2c2c6c402",
+          "groesse": 2988249,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_nld",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_nld/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_nld/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.133.0",
@@ -2505,7 +2601,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2516,6 +2612,30 @@
     {
       "id": "texterkennung_pol",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_pol-1.0.2.zip",
+          "sha256": "e44b5df678071b5496d7c3c388e967db3be06515e8c98b3c93a8f324ec087642",
+          "groesse": 2038431,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_pol",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_pol/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_pol/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.133.0",
@@ -2564,7 +2684,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2575,6 +2695,30 @@
     {
       "id": "texterkennung_por",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_por-1.0.2.zip",
+          "sha256": "9eda4087e0c4fd033d72060c3d0b3ca6cc36b4ebcc584a06e53d9c3864365f58",
+          "groesse": 1011555,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_por",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_por/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_por/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.133.0",
@@ -2623,7 +2767,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2634,6 +2778,30 @@
     {
       "id": "texterkennung_rus",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_rus-1.0.2.zip",
+          "sha256": "e19e9c90f1bedee9036438433a749e42910401b8edcc6991ff6dc3efad2fa60a",
+          "groesse": 1611216,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_rus",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_rus/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_rus/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.133.0",
@@ -2682,7 +2850,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2693,6 +2861,30 @@
     {
       "id": "texterkennung_spa",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_spa-1.0.2.zip",
+          "sha256": "485713f3e6b405d63e21302a70cf4e20d5af24624357355043a8efc2c3fef4ba",
+          "groesse": 1138963,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_spa",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_spa/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_spa/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.133.0",
@@ -2741,7 +2933,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2752,6 +2944,30 @@
     {
       "id": "texterkennung_tur",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_tur-1.0.2.zip",
+          "sha256": "a18b00d74ba7040f038011bd88f18563c031b4a55c04c2e8dd590b9db6968f3e",
+          "groesse": 2016408,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_tur",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_tur/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_tur/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.133.0",
@@ -2800,7 +3016,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2811,6 +3027,30 @@
     {
       "id": "texterkennung_ukr",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ukr-1.0.2.zip",
+          "sha256": "bf8c1f2504660954aad9343c9253b6830b723993dc3639ba5ff3ef432ce4fbf3",
+          "groesse": 1623384,
+          "veroeffentlicht": "2026-11-03T02:23:07Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ukr",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ukr/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ukr/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.133.0",
@@ -2859,7 +3099,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "sprachen",
         "volltext"
