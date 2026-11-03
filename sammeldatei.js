@@ -5,7 +5,7 @@
 // (Fragment #dms=…, gemerkt nur in diesem Browser) – die Adresse liest diese Seite selbst nicht.
 (function () {
   var VORAUSWAHL = ['texterkennung'];
-  var KATALOG_URL = 'https://raw.githubusercontent.com/motom001/dms-registry/gh-pages/katalog.json';
+  var KATALOG_URL = 'https://catalog.ablago.app/katalog.json';
   var BEREICH = /^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$/;
   var VERSION = /^\d+\.\d+\.\d+$/;
   var katalog = null, katalogRoh = null, signatur = null, gewaehlt = [];
@@ -39,7 +39,7 @@
       var p = paket(id);
       if (!p) { probleme.push('„' + name(von) + '“ braucht „' + id + '“ – das gibt es im Katalog nicht.'); return; }
       var v = neueste(p, bereich, dms);
-      if (!v) { probleme.push(von ? '„' + name(von) + '“ braucht „' + p.name + '“ ' + bereich + '; dazu passt keine Version für DMS ' + dms + '.' : '„' + p.name + '“: keine Version passt zu DMS ' + dms + '.'); return; }
+      if (!v) { probleme.push(von ? '„' + name(von) + '“ braucht „' + p.name + '“ ' + bereich + '; dazu passt keine Version für Ablago ' + dms + '.' : '„' + p.name + '“: keine Version passt zu DMS ' + dms + '.'); return; }
       plan[id] = { id: id, name: p.name, v: v, gewaehlt: !von, fuer: von ? [von] : [] };
       Object.keys(v.abhaengigkeiten || {}).forEach(function (a) { nimm(a, v.abhaengigkeiten[a], id); });
     }
@@ -71,7 +71,7 @@
       box.checked = an; box.disabled = !v || mit;
       box.addEventListener('change', function () { document.getElementById('sammel-ergebnis').textContent = ''; if (box.checked) gewaehlt.push(p.id); else gewaehlt = gewaehlt.filter(function (x) { return x !== p.id; }); zeichne(); });
       var zeige = (im && im.v) || v || p.versionen[0];
-      var unter = !v ? 'Braucht DMS ' + p.versionen[0].dms + (dms ? ' – du hast ' + dms + '.' : '.') : (zeige.code ? 'Enthält Code – die Rechte bestätigst du im DMS für dieses Paket einzeln.' : 'Kein Code – legt Mappentypen und Ansichten an.');
+      var unter = !v ? 'Braucht Ablago ' + p.versionen[0].dms + (dms ? ' – du hast ' + dms + '.' : '.') : (zeige.code ? 'Enthält Code – die Rechte bestätigst du in Ablago für dieses Paket einzeln.' : 'Kein Code – legt Mappentypen und Ansichten an.');
       var empfohlen = VORAUSWAHL.indexOf(p.id) >= 0 && v;
       liste.appendChild(el('li', { className: an ? 'an' : '' }, [el('label', { for: 'p-' + p.id }, [box, el('span', {}, [
         el('strong', { text: p.name }), ' ', el('span', { className: 'leise', text: zeige.version }),
@@ -112,7 +112,7 @@
     return new Blob(teile.concat(zentral, [e.buffer]), { type: 'application/zip' });
   }
   function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); }
-  var LIESMICH = 'Sammeldatei für das DMS\n=======================\n\nDiese Datei enthält mehrere Pakete aus dem Paketkatalog des DMS-Projekts\n(https://motom001.github.io/dms-registry/) – für ein DMS ohne Internet.\n\nSo installierst du sie:\n  Werkbank → Pakete → „Ohne Internet …“ → Sammeldatei wählen\n  (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).\n\nDas DMS prüft vorher jedes Paket gegen die Prüfsumme in sammeldatei.json und\ninstalliert dann Paket für Paket; Rechte von Paketen mit Code bestätigst du einzeln.\nEntpacken musst du nichts.\n';
+  var LIESMICH = 'Sammeldatei für Ablago\n=======================\n\nDiese Datei enthält mehrere Pakete aus dem Paketkatalog des Ablago-Projekts\n(https://catalog.ablago.app/) – für Ablago ohne Internet.\n\nSo installierst du sie:\n  Werkbank → Pakete → „Ohne Internet …“ → Sammeldatei wählen\n  (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).\n\nAblago prüft vorher jedes Paket gegen die Prüfsumme in sammeldatei.json und\ninstalliert dann Paket für Paket; Rechte von Paketen mit Code bestätigst du einzeln.\nEntpacken musst du nichts.\n';
   async function herunterladen(ev) {
     ev.preventDefault();
     var r = zeichne(), aus = document.getElementById('sammel-ergebnis'), knopf = document.getElementById('sammel-los');
@@ -141,7 +141,7 @@
       var a = el('a', { href: URL.createObjectURL(blob), download: dateiname, className: 'knopf' }, ['Noch einmal speichern']);
       aus.textContent = '';
       aus.appendChild(el('p', {}, [el('strong', { text: dateiname }), ' mit ' + eintraege.map(function (e) { return e.name + ' ' + e.version; }).join(', ') + ' (' + (blob.size / 1048576).toFixed(1).replace('.', ',') + ' MB).']));
-      aus.appendChild(el('p', { className: 'leise' }, ['SHA-256 der Datei: ', el('code', { text: summe }), ' – das DMS zeigt denselben Wert nach dem Hochladen.']));
+      aus.appendChild(el('p', { className: 'leise' }, ['SHA-256 der Datei: ', el('code', { text: summe }), ' – Ablago zeigt denselben Wert nach dem Hochladen.']));
       aus.appendChild(a);
       a.click();
     } catch (e) { aus.textContent = 'Das hat nicht geklappt: ' + e.message; }

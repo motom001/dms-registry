@@ -1,12 +1,80 @@
 {
   "format": 1,
-  "erstellt": "2026-11-03T22:07:00Z",
+  "erstellt": "2026-11-03T23:53:08Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
     {
       "id": "basis",
       "versionen": [
+        {
+          "version": "1.4.1",
+          "dms": ">=0.127.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "organisation",
+                "name": "Organisation"
+              },
+              {
+                "schluessel": "niederlassung",
+                "name": "Niederlassung"
+              },
+              {
+                "schluessel": "person",
+                "name": "Person"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "organisationen",
+                "name": "Organisationen"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "banken",
+                "name": "Banken"
+              },
+              {
+                "schluessel": "behoerden",
+                "name": "Behörden"
+              },
+              {
+                "schluessel": "aerzte",
+                "name": "Ärzte und Praxen"
+              },
+              {
+                "schluessel": "niederlassungen",
+                "name": "Niederlassungen"
+              },
+              {
+                "schluessel": "personen",
+                "name": "Personen"
+              },
+              {
+                "schluessel": "familie",
+                "name": "Familie und Freunde"
+              },
+              {
+                "schluessel": "ansprechpartner",
+                "name": "Ansprechpartner"
+              }
+            ],
+            "beispiele": 8
+          },
+          "code": false,
+          "archiv": "archive/basis-1.4.1.zip",
+          "sha256": "0ce55e6dad8ac4da9d1a66a5474e11060ea068707e44ef282da20a295db7145f",
+          "groesse": 13820,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/basis",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/CHANGELOG.md"
+        },
         {
           "version": "1.4.0",
           "dms": ">=0.127.0",
@@ -399,7 +467,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.4.0",
+      "aktuell": "1.4.1",
       "kategorien": [
         "vorlagen"
       ],
@@ -408,6 +476,24 @@
     {
       "id": "bildformate",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.137.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/bildformate-1.0.2.zip",
+          "sha256": "431ae46bda559eb90c658830c2cd586a9125796ee2e8f8fe1c376edfe3684497",
+          "groesse": 364765,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/bildformate",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/bildformate/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/bildformate/CHANGELOG.md"
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.137.0",
@@ -446,13 +532,13 @@
         }
       ],
       "name": "Bildformate",
-      "beschreibung": "Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP im DMS sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.",
+      "beschreibung": "Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "dateiformate"
       ],
@@ -461,6 +547,53 @@
     {
       "id": "fahrzeuge",
       "versionen": [
+        {
+          "version": "1.3.1",
+          "dms": ">=0.127.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.1.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "fahrzeug",
+                "name": "Fahrzeug"
+              },
+              {
+                "schluessel": "werkstattrechnung",
+                "name": "Werkstattrechnung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "fahrzeuge",
+                "name": "Fahrzeuge"
+              },
+              {
+                "schluessel": "alle_fahrzeuge",
+                "name": "Alle Fahrzeuge"
+              },
+              {
+                "schluessel": "werkstattrechnungen",
+                "name": "Werkstattrechnungen"
+              },
+              {
+                "schluessel": "hu_faellig",
+                "name": "HU fällig"
+              }
+            ],
+            "beispiele": 3
+          },
+          "code": false,
+          "archiv": "archive/fahrzeuge-1.3.1.zip",
+          "sha256": "653a4fdc3bcad396e75fc85c1ac283a82e4cc33f98565fd4fe1df797033ce4a7",
+          "groesse": 120151,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/CHANGELOG.md"
+        },
         {
           "version": "1.3.0",
           "dms": ">=0.127.0",
@@ -798,7 +931,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.3.0",
+      "aktuell": "1.3.1",
       "kategorien": [
         "vorlagen"
       ],
@@ -807,6 +940,24 @@
     {
       "id": "hallo_post",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.88.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/hallo_post-1.0.2.zip",
+          "sha256": "e9f425cf61bd47ece479d93724363ce890558d4e0e1ac2c114068e3941385d3f",
+          "groesse": 19747,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/hallo_post",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/hallo_post/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/hallo_post/CHANGELOG.md"
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.88.0",
@@ -851,7 +1002,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "entwickler"
       ],
@@ -860,6 +1011,69 @@
     {
       "id": "haus",
       "versionen": [
+        {
+          "version": "1.1.1",
+          "dms": ">=0.121.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.0.0",
+            "haushalt": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "immobilie",
+                "name": "Immobilie"
+              },
+              {
+                "schluessel": "wartung",
+                "name": "Wartung"
+              },
+              {
+                "schluessel": "zaehlerstand",
+                "name": "Zählerstand"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haus",
+                "name": "Haus"
+              },
+              {
+                "schluessel": "immobilien",
+                "name": "Immobilien"
+              },
+              {
+                "schluessel": "wartungen",
+                "name": "Wartungen"
+              },
+              {
+                "schluessel": "zaehlerstaende",
+                "name": "Zählerstände"
+              },
+              {
+                "schluessel": "wartung_faellig",
+                "name": "Wartung fällig"
+              },
+              {
+                "schluessel": "zaehler_dieses_jahr",
+                "name": "Zählerstände dieses Jahr"
+              },
+              {
+                "schluessel": "zaehler_letztes_jahr",
+                "name": "Zählerstände letztes Jahr"
+              }
+            ],
+            "beispiele": 7
+          },
+          "code": false,
+          "archiv": "archive/haus-1.1.1.zip",
+          "sha256": "6f082aa4440d7c682cf5ab9f6fd8e6a2b47a388a45fa2ade5163749d7c9ce4a6",
+          "groesse": 155768,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haus",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/CHANGELOG.md"
+        },
         {
           "version": "1.1.0",
           "dms": ">=0.121.0",
@@ -1120,7 +1334,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.1.0",
+      "aktuell": "1.1.1",
       "kategorien": [
         "vorlagen"
       ],
@@ -1129,6 +1343,132 @@
     {
       "id": "haushalt",
       "versionen": [
+        {
+          "version": "1.2.1",
+          "dms": ">=0.121.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "konto",
+                "name": "Konto"
+              },
+              {
+                "schluessel": "vertrag",
+                "name": "Vertrag"
+              },
+              {
+                "schluessel": "versicherung",
+                "name": "Versicherung"
+              },
+              {
+                "schluessel": "steuerjahr",
+                "name": "Steuerjahr"
+              },
+              {
+                "schluessel": "arbeitsverhaeltnis",
+                "name": "Arbeitsverhältnis"
+              },
+              {
+                "schluessel": "vorsorge",
+                "name": "Vorsorge"
+              },
+              {
+                "schluessel": "ausweis",
+                "name": "Ausweis & Urkunde"
+              },
+              {
+                "schluessel": "gesundheit",
+                "name": "Gesundheit"
+              },
+              {
+                "schluessel": "anschaffung",
+                "name": "Anschaffung"
+              },
+              {
+                "schluessel": "bildung",
+                "name": "Bildung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haushalt",
+                "name": "Haushalt"
+              },
+              {
+                "schluessel": "konten",
+                "name": "Konten"
+              },
+              {
+                "schluessel": "vertraege",
+                "name": "Verträge"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "steuerjahre",
+                "name": "Steuerjahre"
+              },
+              {
+                "schluessel": "arbeit",
+                "name": "Arbeitsverhältnisse"
+              },
+              {
+                "schluessel": "vorsorge",
+                "name": "Vorsorge"
+              },
+              {
+                "schluessel": "ausweise",
+                "name": "Ausweise & Urkunden"
+              },
+              {
+                "schluessel": "gesundheit",
+                "name": "Gesundheit"
+              },
+              {
+                "schluessel": "anschaffungen",
+                "name": "Anschaffungen"
+              },
+              {
+                "schluessel": "bildung",
+                "name": "Bildung"
+              },
+              {
+                "schluessel": "sachversicherungen",
+                "name": "Sachversicherungen"
+              },
+              {
+                "schluessel": "personenversicherungen",
+                "name": "Personenversicherungen"
+              },
+              {
+                "schluessel": "kuendigung_bald",
+                "name": "Kündigung in den nächsten 3 Monaten"
+              },
+              {
+                "schluessel": "laeuft_ab",
+                "name": "Läuft bald ab"
+              },
+              {
+                "schluessel": "garantie_bald",
+                "name": "Garantie läuft ab"
+              }
+            ],
+            "beispiele": 18
+          },
+          "code": false,
+          "archiv": "archive/haushalt-1.2.1.zip",
+          "sha256": "c19e8b0805eb504669eed24580bf59b3c992084974af14ba445b68f6be4d07b8",
+          "groesse": 374013,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haushalt",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haushalt/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haushalt/CHANGELOG.md"
+        },
         {
           "version": "1.2.0",
           "dms": ">=0.121.0",
@@ -1893,7 +2233,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0",
+      "aktuell": "1.2.1",
       "kategorien": [
         "vorlagen"
       ],
@@ -1902,6 +2242,24 @@
     {
       "id": "ki_aehnlich",
       "versionen": [
+        {
+          "version": "1.0.1",
+          "dms": ">=0.122.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/ki_aehnlich-1.0.1.zip",
+          "sha256": "b5e5526fb02ab84fd1b371620e4a6b4329a47dada30e08213ca617b80e300c5d",
+          "groesse": 26489454,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/ki_aehnlich",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_aehnlich/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_aehnlich/CHANGELOG.md"
+        },
         {
           "version": "1.0.0",
           "dms": ">=0.122.0",
@@ -1928,7 +2286,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0",
+      "aktuell": "1.0.1",
       "kategorien": [
         "ki",
         "suche"
@@ -1938,6 +2296,24 @@
     {
       "id": "ki_assistent",
       "versionen": [
+        {
+          "version": "1.2.1",
+          "dms": ">=0.138.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/ki_assistent-1.2.1.zip",
+          "sha256": "46be6442f55216c16b8cdc5143db8069783e5c85ade0a535ac10ffe828d265de",
+          "groesse": 80410,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/ki_assistent",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_assistent/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/ki_assistent/CHANGELOG.md"
+        },
         {
           "version": "1.2.0",
           "dms": ">=0.138.0",
@@ -2018,7 +2394,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0",
+      "aktuell": "1.2.1",
       "kategorien": [
         "ki",
         "suche"
@@ -2028,6 +2404,24 @@
     {
       "id": "office_email",
       "versionen": [
+        {
+          "version": "1.1.1",
+          "dms": ">=0.145.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/office_email-1.1.1.zip",
+          "sha256": "6e70c1f37f54022ebb2f0125fc7ac9abb5c906345c7b3ccd5a46b07056594605",
+          "groesse": 125686,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/office_email",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/office_email/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/office_email/CHANGELOG.md"
+        },
         {
           "version": "1.1.0",
           "dms": ">=0.145.0",
@@ -2072,7 +2466,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.1.0",
+      "aktuell": "1.1.1",
       "kategorien": [
         "dateiformate",
         "volltext"
@@ -2082,6 +2476,24 @@
     {
       "id": "pdfa",
       "versionen": [
+        {
+          "version": "1.0.1",
+          "dms": ">=0.149.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/pdfa-1.0.1.zip",
+          "sha256": "757e51489f80a86952a98e5b1c7d3c6bb860e1c7b934c235bc6c071767eea63d",
+          "groesse": 178837,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/pdfa",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/pdfa/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/pdfa/CHANGELOG.md"
+        },
         {
           "version": "1.0.0",
           "dms": ">=0.149.0",
@@ -2108,7 +2520,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0",
+      "aktuell": "1.0.1",
       "kategorien": [
         "dateiformate"
       ],
@@ -2117,6 +2529,24 @@
     {
       "id": "sicherung_webdav",
       "versionen": [
+        {
+          "version": "1.0.1",
+          "dms": ">=0.142.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/sicherung_webdav-1.0.1.zip",
+          "sha256": "443d3f5c5c9083d5506518acd440b2622588bd3d4c5e524f051780229e6f3b16",
+          "groesse": 78477,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sicherung_webdav",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sicherung_webdav/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sicherung_webdav/CHANGELOG.md"
+        },
         {
           "version": "1.0.0",
           "dms": ">=0.142.0",
@@ -2137,13 +2567,13 @@
         }
       ],
       "name": "Sicherungsziel WebDAV",
-      "beschreibung": "Bringt jede Sicherung des DMS außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.",
+      "beschreibung": "Bringt jede Ablago-Sicherung außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0",
+      "aktuell": "1.0.1",
       "kategorien": [
         "sicherung"
       ],
@@ -2152,6 +2582,24 @@
     {
       "id": "texterkennung",
       "versionen": [
+        {
+          "version": "2.2.1",
+          "dms": ">=0.139.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung-2.2.1.zip",
+          "sha256": "ff9e32562629b253cc19e67b64e2a425f5a047b2f6059906f086223e16206611",
+          "groesse": 8129482,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/CHANGELOG.md"
+        },
         {
           "version": "2.2.0",
           "dms": ">=0.139.0",
@@ -2244,13 +2692,13 @@
         }
       ],
       "name": "Texterkennung (Deutsch und Englisch)",
-      "beschreibung": "Das Grundpaket für die Texterkennung des DMS – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.",
+      "beschreibung": "Das Grundpaket für die Texterkennung von Ablago – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "2.2.0",
+      "aktuell": "2.2.1",
       "kategorien": [
         "volltext",
         "suche"
@@ -2260,6 +2708,30 @@
     {
       "id": "texterkennung_ara",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ara-1.0.3.zip",
+          "sha256": "485f542807a0a76e0870b9f449bfa00a33861a53194a472f3fb1d4cbb7de1d6c",
+          "groesse": 728286,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ara",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ara/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ara/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -2332,7 +2804,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2343,6 +2815,30 @@
     {
       "id": "texterkennung_fra",
       "versionen": [
+        {
+          "version": "1.0.4",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_fra-1.0.4.zip",
+          "sha256": "69eed538062ac07b5a0fda33ee5d1bbd6c94b6618ebf1d50ef5a99c9261dd3ae",
+          "groesse": 618708,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_fra",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_fra/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.3",
           "dms": ">=0.133.0",
@@ -2435,7 +2931,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.3",
+      "aktuell": "1.0.4",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2446,6 +2942,30 @@
     {
       "id": "texterkennung_ita",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ita-1.0.3.zip",
+          "sha256": "221214dc9375014e551076236211527f711e59c2c6143dbfea0f7760a1973287",
+          "groesse": 1283217,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ita",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ita/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ita/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -2518,7 +3038,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2529,6 +3049,30 @@
     {
       "id": "texterkennung_nld",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_nld-1.0.3.zip",
+          "sha256": "e82181831a8aee1c78fefda69be253db782612b80b1f6553dede86619baadd1b",
+          "groesse": 2988328,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_nld",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_nld/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_nld/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -2601,7 +3145,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2612,6 +3156,30 @@
     {
       "id": "texterkennung_pol",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_pol-1.0.3.zip",
+          "sha256": "fcd7dce43b431d5b78a566570bab852bb43a05b8a68db32de989f8c255bbeb78",
+          "groesse": 2038507,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_pol",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_pol/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_pol/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -2684,7 +3252,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2695,6 +3263,30 @@
     {
       "id": "texterkennung_por",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_por-1.0.3.zip",
+          "sha256": "9f34bef84793acd6762ce6a93c220c06ed210e4dd8e34de5eec1f72afca7cea7",
+          "groesse": 1011631,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_por",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_por/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_por/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -2767,7 +3359,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2778,6 +3370,30 @@
     {
       "id": "texterkennung_rus",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_rus-1.0.3.zip",
+          "sha256": "670c08ba4ef6b66862b85b651a424f2818d44e7ce0ce918eb30f373051a79052",
+          "groesse": 1611294,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_rus",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_rus/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_rus/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -2850,7 +3466,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2861,6 +3477,30 @@
     {
       "id": "texterkennung_spa",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_spa-1.0.3.zip",
+          "sha256": "f998aabc14b5327aaa22bf8ed5dd53ecba6579b367857c3624510e02add2d50b",
+          "groesse": 1139041,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_spa",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_spa/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_spa/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -2933,7 +3573,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -2944,6 +3584,30 @@
     {
       "id": "texterkennung_tur",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_tur-1.0.3.zip",
+          "sha256": "1454498e014d709d4f17ba5e9f58668e354278bad39c4e84b955c9bf7d26828f",
+          "groesse": 2016487,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_tur",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_tur/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_tur/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -3016,7 +3680,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -3027,6 +3691,30 @@
     {
       "id": "texterkennung_ukr",
       "versionen": [
+        {
+          "version": "1.0.3",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {
+            "texterkennung": ">=2.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung_ukr-1.0.3.zip",
+          "sha256": "7d0d4b5b15f663dc296843cd8b282113d5c5111b6ba7179cef2823d5757e9abb",
+          "groesse": 1623462,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung_ukr",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ukr/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung_ukr/CHANGELOG.md",
+          "ergaenzt": {
+            "paket": "texterkennung",
+            "gruppe": "Weitere Sprachen"
+          }
+        },
         {
           "version": "1.0.2",
           "dms": ">=0.133.0",
@@ -3099,7 +3787,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.2",
+      "aktuell": "1.0.3",
       "kategorien": [
         "sprachen",
         "volltext"
@@ -3110,6 +3798,24 @@
     {
       "id": "trennblatt",
       "versionen": [
+        {
+          "version": "1.0.2",
+          "dms": ">=0.94.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/trennblatt-1.0.2.zip",
+          "sha256": "b5b6a0c15dd0bb2963a7275c93eb04b516342ebf9d638fe8e0f2fc7366afd548",
+          "groesse": 69014,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/trennblatt",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/trennblatt/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/trennblatt/CHANGELOG.md"
+        },
         {
           "version": "1.0.1",
           "dms": ">=0.94.0",
@@ -3154,7 +3860,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.0.2",
       "kategorien": [
         "post"
       ],
@@ -3163,6 +3869,102 @@
     {
       "id": "vermietung",
       "versionen": [
+        {
+          "version": "1.2.1",
+          "dms": ">=0.127.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.0.0",
+            "haus": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "mietobjekt",
+                "name": "Mietobjekt"
+              },
+              {
+                "schluessel": "wohnung",
+                "name": "Wohnung"
+              },
+              {
+                "schluessel": "mietvertrag",
+                "name": "Mietvertrag"
+              },
+              {
+                "schluessel": "nebenkostenabrechnung",
+                "name": "Nebenkostenabrechnung"
+              },
+              {
+                "schluessel": "ausgabe",
+                "name": "Ausgabe Mietobjekt"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "vermietung",
+                "name": "Vermietung"
+              },
+              {
+                "schluessel": "mietobjekte",
+                "name": "Mietobjekte"
+              },
+              {
+                "schluessel": "wohnungen",
+                "name": "Wohnungen"
+              },
+              {
+                "schluessel": "mietvertraege",
+                "name": "Mietverträge"
+              },
+              {
+                "schluessel": "mietvertraege_laufend",
+                "name": "Laufende Mietverträge"
+              },
+              {
+                "schluessel": "nebenkosten",
+                "name": "Nebenkostenabrechnungen"
+              },
+              {
+                "schluessel": "ausgaben",
+                "name": "Ausgaben"
+              },
+              {
+                "schluessel": "ausgaben_dieses_jahr",
+                "name": "Ausgaben dieses Jahr"
+              },
+              {
+                "schluessel": "ausgaben_letztes_jahr",
+                "name": "Ausgaben letztes Jahr"
+              },
+              {
+                "schluessel": "ausgaben_umlagefaehig",
+                "name": "Umlagefähig letztes Jahr"
+              },
+              {
+                "schluessel": "abrechnung_offen",
+                "name": "Abrechnung offen"
+              },
+              {
+                "schluessel": "mieterhoehung",
+                "name": "Mieterhöhung möglich"
+              },
+              {
+                "schluessel": "vertrag_endet",
+                "name": "Vertrag endet bald"
+              }
+            ],
+            "beispiele": 11
+          },
+          "code": false,
+          "archiv": "archive/vermietung-1.2.1.zip",
+          "sha256": "2390f8889a8d3a9fbce53dfa2b74241a758b8de49bf8905df248e09bd4d3002f",
+          "groesse": 341302,
+          "veroeffentlicht": "2026-11-03T23:53:08Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/vermietung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/CHANGELOG.md"
+        },
         {
           "version": "1.2.0",
           "dms": ">=0.127.0",
@@ -3651,7 +4453,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0",
+      "aktuell": "1.2.1",
       "kategorien": [
         "vorlagen"
       ],

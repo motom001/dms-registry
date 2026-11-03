@@ -62,9 +62,9 @@
   }
   function marke(r) {
     if (!r) return '';
-    if (r.fall === 'ja') return EN ? 'fits your DMS' : 'passt zu deinem DMS';
-    if (r.fall === 'aelter') return EN ? 'DMS update recommended' : 'DMS-Update empfohlen';
-    return (EN ? 'needs DMS ' : 'braucht DMS ') + mindestens(r.neu[1]) + (EN ? '+' : ' oder neuer');
+    if (r.fall === 'ja') return EN ? 'fits your Ablago' : 'passt zu deinem Ablago';
+    if (r.fall === 'aelter') return EN ? 'Ablago update recommended' : 'Ablago-Update empfohlen';
+    return (EN ? 'needs Ablago ' : 'braucht Ablago ') + mindestens(r.neu[1]) + (EN ? '+' : ' oder neuer');
   }
   var suche = document.getElementById('suche'), art = document.getElementById('art'), kat = document.getElementById('kategorie'),
       autor = document.getElementById('autor'), vfeld = document.getElementById('dms-version'), nur = document.getElementById('nur-passend'),
@@ -107,19 +107,19 @@
     var knopf = kopf.querySelector('.installieren');
     feld.className = 'dms-passt'; feld.textContent = ''; if (knopf) knopf.hidden = false;
     if (!r) {
-      feld.innerHTML = '<p class="leise">Passt das Paket zu deinem DMS? Deine DMS-Version: <input id="dms-version-paket" inputmode="decimal" placeholder="z. B. 0.144.2" aria-label="Deine DMS-Version"> <span class="klein">(steht im DMS unter „Über das DMS“, bleibt nur in diesem Browser)</span></p>';
+      feld.innerHTML = '<p class="leise">Passt das Paket zu deinem Ablago? Deine Ablago-Version: <input id="dms-version-paket" inputmode="decimal" placeholder="z. B. 0.144.2" aria-label="Deine Ablago-Version"> <span class="klein">(steht in Ablago unter „Über Ablago“, bleibt nur in diesem Browser)</span></p>';
       var i = document.getElementById('dms-version-paket');
       i.addEventListener('change', function () { var w = i.value.trim(); if (VERSION.test(w)) { merkeVersion(w); zeigePaket(); } });
       return;
     }
     var aendern = ' <a href="#" data-dms-version-aendern>ändern</a>';
-    if (r.fall === 'ja') { feld.className += ' ja'; feld.innerHTML = 'Passt zu deinem DMS ' + dms + '.' + aendern; return; }
+    if (r.fall === 'ja') { feld.className += ' ja'; feld.innerHTML = 'Passt zu deinem Ablago ' + dms + '.' + aendern; return; }
     if (knopf) knopf.hidden = true;
     feld.className += ' warn';
-    var html = '<p><strong>Für Version ' + r.neu[0] + ' brauchst du DMS ' + mindestens(r.neu[1]) + ' oder neuer</strong> – du hast ' + dms + '.' + aendern + '</p>'
-      + '<p>Aktualisiere dein DMS, damit du dieses Paket mit allen Verbesserungen und Fehlerbehebungen nutzen kannst.</p>'
-      + '<p><a class="knopf primaer" href="https://motom001.github.io/dms/admin/aktuell/aktualisieren/">So aktualisierst du dein DMS →</a></p>';
-    if (r.fall === 'aelter') html += '<p class="aelter-link"><a href="#" data-installieren="' + id + '@' + r.version + '">Ältere Version ' + r.version + ' trotzdem installieren</a> <span class="leise">– ihr fehlen Verbesserungen und Fehlerbehebungen. Nach dem DMS-Update holst du die neue Version über die Paketverwaltung nach.</span></p>';
+    var html = '<p><strong>Für Version ' + r.neu[0] + ' brauchst du Ablago ' + mindestens(r.neu[1]) + ' oder neuer</strong> – du hast ' + dms + '.' + aendern + '</p>'
+      + '<p>Aktualisiere dein Ablago, damit du dieses Paket mit allen Verbesserungen und Fehlerbehebungen nutzen kannst.</p>'
+      + '<p><a class="knopf primaer" href="https://help.ablago.app/admin/aktuell/aktualisieren/">So aktualisierst du dein Ablago →</a></p>';
+    if (r.fall === 'aelter') html += '<p class="aelter-link"><a href="#" data-installieren="' + id + '@' + r.version + '">Ältere Version ' + r.version + ' trotzdem installieren</a> <span class="leise">– ihr fehlen Verbesserungen und Fehlerbehebungen. Nach Ablago-Update holst du die neue Version über die Paketverwaltung nach.</span></p>';
     feld.innerHTML = html;
   }
   if (kopf && feld) {
