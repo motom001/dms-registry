@@ -297,6 +297,24 @@ class Einstellungen(unittest.TestCase):
         ohne['rechte'] = {}
         self.assertTrue(any('sicherung.fertig gibt es nur mit' in f for f in self.paket(ohne, dms='>=0.142.0')))
 
+    def test_mappen_ereignisse(self):
+        # Ereignisse zu Mappen (DMS #670): ab 0.153.0, nur mit code.mappentypen (eigene, lesbare Typen) und umgekehrt.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'lesen': ['beispiel']}
+        c['ereignisse'] = ['mappe.geaendert', 'frist.erreicht']
+        c['mappentypen'] = ['beispiel']
+        self.assertEqual(self.paket(c, dms='>=0.153.0'), [])
+        self.assertTrue(any('erst ab 0.153.0' in f for f in self.paket(c, dms='>=0.152.0')))
+        ohne = copy.deepcopy(c); del ohne['mappentypen']
+        self.assertTrue(any('braucht code.mappentypen' in f for f in self.paket(ohne, dms='>=0.153.0')))
+        nur = copy.deepcopy(c); nur['ereignisse'] = ['post.angelegt']
+        self.assertTrue(any('nur mit Mappen-Ereignissen' in f for f in self.paket(nur, dms='>=0.153.0')))
+        fremd = copy.deepcopy(c); fremd['mappentypen'] = ['gibtsnicht']
+        self.assertTrue(any('gibt es in diesem Paket nicht' in f for f in self.paket(fremd, dms='>=0.153.0')))
+        blind = copy.deepcopy(c); blind['rechte'] = {'lesen': ['dms:post']}
+        self.assertTrue(any('auch lesen dürfen' in f for f in self.paket(blind, dms='>=0.153.0')))
+
     def test_dms_untergrenze(self):
         self.assertEqual(pruefen.dms_untergrenze('>=0.94.0'), (0, 94, 0))
         self.assertEqual(pruefen.dms_untergrenze('>0.93.0 <1.0.0'), (0, 93, 1))

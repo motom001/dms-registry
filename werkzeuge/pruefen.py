@@ -95,6 +95,9 @@ DMS_VOLLTEXT_AB = (0, 145, 0)
 # Schnittstelle dms:archivfassung, code.archivfassung und Ereignis datei.archivfassung (DMS #631): Archivfassung (PDF/A)
 # zu Dokumenten mit fertigem Volltext ablegen, ab DMS 0.149.0.
 DMS_ARCHIVFASSUNG_AB = (0, 149, 0)
+# Ereignisse zu Mappen aus dem Ereigniskatalog und code.mappentypen (DMS #670): nur zu eigenen Mappentypen, ab DMS 0.153.0.
+MAPPEN_EREIGNISSE = ('mappe.angelegt', 'mappe.geaendert', 'mappe.geloescht', 'mappe.wiederhergestellt', 'frist.erreicht')
+DMS_MAPPEN_EREIGNISSE_AB = (0, 153, 0)
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -219,6 +222,31 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
     adressen = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
     if adressen and vor_antworten:
         fehler.append('code.einstellungen: Einstellungen vom Typ adresse kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')
+    return fehler
+
+
+def pruefe_mappentypen(code: dict, paket_id: str, typen: set, dms_bereich: str) -> list[str]:
+    """code.mappentypen (DMS #670): Pflicht mit Mappen-Ereignissen, nur mit ihnen; eigene, lesbare Mappentypen."""
+    fehler: list[str] = []
+    mit = [e for e in (code.get('ereignisse') or []) if e in MAPPEN_EREIGNISSE]
+    liste = code.get('mappentypen') or []
+    rechte = code.get('rechte') if isinstance(code.get('rechte'), dict) else {}
+    lesen = set(rechte.get('lesen') or []) | set(rechte.get('schreiben') or [])
+    if mit and not liste:
+        fehler.append(f'code.ereignisse: {", ".join(mit)} braucht code.mappentypen – die eigenen Mappentypen, zu denen das Paket die Ereignisse bekommt')
+    if liste and not mit:
+        fehler.append('code.mappentypen: nur mit Mappen-Ereignissen in code.ereignisse (' + ', '.join(MAPPEN_EREIGNISSE) + ')')
+    for k in liste:
+        if not isinstance(k, str) or ':' in k:
+            fehler.append(f'code.mappentypen: „{k}“ – nur Schlüssel eigener Mappentypen (ohne Präfix); Ereignisse zu fremden Mappentypen gibt es noch nicht')
+        elif k not in typen:
+            fehler.append(f'code.mappentypen: Mappentyp „{k}“ gibt es in diesem Paket nicht')
+        elif not ({k, f'{paket_id}:{k}', '*'} & lesen):
+            fehler.append(f'code.mappentypen: „{k}“ – das Paket muss diesen Mappentyp auch lesen dürfen (code.rechte.lesen)')
+    if (mit or liste):
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_MAPPEN_EREIGNISSE_AB:
+            fehler.append('code.ereignisse: Ereignisse zu Mappen kennt das DMS erst ab 0.153.0 – bitte dms: ">=0.153.0" angeben')
     return fehler
 
 
@@ -724,6 +752,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     if isinstance(m.get('code'), dict):
         fehler += pruefe_einstellungen(m['code'], str(m.get('id')), typen, abh)
         fehler += pruefe_rechte(m['code'], str(m.get('dms', '')))
+        fehler += pruefe_mappentypen(m['code'], str(m.get('id')), typen, str(m.get('dms', '')))
     if 'code' in m:
         quelle = ordner / str(m['code'].get('quelle', ''))
         if not quelle.is_dir() or not any(p.is_file() and p.name != 'README.md' for p in quelle.rglob('*')):

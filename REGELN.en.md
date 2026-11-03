@@ -272,6 +272,24 @@ code:
 - **Report honestly:** `geprueft` only when the checksum is confirmed or the file was read back; otherwise `hochgeladen`.
 - Flow, event, chunked reading and reporting are described in the DMS developer manual under [Sicherung außer Haus](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#sicherung-ausser-haus) (German).
 
+## Events on folders
+
+From DMS 0.153.0 (DMS #670) a package can react to folders – to `mappe.angelegt`, `mappe.geaendert`, `mappe.geloescht`, `mappe.wiederhergestellt` and `frist.erreicht`. It only gets them for its **own** folder types listed under `code.mappentypen`:
+
+```yaml
+dms: ">=0.153.0"
+code:
+  ereignisse: [mappe.geaendert, frist.erreicht]
+  mappentypen: [vertrag]      # own keys, without prefix
+  rechte:
+    lesen: [vertrag]          # required: the package must be allowed to read the types
+```
+
+- `code.mappentypen` is required with these events and only allowed with them. Events for other packages' folder types do not exist yet.
+- An event only contains ids, field keys and dates – never values. The package reads the rest with its permissions.
+- Events arrive **at least once**; `daten.ereignis` is the id in the event catalogue – the package recognises a repeat by it. `mappe.geaendert` combines quick successions.
+- The preview shows the events with „– zu: *types*“. Flow and fields: DMS developer handbook, [Pakete mit Code](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#ereignisse) and [Ereigniskatalog](https://motom001.github.io/dms/entwickler/aktuell/aufbau/#ereigniskatalog).
+
 ## Orphaned packages
 
 If the maintainer of a package does not respond to bugs or necessary adjustments for three months, the package is marked as *orphaned* and can be taken over by someone else.
