@@ -41,6 +41,7 @@ Vor der Installation zeigt das DMS die Rechte eines Pakets mit Code, die Katalog
 - „Texterkennung für Scans und Bilder übernehmen – das DMS meldet Dokumente ohne Text und zeigt „wartet auf Texterkennung“, bis das Paket den Volltext schreibt (dms:texterkennung)“ – nur mit `code.rechte.schnittstellen`, `dokumente: schreiben` und `dms: ">=0.133.0"`
 - „Dateien umwandeln, die das DMS nicht selbst lesen kann – das Paket liest die Originaldatei und liefert eine Fassung (PDF, PNG oder JPEG) für Vorschaubild und Volltext; das Original bleibt unverändert (dms:umwandeln): TIFF, WebP, …“ – nur mit `code.rechte.schnittstellen`, `code.umwandeln`, dem Ereignis `datei.umwandeln`, `dokumente: lesen` und `dms: ">=0.137.0"` (siehe [Dateien umwandeln](#dateien-umwandeln))
 - „Volltext für Dateien liefern, die das DMS nicht selbst lesen kann – das Paket liest die Datei und schreibt nur ihren Volltext; Dokumente ändern, ersetzen oder löschen kann es nicht (dms:volltext): Word, E-Mail, …“ – nur mit `code.rechte.schnittstellen`, `code.volltext`, dem Ereignis `datei.volltext`, `dokumente: lesen` und `dms: ">=0.145.0"` (siehe [Nur Text aus Dokumenten](#nur-text-aus-dokumenten))
+- „Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung): PDF, JPEG, PNG, …“ – nur mit `code.rechte.schnittstellen`, `code.archivfassung`, dem Ereignis `datei.archivfassung`, `dokumente: lesen` und `dms: ">=0.149.0"` (siehe [Archivfassung (PDF/A)](#archivfassung-pdfa))
 - „Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)“ – nur mit `code.rechte.schnittstellen`, dem Ereignis `sicherung.fertig` und `dms: ">=0.142.0"` (siehe [Sicherung außer Haus](#sicherung-außer-haus))
 - „kein Zugriff auf Netzwerk und Internet“ bzw. „Zugriff auf Netzwerk/Internet nur zu: …“; mit einer Dienst-Adresse als Einstellung zusätzlich „der Adresse aus der Einstellung „…“ (trägst du ein und bestätigst sie)“
 - „Reagiert auf diese Ereignisse:“ mit einem Ereignis je Zeile
@@ -223,6 +224,29 @@ Dabei gilt:
 - **Kein Netz**, wie beim Umwandeln. Der Typ zählt am Inhalt, nicht am Namen; Dateien, die das DMS selbst liest (PDF, JPEG, PNG), lässt das Paket aus.
 - **Grund nennen:** Kann das Paket eine Datei nicht lesen, endet es mit Code `0` und einem kurzen Satz als Ergebnis (z. B. „Word lässt sich nicht lesen: mit einem Passwort verschlüsselt“) – den zeigt das DMS am Dokument.
 - Ablauf, Ereignis und Grenzen beschreibt das Entwicklerhandbuch des DMS unter [Volltext liefern](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#volltext-liefern).
+
+### Archivfassung (PDF/A)
+
+Ein Paket mit dem Recht `dms:archivfassung` (DMS #631, ab 0.149.0) legt zu Dokumenten eine **Archivfassung** ab – ein durchsuchbares PDF/A mit unsichtbarer Textebene genau auf den Wörtern –, z. B. [PDF/A](pakete/pdfa/). Das DMS meldet ein Dokument mit dem Ereignis `datei.archivfassung` erst, wenn sein Volltext feststeht; das Paket liest Datei und Wortpositionen und gibt das PDF/A mit `PUT /dokumente/{id}/archivfassung` zurück (höchstens 100 MB):
+
+```yaml
+dms: ">=0.149.0"
+code:
+  ereignisse: [datei.archivfassung]
+  archivfassung:
+    typen: [application/pdf, image/jpeg, image/png]   # zuständige Dateitypen (MIME); PDF, JPEG und PNG erlaubt
+    nur_scans: nur_scans                              # optional: Ja/Nein-Einstellung „nur Scans und Bilder“
+  rechte:
+    lesen: ["*"]
+    dokumente: lesen                                  # Datei und Wortpositionen lesen – Schreiben braucht es nicht
+    schnittstellen: ["dms:archivfassung"]
+```
+
+- **Nie nachladen:** Die Archivfassung enthält nur, was in der Datei steckt – kein JavaScript, keine Aktionen, keine Verweise auf externe Inhalte; das DMS lehnt sie sonst ab.
+- **Genau an den Wörtern:** Die Textebene liegt an den Wortpositionen des DMS. Fehlen sie (z. B. Scan einer älteren Texterkennung), legt das Paket den Text nicht „ungefähr“ ab, sondern endet mit Code `0` und dem Grund.
+- **Wenig einstellen:** eine PDF/A-Stufe fest statt einer Auswahl; jede Einstellung darüber hinaus begründet der Pull Request (Mehrwert gegen Pflege).
+- **Werkzeug mit passender Lizenz:** Bibliotheken zum Schreiben des PDF/A brauchen eine Lizenz, die zum Paket passt (z. B. kein AGPL-Werkzeug in einem Paket unter Apache-2.0), mit Lizenztexten unter `code/lizenzen/`. Die Konformität prüft das Paket in seinen Tests (z. B. mit veraPDF), nicht im Paket selbst.
+- Ablauf, Ereignis, Wortpositionen und Grenzen beschreibt das Entwicklerhandbuch des DMS unter [Archivfassung ablegen](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#archivfassung).
 
 ## Signierter Katalog
 

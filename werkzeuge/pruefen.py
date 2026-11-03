@@ -92,6 +92,9 @@ DMS_SICHERUNG_AB = (0, 142, 0)
 # Schnittstelle dms:volltext, code.volltext und Ereignis datei.volltext (DMS #614): Volltext aus Paketen ohne Schreibrecht
 # auf Dokumente, ab DMS 0.145.0.
 DMS_VOLLTEXT_AB = (0, 145, 0)
+# Schnittstelle dms:archivfassung, code.archivfassung und Ereignis datei.archivfassung (DMS #631): Archivfassung (PDF/A)
+# zu Dokumenten mit fertigem Volltext ablegen, ab DMS 0.149.0.
+DMS_ARCHIVFASSUNG_AB = (0, 149, 0)
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -180,6 +183,30 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
         fehler.append('code.ereignisse: datei.volltext gibt es nur mit code.rechte.schnittstellen: [dms:volltext]')
     if (volltext or vtypen or vereignis) and (ab is None or ab < DMS_VOLLTEXT_AB):
         fehler.append('code.rechte.schnittstellen: dms:volltext kennt das DMS erst ab 0.145.0 – bitte dms: ">=0.145.0" angeben')
+    # dms:archivfassung (DMS #631): ab 0.149.0; nur mit code.archivfassung.typen, dem Ereignis datei.archivfassung und Lesen
+    # von Dokumenten. nur_scans nennt eine Ja/Nein-Einstellung eines Abschnitts (an: keine PDFs mit vollständigem Text).
+    archiv = 'dms:archivfassung' in (rechte.get('schnittstellen') or [])
+    afass = code.get('archivfassung')
+    aereignis = 'datei.archivfassung' in (code.get('ereignisse') or [])
+    atypen = (afass.get('typen') or []) if isinstance(afass, dict) else []
+    if archiv:
+        if not atypen:
+            fehler.append('code.rechte.schnittstellen: dms:archivfassung braucht code.archivfassung.typen – die Dateitypen, zu denen das Paket ein PDF/A ablegt')
+        if rechte.get('dokumente', 'keine') == 'keine':
+            fehler.append('code.rechte.schnittstellen: dms:archivfassung braucht auch code.rechte.dokumente: lesen – das Paket liest die Datei und ihren Volltext')
+        if not aereignis:
+            fehler.append('code.rechte.schnittstellen: dms:archivfassung braucht das Ereignis datei.archivfassung in code.ereignisse')
+    elif afass is not None:
+        fehler.append('code.archivfassung: braucht code.rechte.schnittstellen: [dms:archivfassung]')
+    elif aereignis:
+        fehler.append('code.ereignisse: datei.archivfassung gibt es nur mit code.rechte.schnittstellen: [dms:archivfassung]')
+    if isinstance(afass, dict) and 'nur_scans' in afass:
+        felder = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) and 'liste' not in b
+                  for f in (b.get('felder') or []) if isinstance(f, dict)]
+        if not any(f.get('schluessel') == afass['nur_scans'] and f.get('typ') == 'janein' for f in felder):
+            fehler.append('code.archivfassung.nur_scans: der Schlüssel einer Einstellung vom Typ janein (Abschnitt, keine Liste) – an: nur Scans und Bilder, keine PDFs mit Text')
+    if (archiv or afass is not None or aereignis) and (ab is None or ab < DMS_ARCHIVFASSUNG_AB):
+        fehler.append('code.rechte.schnittstellen: dms:archivfassung kennt das DMS erst ab 0.149.0 – bitte dms: ">=0.149.0" angeben')
     # dms:sicherung-lesen (DMS #585): ab 0.142.0, nur zusammen mit dem Ereignis sicherung.fertig.
     sichern = 'dms:sicherung-lesen' in (rechte.get('schnittstellen') or [])
     fertig = 'sicherung.fertig' in (code.get('ereignisse') or [])
