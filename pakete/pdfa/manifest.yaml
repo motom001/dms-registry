@@ -1,0 +1,38 @@
+# Paket PDF/A – legt zu Dokumenten eine Archivfassung ab: ein durchsuchbares PDF/A-2b mit unsichtbarer Textebene genau
+# auf den Wörtern, für die Langzeitaufbewahrung. Das Original bleibt das Dokument. Schema: schema/manifest.schema.json
+schema: 1
+id: pdfa
+name: PDF/A
+version: 1.0.0
+beschreibung: Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [dateiformate]
+symbol: file-text
+# 0.149.0: Recht dms:archivfassung, code.archivfassung, Ereignis datei.archivfassung, Wortpositionen,
+# PUT /dokumente/{id}/archivfassung (DMS #631)
+dms: ">=0.149.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: [datei.archivfassung]
+  archivfassung:
+    # PDF, JPEG und PNG liest das Paket selbst; TIFF, WebP, GIF und BMP über die Lesefassung des Pakets Bildformate.
+    typen: [application/pdf, image/jpeg, image/png, image/tiff, image/webp, image/gif, image/bmp]
+    nur_scans: nur_scans
+  rechte:
+    lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen
+    dokumente: lesen      # Datei, Seitenbilder und Wortpositionen lesen; das Paket ändert keine Dokumente
+    schnittstellen: ["dms:archivfassung"]  # das PDF/A neben dem Original ablegen
+  netz: []
+  einstellungen:
+    - abschnitt: Archivfassung
+      felder:
+        - schluessel: nur_scans
+          name: Nur Scans und Bilder
+          typ: janein
+          standard: false
+          hilfe: Aus – jedes Dokument bekommt eine Archivfassung, auch PDFs mit Text wie Online-Rechnungen (Vorgabe). An – PDFs, die schon auf jeder Seite Text haben, bekommen keine; das spart Platz, aber diese PDFs bleiben dann nur im Original.
