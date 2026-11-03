@@ -600,6 +600,13 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         fehler.append('manifest.yaml: kuerzel nur zusammen mit symbol')
     if 'kuerzel' in m and not re.fullmatch(r'[A-Z]{2,3}', str(m['kuerzel'])):
         fehler.append('manifest.yaml: kuerzel hat 2–3 Großbuchstaben, bei Sprachen den ISO-639-Code der Sprache (z. B. FR)')
+    # Ergänzung (motom001/dms#405): das ergänzte Paket steht auch unter abhaengigkeiten; Form prüft das Schema.
+    erg = m.get('ergaenzt')
+    erg_paket = erg if isinstance(erg, str) else erg.get('paket') if isinstance(erg, dict) else None
+    if erg_paket and erg_paket not in (m.get('abhaengigkeiten') or {}):
+        fehler.append(f'manifest.yaml: ergaenzt „{erg_paket}“ muss auch unter abhaengigkeiten stehen')
+    if erg_paket and erg_paket == m.get('id'):
+        fehler.append('manifest.yaml: ein Paket ergänzt nicht sich selbst')
 
     # Lizenztext passt grob zur Kennung.
     lizenz = (ordner / 'LICENSE').read_text(encoding='utf-8', errors='replace') if (ordner / 'LICENSE').exists() else ''

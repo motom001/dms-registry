@@ -245,6 +245,21 @@
         ]
       }
     },
+    "ergaenzt": {
+      "description": "Optional (motom001/dms#405): Dieses Paket ergänzt ein anderes, z. B. eine Zusatzsprache die Texterkennung. Das ergänzte Paket muss auch unter abhaengigkeiten stehen. Das DMS ab 0.151.0 zeigt Ergänzungen bei der Installation als Häkchen unter dem ergänzten Paket, gruppiert nach gruppe (eine kurze Frage ohne Fragezeichen, z. B. „Weitere Sprachen“); ältere DMS ignorieren das Feld. Kurzform: nur die Id.",
+      "oneOf": [
+        { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["paket"],
+          "properties": {
+            "paket": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" },
+            "gruppe": { "type": "string", "minLength": 1, "maxLength": 40 }
+          }
+        }
+      ]
+    },
     "abhaengigkeiten": {
       "type": "object",
       "propertyNames": {

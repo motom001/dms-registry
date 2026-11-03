@@ -2,7 +2,7 @@
 schema: 1
 id: texterkennung_fra
 name: Texterkennung – Zusatzsprache Französisch
-version: 1.0.2
+version: 1.0.3
 beschreibung: Zusatzsprache Französisch für das Grundpaket Texterkennung – damit auch französische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
 autor:
   name: Thomas Meissner
@@ -15,6 +15,9 @@ kuerzel: FR
 dms: ">=0.133.0"
 abhaengigkeiten:
   texterkennung: ">=2.0.0"
+# Ergänzung (motom001/dms#405): das DMS ab 0.151.0 zeigt die Sprache als Häkchen „Weitere Sprachen?“ unter der
+# Texterkennung; ältere DMS ignorieren das Feld.
+ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }
 inhalt: {}
 code:
   sprache: c

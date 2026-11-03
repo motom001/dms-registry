@@ -353,6 +353,46 @@ class Inhalt(unittest.TestCase):
         self.assertTrue(any('reserviert' in f for f in self.paket('beispiel', 'dms')))
 
 
+class Ergaenzt(unittest.TestCase):
+    """ergaenzt (motom001/dms#405): Ergänzung eines anderen Pakets, z. B. eine Zusatzsprache der Texterkennung."""
+
+    def paket(self, ergaenzt, abh: dict | None = None) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            m['abhaengigkeiten'] = abh if abh is not None else {'texterkennung': '>=2.0.0'}
+            m['ergaenzt'] = ergaenzt
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_gueltig(self):
+        self.assertEqual(self.paket('texterkennung'), [])
+        self.assertEqual(self.paket({'paket': 'texterkennung', 'gruppe': 'Weitere Sprachen'}), [])
+
+    def test_muss_abhaengigkeit_sein(self):
+        self.assertTrue(any('muss auch unter abhaengigkeiten' in f for f in self.paket('texterkennung', {})))
+
+    def test_form(self):
+        self.assertTrue(self.paket({'paket': 'texterkennung', 'farbe': 'rot'}))
+        self.assertTrue(self.paket({'paket': 'texterkennung', 'gruppe': 'x' * 41}))
+        self.assertTrue(self.paket('Texterkennung!'))
+
+    def test_katalog_immer_als_objekt(self):
+        import katalog
+        self.assertEqual(katalog.ergaenzt_von({'ergaenzt': 'texterkennung'}), {'paket': 'texterkennung'})
+        self.assertEqual(katalog.ergaenzt_von({'ergaenzt': {'paket': 'texterkennung', 'gruppe': 'Weitere Sprachen'}}), {'paket': 'texterkennung', 'gruppe': 'Weitere Sprachen'})
+
+    def test_zusatzsprachen_der_registry(self):
+        for ordner in sorted((WURZEL / 'pakete').glob('texterkennung_*')):
+            m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
+            self.assertEqual(m.get('ergaenzt'), {'paket': 'texterkennung', 'gruppe': 'Weitere Sprachen'}, ordner.name)
+
+
 class Erkennung(unittest.TestCase):
     """Feld-Eigenschaft „für die Erkennung nutzen“ (dms-registry #49, DMS #336/#391)."""
 

@@ -95,7 +95,15 @@ def eintrag(ordner: Path, m: dict, archivname: str, daten: bytes, veroeffentlich
         'quelle': f'{REPO}/tree/main/pakete/{pid}',
         'readme': f'{REPO}/blob/main/pakete/{pid}/README.md',
         'changelog': f'{REPO}/blob/main/pakete/{pid}/CHANGELOG.md',
+        # Ergänzung eines anderen Pakets (motom001/dms#405), im Katalog immer als Objekt.
+        **({'ergaenzt': ergaenzt_von(m)} if m.get('ergaenzt') else {}),
     }
+
+
+def ergaenzt_von(m: dict) -> dict:
+    """ergaenzt aus dem Manifest als { paket, gruppe? } – Kurzform „ergaenzt: texterkennung“ eingeschlossen."""
+    e = m['ergaenzt']
+    return {'paket': e} if isinstance(e, str) else {k: e[k] for k in ('paket', 'gruppe') if k in e}
 
 
 def versionsschluessel(v: str):

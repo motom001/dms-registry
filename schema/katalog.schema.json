@@ -35,7 +35,12 @@
         "veroeffentlicht": { "type": "string", "format": "date-time" },
         "quelle": { "type": "string", "format": "uri" },
         "readme": { "type": "string", "format": "uri" },
-        "changelog": { "type": "string", "format": "uri" }
+        "changelog": { "type": "string", "format": "uri" },
+        "ergaenzt": {
+          "description": "Optional (motom001/dms#405): Diese Version ergänzt ein anderes Paket (aus manifest.yaml, immer als Objekt). Das DMS ab 0.151.0 zeigt sie als Häkchen unter dem ergänzten Paket; ältere ignorieren das Feld.",
+          "type": "object", "additionalProperties": false, "required": ["paket"],
+          "properties": { "paket": { "$ref": "#/$defs/id" }, "gruppe": { "type": "string", "minLength": 1, "maxLength": 40 } }
+        }
       }
     },
     "paket": {

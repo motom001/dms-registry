@@ -426,6 +426,10 @@ def beziehungen(p: dict, pakete: list) -> list:
     dazu('Braucht', list(p['versionen'][0]['abhaengigkeiten']))
     if 'dms:umwandeln' in eigene:
         dazu('Für durchsuchbaren Text bei Scans zusätzlich', [x['id'] for x in pakete if 'dms:texterkennung' in schnittstellen(manifest(x['id']))])
+    # Ergänzungen (motom001/dms#405): je Gruppe eine Überschrift, z. B. „Weitere Sprachen“; der Rest wie bisher.
+    ergaenzungen = [x for x in pakete if (x['versionen'][0].get('ergaenzt') or {}).get('paket') == p['id']]
+    for gruppe in sorted({(x['versionen'][0]['ergaenzt'].get('gruppe') or 'Ergänzungen') for x in ergaenzungen}):
+        dazu(gruppe, [x['id'] for x in ergaenzungen if (x['versionen'][0]['ergaenzt'].get('gruppe') or 'Ergänzungen') == gruppe])
     dazu('Erweiterungen dafür', [x['id'] for x in pakete if p['id'] in x['versionen'][0]['abhaengigkeiten']])
     if 'dms:texterkennung' in eigene:
         dazu('Liest auch Dateien, die diese Pakete umwandeln', [x['id'] for x in pakete if 'dms:umwandeln' in schnittstellen(manifest(x['id']))])
