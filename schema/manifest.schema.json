@@ -220,8 +220,9 @@
       ]
     },
     "kuerzel": {
-      "description": "Optional (#98): kurzes Zeichen unten rechts am Symbol, z. B. das Sprachkürzel FR bei Zusatzsprachen – nur zusammen mit symbol. Keine Flaggen.",
+      "description": "Optional (#98): kurzes Zeichen unten rechts am Symbol, höchstens 3 Großbuchstaben – nur zusammen mit symbol. Bei Sprachen der ISO-639-Code der Sprache, nicht des Landes (FR, ES, UK für Ukrainisch, AR für Arabisch); zweistellig nach ISO 639-1, dreistellig nur ohne zweistelligen Code. Keine Flaggen.",
       "type": "string",
+      "maxLength": 3,
       "pattern": "^[A-Z]{2,3}$"
     },
     "kategorien": {

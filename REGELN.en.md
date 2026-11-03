@@ -72,10 +72,11 @@ In the catalogue every package has a small **icon**, so you can see at a glance 
 
 ```yaml
 symbol: languages
-kuerzel: FR        # optional, only with symbol: 2–3 capital letters at the bottom right of the icon
+kuerzel: FR        # optional, only with symbol: at most 3 capital letters at the bottom right of the icon
 ```
 
 - **Choosing:** take the icon that shows **what the package does for the user** – not how it does it technically. No logos, no emoji, no flags (flags stand for countries, not languages). Additional languages use `languages` with the language code as `kuerzel` (FR, ES, IT …).
+- **Abbreviation:** at most 3 capital letters; the schema and `pruefen.py` reject longer ones. For languages it is the **ISO 639 code of the language, not of the country**: two letters from ISO 639-1 in capitals (FR French, PT Portuguese, AR Arabic, **UK Ukrainian** – not UA), three letters from ISO 639-2/3 only for languages without a two-letter code.
 - **Allowed** are exactly the SVG files in [`werkzeuge/symbole/`](werkzeuge/symbole/) (the schema has the same list):
 
 | Icon | fits |

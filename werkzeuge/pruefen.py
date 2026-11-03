@@ -571,6 +571,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     # Symbol (#98): Name prüft das Schema (feste Liste = werkzeuge/symbole/*.svg); das Kürzel gehört zum Symbol.
     if 'kuerzel' in m and 'symbol' not in m:
         fehler.append('manifest.yaml: kuerzel nur zusammen mit symbol')
+    if 'kuerzel' in m and not re.fullmatch(r'[A-Z]{2,3}', str(m['kuerzel'])):
+        fehler.append('manifest.yaml: kuerzel hat 2–3 Großbuchstaben, bei Sprachen den ISO-639-Code der Sprache (z. B. FR)')
 
     # Lizenztext passt grob zur Kennung.
     lizenz = (ordner / 'LICENSE').read_text(encoding='utf-8', errors='replace') if (ordner / 'LICENSE').exists() else ''
