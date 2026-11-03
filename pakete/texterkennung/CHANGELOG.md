@@ -1,5 +1,15 @@
 # Änderungen
 
+## 2.2.0
+
+Wortpositionen für die Archivfassung (dms-registry #29, motom001/dms#631).
+
+- **Lage jedes Worts:** Das Paket schickt mit dem Volltext zu jeder erkannten Seite die Wörter mit ihrer Lage (`woerter`, `[Text, x, y, b, h]` relativ zur Seite, wie das DMS sie liefert) – auch bei abschnittsweise erkannten Dokumenten und bei gemischten PDFs (Seiten mit Textebene: keine Angabe, deren Wörter liest das DMS selbst). Hat das Paket eine Seite zum Lesen gedreht, rechnet es die Lage zurück. Damit legt das Paket [PDF/A](../pdfa/) die Textebene seiner Archivfassung genau auf die Wörter.
+- **Weiter mit älteren DMS:** DMS vor 0.149.0 übergehen die Angabe; nimmt ein DMS den Volltext mit Wortpositionen nicht an (zu groß, abgelehnt), schickt das Paket ihn ohne sie. Die Voraussetzung bleibt DMS 0.139.0.
+- Bei sehr langen Dokumenten (Zwischenstand über etwa 2,5 MB Wortpositionen) bekommen die übrigen Seiten keine Wortpositionen; das Ergebnis nennt es.
+- Kategorien und Symbol stehen jetzt im Manifest (#98). Ein langes Dokument, das bei der Aktualisierung gerade abschnittsweise erkannt wurde, fängt mit 2.2.0 von vorn an.
+- Neu: Test des Moduls mit einer Nachbildung des DMS (`tests/ci.sh`).
+
 ## 2.1.1
 
 - Name „Texterkennung (Deutsch und Englisch)“ und neue Beschreibung: Das Paket ist das Grundpaket, weitere Sprachen kommen als Zusatzsprachen (Französisch, Spanisch, Italienisch, Niederländisch, Portugiesisch, Polnisch, Türkisch, Russisch, Ukrainisch, Arabisch). Sonst unverändert.
