@@ -325,7 +325,12 @@
               "datei.umwandeln",
               "sicherung.fertig",
               "datei.volltext",
-              "datei.archivfassung"
+              "datei.archivfassung",
+              "mappe.angelegt",
+              "mappe.geaendert",
+              "mappe.geloescht",
+              "mappe.wiederhergestellt",
+              "frist.erreicht"
             ]
           },
           "uniqueItems": true
@@ -416,6 +421,16 @@
           },
           "minItems": 1,
           "maxItems": 40,
+          "uniqueItems": true
+        },
+        "mappentypen": {
+          "type": "array",
+          "description": "Mappentypen für Ereignisse (DMS #670, ab 0.153.0): Pflicht mit den Mappen-Ereignissen mappe.angelegt, mappe.geaendert, mappe.geloescht, mappe.wiederhergestellt und frist.erreicht – und nur mit ihnen. Schlüssel eigener Mappentypen ohne Präfix; das Paket muss sie lesen dürfen.",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,39}$"
+          },
+          "minItems": 1,
           "uniqueItems": true
         },
         "archivfassung": {

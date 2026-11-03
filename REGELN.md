@@ -285,6 +285,24 @@ code:
 - **Ehrlich zurückmelden:** `geprueft` nur, wenn die Prüfsumme bestätigt oder die Datei zurückgelesen ist; sonst `hochgeladen`.
 - Ablauf, Ereignis, Lesen in Stücken und Rückmeldung beschreibt das Entwicklerhandbuch des DMS unter [Sicherung außer Haus](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#sicherung-ausser-haus).
 
+## Ereignisse zu Mappen
+
+Seit DMS 0.153.0 (DMS #670) kann ein Paket auf Mappen reagieren – auf `mappe.angelegt`, `mappe.geaendert`, `mappe.geloescht`, `mappe.wiederhergestellt` und `frist.erreicht`. Es bekommt sie nur zu den **eigenen** Mappentypen, die es unter `code.mappentypen` nennt:
+
+```yaml
+dms: ">=0.153.0"
+code:
+  ereignisse: [mappe.geaendert, frist.erreicht]
+  mappentypen: [vertrag]      # eigene Schlüssel, ohne Präfix
+  rechte:
+    lesen: [vertrag]          # Pflicht: das Paket muss die Typen lesen dürfen
+```
+
+- `code.mappentypen` ist Pflicht mit diesen Ereignissen und nur mit ihnen erlaubt. Ereignisse zu fremden Mappentypen gibt es noch nicht.
+- Ein Ereignis enthält nur Kennungen, Feldschlüssel und Datum – nie Werte. Das Paket liest mit seinen Rechten nach.
+- Ereignisse kommen **mindestens einmal**; `daten.ereignis` ist die Id im Ereigniskatalog – eine Wiederholung erkennt das Paket daran. `mappe.geaendert` fasst schnelle Folgen zusammen.
+- Die Vorschau zeigt die Ereignisse mit „– zu: *Typen*“. Ablauf und Felder beschreibt das Entwicklerhandbuch des DMS unter [Pakete mit Code](https://motom001.github.io/dms/entwickler/aktuell/pakete-code/#ereignisse) und [Ereigniskatalog](https://motom001.github.io/dms/entwickler/aktuell/aufbau/#ereigniskatalog).
+
 ## Verwaiste Pakete
 
 Antwortet der Pfleger auf Fehler oder nötige Anpassungen drei Monate lang nicht, wird das Paket als *verwaist* markiert und kann von jemand anderem übernommen werden.

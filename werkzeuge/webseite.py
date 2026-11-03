@@ -290,6 +290,12 @@ EREIGNISSE = {
     'datei.volltext': ('Eine Datei braucht ihren Volltext (Dateitypen, die das DMS nicht selbst liest)', 'ereignis-datei-volltext'),
     # DMS #631, ab 0.149.0
     'datei.archivfassung': ('Ein Dokument mit fertigem Volltext braucht seine Archivfassung (PDF/A)', 'ereignis-datei-archivfassung'),
+    # DMS #670, ab 0.153.0 – nur zu den Typen aus code.mappentypen
+    'mappe.angelegt': ('Eine Mappe ist angelegt', 'ereignis-mappe'),
+    'mappe.geaendert': ('Eine Mappe ist gespeichert und dabei geändert', 'ereignis-mappe'),
+    'mappe.geloescht': ('Eine Mappe ist gelöscht (Papierkorb)', 'ereignis-mappe'),
+    'mappe.wiederhergestellt': ('Eine Mappe ist wiederhergestellt', 'ereignis-mappe'),
+    'frist.erreicht': ('Eine Frist ist erreicht (Erinnerung bzw. Tag selbst)', 'ereignis-frist-erreicht'),
 }
 DOKUMENT_RECHTE = {'lesen': 'Dokumente lesen', 'schreiben': 'Dokumente lesen und Volltext schreiben'}
 SCHNITTSTELLEN = {
