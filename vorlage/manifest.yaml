@@ -25,6 +25,10 @@ dms: ">=0.41.0"
 abhaengigkeiten: {}
 #  basis: ">=1.0.0"
 
+# Optional: Dieses Paket ergänzt ein anderes (steht dann auch unter abhaengigkeiten), z. B. eine Zusatzsprache die
+# Texterkennung. Das DMS ab 0.151.0 zeigt es beim Installieren als Häkchen unter dem ergänzten Paket.
+# ergaenzt: { paket: basis, gruppe: Weitere Vorlagen }
+
 # Was das Paket anlegt. Pfade relativ zum Paketordner.
 inhalt:
   mappentypen: inhalt/mappentypen.yaml

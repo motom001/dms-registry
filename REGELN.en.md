@@ -106,6 +106,18 @@ Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versich
 
 Sample Mappen may refer to each other (from DMS 0.79.0): a sample gets a `schluessel`, a reference field of another sample gets the value `{ beispiel: strom }` – or `{ beispiel: "basis:stadtwerke" }` for a sample from a dependency. The manifest must then contain `dms: ">=0.79.0"`.
 
+## Add-ons (`ergaenzt`)
+
+A package that extends another one – e.g. an additional language for Texterkennung – says so with `ergaenzt` (motom001/dms#405). The extended package is also listed under `abhaengigkeiten`:
+
+```yaml
+abhaengigkeiten:
+  texterkennung: ">=2.0.0"
+ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }   # or short: ergaenzt: texterkennung
+```
+
+The DMS from 0.151.0 shows add-ons as checkboxes below the extended package during installation, grouped by `gruppe` (a short question without question mark, at most 40 characters; without a group: "Ergänzungen") – also afterwards, in the setup assistant and in the bundle file. Every add-on stays a package of its own with its own version. Older DMS versions ignore the field, so no higher `dms` is needed. In the catalogue it appears per version as `ergaenzt: { paket, gruppe }`, on the catalogue website as a group of its own under "Passt dazu".
+
 ## Fields for recognition
 
 The DMS recognises incoming post and fills Mappen from documents (DMS #336, #391) – without AI, using patterns and matching against existing Mappen. Which fields it uses for this is stated by the package with the field property `erkennung`:
