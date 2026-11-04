@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-04T02:22:54Z",
+  "erstellt": "2026-11-04T02:49:34Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -2530,6 +2530,24 @@
       "id": "sicherung_webdav",
       "versionen": [
         {
+          "version": "1.1.0",
+          "dms": ">=0.158.1",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/sicherung_webdav-1.1.0.zip",
+          "sha256": "b06c020eed7a007d7a1882cf35f116391ba3503c16f90716b34b7d7b1f403300",
+          "groesse": 78786,
+          "veroeffentlicht": "2026-11-04T02:49:34Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sicherung_webdav",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sicherung_webdav/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sicherung_webdav/CHANGELOG.md"
+        },
+        {
           "version": "1.0.1",
           "dms": ">=0.142.0",
           "abhaengigkeiten": {},
@@ -2573,7 +2591,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.1.0",
       "kategorien": [
         "sicherung"
       ],
