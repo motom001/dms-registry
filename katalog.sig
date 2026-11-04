@@ -2,6 +2,6 @@
   "format": 1,
   "verfahren": "ed25519",
   "schluessel": "6d868387314e64df",
-  "signatur": "Ksj+B0KVU+KYsveUhocLIPvsNeBU8xxEcUTBlFZ9QoMtce//QgYzcas0oj7frZ/lvnMmJ26xKGO/F/q2D2QWDg==",
-  "erstellt": "2026-11-04T09:30:38Z"
+  "signatur": "EWhDylxz3n5UGBEU/uvZsDvSv0IdjOwkuIupnWvUjrAzRlpFo3y00dGMh3fxyns+JwrdDTWf7VGQbNIZ1FW3DA==",
+  "erstellt": "2026-11-04T13:30:16Z"
 }
