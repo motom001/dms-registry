@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-04T18:28:50Z",
+  "erstellt": "2026-11-04T18:31:27Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -2993,6 +2993,24 @@
       "id": "texterkennung",
       "versionen": [
         {
+          "version": "2.3.0",
+          "dms": ">=0.179.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/texterkennung-2.3.0.zip",
+          "sha256": "36c6f7e03daeb6cc8ec7f9e6e133ec04374dd151276193cc819bce95b304aee0",
+          "groesse": 8130132,
+          "veroeffentlicht": "2026-11-04T18:31:27Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/texterkennung/CHANGELOG.md"
+        },
+        {
           "version": "2.2.1",
           "dms": ">=0.139.0",
           "abhaengigkeiten": {},
@@ -3108,7 +3126,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "2.2.1",
+      "aktuell": "2.3.0",
       "kategorien": [
         "volltext",
         "suche"
