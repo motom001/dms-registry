@@ -2,16 +2,16 @@
 schema: 1
 id: benachrichtigungen
 name: Benachrichtigungen
-version: 1.0.0
-beschreibung: Vorgefertigte Automatisierungen für Benachrichtigungen – zuerst die Vertretung bei Abwesenheit.
+version: 1.1.0
+beschreibung: Tägliche Zusammenfassung, Favoriten, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
 kategorien: [post]
 symbol: mail
-# 0.177.0: mitgelieferte Automatisierungen, Empfänger „Person aus dem Ereignis“, Ereignis „Vertretung zurückgezogen“ (Ablago #712)
-dms: ">=0.177.0"
+# 0.181.0: Wenn-Karte „Zeitplan“, „Favorit geändert“ und die Karten der Benachrichtigungen (Ablago #678)
+dms: ">=0.181.0"
 abhaengigkeiten: {}
 inhalt:
   automatisierungen: inhalt/automatisierungen.yaml

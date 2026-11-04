@@ -1,5 +1,17 @@
-# Mitgelieferte Automatisierungen (Ablago #712, dms-registry #109). Nach der Installation aus – beim Installieren
-# fragt Ablago, welche gleich eingeschaltet werden. Text und Empfänger stellt man selbst ein.
+# Mitgelieferte Automatisierungen (Ablago #712/#678, dms-registry #109). Beim Installieren fragt Ablago, welche gleich
+# eingeschaltet werden (vorausgewählt sind alle). Die Werte entsprechen dem, was Ablago bisher von selbst machte.
+- schluessel: zusammenfassung
+  name: Tägliche Zusammenfassung
+  beschreibung: Jeder mit offenen Aufgaben bekommt einmal am Tag eine Übersicht per E-Mail – zur Uhrzeit, an den Wochentagen und Feiertagen aus seinem Profil (sonst werktags um 7:00). Abbestellen geht im Profil.
+  wenn: { art: zeitplan, uhrzeit: "07:00", tage: [1, 2, 3, 4, 5], feiertage: true, jeBenutzer: true, profilzeit: true }
+  dann:
+    - { art: zusammenfassung }
+- schluessel: favoriten
+  name: Favoriten-Änderungen melden
+  beschreibung: Wer eine Mappe als Favorit hat und benachrichtigt werden will, bekommt eine gebündelte Benachrichtigung „Geändert“, wenn jemand anderes sie ändert.
+  wenn: { art: favorit.geaendert }
+  dann:
+    - { art: favoriten }
 - schluessel: vertretung_eingetragen
   name: Vertretung eingetragen
   beschreibung: Wer als Vertreter hinterlegt wird, bekommt eine Aufgabe. Sie erledigt sich, wenn die Abwesenheit endet oder sich die Vertretung ändert.
@@ -12,3 +24,15 @@
   wenn: { art: benutzer.vertretung_zurueckgezogen }
   dann:
     - { art: aufgabe, als: benachrichtigung, empfaenger: [{ art: ereignis, feld: vertreter }], text: "Hallo {vertreter}, {benutzer} hat die Vertretung zurückgezogen. Du bist nicht mehr Vertreter für {benutzer}." }
+- schluessel: anmeldeschutz_sammelmeldung
+  name: Sammelmeldung Anmeldeschutz
+  beschreibung: Kurz nach Mitternacht eine Mail an die Administratoren über die Sperren seit der letzten Meldung – nur, wenn es welche gab. Angriffsversuche aus dem Internet sind normal; schalte sie ein, wenn du trotzdem Bescheid wissen willst.
+  wenn: { art: zeitplan, uhrzeit: "00:00", tage: [1, 2, 3, 4, 5, 6, 7] }
+  dann:
+    - { art: anmeldeschutz, was: sammel }
+- schluessel: kontosperre
+  name: Kontosperre sofort melden
+  beschreibung: Eine Mail an die Administratoren, sobald ein bestehendes Benutzerkonto nach zu vielen falschen Passwörtern gesperrt wird – je Konto höchstens einmal am Tag.
+  wenn: { art: benutzer.gesperrt }
+  dann:
+    - { art: anmeldeschutz, was: konto }
