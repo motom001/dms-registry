@@ -98,6 +98,7 @@ DMS_VOLLTEXT_AB = (0, 145, 0)
 # Schnittstelle dms:archivfassung, code.archivfassung und Ereignis datei.archivfassung (DMS #631): Archivfassung (PDF/A)
 # zu Dokumenten mit fertigem Volltext ablegen, ab DMS 0.149.0.
 DMS_ARCHIVFASSUNG_AB = (0, 149, 0)
+DMS_ARCHIV_AUSWAHL_AB = (0, 176, 0)
 # Ereignisse zu Mappen aus dem Ereigniskatalog und code.mappentypen (DMS #670): eigene Mappentypen ab DMS 0.153.0.
 MAPPEN_EREIGNISSE = ('mappe.angelegt', 'mappe.geaendert', 'mappe.geloescht', 'mappe.wiederhergestellt', 'frist.erreicht')
 DMS_MAPPEN_EREIGNISSE_AB = (0, 153, 0)
@@ -194,7 +195,8 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
     if (volltext or vtypen or vereignis) and (ab is None or ab < DMS_VOLLTEXT_AB):
         fehler.append('code.rechte.schnittstellen: dms:volltext kennt das DMS erst ab 0.145.0 – bitte dms: ">=0.145.0" angeben')
     # dms:archivfassung (DMS #631): ab 0.149.0; nur mit code.archivfassung.typen, dem Ereignis datei.archivfassung und Lesen
-    # von Dokumenten. nur_scans nennt eine Ja/Nein-Einstellung eines Abschnitts (an: keine PDFs mit vollständigem Text).
+    # von Dokumenten. auswahl (DMS #660, ab 0.176.0) nennt je Art (pdf_text, pdf_scan, bilder) eine Ja/Nein-Einstellung eines
+    # Abschnitts (an: diese Dokumente bekommen eine Archivfassung).
     archiv = 'dms:archivfassung' in (rechte.get('schnittstellen') or [])
     afass = code.get('archivfassung')
     aereignis = 'datei.archivfassung' in (code.get('ereignisse') or [])
@@ -210,11 +212,14 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
         fehler.append('code.archivfassung: braucht code.rechte.schnittstellen: [dms:archivfassung]')
     elif aereignis:
         fehler.append('code.ereignisse: datei.archivfassung gibt es nur mit code.rechte.schnittstellen: [dms:archivfassung]')
-    if isinstance(afass, dict) and 'nur_scans' in afass:
+    if isinstance(afass, dict) and isinstance(afass.get('auswahl'), dict):
         felder = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) and 'liste' not in b
                   for f in (b.get('felder') or []) if isinstance(f, dict)]
-        if not any(f.get('schluessel') == afass['nur_scans'] and f.get('typ') == 'janein' for f in felder):
-            fehler.append('code.archivfassung.nur_scans: der Schlüssel einer Einstellung vom Typ janein (Abschnitt, keine Liste) – an: nur Scans und Bilder, keine PDFs mit Text')
+        for art, schluessel in afass['auswahl'].items():
+            if not any(f.get('schluessel') == schluessel and f.get('typ') == 'janein' for f in felder):
+                fehler.append(f'code.archivfassung.auswahl.{art}: der Schlüssel einer Einstellung vom Typ janein (Abschnitt, keine Liste) – an: diese Dokumente bekommen eine Archivfassung')
+        if ab is None or ab < DMS_ARCHIV_AUSWAHL_AB:
+            fehler.append('code.archivfassung.auswahl kennt das DMS erst ab 0.176.0 – bitte dms: ">=0.176.0" angeben')
     if (archiv or afass is not None or aereignis) and (ab is None or ab < DMS_ARCHIVFASSUNG_AB):
         fehler.append('code.rechte.schnittstellen: dms:archivfassung kennt das DMS erst ab 0.149.0 – bitte dms: ">=0.149.0" angeben')
     # dms:sicherung-lesen (DMS #585): ab 0.142.0, nur zusammen mit dem Ereignis sicherung.fertig.

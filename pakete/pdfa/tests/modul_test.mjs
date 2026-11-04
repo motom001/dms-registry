@@ -120,7 +120,7 @@ function lauf({ datei, daten = {}, archiv = 404, ablegen = 200, vorhanden = null
     art, id: 'e-1', versuch: 1, erstellt: '2026-11-03T10:00:00.000Z',
     daten: { dokument: 'dok-1', mappe: 'mappe-1', name: datei, mime, groesse: 1, sha256: SHA, quelle: 'original', seiten: wp.seiten.length,
       textebene: 'keine', wortpositionen: wp.vollstaendig, sprache: 'deu', signiert: false, erechnung: false, formular: false, extern: datei === 'extern.pdf', ...daten },
-    paket: { id: 'pdfa', version }, einstellungen: { nur_scans: false },
+    paket: { id: 'pdfa', version }, einstellungen: { pdf_text: true, pdf_scan: true, bilder: true },
   }));
   const p = inst.exports.dms_puffer(ereignis.length);
   u8().set(ereignis, p);

@@ -435,7 +435,7 @@
         },
         "archivfassung": {
           "type": "object",
-          "description": "Archivfassung (DMS #631, nur mit dms:archivfassung): die Dateitypen (MIME), zu denen das Paket ein PDF/A ablegt – PDF, JPEG und PNG sind erlaubt –, und optional nur_scans: der Schlüssel einer Einstellung vom Typ janein (an: PDFs mit vollständiger Textebene bekommen keine Archivfassung).",
+          "description": "Archivfassung (DMS #631, nur mit dms:archivfassung): die Dateitypen (MIME), zu denen das Paket ein PDF/A ablegt – PDF, JPEG und PNG sind erlaubt –, und optional auswahl (DMS #660, ab 0.176.0): je Art – pdf_text (PDFs mit Text), pdf_scan (gescannte PDFs), bilder (Fotos und Bilder) – der Schlüssel einer Einstellung vom Typ janein (an: diese Dokumente bekommen eine Archivfassung; fehlt die Art, immer).",
           "additionalProperties": false,
           "required": [
             "typen"
@@ -451,9 +451,15 @@
               "maxItems": 40,
               "uniqueItems": true
             },
-            "nur_scans": {
-              "type": "string",
-              "pattern": "^[a-z][a-z0-9_]{0,39}$"
+            "auswahl": {
+              "type": "object",
+              "additionalProperties": false,
+              "minProperties": 1,
+              "properties": {
+                "pdf_text": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+                "pdf_scan": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+                "bilder": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" }
+              }
             }
           }
         },

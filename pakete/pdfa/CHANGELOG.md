@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.1.0
+
+- **Ankreuzen statt verneinen** (dms-registry #106, DMS #660): Statt des Hakens „Nur Scans und Bilder“ gibt es unter „Archivfassung anlegen für …“ drei Haken – **PDFs mit Text**, **Gescannte PDFs**, **Fotos und Bilder** (mit den Dateiendungen, getrennt nach „immer“ und „mit Paket Bildformate“) – Vorgabe alle an. Braucht Ablago 0.176.0 (`code.archivfassung.auswahl`).
+- Englische Texte kommen mit den Sprachpaketen (Etappe 07d).
+
 ## 1.0.1
 
 - Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.

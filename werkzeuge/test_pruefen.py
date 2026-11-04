@@ -234,13 +234,12 @@ class Einstellungen(unittest.TestCase):
 
     def test_schnittstelle_archivfassung(self):
         # dms:archivfassung (DMS #631): ab DMS 0.149.0, nur mit code.archivfassung.typen, dem Ereignis datei.archivfassung
-        # und Lesen; PDF, JPEG und PNG erlaubt; nur_scans nennt eine Ja/Nein-Einstellung eines Abschnitts.
+        # und Lesen; PDF, JPEG und PNG erlaubt; auswahl (DMS #660, ab 0.176.0) nennt je Art eine Ja/Nein-Einstellung.
         import copy
         c = copy.deepcopy(GUELTIG)
         c['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen', 'schnittstellen': ['dms:archivfassung']}
         c['ereignisse'] = ['datei.archivfassung']
-        c['archivfassung'] = {'typen': ['application/pdf', 'image/jpeg', 'image/png', 'image/tiff'], 'nur_scans': 'nur_scans'}
-        c['einstellungen'] = [{'abschnitt': 'Archivfassung', 'felder': [{'schluessel': 'nur_scans', 'name': 'Nur Scans und Bilder', 'typ': 'janein', 'standard': False}]}]
+        c['archivfassung'] = {'typen': ['application/pdf', 'image/jpeg', 'image/png', 'image/tiff']}
         self.assertEqual(self.paket(c, dms='>=0.149.0'), [])
         alt = self.paket(c, dms='>=0.148.1')
         self.assertTrue(any('dms:archivfassung kennt das DMS erst ab 0.149.0' in f for f in alt), alt)
@@ -260,17 +259,28 @@ class Einstellungen(unittest.TestCase):
         ohne['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen'}
         del ohne['archivfassung']
         self.assertTrue(any('datei.archivfassung gibt es nur mit' in f for f in self.paket(ohne, dms='>=0.149.0')))
-        # nur_scans: unbekannter Schlüssel, falscher Typ; ohne nur_scans gültig.
-        falsch = copy.deepcopy(c)
-        falsch['archivfassung']['nur_scans'] = 'gibtsnicht'
-        self.assertTrue(any('nur_scans: der Schlüssel einer Einstellung vom Typ janein' in f for f in self.paket(falsch, dms='>=0.149.0')))
-        falsch = copy.deepcopy(c)
+        # auswahl: gültig ab 0.176.0; unbekannter Schlüssel, falscher Typ, unbekannte Art; nur_scans gibt es nicht mehr.
+        mit = copy.deepcopy(c)
+        mit['archivfassung']['auswahl'] = {'pdf_text': 'pdf_text', 'pdf_scan': 'pdf_scan', 'bilder': 'bilder'}
+        mit['einstellungen'] = [{'abschnitt': 'Archivfassung', 'felder': [
+            {'schluessel': k, 'name': n, 'typ': 'janein', 'standard': True}
+            for k, n in (('pdf_text', 'PDFs mit Text'), ('pdf_scan', 'Gescannte PDFs'), ('bilder', 'Fotos und Bilder'))]}]
+        self.assertEqual(self.paket(mit, dms='>=0.176.0'), [])
+        alt = self.paket(mit, dms='>=0.175.0')
+        self.assertTrue(any('auswahl kennt das DMS erst ab 0.176.0' in f for f in alt), alt)
+        falsch = copy.deepcopy(mit)
+        falsch['archivfassung']['auswahl']['bilder'] = 'gibtsnicht'
+        self.assertTrue(any('auswahl.bilder: der Schlüssel einer Einstellung vom Typ janein' in f for f in self.paket(falsch, dms='>=0.176.0')))
+        falsch = copy.deepcopy(mit)
         falsch['einstellungen'][0]['felder'][0]['typ'] = 'text'
         del falsch['einstellungen'][0]['felder'][0]['standard']
-        self.assertTrue(any('nur_scans: der Schlüssel einer Einstellung vom Typ janein' in f for f in self.paket(falsch, dms='>=0.149.0')))
-        ohne = copy.deepcopy(c)
-        del ohne['archivfassung']['nur_scans']
-        self.assertEqual(self.paket(ohne, dms='>=0.149.0'), [])
+        self.assertTrue(any('auswahl.pdf_text: der Schlüssel einer Einstellung vom Typ janein' in f for f in self.paket(falsch, dms='>=0.176.0')))
+        falsch = copy.deepcopy(mit)
+        falsch['archivfassung']['auswahl']['alles'] = 'pdf_text'
+        self.assertTrue(self.paket(falsch, dms='>=0.176.0'))
+        falsch = copy.deepcopy(mit)
+        falsch['archivfassung']['nur_scans'] = 'pdf_text'
+        self.assertTrue(self.paket(falsch, dms='>=0.176.0'))
         # Schema: unbekannte Angaben, keine Dateitypen, Dateitypen in Kurzform.
         kern = copy.deepcopy(c)
         kern['archivfassung']['stufe'] = 'B'

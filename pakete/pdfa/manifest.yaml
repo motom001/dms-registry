@@ -3,7 +3,7 @@
 schema: 1
 id: pdfa
 name: PDF/A
-version: 1.0.1
+version: 1.1.0
 beschreibung: Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.
 autor:
   name: Thomas Meissner
@@ -12,8 +12,8 @@ lizenz: Apache-2.0
 kategorien: [dateiformate]
 symbol: file-text
 # 0.149.0: Recht dms:archivfassung, code.archivfassung, Ereignis datei.archivfassung, Wortpositionen,
-# PUT /dokumente/{id}/archivfassung (DMS #631)
-dms: ">=0.149.0"
+# PUT /dokumente/{id}/archivfassung (DMS #631); 0.176.0: code.archivfassung.auswahl (DMS #660)
+dms: ">=0.176.0"
 inhalt: {}
 code:
   sprache: c
@@ -22,17 +22,30 @@ code:
   archivfassung:
     # PDF, JPEG und PNG liest das Paket selbst; TIFF, WebP, GIF und BMP über die Lesefassung des Pakets Bildformate.
     typen: [application/pdf, image/jpeg, image/png, image/tiff, image/webp, image/gif, image/bmp]
-    nur_scans: nur_scans
+    auswahl:              # je Art eine Ja/Nein-Einstellung unten (an: bekommt eine Archivfassung)
+      pdf_text: pdf_text
+      pdf_scan: pdf_scan
+      bilder: bilder
   rechte:
     lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen
     dokumente: lesen      # Datei, Seitenbilder und Wortpositionen lesen; das Paket ändert keine Dokumente
     schnittstellen: ["dms:archivfassung"]  # das PDF/A neben dem Original ablegen
   netz: []
   einstellungen:
-    - abschnitt: Archivfassung
+    - abschnitt: Archivfassung anlegen für …
       felder:
-        - schluessel: nur_scans
-          name: Nur Scans und Bilder
+        - schluessel: pdf_text
+          name: PDFs mit Text
           typ: janein
-          standard: false
-          hilfe: Aus – jedes Dokument bekommt eine Archivfassung, auch PDFs mit Text wie Online-Rechnungen (Vorgabe). An – PDFs, die schon auf jeder Seite Text haben, bekommen keine; das spart Platz, aber diese PDFs bleiben dann nur im Original.
+          standard: true
+          hilfe: z. B. Online-Rechnungen, Kontoauszüge. Aus spart Platz; diese PDFs bleiben dann nur im Original.
+        - schluessel: pdf_scan
+          name: Gescannte PDFs
+          typ: janein
+          standard: true
+          hilfe: PDFs ohne Text oder nur mit Text auf einzelnen Seiten. Den Text liefert das Paket Texterkennung.
+        - schluessel: bilder
+          name: Fotos und Bilder
+          typ: janein
+          standard: true
+          hilfe: Immer .jpg, .jpeg und .png; mit dem Paket Bildformate auch .tif, .tiff, .webp, .gif und .bmp. Den Text liefert das Paket Texterkennung.
