@@ -37,6 +37,10 @@ ZEIT = (1980, 1, 1, 0, 0, 0)
 OHNE_BAU = False
 
 
+# Die eine Größengrenze für Pakete, wie im DMS (PAKET_MAX, DMS #644) und in pruefen.py/sammeldatei.py.
+PAKET_MAX = 128 * 1024 * 1024
+
+
 def dateien(ordner: Path) -> dict[str, bytes]:
     """Alle Dateien eines Paketordners, Pfade relativ und mit / getrennt."""
     return {p.relative_to(ordner).as_posix(): p.read_bytes() for p in sorted(ordner.rglob('*')) if p.is_file()}
@@ -137,6 +141,9 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
                 fehler.append(f'{pid}: code/modul.wasm fehlt – vorher bauen (python3 werkzeuge/bauen.py --unveroeffentlicht <ausgabe>)')
                 continue
             daten = archiv(inhalt)
+            if len(daten) > PAKET_MAX:
+                fehler.append(f'{pid}: Archiv {len(daten) / 1048576:.1f} MB – höchstens {PAKET_MAX // 1048576} MB je Paket (DMS #644)')
+                continue
             neu.append((name, daten))
         v = eintrag(ordner, m, name, daten, bekannt['veroeffentlicht'] if bekannt else jetzt)
         p['versionen'] = sorted([x for x in p['versionen'] if x['version'] != version] + [v], key=lambda x: versionsschluessel(x['version']), reverse=True)

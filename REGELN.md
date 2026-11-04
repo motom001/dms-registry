@@ -55,6 +55,7 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://help.
 - Bei jeder Änderung eine höhere Version (SemVer) und ein Eintrag im `CHANGELOG.md`
 - Deutsche Texte in Feldern und Sichten; das README auf Deutsch, gern zusätzlich auf Englisch
 - Ein Pfleger in `CODEOWNERS`
+- **Größe:** Ein Paket ist höchstens **128 MB** groß – als Archiv im Katalog und in der Sammeldatei ebenso wie alle Dateien unter `code/` zusammen (`modul.wasm`, `daten/`, Quellcode). Ablago hat dieselbe Grenze (DMS #644); `pruefen.py` und `katalog.py` lehnen größere Pakete ab. Große Daten wie Modelle gehören in eigene Ergänzungspakete (z. B. je Sprache), damit niemand mehr lädt als nötig.
 
 ## Einstellungen
 

@@ -681,6 +681,16 @@ class Modul(unittest.TestCase):
             (ziel / 'code' / 'modul.wasm').write_bytes(b'kein wasm')
             self.assertTrue(any('kein WebAssembly' in f for f in pruefen.pruefe(ziel, None)))
 
+    def test_eine_grenze_wie_im_dms(self):
+        import json
+        import katalog, sammeldatei  # noqa: E401
+        self.assertEqual(pruefen.PAKET_MAX, 128 * 1024 * 1024)
+        self.assertEqual(pruefen.CODE_MAX, pruefen.PAKET_MAX)
+        self.assertEqual(katalog.PAKET_MAX, pruefen.PAKET_MAX)
+        self.assertEqual(sammeldatei.ARCHIV_MAX, pruefen.PAKET_MAX)
+        schema = json.loads((WURZEL / 'schema' / 'sammeldatei.schema.json').read_text(encoding='utf-8'))
+        self.assertIn(f'"maximum": {pruefen.PAKET_MAX}', json.dumps(schema))
+
     def test_code_groessengrenze(self):
         with tempfile.TemporaryDirectory() as tmp:
             ziel = Path(tmp) / 'probe'
@@ -694,4 +704,4 @@ class Modul(unittest.TestCase):
             (ziel / 'code' / 'daten').mkdir()
             with open(ziel / 'code' / 'daten' / 'gross.bin', 'wb') as f:
                 f.truncate(pruefen.CODE_MAX + 1)
-            self.assertTrue(any('höchstens 32 MB' in f for f in pruefen.pruefe(ziel, None)))
+            self.assertTrue(any('höchstens 128 MB' in f for f in pruefen.pruefe(ziel, None)))
