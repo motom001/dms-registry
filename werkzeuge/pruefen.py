@@ -86,6 +86,9 @@ DMS_FUNKTIONEN_ANTWORTEN = {'netz_strom', 'netz_weiter', 'teil'}
 DMS_ERKENNEN_AB = (0, 125, 0)
 # Wortlisten (inhalt.wortlisten, DMS #356): gleichbedeutende Wörter für die Suche, ab DMS 0.127.0.
 DMS_WORTLISTEN_AB = (0, 127, 0)
+# Ansichten über alle Mappentypen (typen: ["*"], DMS #725).
+DMS_ALLE_TYPEN_AB = (0, 182, 0)
+ALLE_TYPEN = '*'
 # Mitgelieferte Automatisierungen (inhalt.automatisierungen, DMS #712, Registry #108), ab DMS 0.177.0. Seit dieser
 # Version legt ein Datumsfeld mit frist keine Aufgaben mehr selbst an – erinnern muss eine Automatisierung.
 DMS_AUTOMATISIERUNGEN_AB = (0, 177, 0)
@@ -927,6 +930,14 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         if s.get('eltern') and s['eltern'] not in sichten:
             fehler.append(f'sichten/{s.get("schluessel")}: Elternsicht „{s["eltern"]}“ fehlt')
         for t in s.get('typen', []) or []:
+            if t == ALLE_TYPEN:
+                # Ansicht über alle Mappentypen (DMS #725), z. B. „Favoriten“ – allein, ab Ablago 0.182.0.
+                if len(s.get('typen') or []) > 1:
+                    fehler.append(f'sichten/{s.get("schluessel")}: „*“ (alle Mappentypen) steht allein in typen')
+                ab = dms_untergrenze(str(m.get('dms', '')))
+                if ab is None or ab < DMS_ALLE_TYPEN_AB:
+                    fehler.append(f'sichten/{s.get("schluessel")}: „*“ (alle Mappentypen) kennt Ablago erst ab 0.182.0 – bitte dms: ">=0.182.0" angeben')
+                continue
             verweis_ok(t, f'sichten/{s.get("schluessel")}')
         if s.get('fremde_typen'):
             ab_f = dms_untergrenze(str(m.get("dms", "")))

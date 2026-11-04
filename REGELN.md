@@ -15,6 +15,7 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 ## Erlaubt
 
 - Mappentypen, Sichten, Rollen, Beispiel-Mappen
+- Sichten über **alle Mappentypen** mit `typen: ["*"]` – auch künftige, z. B. eine Ansicht „Favoriten“ (allein in `typen`, ab Ablago 0.182.0, `dms: ">=0.182.0"`)
 - Wortlisten: gleichbedeutende Wörter für die Suche (siehe [Wortlisten](#wortlisten))
 - Vorgefertigte Automatisierungen (siehe [Automatisierungen](#automatisierungen))
 - Code, der über die API von Ablago arbeitet (sobald der Paket-Läufer verfügbar ist)

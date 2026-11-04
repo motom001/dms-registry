@@ -15,6 +15,7 @@ The full licence text is in the package folder as `LICENSE`. Third-party code in
 ## Allowed
 
 - Mappe types, views, roles, sample Mappen
+- Views across **all Mappe types** with `typen: ["*"]` – including future ones, e.g. a "Favoriten" view (alone in `typen`, from Ablago 0.182.0, `dms: ">=0.182.0"`)
 - Word lists: synonyms for the search (see [Word lists](#word-lists))
 - Ready-made automations (see [Automations](#automations))
 - Code that works through Ablago API (as soon as the package runner is available)
