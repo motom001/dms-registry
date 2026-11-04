@@ -1,0 +1,20 @@
+# Mitgelieferte Automatisierungen (Ablago #712, dms-registry #108/#113). Nach der Installation aus –
+# beim Installieren fragt Ablago, welche gleich eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellt man selbst ein.
+- schluessel: mietvertrag_ende
+  name: Mietvertrag endet bald
+  beschreibung: 60 Tage vor dem Ende eines befristeten oder gekündigten Mietvertrags.
+  wenn: { art: datum, typ: mietvertrag, feld: ende, vorlauf: 60, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Mietvertrag endet am {datum}: {titel}" }
+- schluessel: mieterhoehung
+  name: Mieterhöhung möglich
+  beschreibung: 30 Tage bevor die nächste Mieterhöhung möglich ist.
+  wenn: { art: datum, typ: mietvertrag, feld: mieterhoehung_ab, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Mieterhöhung möglich ab {datum}: {titel}" }
+- schluessel: nebenkosten_versenden
+  name: Nebenkostenabrechnung versenden
+  beschreibung: 60 Tage vor dem letzten Tag für die Abrechnung – danach sind Nachforderungen meist ausgeschlossen.
+  wenn: { art: datum, typ: nebenkostenabrechnung, feld: versenden_bis, vorlauf: 60, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Nebenkostenabrechnung versenden bis {datum}: {titel}" }

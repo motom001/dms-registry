@@ -289,6 +289,10 @@
         "wortlisten": {
           "type": "string",
           "description": "Gleichbedeutende Wörter für die Suche (ab DMS 0.127.0, dms: \">=0.127.0\")"
+        },
+        "automatisierungen": {
+          "type": "string",
+          "description": "Mitgelieferte Automatisierungen (ab Ablago 0.177.0, dms: \">=0.177.0\"), nach der Installation aus"
         }
       }
     },

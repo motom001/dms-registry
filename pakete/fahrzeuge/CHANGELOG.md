@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.4.0
+
+- Neu: **vorgefertigte Automatisierungen** für jede Frist (1). Seit Ablago 0.177.0 erinnert ein Datumsfeld nicht mehr selbst – die Automatisierung „Datum erreicht“ tut es, Vorlaufzeit, Empfänger und Text stellst du selbst ein. Beim Installieren fragt Ablago, welche gleich eingeschaltet werden (Vorgabe: alle); bei einem Update ersetzt die mitgelieferte die übernommene Erinnerung, solange du sie nicht geändert hast.
+- Neu am Fahrzeug: Feld **Verantwortlich** (Verweis auf einen Benutzer) – an ihn geht die HU-Erinnerung. Der Halter bleibt eine Person und kann jemand ohne Konto sein.
+- Braucht Ablago ab 0.177.0.
+
 ## 1.3.1
 
 - Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.

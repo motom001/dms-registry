@@ -57,7 +57,7 @@
     - key: naechste_faellig
       label: Nächste fällig
       typ: datum
-      hilfe: "„Zuletzt am“ plus Turnus. Nach jeder Wartung neu eintragen. Das DMS erinnert 30 Tage vorher."
+      hilfe: "„Zuletzt am“ plus Turnus. Nach jeder Wartung neu eintragen. Die mitgelieferte Automatisierung erinnert 30 Tage vorher."
       frist: { vorlauf: 30, einheit: tage }
     - { key: notiz, label: Notiz, typ: langtext, hilfe: "Was gemacht wurde, Auffälliges, Ersatzteile" }
   register:

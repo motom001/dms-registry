@@ -2,3 +2,4 @@
 mappentypen: [konto, vertrag, versicherung, steuerjahr, arbeitsverhaeltnis, vorsorge, ausweis, gesundheit, anschaffung, bildung]
 sichten: [haushalt, konten, vertraege, versicherungen, steuerjahre, arbeit, vorsorge, ausweise, gesundheit, anschaffungen, bildung, sachversicherungen, personenversicherungen, kuendigung_bald, laeuft_ab, garantie_bald]
 beispiele: 18
+automatisierungen: 6

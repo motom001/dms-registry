@@ -24,13 +24,15 @@
     - key: hu_faellig
       label: HU fällig
       typ: datum
-      hilfe: Nächste Hauptuntersuchung (Plakette, Monat genügt – dann den Monatsersten). Das DMS erinnert 60 Tage vorher.
-      frist: { vorlauf: 60, einheit: tage }
+      hilfe: Nächste Hauptuntersuchung (Plakette, Monat genügt – dann den Monatsersten). Die mitgelieferte Automatisierung erinnert einen Monat vorher den Verantwortlichen.
+      frist: { vorlauf: 1, einheit: monate }
+    # Ab 1.4.0 (Ablago 0.177, #113): an wen die HU-Erinnerung geht – ein Benutzer, anders als der Halter.
+    - { key: verantwortlich, label: Verantwortlich, typ: referenz, ziel: "dms:benutzer", hilfe: "Wer sich um HU und Termine kümmert – bekommt die Erinnerung. Leer: wer das Fahrzeug angelegt hat." }
     - { key: versicherung, label: Versicherung, typ: referenz, ziel: "haushalt:versicherung", verweisart: bezug, hilfe: Die Kfz-Versicherung aus dem Paket Haushalt }
     - { key: finanzierung, label: Finanzierung/Leasing, typ: referenz, ziel: "haushalt:vertrag", verweisart: bezug, hilfe: Kredit- oder Leasingvertrag aus dem Paket Haushalt }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Fahrzeugbrief (Zulassungsbescheinigung Teil II) liegt }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, kennzeichen, fin, erstzulassung, halter_verweis, hu_faellig, versicherung, finanzierung, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, kennzeichen, fin, erstzulassung, halter_verweis, hu_faellig, verantwortlich, versicherung, finanzierung, verbleib_original] }
     - key: werkstattrechnungen
       name: Werkstattrechnungen
       art: verknuepfungen

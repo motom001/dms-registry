@@ -19,6 +19,7 @@ body:
       label: Welches Paket? · Which package?
       options:
         - Basis (basis)
+        - Benachrichtigungen (benachrichtigungen)
         - Bildformate (bildformate)
         - Fahrzeuge (fahrzeuge)
         - Hallo Post (hallo_post)

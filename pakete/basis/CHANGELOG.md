@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.4.2
+
+- Text: Hinweis am Geburtstag – eine jährliche Erinnerung legt man seit Ablago 0.177.0 als Automatisierung „Datum erreicht“ an.
+
 ## 1.4.1
 
 - Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.

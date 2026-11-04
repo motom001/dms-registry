@@ -86,6 +86,24 @@ DMS_FUNKTIONEN_ANTWORTEN = {'netz_strom', 'netz_weiter', 'teil'}
 DMS_ERKENNEN_AB = (0, 125, 0)
 # Wortlisten (inhalt.wortlisten, DMS #356): gleichbedeutende Wörter für die Suche, ab DMS 0.127.0.
 DMS_WORTLISTEN_AB = (0, 127, 0)
+# Mitgelieferte Automatisierungen (inhalt.automatisierungen, DMS #712, Registry #108), ab DMS 0.177.0. Seit dieser
+# Version legt ein Datumsfeld mit frist keine Aufgaben mehr selbst an – erinnern muss eine Automatisierung.
+DMS_AUTOMATISIERUNGEN_AB = (0, 177, 0)
+# Wenn-Karten, die ein Paket nutzen darf (DMS shared/src/ereignisse.ts ohne Gruppen zaehler/betrieb/auftrag und
+# ohne frist.erreicht, das in „datum“ aufgegangen ist).
+WENN_MAPPE = {'mappe.angelegt', 'mappe.geaendert', 'mappe.verknuepft', 'dokument.hochgeladen', 'mappe.notiz', 'mappe.geloescht',
+              'mappe.geloescht_verknuepft', 'mappe.endgueltig_geloescht', 'mappe.wiederhergestellt',
+              'volltext.fertig', 'datei.umgewandelt', 'archivfassung.erstellt', 'erkennung.fertig'}
+WENN_OHNE_TYP = {'aufgabe.neu', 'post.angelegt', 'favorit.neu', 'benutzer.abwesenheit_gesetzt', 'benutzer.abwesenheit_beendet',
+                 'benutzer.gesperrt', 'benutzer.deaktiviert', 'benutzer.aktiviert', 'benutzer.vertretung_zurueckgezogen'}
+# Personen aus dem Ereignis als Empfänger (DMS shared/src/automatisierung.ts PERSONEN_IM_EREIGNIS).
+PERSONEN_IM_EREIGNIS = {
+    'benutzer.abwesenheit_gesetzt': {'vertreter', 'benutzer'}, 'benutzer.abwesenheit_beendet': {'vertreter', 'benutzer'},
+    'benutzer.vertretung_zurueckgezogen': {'vertreter', 'benutzer'}, 'benutzer.gesperrt': {'benutzer'},
+    'benutzer.deaktiviert': {'benutzer'}, 'benutzer.aktiviert': {'benutzer'}, 'favorit.neu': {'benutzer'},
+}
+VORLAUF_EINHEITEN = {'tage', 'wochen', 'monate'}
+DANN_KARTEN = {'aufgabe', 'feld', 'stopp'}
 # Schnittstelle dms:texterkennung (DMS #458): das Paket übernimmt die Texterkennung, ab DMS 0.133.0.
 DMS_TEXTERKENNUNG_AB = (0, 133, 0)
 # Schnittstelle dms:umwandeln, code.umwandeln und Ereignis datei.umwandeln (DMS #577): Dateien umwandeln, ab DMS 0.137.0.
@@ -493,6 +511,107 @@ def pruefe_wortlisten(gruppen: list, dms_bereich: str) -> list[str]:
     return fehler
 
 
+def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, dms_bereich: str) -> list[str]:
+    """inhalt.automatisierungen (DMS #712, Registry #108): bekannte Karten, vorhandene Felder, keine festen Personen
+    oder Rollen, Empfänger-Felder verweisen auf Benutzer; passende DMS-Version. typen: Schlüssel → Liste der Felder."""
+    fehler: list[str] = []
+    gesehen: set[str] = set()
+    for i, a in enumerate(liste, 1):
+        if not isinstance(a, dict):
+            continue
+        wo = f'automatisierungen/{a.get("schluessel") or i}'
+        if a.get('schluessel') in gesehen:
+            fehler.append(f'automatisierungen: Schlüssel „{a.get("schluessel")}“ doppelt')
+        gesehen.add(a.get('schluessel'))
+        w = a.get('wenn') or {}
+        art = w.get('art')
+        typ = w.get('typ')
+        felder: list | None = None
+        if typ is not None:
+            t = str(typ)
+            if ':' in t:
+                pk = t.split(':', 1)[0]
+                if pk == 'dms' or (pk != paket_id and pk not in abh):
+                    fehler.append(f'{wo}: wenn.typ „{t}“ – nur Mappentypen des Pakets oder seiner Abhängigkeiten')
+                elif pk == paket_id:
+                    felder = typen.get(t.split(':', 1)[1])
+            else:
+                felder = typen.get(t)
+                if felder is None:
+                    fehler.append(f'{wo}: Mappentyp „{t}“ gibt es in diesem Paket nicht')
+        feldnamen = {f.get('key'): f for f in (felder or []) if isinstance(f, dict)}
+        pruefbar = felder is not None
+        if art == 'datum':
+            if not typ:
+                fehler.append(f'{wo}: „Datum erreicht“ braucht wenn.typ')
+            fe = feldnamen.get(w.get('feld'))
+            if pruefbar and (not fe or fe.get('typ') != 'datum'):
+                fehler.append(f'{wo}: wenn.feld „{w.get("feld")}“ ist kein Datumsfeld von „{typ}“')
+            if not isinstance(w.get('vorlauf'), int) or not -3650 <= w['vorlauf'] <= 3650:
+                fehler.append(f'{wo}: wenn.vorlauf muss eine ganze Zahl sein (Tage, Wochen oder Monate vorher)')
+            if w.get('einheit', 'tage') not in VORLAUF_EINHEITEN:
+                fehler.append(f'{wo}: wenn.einheit muss tage, wochen oder monate sein')
+        elif art in WENN_MAPPE:
+            pass
+        elif art in WENN_OHNE_TYP:
+            if typ:
+                fehler.append(f'{wo}: „{art}“ hat keinen Mappentyp – wenn.typ weglassen')
+        else:
+            fehler.append(f'{wo}: unbekannte Wenn-Karte „{art}“')
+        for j, k in enumerate(a.get('dann') or [], 1):
+            if not isinstance(k, dict):
+                continue
+            kw = f'{wo}/dann[{j}]'
+            if k.get('art') not in DANN_KARTEN:
+                fehler.append(f'{kw}: unbekannte Dann-Karte „{k.get("art")}“ (erlaubt: {", ".join(sorted(DANN_KARTEN))})')
+                continue
+            if k['art'] == 'feld':
+                if not typ:
+                    fehler.append(f'{kw}: „Feld ändern“ braucht eine Wenn-Karte mit Mappentyp')
+                for key in (k.get('werte') or {}):
+                    if pruefbar and key not in feldnamen:
+                        fehler.append(f'{kw}: Feld „{key}“ gibt es an „{typ}“ nicht')
+            if k['art'] == 'aufgabe':
+                if not str(k.get('text') or '').strip():
+                    fehler.append(f'{kw}: Text fehlt')
+                if k.get('als', 'aufgabe') not in ('aufgabe', 'benachrichtigung'):
+                    fehler.append(f'{kw}: als muss aufgabe oder benachrichtigung sein')
+                empf = k.get('empfaenger') or []
+                if not empf:
+                    fehler.append(f'{kw}: Empfänger fehlt')
+                for e in empf:
+                    ea = e.get('art') if isinstance(e, dict) else None
+                    if ea in ('person', 'rolle'):
+                        fehler.append(f'{kw}: feste Personen und Rollen gibt es in Paketen nicht – Empfänger aus einem Feld, aus dem Ereignis oder der Ersteller')
+                    elif ea == 'feld':
+                        fe = feldnamen.get(e.get('feld'))
+                        if pruefbar and (not fe or fe.get('typ') != 'referenz' or fe.get('ziel') != 'dms:benutzer'):
+                            fehler.append(f'{kw}: Empfänger-Feld „{e.get("feld")}“ muss ein Verweis auf Benutzer sein (ziel: dms:benutzer)')
+                        if e.get('sonst') not in (None, 'ersteller'):
+                            fehler.append(f'{kw}: sonst darf nur ersteller sein')
+                    elif ea == 'ereignis':
+                        if e.get('feld') not in PERSONEN_IM_EREIGNIS.get(str(art), set()):
+                            fehler.append(f'{kw}: „{art}“ bringt keine Person „{e.get("feld")}“ mit')
+                    elif ea == 'ersteller':
+                        if not typ:
+                            fehler.append(f'{kw}: „wer die Mappe angelegt hat“ braucht eine Wenn-Karte mit Mappentyp')
+                    else:
+                        fehler.append(f'{kw}: unbekannter Empfänger „{ea}“')
+    if liste:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_AUTOMATISIERUNGEN_AB:
+            fehler.append('inhalt.automatisierungen: Automatisierungen in Paketen kennt Ablago erst ab 0.177.0 – bitte dms: ">=0.177.0" angeben')
+    # Ab 0.177.0 erinnert ein Datumsfeld mit frist nicht mehr selbst: Jede Frist braucht eine mitgelieferte Automatisierung.
+    ab = dms_untergrenze(dms_bereich)
+    if ab is not None and ab >= DMS_AUTOMATISIERUNGEN_AB:
+        erinnert = {(str((a.get('wenn') or {}).get('typ')), (a.get('wenn') or {}).get('feld')) for a in liste if isinstance(a, dict) and (a.get('wenn') or {}).get('art') == 'datum'}
+        for t, fs in typen.items():
+            for f in fs or []:
+                if isinstance(f, dict) and f.get('frist') and (t, f.get('key')) not in erinnert and (f'{paket_id}:{t}', f.get('key')) not in erinnert:
+                    fehler.append(f'mappentypen/{t}/{f.get("key")}: Frist ohne mitgelieferte Automatisierung „Datum erreicht“ – ab Ablago 0.177.0 erinnert das Feld nicht mehr selbst')
+    return fehler
+
+
 def beispiel_verweise(werte: dict) -> list[str]:
     """Verweise auf andere Beispiele in den Werten (#347 im DMS): { beispiel: x } oder Listen davon."""
     erg = []
@@ -686,7 +805,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     # Inhalte gegen das Schema; lokale Schlüssel eindeutig; Verweise auflösbar.
     inhalte = m.get('inhalt') or {}
     geladen: dict[str, list] = {}
-    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten'):
+    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten', 'automatisierungen'):
         if art not in inhalte:
             continue
         pfad = ordner / str(inhalte[art])
@@ -762,6 +881,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             verweis_ok(b['typ'], 'beispiele')
     fehler += pruefe_beispiel_verweise(geladen.get('beispiele', []) or [], str(m.get('id')), abh)
     fehler += pruefe_wortlisten(geladen.get('wortlisten', []) or [], str(m.get('dms', '')))
+    typfelder = {t.get('schluessel'): t.get('felder') or [] for t in geladen.get('mappentypen', []) if isinstance(t, dict)}
+    fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')))
 
     # tests/erwartung.yaml stimmt mit dem Inhalt überein.
     erw_pfad = ordner / 'tests' / 'erwartung.yaml'
@@ -775,6 +896,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             fehler.append('tests/erwartung.yaml: Anzahl beispiele passt nicht')
         if erw.get('wortlisten', 0) != len(geladen.get('wortlisten', [])):
             fehler.append('tests/erwartung.yaml: Anzahl wortlisten passt nicht')
+        if erw.get('automatisierungen', 0) != len(geladen.get('automatisierungen', [])):
+            fehler.append('tests/erwartung.yaml: Anzahl automatisierungen passt nicht')
     elif not vorlage:
         fehler.append('tests/erwartung.yaml fehlt')
 

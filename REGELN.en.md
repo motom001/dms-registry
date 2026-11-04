@@ -16,6 +16,7 @@ The full licence text is in the package folder as `LICENSE`. Third-party code in
 
 - Mappe types, views, roles, sample Mappen
 - Word lists: synonyms for the search (see [Word lists](#word-lists))
+- Ready-made automations (see [Automations](#automations))
 - Code that works through Ablago API (as soon as the package runner is available)
 - Access to the network/internet only to addresses listed in the manifest (`code.netz`) whose purpose the README explains. Without `code.netz`, a package has no access to the network or the internet.
 
@@ -194,6 +195,26 @@ A package can bring **synonyms** for the search (from Ablago 0.127.0): whoever s
 - General words found in every archive (Rechnung/Beleg, Vertrag/Vereinbarung) belong in the **Basis** package; subject packages only bring their subject-specific words. A word appears in at most one package of the catalogue (checked by `werkzeuge/test_pruefen.py`).
 - `tests/erwartung.yaml` states the number of groups: `wortlisten: 5`.
 - Ablago creates the groups on installation, replaces them with those of the package on an update and removes them together with the package.
+
+## Automations
+
+A package can bring **ready-made automations** (from Ablago 0.177.0, Ablago #712): When · And · Then as in the editor under *Workbench → Build the filing → Automations*. The manifest contains `inhalt.automatisierungen: inhalt/automatisierungen.yaml` and `dms: ">=0.177.0"`.
+
+```yaml
+- schluessel: hu_bald
+  name: HU wird bald fällig
+  beschreibung: Einen Monat vor der Hauptuntersuchung bekommt der Verantwortliche eine Frist.
+  wenn: { art: datum, typ: fahrzeug, feld: hu_faellig, vorlauf: 1, einheit: monate, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: feld, feld: verantwortlich, sonst: ersteller }], text: "Für {kennzeichen} wird bald die HU fällig: {datum}." }
+```
+
+- **Off after installation.** When installing, Ablago lists every automation by name and asks whether to switch it on right away (default: yes). In the workbench they show as “from package …”. An update replaces only unchanged ones; removing the package removes unchanged, switched-off ones.
+- **Exactly one When card:** `datum` (*Date reached*, with `typ`, `feld` as a date field, `vorlauf`, `einheit` tage/wochen/monate, optional `uhrzeit`, `wiederholung` in months) or an event such as `mappe.angelegt`, `mappe.geaendert`, `dokument.hochgeladen`, `post.angelegt`, `benutzer.abwesenheit_gesetzt`. Mappe types as the package's own key or `package:type` of a dependency.
+- **Then cards:** `aufgabe` (task or notification with text and placeholders), `feld` (set fields), `stopp`. Cards that send data out (e-mail, calling an address) are not available in packages yet.
+- **No fixed people or roles:** the recipient is a field of the Mappe that points to users (`ziel: dms:benutzer`), optionally with `sonst: ersteller`, or `ersteller` (whoever created the Mappe).
+- **Every deadline reminds:** since Ablago 0.177.0 a date field with `frist` no longer creates tasks itself. A package with `dms: ">=0.177.0"` therefore brings a *Date reached* automation for every deadline field; `frist.vorlauf` is only the default. `pruefen.py` reports deadlines without an automation.
+- `tests/erwartung.yaml` states the number: `automatisierungen: 3`.
 
 ## Converting files
 

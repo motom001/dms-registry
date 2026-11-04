@@ -59,7 +59,7 @@
     - key: kuendigen_bis
       label: Kündigen bis
       typ: datum
-      hilfe: Letzter Tag, an dem die Kündigung ankommen muss. Das DMS erinnert 30 Tage vorher.
+      hilfe: Letzter Tag, an dem die Kündigung ankommen muss. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
     - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR }
     - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig] }
@@ -90,12 +90,12 @@
     - key: hauptfaelligkeit
       label: Hauptfälligkeit
       typ: datum
-      hilfe: Tag, an dem das Versicherungsjahr beginnt. Das DMS erinnert jedes Jahr 6 Wochen vorher.
+      hilfe: Tag, an dem das Versicherungsjahr beginnt. Die mitgelieferte Automatisierung erinnert jedes Jahr 6 Wochen vorher.
       frist: { vorlauf: 6, einheit: wochen, wiederholung: 12 }
     - key: kuendigen_bis
       label: Kündigen bis
       typ: datum
-      hilfe: Meist 3 Monate vor der Hauptfälligkeit. Das DMS erinnert 30 Tage vorher.
+      hilfe: Meist 3 Monate vor der Hauptfälligkeit. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Versicherungsschein auf Papier liegt }
   register:
@@ -117,7 +117,7 @@
     - key: einspruch_bis
       label: Einspruch bis
       typ: datum
-      hilfe: Ein Monat nach dem Bescheid (Bescheid vom + 1 Monat). Das DMS erinnert 7 Tage vorher.
+      hilfe: Ein Monat nach dem Bescheid (Bescheid vom + 1 Monat). Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
       frist: { vorlauf: 7, einheit: tage }
     - { key: steuerberater, label: Steuerberater, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
   register:
@@ -192,7 +192,7 @@
     - key: gueltig_bis
       label: Gültig bis
       typ: datum
-      hilfe: Das DMS erinnert 90 Tage vorher – Zeit genug für einen Termin beim Bürgeramt.
+      hilfe: Die mitgelieferte Automatisierung erinnert 90 Tage vorher – Zeit genug für einen Termin beim Bürgeramt.
       frist: { vorlauf: 90, einheit: tage }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
   register:
@@ -237,7 +237,7 @@
     - key: garantie_bis
       label: Garantie bis
       typ: datum
-      hilfe: Gewährleistung oder Herstellergarantie. Das DMS erinnert 30 Tage vorher.
+      hilfe: Gewährleistung oder Herstellergarantie. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel" }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie }

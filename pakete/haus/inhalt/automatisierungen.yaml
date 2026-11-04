@@ -1,0 +1,8 @@
+# Mitgelieferte Automatisierungen (Ablago #712, dms-registry #108/#113). Nach der Installation aus –
+# beim Installieren fragt Ablago, welche gleich eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellt man selbst ein.
+- schluessel: wartung_faellig
+  name: Wartung bald fällig
+  beschreibung: 30 Tage vor der nächsten Wartung.
+  wenn: { art: datum, typ: wartung, feld: naechste_faellig, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Wartung fällig am {datum}: {titel}" }
