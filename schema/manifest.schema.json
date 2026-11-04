@@ -425,10 +425,10 @@
         },
         "mappentypen": {
           "type": "array",
-          "description": "Mappentypen für Ereignisse (DMS #670, ab 0.153.0): Pflicht mit den Mappen-Ereignissen mappe.angelegt, mappe.geaendert, mappe.geloescht, mappe.wiederhergestellt und frist.erreicht – und nur mit ihnen. Schlüssel eigener Mappentypen ohne Präfix; das Paket muss sie lesen dürfen.",
+          "description": "Mappentypen für Ereignisse (DMS #670, ab 0.153.0): Pflicht mit den Mappen-Ereignissen mappe.angelegt, mappe.geaendert, mappe.geloescht, mappe.wiederhergestellt und frist.erreicht – und nur mit ihnen. Schlüssel eigener Mappentypen ohne Präfix; ab DMS 0.166.0 (#686) auch fremde wie paket:typ oder dms:post und * (alle, die das Paket lesen darf). Das Paket muss sie lesen dürfen.",
           "items": {
             "type": "string",
-            "pattern": "^[a-z][a-z0-9_]{0,39}$"
+            "pattern": "^(\\*|([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39})$"
           },
           "minItems": 1,
           "uniqueItems": true

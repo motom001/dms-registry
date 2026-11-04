@@ -98,9 +98,13 @@ DMS_VOLLTEXT_AB = (0, 145, 0)
 # Schnittstelle dms:archivfassung, code.archivfassung und Ereignis datei.archivfassung (DMS #631): Archivfassung (PDF/A)
 # zu Dokumenten mit fertigem Volltext ablegen, ab DMS 0.149.0.
 DMS_ARCHIVFASSUNG_AB = (0, 149, 0)
-# Ereignisse zu Mappen aus dem Ereigniskatalog und code.mappentypen (DMS #670): nur zu eigenen Mappentypen, ab DMS 0.153.0.
+# Ereignisse zu Mappen aus dem Ereigniskatalog und code.mappentypen (DMS #670): eigene Mappentypen ab DMS 0.153.0.
 MAPPEN_EREIGNISSE = ('mappe.angelegt', 'mappe.geaendert', 'mappe.geloescht', 'mappe.wiederhergestellt', 'frist.erreicht')
 DMS_MAPPEN_EREIGNISSE_AB = (0, 153, 0)
+# Fremde Mappentypen (paket:typ, dms:post) und „*“ in code.mappentypen (DMS #686): Zustellung nach den Rechten des
+# Paket-Benutzers, ab DMS 0.166.0.
+DMS_FREMDE_MAPPENTYPEN_AB = (0, 166, 0)
+TYPVERWEIS = re.compile(r'^(\*|([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39})$')
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -229,7 +233,7 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
 
 
 def pruefe_mappentypen(code: dict, paket_id: str, typen: set, dms_bereich: str) -> list[str]:
-    """code.mappentypen (DMS #670): Pflicht mit Mappen-Ereignissen, nur mit ihnen; eigene, lesbare Mappentypen."""
+    """code.mappentypen (DMS #670, #686): Pflicht mit Mappen-Ereignissen, nur mit ihnen; eigene oder fremde lesbare Mappentypen."""
     fehler: list[str] = []
     mit = [e for e in (code.get('ereignisse') or []) if e in MAPPEN_EREIGNISSE]
     liste = code.get('mappentypen') or []
@@ -239,17 +243,30 @@ def pruefe_mappentypen(code: dict, paket_id: str, typen: set, dms_bereich: str) 
         fehler.append(f'code.ereignisse: {", ".join(mit)} braucht code.mappentypen – die eigenen Mappentypen, zu denen das Paket die Ereignisse bekommt')
     if liste and not mit:
         fehler.append('code.mappentypen: nur mit Mappen-Ereignissen in code.ereignisse (' + ', '.join(MAPPEN_EREIGNISSE) + ')')
+    fremd = False
     for k in liste:
-        if not isinstance(k, str) or ':' in k:
-            fehler.append(f'code.mappentypen: „{k}“ – nur Schlüssel eigener Mappentypen (ohne Präfix); Ereignisse zu fremden Mappentypen gibt es noch nicht')
-        elif k not in typen:
-            fehler.append(f'code.mappentypen: Mappentyp „{k}“ gibt es in diesem Paket nicht')
-        elif not ({k, f'{paket_id}:{k}', '*'} & lesen):
+        if not isinstance(k, str) or not TYPVERWEIS.match(k):
+            fehler.append(f'code.mappentypen: „{k}“ – Schlüssel eines eigenen Mappentyps, Verweis wie paket:typ bzw. dms:post oder „*“')
+        elif k == 'dms:benutzer':
+            fehler.append('code.mappentypen: dms:benutzer ist für Pakete nicht erlaubt – Pakete sehen keine Benutzer')
+        elif k == '*':
+            fremd = True
+            if '*' not in lesen:
+                fehler.append('code.mappentypen: „*“ (alle Mappentypen) geht nur mit code.rechte.lesen: ["*"]')
+        elif ':' in k and not k.startswith(f'{paket_id}:'):
+            fremd = True
+            if not ({k, '*'} & lesen):
+                fehler.append(f'code.mappentypen: „{k}“ – das Paket muss diesen Mappentyp auch lesen dürfen (code.rechte.lesen)')
+        elif k.split(':')[-1] not in typen:
+            fehler.append(f'code.mappentypen: Mappentyp „{k}“ gibt es in diesem Paket nicht – fremde Mappentypen bitte mit Präfix, z. B. basis:vertrag')
+        elif not ({k, k.split(':')[-1], f'{paket_id}:{k.split(":")[-1]}', '*'} & lesen):
             fehler.append(f'code.mappentypen: „{k}“ – das Paket muss diesen Mappentyp auch lesen dürfen (code.rechte.lesen)')
     if (mit or liste):
         ab = dms_untergrenze(dms_bereich)
         if ab is None or ab < DMS_MAPPEN_EREIGNISSE_AB:
             fehler.append('code.ereignisse: Ereignisse zu Mappen kennt das DMS erst ab 0.153.0 – bitte dms: ">=0.153.0" angeben')
+        elif fremd and ab < DMS_FREMDE_MAPPENTYPEN_AB:
+            fehler.append('code.mappentypen: fremde Mappentypen und „*“ kennt das DMS erst ab 0.166.0 – bitte dms: ">=0.166.0" angeben')
     return fehler
 
 

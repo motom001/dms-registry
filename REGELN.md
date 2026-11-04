@@ -288,7 +288,7 @@ code:
 
 ## Ereignisse zu Mappen
 
-Seit Ablago 0.153.0 (DMS #670) kann ein Paket auf Mappen reagieren – auf `mappe.angelegt`, `mappe.geaendert`, `mappe.geloescht`, `mappe.wiederhergestellt` und `frist.erreicht`. Es bekommt sie nur zu den **eigenen** Mappentypen, die es unter `code.mappentypen` nennt:
+Seit Ablago 0.153.0 (DMS #670) kann ein Paket auf Mappen reagieren – auf `mappe.angelegt`, `mappe.geaendert`, `mappe.geloescht`, `mappe.wiederhergestellt` und `frist.erreicht`. Es bekommt sie nur zu den Mappentypen, die es unter `code.mappentypen` nennt – eigene ohne Präfix, seit Ablago 0.166.0 (DMS #686) auch fremde:
 
 ```yaml
 dms: ">=0.153.0"
@@ -299,7 +299,9 @@ code:
     lesen: [vertrag]          # Pflicht: das Paket muss die Typen lesen dürfen
 ```
 
-- `code.mappentypen` ist Pflicht mit diesen Ereignissen und nur mit ihnen erlaubt. Ereignisse zu fremden Mappentypen gibt es noch nicht.
+- `code.mappentypen` ist Pflicht mit diesen Ereignissen und nur mit ihnen erlaubt.
+- **Fremde Mappentypen** (ab `dms: ">=0.166.0"`): Verweise wie in `code.rechte` – `basis:organisation`, `dms:post` – oder `*` für alle, die das Paket lesen darf (nur mit `code.rechte.lesen: ["*"]`). Jeder genannte Typ muss lesbar sein; `dms:benutzer` ist verboten.
+- Zugestellt wird nur, was der Paket-Benutzer **gerade lesen darf**: Der Admin kann einem Paket einen Mappentyp verwehren oder einzelne Mappen über Regeln für die Rolle *Paket* ausnehmen. Rechne nicht damit, zu jeder Mappe ein Ereignis zu bekommen.
 - Ein Ereignis enthält nur Kennungen, Feldschlüssel und Datum – nie Werte. Das Paket liest mit seinen Rechten nach.
 - Ereignisse kommen **mindestens einmal**; `daten.ereignis` ist die Id im Ereigniskatalog – eine Wiederholung erkennt das Paket daran. `mappe.geaendert` fasst schnelle Folgen zusammen.
 - Die Vorschau zeigt die Ereignisse mit „– zu: *Typen*“. Ablauf und Felder beschreibt das Entwicklerhandbuch von Ablago unter [Pakete mit Code](https://help.ablago.app/entwickler/aktuell/pakete-code/#ereignisse) und [Ereigniskatalog](https://help.ablago.app/entwickler/aktuell/aufbau/#ereigniskatalog).
