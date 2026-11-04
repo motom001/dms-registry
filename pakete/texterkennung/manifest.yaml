@@ -2,7 +2,7 @@
 schema: 1
 id: texterkennung
 name: Texterkennung (Deutsch und Englisch)
-version: 2.2.1
+version: 2.3.0
 beschreibung: Das Grundpaket für die Texterkennung von Ablago – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.
 autor:
   name: Thomas Meissner
@@ -15,7 +15,7 @@ symbol: scan-text
 # 0.139.0: Sprachen je Seite beim Volltext schreiben (seitensprachen, Seiten durch \f getrennt), Text je Seite beim
 # Lesen des Volltexts (motom001/dms#579). Wortpositionen (woerter, motom001/dms#631) nimmt erst 0.149.0 an; ältere
 # übergehen das Feld – deshalb bleibt die Grenze.
-dms: ">=0.139.0"
+dms: ">=0.179.0"
 inhalt: {}
 code:
   sprache: c
@@ -58,9 +58,8 @@ code:
           min: 150
           max: 400
           standard: 300
-    - liste: typen
-      name: Nur diese Mappentypen
-      eintrag: Mappentyp
-      hilfe: Leer – Dokumente in allen Mappen.
+    - abschnitt: Mappentypen
+      hilfe: Beide leer – Dokumente in allen Mappen. „Nur diese“ leer – alle außer den ausgeschlossenen.
       felder:
-        - { schluessel: typ, name: Mappentyp, typ: mappentyp, pflicht: true }
+        - { schluessel: typen, name: Nur diese Mappentypen, typ: mappentyp, mehrfach: true, schliesst_aus: ohne_typen, hilfe: "Leer – alle Mappentypen." }
+        - { schluessel: ohne_typen, name: Diese Mappentypen ausschließen, typ: mappentyp, mehrfach: true, schliesst_aus: typen, hilfe: "Dokumente in Mappen dieser Typen bekommen keinen Volltext vom Paket." }
