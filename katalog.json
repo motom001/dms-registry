@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-04T13:30:16Z",
+  "erstellt": "2026-11-04T16:40:29Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -2477,6 +2477,24 @@
       "id": "pdfa",
       "versionen": [
         {
+          "version": "1.1.0",
+          "dms": ">=0.176.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/pdfa-1.1.0.zip",
+          "sha256": "38cea520647d7fe1e6921c851ce1bb35f6c4c0bc7f69e45ffde4c8733b11f13e",
+          "groesse": 179353,
+          "veroeffentlicht": "2026-11-04T16:40:29Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/pdfa",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/pdfa/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/pdfa/CHANGELOG.md"
+        },
+        {
           "version": "1.0.1",
           "dms": ">=0.149.0",
           "abhaengigkeiten": {},
@@ -2520,7 +2538,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.1",
+      "aktuell": "1.1.0",
       "kategorien": [
         "dateiformate"
       ],
