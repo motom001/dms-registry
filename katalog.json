@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-04T18:31:27Z",
+  "erstellt": "2026-11-04T20:00:58Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -545,6 +545,24 @@
       "id": "benachrichtigungen",
       "versionen": [
         {
+          "version": "1.1.0",
+          "dms": ">=0.181.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": false,
+          "archiv": "archive/benachrichtigungen-1.1.0.zip",
+          "sha256": "e1a003f7bdc3d5408258005a80896219aa6cc3f4616c8d31dc1a458d007309cd",
+          "groesse": 8029,
+          "veroeffentlicht": "2026-11-04T20:00:58Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/benachrichtigungen",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/benachrichtigungen/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/benachrichtigungen/CHANGELOG.md"
+        },
+        {
           "version": "1.0.0",
           "dms": ">=0.177.0",
           "abhaengigkeiten": {},
@@ -564,13 +582,13 @@
         }
       ],
       "name": "Benachrichtigungen",
-      "beschreibung": "Vorgefertigte Automatisierungen für Benachrichtigungen – zuerst die Vertretung bei Abwesenheit.",
+      "beschreibung": "Tägliche Zusammenfassung, Favoriten, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte.",
       "autor": {
         "name": "Thomas Meissner",
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.0.0",
+      "aktuell": "1.1.0",
       "kategorien": [
         "post"
       ],
