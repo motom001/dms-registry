@@ -20,7 +20,10 @@ SCHEMA_INHALT = json.loads((WURZEL / 'schema/inhalt.schema.json').read_text())
 PFLICHT = ['manifest.yaml', 'README.md', 'LICENSE', 'CHANGELOG.md', 'tests']
 VERBOTEN = re.compile(r'\.(wasm|so|dll|dylib|exe|jar|class|bin|o|a|pyc|node)$', re.I)
 MAX_GROESSE = 2 * 1024 * 1024  # je Datei; Bilder fürs README gern kleiner
-CODE_MAX = 32 * 1024 * 1024  # alle Dateien unter code/ zusammen, wie im DMS (ab 0.91.2, #403)
+# Die eine Größengrenze für Pakete, wie im DMS (PAKET_MAX in shared/src/pakete.ts, DMS #644): Archiv und code/.
+# katalog.py und sammeldatei.py nutzen dieselbe Zahl (test_grenzen prüft das).
+PAKET_MAX = 128 * 1024 * 1024
+CODE_MAX = PAKET_MAX  # alle Dateien unter code/ zusammen
 
 
 def inhalt_validator(art: str) -> Draft202012Validator:
@@ -611,6 +614,10 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             erzeugt = datei.relative_to(ordner).as_posix() == 'code/modul.wasm' or datei.relative_to(ordner).as_posix().startswith('code/daten/')
             if datei.stat().st_size > MAX_GROESSE and not erzeugt:
                 fehler.append(f'{datei.relative_to(ordner)}: größer als 2 MB')
+    # Das ganze Paket (gepackt höchstens so groß wie alle Dateien zusammen) muss unter die Grenze des DMS passen (#644).
+    gesamt = sum(p.stat().st_size for p in ordner.rglob('*') if p.is_file())
+    if gesamt > PAKET_MAX:
+        fehler.append(f'Paket zusammen {gesamt / 1048576:.1f} MB – höchstens {PAKET_MAX // 1048576} MB je Paket (Grenze des DMS, DMS #644)')
 
     m_pfad = ordner / 'manifest.yaml'
     if not m_pfad.exists():
@@ -763,12 +770,12 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         r = subprocess.run(['git', 'ls-files', '--', 'code/modul.wasm', 'code/daten'], cwd=ordner, capture_output=True, text=True)
         if r.returncode == 0 and r.stdout.strip():
             fehler.append('code/modul.wasm und code/daten/ entstehen beim Bau und gehören nicht ins Repository')
-        # Grenze des DMS: code/ zusammen höchstens 32 MB (nach dem Bau sinnvoll, mit modul.wasm und daten/).
+        # Grenze des DMS: code/ zusammen höchstens PAKET_MAX (nach dem Bau sinnvoll, mit modul.wasm und daten/).
         code_ordner = ordner / 'code'
         if code_ordner.is_dir():
             summe = sum(p.stat().st_size for p in code_ordner.rglob('*') if p.is_file())
             if summe > CODE_MAX:
-                fehler.append(f'code/: zusammen {summe / 1024 / 1024:.1f} MB – höchstens 32 MB je Paket')
+                fehler.append(f'code/: zusammen {summe / 1024 / 1024:.1f} MB – höchstens {CODE_MAX // 1048576} MB je Paket')
         modul = ordner / 'code' / 'modul.wasm'
         if modul.exists():
             sys.path.insert(0, str(Path(__file__).resolve().parent))

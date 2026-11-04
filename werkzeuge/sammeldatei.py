@@ -36,7 +36,9 @@ KATALOG, SIGNATUR = 'katalog.json', 'katalog.sig'
 REPO = 'https://github.com/motom001/dms-registry'
 KATALOG_URL = 'https://catalog.ablago.app/katalog.json'
 # Grenzen wie im DMS (server/src/pakete.ts).
-PAKETE_MAX, ARCHIV_MAX, DATEI_MAX = 50, 10 * 1024 * 1024, 64 * 1024 * 1024
+# Wie im DMS (DMS #644): ein Archiv höchstens PAKET_MAX, die Sammeldatei höchstens doppelt so groß.
+PAKET_MAX = 128 * 1024 * 1024
+PAKETE_MAX, ARCHIV_MAX, DATEI_MAX = 50, PAKET_MAX, 2 * PAKET_MAX
 BEREICH = re.compile(r'^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$')
 ARCHIVNAME = re.compile(r'^pakete/([a-z][a-z0-9_]{1,19})-(\d+\.\d+\.\d+)\.zip$')
 
