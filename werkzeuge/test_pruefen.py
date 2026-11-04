@@ -327,6 +327,32 @@ class Einstellungen(unittest.TestCase):
         self.assertTrue(any('code' in f for f in self.paket(c)))
 
 
+class DmsVersion(unittest.TestCase):
+    """Nötige DMS-Version und Lizenz (motom001/dms#651): Schreibweise; in den Katalog nur freie Lizenzen der Positivliste."""
+
+    def manifest(self, **werte) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m.update(werte)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_schreibweise(self):
+        self.assertTrue(any('dms' in f for f in self.manifest(dms='ab 0.121')))
+        self.assertTrue(any('dms' in f for f in self.manifest(dms='>=0.121')))
+
+    def test_gueltige_angabe(self):
+        self.assertEqual([f for f in self.manifest(dms='>=0.121.0') if 'dms' in f], [])
+
+    def test_nur_freie_lizenz(self):
+        for lizenz in ('LicenseRef-Kommerzielle-Lizenz', 'NONE'):
+            self.assertTrue(any('lizenz' in f for f in self.manifest(lizenz=lizenz)), lizenz)
+
+
 class Inhalt(unittest.TestCase):
     """Verweise in inhalt/ und reservierte Paket-Id (dms:…, #310 im DMS)."""
 
