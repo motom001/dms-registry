@@ -314,6 +314,18 @@ class Einstellungen(unittest.TestCase):
         self.assertTrue(any('gibt es in diesem Paket nicht' in f for f in self.paket(fremd, dms='>=0.153.0')))
         blind = copy.deepcopy(c); blind['rechte'] = {'lesen': ['dms:post']}
         self.assertTrue(any('auch lesen dürfen' in f for f in self.paket(blind, dms='>=0.153.0')))
+        # Fremde Mappentypen und „*“ (DMS #686): lesbar und ab 0.166.0.
+        andere = copy.deepcopy(c); andere['mappentypen'] = ['basis:organisation', 'dms:post']; andere['rechte'] = {'lesen': ['basis:organisation', 'dms:post']}
+        self.assertEqual(self.paket(andere, dms='>=0.166.0'), [])
+        self.assertTrue(any('erst ab 0.166.0' in f for f in self.paket(andere, dms='>=0.153.0')))
+        alle = copy.deepcopy(c); alle['mappentypen'] = ['*']; alle['rechte'] = {'lesen': ['*']}
+        self.assertEqual(self.paket(alle, dms='>=0.166.0'), [])
+        halb = copy.deepcopy(alle); halb['rechte'] = {'lesen': ['beispiel']}
+        self.assertTrue(any('geht nur mit code.rechte.lesen' in f for f in self.paket(halb, dms='>=0.166.0')))
+        nichtlesbar = copy.deepcopy(andere); nichtlesbar['rechte'] = {'lesen': ['dms:post']}
+        self.assertTrue(any('auch lesen dürfen' in f for f in self.paket(nichtlesbar, dms='>=0.166.0')))
+        benutzer = copy.deepcopy(c); benutzer['mappentypen'] = ['dms:benutzer']
+        self.assertTrue(any('Pakete sehen keine Benutzer' in f for f in self.paket(benutzer, dms='>=0.166.0')))
 
     def test_dms_untergrenze(self):
         self.assertEqual(pruefen.dms_untergrenze('>=0.94.0'), (0, 94, 0))
