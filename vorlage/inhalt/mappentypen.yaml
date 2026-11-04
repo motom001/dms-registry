@@ -21,8 +21,9 @@
     - key: datum
       label: Datum
       typ: datum
-      # Erinnerung als Aufgabe „Frist“, hier 1 Monat vorher:
-      frist: { vorlauf: 1, einheit: monate }
+      # Erinnerung (ab Ablago 0.177.0): Ein Datumsfeld erinnert nicht mehr selbst. Dafür bringt das Paket eine
+      # Automatisierung „Datum erreicht“ mit (inhalt/automatisierungen.yaml, siehe Paket „fahrzeuge“) und braucht
+      # dann dms: ">=0.177.0". Dazu am Feld: frist: { vorlauf: 1, einheit: monate }
     - key: betrag
       label: Betrag
       typ: betrag
