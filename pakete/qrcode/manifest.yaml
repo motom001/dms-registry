@@ -1,0 +1,41 @@
+# Paket QR-Code lesen – Visitenkarte mit QR-Code (vCard) erkennen und die Angaben für „Aus Dokument ausfüllen“
+# vorschlagen (dms-registry #53). Schema: schema/manifest.schema.json
+schema: 1
+id: qrcode
+name: QR-Code lesen
+version: 1.0.0
+beschreibung: Liest den QR-Code einer Visitenkarte (vCard) und schlägt Name, Funktion, Telefon, E-Mail, Internetseite und Anschrift für „Aus Dokument ausfüllen“ vor – zuverlässiger als die Texterkennung. Ohne Visitenkarte im Bild liest Ablago wie gewohnt den Text. Läuft abgeschottet im Paket-Läufer, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [post]
+symbol: contact
+# 0.125.0: Schnittstelle dms:erkennen (DMS #511); 0.133.0: Seitenbild auch für JPEG und PNG (Fotos)
+dms: ">=0.133.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  rechte:
+    lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen (Post, Person, Organisation …)
+    dokumente: lesen      # nur die Seitenbilder der Dokumente, die Ablago beim Ausfüllen nennt; das Paket ändert nichts
+    schnittstellen: ["dms:erkennen"]  # Vorschläge für „Aus Dokument ausfüllen“ – gespeichert wird erst nach Bestätigung
+  netz: []
+  einstellungen:
+    - abschnitt: QR-Code
+      felder:
+        - schluessel: dpi
+          name: Auflösung (dpi)
+          typ: zahl
+          min: 150
+          max: 400
+          standard: 300
+          hilfe: Für Scans. Fotos liest das Paket in ihrer vollen Größe. Kleine QR-Codes auf Visitenkarten brauchen 300 dpi.
+        - schluessel: max_seiten
+          name: Höchstens so viele Seiten je Dokument
+          typ: zahl
+          min: 1
+          max: 20
+          standard: 2
+          hilfe: Eine Visitenkarte hat Vorder- und Rückseite. Mehr Seiten kosten Zeit beim Ausfüllen.
