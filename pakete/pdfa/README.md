@@ -46,18 +46,22 @@ Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 
 ## Einstellungen
 
-Unter **Werkbank → Pakete → PDF/A → Einstellungen** gibt es nur eine:
+Unter **Werkbank → Pakete → PDF/A → Einstellungen** kreuzt du unter „Archivfassung anlegen für …“ an, was eine Archivfassung bekommt (Ablago ab 0.176.0):
 
 | Einstellung | Standard | Bedeutung |
 | --- | --- | --- |
-| Nur Scans und Bilder | aus | Aus – jedes Dokument bekommt eine Archivfassung, auch PDFs mit Text wie Online-Rechnungen. An – PDFs, die schon auf jeder Seite Text haben, bekommen keine; das spart Platz, aber diese PDFs bleiben dann nur im Original. |
+| PDFs mit Text | an | z. B. Online-Rechnungen, Kontoauszüge. Aus spart Platz; diese PDFs bleiben dann nur im Original. |
+| Gescannte PDFs | an | PDFs ohne Text oder nur mit Text auf einzelnen Seiten. Den Text liefert das Paket Texterkennung. |
+| Fotos und Bilder | an | Immer .jpg, .jpeg und .png; mit dem Paket Bildformate auch .tif, .tiff, .webp, .gif und .bmp. Den Text liefert das Paket Texterkennung. |
+
+Was du abwählst, steht am Dokument als „ausgelassen – laut Einstellung“. Kreuzt du eine Art später an, holt Ablago die Dokumente nach.
 
 Die PDF/A-Stufe ist fest (**PDF/A-2b**) und nicht wählbar: Sie passt für alles, was ein Haushalt aufbewahrt, und jede weitere Stufe müsste dauerhaft gepflegt und geprüft werden.
 
 ## Platz und Qualität
 
 - **Fotos und Bild-Scans** (JPEG, PNG): Die Archivfassung ist kaum größer als das Original (Textebene, Schrift und Farbprofil: einige KB).
-- **PDFs** werden neu als Bild aufgebaut. Bei **Scans** ist das fast verlustfrei; bei **PDFs aus dem Computer** (Online-Rechnung, Kontoauszug) wird die Archivfassung **größer** als das Original (je Seite etwa 100–400 KB statt weniger KB), etwas **unschärfer** als die Vektorschrift und **grau** statt farbig – die Seitenbilder liefert Ablago nur in Graustufen. Der Text bleibt über die Textebene genau durchsuchbar, und das Original bleibt daneben erhalten. Wer Platz sparen will, schaltet „Nur Scans und Bilder“ ein.
+- **PDFs** werden neu als Bild aufgebaut. Bei **Scans** ist das fast verlustfrei; bei **PDFs aus dem Computer** (Online-Rechnung, Kontoauszug) wird die Archivfassung **größer** als das Original (je Seite etwa 100–400 KB statt weniger KB), etwas **unschärfer** als die Vektorschrift und **grau** statt farbig – die Seitenbilder liefert Ablago nur in Graustufen. Der Text bleibt über die Textebene genau durchsuchbar, und das Original bleibt daneben erhalten. Wer Platz sparen will, wählt „PDFs mit Text“ ab.
 
 Gemessen am 03.11.2026 auf amd64 mit 2 Kernen, Node 22, mit den erfundenen Testdateien aus `tests/beispiele.py` (`node tests/modul_test.mjs <ordner> --messen`; bei PDFs mit dem Rendern der Seiten durch Poppler wie in Ablago):
 

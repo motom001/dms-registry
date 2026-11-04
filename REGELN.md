@@ -248,7 +248,10 @@ code:
   ereignisse: [datei.archivfassung]
   archivfassung:
     typen: [application/pdf, image/jpeg, image/png]   # zuständige Dateitypen (MIME); PDF, JPEG und PNG erlaubt
-    nur_scans: nur_scans                              # optional: Ja/Nein-Einstellung „nur Scans und Bilder“
+    auswahl:                                          # optional (ab 0.176.0): je Art eine Ja/Nein-Einstellung
+      pdf_text: pdf_text                              #   PDFs mit Text
+      pdf_scan: pdf_scan                              #   gescannte PDFs
+      bilder: bilder                                  #   Fotos und Bilder
   rechte:
     lesen: ["*"]
     dokumente: lesen                                  # Datei und Wortpositionen lesen – Schreiben braucht es nicht
