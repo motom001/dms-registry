@@ -815,3 +815,33 @@ class Modul(unittest.TestCase):
             with open(ziel / 'code' / 'daten' / 'gross.bin', 'wb') as f:
                 f.truncate(pruefen.CODE_MAX + 1)
             self.assertTrue(any('höchstens 128 MB' in f for f in pruefen.pruefe(ziel, None)))
+
+
+class FremdeTypen(unittest.TestCase):
+    """Ansichten mit fremde_typen (DMS #656): ab 0.178.0, Kennung nach dem Muster einer Mappentyp-Kennung."""
+
+    def paket(self, fremde, dms: str) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            m['dms'] = dms
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            # Ab 0.177.0 braucht eine Frist eine mitgelieferte Automatisierung – hier geht es nur um fremde_typen.
+            mt = ziel / 'inhalt' / 'mappentypen.yaml'
+            mt.write_text('\n'.join(z for z in mt.read_text(encoding='utf-8').splitlines() if not z.strip().startswith('frist:')) + '\n', encoding='utf-8')
+            sichten = yaml.safe_load((ziel / 'inhalt' / 'sichten.yaml').read_text(encoding='utf-8'))
+            sichten[0]['fremde_typen'] = fremde
+            (ziel / 'inhalt' / 'sichten.yaml').write_text(yaml.safe_dump(sichten, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_fremde_typen(self):
+        self.assertEqual(self.paket([{'kennung': 'vertrag', 'name': 'Vertrag'}], '>=0.178.0'), [])
+        alt = self.paket([{'kennung': 'vertrag', 'name': 'Vertrag'}], '>=0.177.0')
+        self.assertTrue(any('fremde_typen kennt das DMS erst ab 0.178.0' in f for f in alt), alt)
+        self.assertTrue(self.paket([{'kennung': 'Vertrag!'}], '>=0.178.0'))
+        self.assertTrue(self.paket([{'name': 'ohne Kennung'}], '>=0.178.0'))

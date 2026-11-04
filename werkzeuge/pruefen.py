@@ -116,6 +116,8 @@ DMS_VOLLTEXT_AB = (0, 145, 0)
 # Schnittstelle dms:archivfassung, code.archivfassung und Ereignis datei.archivfassung (DMS #631): Archivfassung (PDF/A)
 # zu Dokumenten mit fertigem Volltext ablegen, ab DMS 0.149.0.
 DMS_ARCHIVFASSUNG_AB = (0, 149, 0)
+# Ansichten mit fremde_typen (DMS #656): Mappentypen, die das Paket nicht mitbringt, über ihre Kennung.
+DMS_FREMDE_TYPEN_AB = (0, 178, 0)
 DMS_ARCHIV_AUSWAHL_AB = (0, 176, 0)
 # Ereignisse zu Mappen aus dem Ereigniskatalog und code.mappentypen (DMS #670): eigene Mappentypen ab DMS 0.153.0.
 MAPPEN_EREIGNISSE = ('mappe.angelegt', 'mappe.geaendert', 'mappe.geloescht', 'mappe.wiederhergestellt', 'frist.erreicht')
@@ -876,6 +878,10 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             fehler.append(f'sichten/{s.get("schluessel")}: Elternsicht „{s["eltern"]}“ fehlt')
         for t in s.get('typen', []) or []:
             verweis_ok(t, f'sichten/{s.get("schluessel")}')
+        if s.get('fremde_typen'):
+            ab_f = dms_untergrenze(str(m.get("dms", "")))
+            if ab_f is None or ab_f < DMS_FREMDE_TYPEN_AB:
+                fehler.append(f'sichten/{s.get("schluessel")}: fremde_typen kennt das DMS erst ab 0.178.0 – bitte dms: ">=0.178.0" angeben')
     for b in geladen.get('beispiele', []):
         if isinstance(b, dict) and b.get('typ'):
             verweis_ok(b['typ'], 'beispiele')
