@@ -23,7 +23,7 @@
     <p class="leise">Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">Ablago</a> – Open Source und vom Ablago-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.</p>
     <div class="werkzeuge">
       <input type="search" id="suche" placeholder="Paket suchen …" aria-label="Pakete durchsuchen">
-      <select id="kategorie" aria-label="Kategorie"><option value="">Alle Kategorien</option><option value="vorlagen">Vorlagen für die Ablage (5)</option><option value="dateiformate">Dateiformate (3)</option><option value="volltext">Texterkennung und Volltext (12)</option><option value="sprachen">Sprachen (10)</option><option value="ki">KI (2)</option><option value="suche">Suche (3)</option><option value="post">Post und Scannen (1)</option><option value="sicherung">Sicherung (1)</option><option value="entwickler">Für Entwickler (1)</option></select>
+      <select id="kategorie" aria-label="Kategorie"><option value="">Alle Kategorien</option><option value="vorlagen">Vorlagen für die Ablage (5)</option><option value="dateiformate">Dateiformate (3)</option><option value="volltext">Texterkennung und Volltext (12)</option><option value="sprachen">Sprachen (10)</option><option value="ki">KI (2)</option><option value="suche">Suche (3)</option><option value="post">Post und Scannen (2)</option><option value="sicherung">Sicherung (1)</option><option value="entwickler">Für Entwickler (1)</option></select>
       <select id="autor" aria-label="Autor"><option value="">Alle Autoren</option><option value="motom001">Thomas Meissner</option></select>
       <select id="art" aria-label="Art"><option value="">Alle Pakete</option><option value="konfiguration">Konfiguration</option><option value="code">Mit Code</option></select>
     </div>
@@ -113,6 +113,14 @@
         <span class="text">Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.</span>
         <span class="unter">1.0.1 · Thomas Meissner · mit Code</span>
         <span class="chips"><span class="chip">Dateiformate</span></span>
+        <span class="passt-marke" hidden></span>
+      </a>
+      <a class="kachel" href="paket/qrcode/" data-art="code" data-suche="qrcode qr-code lesen liest den qr-code einer visitenkarte (vcard) und schlägt name, funktion, telefon, e-mail, internetseite und anschrift für „aus dokument ausfüllen“ vor – zuverlässiger als die texterkennung. ohne visitenkarte im bild liest ablago wie gewohnt den text. läuft abgeschottet im paket-läufer, ohne netz. thomas meissner" data-kategorien="post" data-autor="motom001" data-netz="lokal" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.133.0&quot;]]">
+        <span class="symbol bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>
+        <span class="name">QR-Code lesen</span>
+        <span class="text">Liest den QR-Code einer Visitenkarte (vCard) und schlägt Name, Funktion, Telefon, E-Mail, Internetseite und Anschrift für „Aus Dokument ausfüllen“ vor – zuverlässiger als die Texterkennung. Ohne Visitenkarte im Bild liest Ablago wie gewohnt den Text. Läuft abgeschottet im Paket-Läufer, ohne Netz.</span>
+        <span class="unter">1.0.0 · Thomas Meissner · mit Code</span>
+        <span class="chips"><span class="chip">Post und Scannen</span></span>
         <span class="passt-marke" hidden></span>
       </a>
       <a class="kachel" href="paket/sicherung_webdav/" data-art="code" data-suche="sicherung_webdav sicherungsziel webdav bringt jede ablago-sicherung außer haus – auf nextcloud, ein nas oder einen webdav-speicher beim hoster – und prüft dort, dass sie heil angekommen ist. für alle ohne sicherungs-app des nas, z. b. auf einem raspberry pi oder einem gemieteten server. das paket sieht nur die verschlüsselte sicherung. thomas meissner" data-kategorien="sicherung" data-autor="motom001" data-netz="dienst" data-versionen="[[&quot;1.1.0&quot;,&quot;&gt;=0.158.1&quot;],[&quot;1.0.1&quot;,&quot;&gt;=0.142.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.142.0&quot;]]">
@@ -229,7 +237,7 @@
       </a>
     </div>
     <p id="keine" class="leerhinweis" hidden>Kein Paket gefunden.</p>
-    <p class="leise">Stand: 04.11.2026 · 24 Pakete</p>
+    <p class="leise">Stand: 04.11.2026 · 25 Pakete</p>
 
   </main>
   <dialog id="dms-dialog">

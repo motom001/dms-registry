@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "erstellt": "2026-11-04T05:35:41Z",
+  "erstellt": "2026-11-04T07:10:57Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
@@ -2525,6 +2525,41 @@
         "dateiformate"
       ],
       "symbol": "file-text"
+    },
+    {
+      "id": "qrcode",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.133.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": true,
+          "archiv": "archive/qrcode-1.0.0.zip",
+          "sha256": "0285d8f42e450eadc98618858b0a2b443fcb83340291c1b219458f1bc87ac9fb",
+          "groesse": 77681,
+          "veroeffentlicht": "2026-11-04T07:10:57Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/qrcode",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/qrcode/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/qrcode/CHANGELOG.md"
+        }
+      ],
+      "name": "QR-Code lesen",
+      "beschreibung": "Liest den QR-Code einer Visitenkarte (vCard) und schlägt Name, Funktion, Telefon, E-Mail, Internetseite und Anschrift für „Aus Dokument ausfüllen“ vor – zuverlässiger als die Texterkennung. Ohne Visitenkarte im Bild liest Ablago wie gewohnt den Text. Läuft abgeschottet im Paket-Läufer, ohne Netz.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "post"
+      ],
+      "symbol": "contact"
     },
     {
       "id": "sicherung_webdav",
