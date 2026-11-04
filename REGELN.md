@@ -100,6 +100,7 @@ kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unte
 
 - **Neues Symbol:** über ein Issue. Dann kommt das SVG unverändert aus `lucide-static` nach `werkzeuge/symbole/<name>.svg` und der Name in `schema/manifest.schema.json` (`symbol`); die CI prüft, dass beides übereinstimmt und das SVG nur einfache Formen enthält. Die Webseite bettet das SVG direkt in die Seite ein, nichts wird aus dem Internet geladen. Lizenz der Symbole: ISC ([`werkzeuge/symbole/LICENSE`](werkzeuge/symbole/LICENSE), NOTICE).
 - **Bestehende Pakete:** Ihre Symbole stehen übergangsweise unter `symbole:` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml); mit der nächsten Version wandert das Symbol ins Manifest. Das Manifest gewinnt. Wie `kategorien` liest Ablago `symbol` und `kuerzel` nicht; ältere Ablago-Versionen installieren solche Pakete weiter.
+- **Symbol einer Ansicht** (dms #428): In `sichten.yaml` darf jede Ansicht `symbol: <name>` tragen – ein Lucide-Name aus der festen Liste in Ablago ([`shared/src/ansichtsymbole.ts`](https://github.com/motom001/dms/blob/main/shared/src/ansichtsymbole.ts)), z. B. `house`, `car`, `euro`, `mail`. Ablago zeigt es in der Ablage vor dem Namen; einen unbekannten Namen zeigt es ohne Symbol. Ältere Ablago-Versionen ignorieren das Feld.
 
 ## Namen
 

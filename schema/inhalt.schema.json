@@ -75,7 +75,8 @@
         "eltern": { "$ref": "#/$defs/schluessel" },
         "typen": { "type": "array", "items": { "$ref": "#/$defs/typverweis" } },
         "bedingungen": { "type": "array", "items": { "type": "object", "required": ["feld", "operator"], "properties": { "feld": { "type": "string" }, "operator": { "type": "string" }, "wert": {} } } },
-        "trefferliste": { "type": "string" }
+        "trefferliste": { "type": "string" },
+        "symbol": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Symbol der Ansicht (DMS #428): ein Lucide-Name aus der festen Liste in shared/src/ansichtsymbole.ts des DMS, z. B. house, car, euro, mail. Unbekannte Namen zeigt Ablago ohne Symbol." }
       }
     },
     "beispiel": {
