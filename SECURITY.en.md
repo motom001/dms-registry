@@ -6,7 +6,7 @@ This repository belongs to Ablago ([motom001/dms](https://github.com/motom001/dm
 
 ## Reporting a vulnerability
 
-Please **do not open a public issue** for security vulnerabilities. Report them confidentially via GitHub: **Security → Report a vulnerability** in this repository ([private vulnerability reporting](https://github.com/motom001/dms-registry/security/advisories/new)). Reports in German or English are welcome.
+Please **do not open a public issue** for security vulnerabilities. Report them confidentially via GitHub: **Security → Report a vulnerability** in this repository ([private vulnerability reporting](https://github.com/motom001/dms-registry/security/advisories/new)). Reports in German or English are welcome. Without a GitHub account: **[security@ablago.app](mailto:security@ablago.app)**.
 
 If the vulnerability affects Ablago itself, please report it directly in the repository [motom001/dms](https://github.com/motom001/dms/security/advisories/new).
 
