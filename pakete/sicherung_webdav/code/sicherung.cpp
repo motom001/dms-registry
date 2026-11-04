@@ -14,7 +14,7 @@
  *      letzte vollständige Prüfung älter als 30 Tage ist), sonst 8 Stichproben gegen die lokale Datei. Dateiablage:
  *      nur „hochgeladen“ – ehrlich, denn zurücklesen geht dort nicht.
  *   5. auf Wunsch (Vorgabe aus) ältere Sicherungen am Ziel löschen
- *   6. Ergebnis melden: PUT /sicherungen/{name}/extern
+ *   6. Stand melden: als „extern“ in der Antwort auf jeden Aufruf (DMS #636) – das Paket schreibt im DMS nichts
  *
  * Lange Arbeit verteilt das Paket auf mehrere Aufrufe: Nach etwa 50 s antwortet es mit {"weiter": {…}} (Stelle,
  * Stand der Prüfsumme); der Paket-Läufer ruft es gleich wieder auf. Bricht das Netz ab, setzt die Wiederholung an der
@@ -290,13 +290,20 @@ static bool lokal(const std::string &name, uint64_t ab, uint64_t n, std::string 
   return true;
 }
 
-/** Rückmeldung an das DMS (PUT /sicherungen/{name}/extern). */
-static void melde(const std::string &name, const std::string &status, const Ziel &z, const std::string &extra = "") {
-  std::string b = "{\"status\":" + jsonText(status) + ",\"ziel\":" + jsonText(z.text()) + extra + "}";
-  std::string q = "{\"methode\":\"PUT\",\"pfad\":" + jsonText("/sicherungen/" + name + "/extern") + ",\"body\":" + b + "}";
-  int s = dms_api(q.data(), (int32_t)q.size());
-  if (s != 200) log(2, "Rückmeldung an das DMS nicht angenommen: " + kurz(antwort(), 300));
+/**
+ * Stand der Kopie für Ablago (DMS #636): Das Paket schreibt im DMS nichts – der zuletzt gemerkte Stand geht als
+ * „extern“ mit der Antwort auf den Aufruf zurück (auch neben „weiter“); Ablago trägt ihn ein.
+ */
+static std::string stand;
+static void melde(const std::string &status, const Ziel &z, const std::string &extra = "") {
+  stand = "{\"status\":" + jsonText(status) + ",\"ziel\":" + jsonText(z.text()) + extra + "}";
 }
+/** Antwort mit dem Stand; mehr: weitere Felder davor (z. B. "weiter":{…}). */
+static void antworte(const std::string &mehr = "") {
+  ergebnis("{" + mehr + (mehr.empty() || stand.empty() ? "" : ",") + (stand.empty() ? "" : "\"extern\":" + stand) + "}");
+}
+/** Rückgabewert bei einem Fehler: 2 = endgültig (hier muss jemand handeln), 1 = vorübergehend. Ablago wiederholt beides. */
+static int fehlerCode = 1;
 
 /* ---------- Ablauf ---------- */
 
@@ -311,8 +318,8 @@ struct Stand {
 static std::string weiterText(const Stand &s, uint64_t groesse) {
   char f[64];
   snprintf(f, sizeof f, "%s %llu von %llu MB", s.phase == PRUEFEN ? "geprüft" : "hochgeladen", (unsigned long long)(s.versatz / MB), (unsigned long long)(groesse / MB));
-  return "{\"weiter\":{\"phase\":" + zahl(s.phase) + ",\"versatz\":" + zahl(s.versatz) + ",\"teil\":" + zahl((uint64_t)s.teil) + ",\"voll\":" + (s.voll ? "true" : "false") +
-    ",\"sha\":" + jsonText(s.sha) + ",\"fortschritt\":" + jsonText(f) + "}}";
+  return "\"weiter\":{\"phase\":" + zahl(s.phase) + ",\"versatz\":" + zahl(s.versatz) + ",\"teil\":" + zahl((uint64_t)s.teil) + ",\"voll\":" + (s.voll ? "true" : "false") +
+    ",\"sha\":" + jsonText(s.sha) + ",\"fortschritt\":" + jsonText(f) + "}";
 }
 
 /** Tage seit 1970 aus JJJJ-MM-TT (für „letzte vollständige Prüfung“). */
@@ -334,10 +341,13 @@ struct Lauf {
   bool zeitUm() const { return jetztMs() - start > BUDGET_MS; }
 };
 
-/** Fehler: melden (endgültig → „fehlgeschlagen“, sonst „läuft“ mit Grund) und Code 1 – der Läufer wiederholt. */
+/**
+ * Fehler: Der Grund ist das Ergebnis, der Rückgabewert sagt endgültig (2, „fehlgeschlagen“) oder vorübergehend (1,
+ * „läuft“ mit Grund) – Ablago trägt das ein und wiederholt. Gibt intern 1 zurück („abbrechen“).
+ */
 static int scheitere(Lauf &l, const Problem &p, bool neuHochladen = false) {
   if (neuHochladen) speicherSchreiben("neu:" + l.name, "1");
-  melde(l.name, p.endgueltig ? "fehlgeschlagen" : "laeuft", l.z, ",\"grund\":" + jsonText(p.grund) + (p.endgueltig ? ",\"endgueltig\":true" : "") + ",\"bytes\":" + zahl(l.s.versatz) + ",\"gesamt\":" + zahl(l.groesse));
+  fehlerCode = p.endgueltig ? 2 : 1;
   log(p.endgueltig ? 3 : 2, l.name + ": " + p.grund);
   ergebnis(p.grund);
   return 1;
@@ -458,7 +468,7 @@ static int pruefen(Lauf &l) {
   const Ziel &z = l.z;
   if (z.art == DATEIABLAGE) {
     // Eine Dateiablage kann nicht lesen: ehrlich „hochgeladen“ – angenommen hat das Ziel die Datei (HTTP 2xx).
-    melde(l.name, "hochgeladen", z, ",\"pruefung\":\"keine\",\"bytes\":" + zahl(l.groesse) + ",\"gesamt\":" + zahl(l.groesse));
+    melde("hochgeladen", z, ",\"pruefung\":\"keine\",\"bytes\":" + zahl(l.groesse) + ",\"gesamt\":" + zahl(l.groesse));
     l.s.phase = AUFRAEUMEN;
     return 0;
   }
@@ -477,7 +487,7 @@ static int pruefen(Lauf &l) {
       uint64_t n = std::min(STUECK, l.groesse - l.s.versatz);
       if (!zurueck(l, l.s.versatz, n, stueck, p)) {
         if (p.endgueltig && p.grund.find("Range") != std::string::npos) {
-          melde(l.name, "hochgeladen", z, ",\"pruefung\":\"groesse\",\"bytes\":" + zahl(l.groesse) + ",\"gesamt\":" + zahl(l.groesse));
+          melde("hochgeladen", z, ",\"pruefung\":\"groesse\",\"bytes\":" + zahl(l.groesse) + ",\"gesamt\":" + zahl(l.groesse));
           log(2, l.name + ": " + p.grund + " Nur die Größe ist bestätigt.");
           l.s.phase = AUFRAEUMEN;
           return 0;
@@ -490,7 +500,7 @@ static int pruefen(Lauf &l) {
     }
     if (h.hex() != l.sha256) return scheitere(l, { "Die Prüfsumme am Ziel weicht ab – die Kopie ist beschädigt oder wurde verändert. Das Paket lädt sie beim nächsten Versuch neu hoch.", true }, true);
     speicherSchreiben("voll_am", l.beginn.substr(0, 10));
-    melde(l.name, "geprueft", z, ",\"pruefung\":\"pruefsumme\",\"bytes\":" + zahl(l.groesse) + ",\"gesamt\":" + zahl(l.groesse));
+    melde("geprueft", z, ",\"pruefung\":\"pruefsumme\",\"bytes\":" + zahl(l.groesse) + ",\"gesamt\":" + zahl(l.groesse));
   } else {
     // Stichproben: Stellen aus der Prüfsumme der Sicherung, je 1 MB vom Ziel und vom DMS.
     std::string hier, fehler;
@@ -503,7 +513,7 @@ static int pruefen(Lauf &l) {
       if (!lokal(l.name, ab, n, hier, fehler)) return scheitere(l, { fehler, false });
       if (hier != stueck) return scheitere(l, { "Eine Stichprobe am Ziel weicht ab (ab Byte " + zahl(ab) + ") – die Kopie ist beschädigt oder wurde verändert. Das Paket lädt sie beim nächsten Versuch neu hoch.", true }, true);
     }
-    melde(l.name, "geprueft", z, ",\"pruefung\":\"stichprobe\",\"bytes\":" + zahl(l.groesse) + ",\"gesamt\":" + zahl(l.groesse));
+    melde("geprueft", z, ",\"pruefung\":\"stichprobe\",\"bytes\":" + zahl(l.groesse) + ",\"gesamt\":" + zahl(l.groesse));
   }
   l.s.phase = AUFRAEUMEN;
   return 0;
@@ -545,7 +555,7 @@ static int sicherungFertig(const Json &e) {
   std::string name = d["name"].text();
   if (name.empty()) { ergebnis("Ereignis ohne Namen der Sicherung."); return 0; }
   Lauf l{ z, name, d["datei"].text(), d["sha256"].text(), d["beginn"].text(), (uint64_t)d["groesse"].zahl(0), Stand{}, jetztMs() };
-  if (!z.fehler.empty()) { melde(name, "fehlgeschlagen", z, ",\"grund\":" + jsonText(z.fehler) + ",\"endgueltig\":true"); ergebnis(z.fehler); return 1; }
+  if (!z.fehler.empty()) { ergebnis(z.fehler); return 2; }
   if (l.datei.empty() || l.sha256.size() != 64 || !l.groesse) { ergebnis("Die Angaben zur Sicherung sind unvollständig."); return 0; }
   const Json &w = d["weiter"];
   // Nach einer abweichenden Prüfsumme oder fehlenden Teilen: von vorn (statt an der gespeicherten Stelle).
@@ -559,28 +569,32 @@ static int sicherungFertig(const Json &e) {
     l.s.sha = w["sha"].text();
   }
   if (l.s.phase == START) {
-    melde(name, "laeuft", z, ",\"bytes\":0,\"gesamt\":" + zahl(l.groesse));
+    melde("laeuft", z, ",\"bytes\":0,\"gesamt\":" + zahl(l.groesse));
     // Von vorn nach einem Fehler beim Zusammensetzen oder Prüfen: alte Teile weg.
     if (neu && z.art == NEXTCLOUD) netz(z, "DELETE", z.uploadsUrl(name), {});
     Problem p;
-    if (!ordnerAnlegen(l, p)) return scheitere(l, p);
+    if (!ordnerAnlegen(l, p)) { scheitere(l, p); return fehlerCode; }
     if (z.art == NEXTCLOUD && l.groesse > z.teil) {
       Antwort a = netz(z, "MKCOL", z.uploadsUrl(name), {{"destination", z.dateiUrl(l.datei)}});
-      if (!ok(a.status) && a.status != 405) return scheitere(l, problem(z, "Hochladen vorbereiten", a));
+      if (!ok(a.status) && a.status != 405) { scheitere(l, problem(z, "Hochladen vorbereiten", a)); return fehlerCode; }
     }
     l.s.phase = HOCHLADEN; l.s.versatz = 0; l.s.teil = 1;
-  } else melde(name, "laeuft", z, ",\"bytes\":" + zahl(l.s.phase >= PRUEFEN ? l.groesse : l.s.versatz) + ",\"gesamt\":" + zahl(l.groesse));
+  } else melde("laeuft", z, ",\"bytes\":" + zahl(l.s.phase >= PRUEFEN ? l.groesse : l.s.versatz) + ",\"gesamt\":" + zahl(l.groesse));
   for (;;) {
     int r = 0;
     switch (l.s.phase) {
       case START: case HOCHLADEN: r = hochladen(l); break;
       case ABSCHLUSS: r = abschliessen(l); break;
       case PRUEFEN: r = pruefen(l); break;
-      case AUFRAEUMEN: aufraeumen(l); ergebnis("Sicherung " + name + " außer Haus: " + z.text()); return 0;
+      case AUFRAEUMEN: aufraeumen(l); log(1, "Sicherung " + name + " außer Haus: " + z.text()); antworte(); return 0;
     }
-    if (r == 1) return 1;
-    if (r == 2) { ergebnis(weiterText(l.s, l.groesse)); return 0; }
-    if (l.zeitUm() && l.s.phase != AUFRAEUMEN) { ergebnis(weiterText(l.s, l.groesse)); return 0; }
+    if (r == 1) return fehlerCode;
+    if (r == 2 || (l.zeitUm() && l.s.phase != AUFRAEUMEN)) {
+      // Fortsetzung: noch unterwegs – mit dem Fortschritt bis hier.
+      melde("laeuft", z, ",\"bytes\":" + zahl(l.s.phase >= PRUEFEN ? l.groesse : l.s.versatz) + ",\"gesamt\":" + zahl(l.groesse));
+      antworte(weiterText(l.s, l.groesse));
+      return 0;
+    }
   }
 }
 
