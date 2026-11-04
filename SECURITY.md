@@ -6,7 +6,7 @@ Dieses Repository gehört zu Ablago ([motom001/dms](https://github.com/motom001/
 
 ## Eine Sicherheitslücke melden
 
-Bitte **kein öffentliches Issue** für Sicherheitslücken. Melde sie vertraulich über GitHub: **Security → Report a vulnerability** in diesem Repository ([Private Vulnerability Reporting](https://github.com/motom001/dms-registry/security/advisories/new)).
+Bitte **kein öffentliches Issue** für Sicherheitslücken. Melde sie vertraulich über GitHub: **Security → Report a vulnerability** in diesem Repository ([Private Vulnerability Reporting](https://github.com/motom001/dms-registry/security/advisories/new)). Ohne GitHub-Konto: **[security@ablago.app](mailto:security@ablago.app)**.
 
 Betrifft die Lücke Ablago selbst, melde sie bitte direkt im Repository [motom001/dms](https://github.com/motom001/dms/security/advisories/new).
 
