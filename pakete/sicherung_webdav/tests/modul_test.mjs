@@ -127,7 +127,8 @@ function aufruf(eingabe, { server, s, speicher, meldungen, erlaubt = BASIS, schr
         merke(s.daten.subarray(ab, ab + n)); return 200;
       }
       if (q.methode === 'GET' && u.pathname === `/sicherungen/${s.name}`) { merke(JSON.stringify({ name: s.name, ...s.meta })); return 200; }
-      if (q.methode === 'PUT' && u.pathname === `/sicherungen/${s.name}/extern`) { meldungen.push(q.body); merke('{}'); return 200; }
+      // Seit 1.1.0 (DMS #636) schreibt das Paket nichts: kein PUT mehr, der Schlüssel darf nur lesen.
+      if (q.methode !== 'GET') assert.fail(`Das Paket schreibt im DMS: ${q.methode} ${q.pfad}`);
       merke('Nicht gemeldet'); return 403;
     },
     netz: (p, l, bp, bl) => {
@@ -156,6 +157,13 @@ function aufruf(eingabe, { server, s, speicher, meldungen, erlaubt = BASIS, schr
   const p = inst.exports.dms_puffer(ein.length);
   u8().set(ein, p);
   const code = art === 'aktion' ? inst.exports.dms_aktion(p, ein.length) : inst.exports.dms_ereignis(p, ein.length);
+  // Wie Ablago (DMS #636): Stand aus „extern“ in der Antwort; ohne ihn Rückgabewert 2 → endgültig, 1 → läuft mit Grund.
+  if (art === 'ereignis') {
+    let extern;
+    try { extern = JSON.parse(ergebnis).extern; } catch { /* Text */ }
+    if (extern) meldungen.push(extern);
+    else if (code !== 0) meldungen.push({ ...(meldungen.at(-1) ?? {}), status: code === 2 ? 'fehlgeschlagen' : 'laeuft', grund: ergebnis, ...(code === 2 ? { endgueltig: true } : { endgueltig: undefined }) });
+  }
   return { code, ergebnis, protokoll };
 }
 
@@ -233,7 +241,7 @@ test('falsche Prüfsumme am Ziel: fehlgeschlagen (endgültig), beim nächsten Ve
   const server = new Webdav(); const s = sicherung(9 * MB); const o = umgebung(server, s);
   server.verfaelschen = (d) => { d[d.length - 1] ^= 0xff; };
   const r = ereignis(s.ereignis, nextcloud(), o);
-  assert.equal(r.code, 1);
+  assert.equal(r.code, 2, "endgültig");
   assert.equal(letzte(o).status, 'fehlgeschlagen');
   assert.equal(letzte(o).endgueltig, true);
   assert.match(letzte(o).grund, /Prüfsumme am Ziel weicht ab/);
@@ -261,7 +269,7 @@ test('große Sicherung: Stichproben statt vollständig, solange die letzte volls
   // Stichprobe am Anfang verfälscht.
   const o3 = umgebung(new Webdav(), s); o3.speicher.voll_am = '2026-10-30';
   o3.server.verfaelschen = (d) => { d[10] ^= 1; };
-  assert.equal(ereignis(s.ereignis, nextcloud({ voll_mb: 10 }), o3).code, 1);
+  assert.equal(ereignis(s.ereignis, nextcloud({ voll_mb: 10 }), o3).code, 2);
   assert.match(letzte(o3).grund, /Stichprobe am Ziel weicht ab/);
 });
 
@@ -276,7 +284,7 @@ test('WebDAV allgemein: Teile mit Content-Range, dann MOVE; ohne Content-Range: 
   assert.equal(letzte(o).status, 'geprueft');
   const ohne = new Webdav({ teile: false }); ohne.ordner.add('/dav/sicherung');
   const o2 = umgebung(ohne, s);
-  assert.equal(ereignis(s.ereignis, einst, o2).code, 1);
+  assert.equal(ereignis(s.ereignis, einst, o2).code, 2);
   assert.equal(letzte(o2).endgueltig, true);
   assert.match(letzte(o2).grund, /keine Teile an \(Content-Range/);
 });
@@ -298,22 +306,22 @@ test('Nextcloud-Dateiablage: ein PUT, ehrlich „hochgeladen“ ohne Prüfung; z
   assert.ok(!server.anfragen.some((a) => /^(GET|PROPFIND|DELETE)/.test(a)), 'kein Lesen, kein Löschen');
   const gross = { ...s.ereignis, groesse: 200 * MB };
   const o2 = umgebung(server, { ...s, meta: { ...s.meta, groesse: 200 * MB } });
-  assert.equal(ereignis(gross, einst, o2).code, 1);
+  assert.equal(ereignis(gross, einst, o2).code, 2);
   assert.match(letzte(o2).grund, /nur Dateien bis 128,0 MB am Stück/);
 });
 
 test('falsches Passwort und nicht freigegebene Adresse: endgültig, ohne Zugangsdaten im Grund', () => {
   const s = sicherung(100_000);
   const o = umgebung(new Webdav(), s);
-  assert.equal(ereignis(s.ereignis, nextcloud({ passwort: 'falsch' }), o).code, 1);
+  assert.equal(ereignis(s.ereignis, nextcloud({ passwort: 'falsch' }), o).code, 2);
   assert.equal(letzte(o).endgueltig, true);
   assert.match(letzte(o).grund, /Benutzer oder Passwort falsch/);
   assert.ok(!letzte(o).grund.includes('falsch:') && !JSON.stringify(o.meldungen).includes('Basic'));
   const o2 = umgebung(new Webdav(), s);
-  assert.equal(ereignis(s.ereignis, nextcloud(), { ...o2, erlaubt: 'https://anders.example.org' }).code, 1);
+  assert.equal(ereignis(s.ereignis, nextcloud(), { ...o2, erlaubt: 'https://anders.example.org' }).code, 2);
   assert.match(letzte(o2).grund, /nicht freigegeben/);
   const o3 = umgebung(new Webdav(), s);
-  assert.equal(ereignis(s.ereignis, nextcloud({ benutzer: '' }), o3).code, 1);
+  assert.equal(ereignis(s.ereignis, nextcloud({ benutzer: '' }), o3).code, 2);
   assert.match(letzte(o3).grund, /fehlt der Benutzer/);
 });
 

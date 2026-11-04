@@ -22,7 +22,7 @@ Es läuft im **Paket-Läufer** von Ablago: abgeschottet, mit Grenzen für Speich
 
 Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 
-- **Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)** – das Paket liest genau die Sicherung aus seinem Ereignis, so wie sie verschlüsselt im Sicherungsordner liegt, und meldet zurück, ob sie angekommen ist. Den Schlüssel der Werkbank, Mappen, Dokumente und andere Dateien des Sicherungsordners bekommt es nie.
+- **Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)** – das Paket liest genau die Sicherung aus seinem Ereignis, so wie sie verschlüsselt im Sicherungsordner liegt, und meldet in seiner Antwort, ob sie angekommen ist. Sein API-Schlüssel darf in Ablago **nur lesen** – schreiben muss es dort nichts (ab Ablago 0.158.1, DMS #636). Den Schlüssel der Werkbank, Mappen, Dokumente und andere Dateien des Sicherungsordners bekommt es nie.
 - **Zugriff auf Netzwerk/Internet nur zu: der Adresse aus der Einstellung „Adresse“ (trägst du ein und bestätigst sie)** – dorthin geht die verschlüsselte Sicherung, sonst nirgends hin. Weiterleitungen auf andere Server folgt es nicht.
 - Es reagiert auf **Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden** (`sicherung.fertig`).
 
