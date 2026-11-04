@@ -76,6 +76,15 @@
           "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$",
           "description": "bei typ feld: Mappentyp, aus dem ein Feld gewählt wird"
         },
+        "mehrfach": {
+          "const": true,
+          "description": "DMS #658, ab 0.179.0: Verweis (mappentyp, benutzer, rolle, sicht) als Mehrfachauswahl; Wert ist eine Liste von Ids"
+        },
+        "schliesst_aus": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,39}$",
+          "description": "DMS #658, ab 0.179.0: anderes Feld desselben Verweistyps im Abschnitt; dieselbe Id nicht in beiden"
+        },
         "beispiel": {
           "type": "string",
           "pattern": "^https?://[^\\s@?#]+$",

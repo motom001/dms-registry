@@ -116,6 +116,9 @@ DMS_VOLLTEXT_AB = (0, 145, 0)
 # Schnittstelle dms:archivfassung, code.archivfassung und Ereignis datei.archivfassung (DMS #631): Archivfassung (PDF/A)
 # zu Dokumenten mit fertigem Volltext ablegen, ab DMS 0.149.0.
 DMS_ARCHIVFASSUNG_AB = (0, 149, 0)
+# Einstellungen mit mehrfach / schliesst_aus (DMS #658).
+DMS_EINSTELLUNG_MEHRFACH_AB = (0, 179, 0)
+MEHRFACH_VERWEISE = ('mappentyp', 'benutzer', 'rolle', 'sicht')
 # Ansichten mit fremde_typen (DMS #656): Mappentypen, die das Paket nicht mitbringt, über ihre Kennung.
 DMS_FREMDE_TYPEN_AB = (0, 178, 0)
 DMS_ARCHIV_AUSWAHL_AB = (0, 176, 0)
@@ -657,7 +660,7 @@ def pruefe_beispiel_verweise(beispiele: list, paket_id: str, abh: set) -> list[s
     return fehler
 
 
-def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> list[str]:
+def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set, dms_bereich: str = '') -> list[str]:
     """Einstellungen und Aktionen im Manifest (code.einstellungen, code.aktionen) über das Schema hinaus."""
     fehler: list[str] = []
 
@@ -693,6 +696,8 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> lis
                 if 'standard' in f:
                     fehler.append(f'{w}: adresse hat keine Vorgabe – der Administrator trägt die Dienst-Adresse selbst ein und bestätigt sie (höchstens beispiel)')
                     continue
+            if f.get('mehrfach') is not None and (f.get('mehrfach') is not True or typ not in MEHRFACH_VERWEISE):
+                fehler.append(f'{w}: mehrfach: true gibt es nur bei {", ".join(MEHRFACH_VERWEISE)}')
             if f.get('mappentyp') is not None:
                 if typ != 'feld':
                     fehler.append(f'{w}: mappentyp gibt es nur bei typ feld')
@@ -733,6 +738,18 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set) -> lis
                 if s in oben:
                     fehler.append(f'code.einstellungen: Schlüssel „{s}“ doppelt')
                 oben.add(s)
+    # mehrfach / schliesst_aus (DMS #658): ab 0.179.0; schliesst_aus nennt ein anderes Feld desselben Verweistyps im Abschnitt.
+    alle = [(b, f) for b in code.get('einstellungen') or [] if isinstance(b, dict) for f in (b.get('felder') or []) if isinstance(f, dict)]
+    abschnitt = {f.get('schluessel'): f for b, f in alle if 'liste' not in b}
+    for b, f in alle:
+        if 'mehrfach' in f or 'schliesst_aus' in f:
+            ab = dms_untergrenze(dms_bereich)
+            if ab is None or ab < DMS_EINSTELLUNG_MEHRFACH_AB:
+                fehler.append(f'code.einstellungen/{f.get("schluessel")}: mehrfach und schliesst_aus kennt das DMS erst ab 0.179.0 – bitte dms: ">=0.179.0" angeben')
+        if 'schliesst_aus' in f:
+            g = abschnitt.get(f['schliesst_aus'])
+            if 'liste' in b or g is None or g is f or g.get('typ') != f.get('typ') or f.get('typ') not in MEHRFACH_VERWEISE:
+                fehler.append(f'code.einstellungen/{f.get("schluessel")}: schliesst_aus „{f["schliesst_aus"]}“ muss ein anderes Feld eines Abschnitts mit demselben Verweistyp sein')
     anzahl = sum(1 for b in code.get('einstellungen') or [] if isinstance(b, dict) and 'liste' not in b for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse')
     if anzahl > 1:
         fehler.append('code.einstellungen: höchstens eine Einstellung vom Typ adresse je Paket')
@@ -908,7 +925,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         fehler.append('tests/erwartung.yaml fehlt')
 
     if isinstance(m.get('code'), dict):
-        fehler += pruefe_einstellungen(m['code'], str(m.get('id')), typen, abh)
+        fehler += pruefe_einstellungen(m['code'], str(m.get('id')), typen, abh, str(m.get('dms', '')))
         fehler += pruefe_rechte(m['code'], str(m.get('dms', '')))
         fehler += pruefe_mappentypen(m['code'], str(m.get('id')), typen, str(m.get('dms', '')))
     if 'code' in m:

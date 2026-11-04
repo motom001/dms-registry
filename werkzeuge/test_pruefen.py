@@ -61,6 +61,23 @@ class Einstellungen(unittest.TestCase):
     def test_gueltig(self):
         self.assertEqual(self.paket(GUELTIG), [])
 
+    def test_mehrfach_und_ausschluss(self):
+        # DMS #658: mehrfach nur bei Verweisen, schliesst_aus auf ein Feld desselben Verweistyps, ab 0.179.0.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['einstellungen'][0]['felder'] += [
+            {'schluessel': 'nur', 'name': 'Nur diese', 'typ': 'benutzer', 'mehrfach': True, 'schliesst_aus': 'ohne'},
+            {'schluessel': 'ohne', 'name': 'Ohne diese', 'typ': 'benutzer', 'mehrfach': True, 'schliesst_aus': 'nur'},
+        ]
+        self.assertEqual(self.paket(c, dms='>=0.179.0'), [])
+        self.assertTrue(any('erst ab 0.179.0' in f for f in self.paket(c, dms='>=0.178.0')))
+        falsch = copy.deepcopy(c)
+        falsch['einstellungen'][0]['felder'][-1]['typ'] = 'rolle'
+        self.assertTrue(any('schliesst_aus „ohne“ muss ein anderes Feld' in f for f in self.paket(falsch, dms='>=0.179.0')))
+        falsch = copy.deepcopy(c)
+        falsch['einstellungen'][0]['felder'][0]['mehrfach'] = True
+        self.assertTrue(any('mehrfach: true gibt es nur bei' in f for f in self.paket(falsch, dms='>=0.179.0')))
+
     def test_vorgaben_passen_zum_typ(self):
         self.assertTrue(any('true oder false' in f for f in self.paket(self.mit(**{'0__0__standard': 'ja'}))))
         self.assertTrue(any('zwischen min und max' in f for f in self.paket(self.mit(**{'0__1__standard': 11}))))
