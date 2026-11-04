@@ -89,11 +89,14 @@ DMS_WORTLISTEN_AB = (0, 127, 0)
 # Mitgelieferte Automatisierungen (inhalt.automatisierungen, DMS #712, Registry #108), ab DMS 0.177.0. Seit dieser
 # Version legt ein Datumsfeld mit frist keine Aufgaben mehr selbst an – erinnern muss eine Automatisierung.
 DMS_AUTOMATISIERUNGEN_AB = (0, 177, 0)
+# Wenn-Karte „Zeitplan“, „Favorit geändert“ und die Dann-Karten der Benachrichtigungen (DMS #678), ab DMS 0.181.0.
+DMS_BENACHRICHTIGUNGEN_AB = (0, 181, 0)
+DANN_BENACHRICHTIGUNGEN = {'zusammenfassung', 'favoriten', 'anmeldeschutz'}
 # Wenn-Karten, die ein Paket nutzen darf (DMS shared/src/ereignisse.ts ohne Gruppen zaehler/betrieb/auftrag und
 # ohne frist.erreicht, das in „datum“ aufgegangen ist).
 WENN_MAPPE = {'mappe.angelegt', 'mappe.geaendert', 'mappe.verknuepft', 'dokument.hochgeladen', 'mappe.notiz', 'mappe.geloescht',
               'mappe.geloescht_verknuepft', 'mappe.endgueltig_geloescht', 'mappe.wiederhergestellt',
-              'volltext.fertig', 'datei.umgewandelt', 'archivfassung.erstellt', 'erkennung.fertig'}
+              'volltext.fertig', 'datei.umgewandelt', 'archivfassung.erstellt', 'erkennung.fertig', 'favorit.geaendert'}
 WENN_OHNE_TYP = {'aufgabe.neu', 'post.angelegt', 'favorit.neu', 'benutzer.abwesenheit_gesetzt', 'benutzer.abwesenheit_beendet',
                  'benutzer.gesperrt', 'benutzer.deaktiviert', 'benutzer.aktiviert', 'benutzer.vertretung_zurueckgezogen'}
 # Personen aus dem Ereignis als Empfänger (DMS shared/src/automatisierung.ts PERSONEN_IM_EREIGNIS).
@@ -103,7 +106,7 @@ PERSONEN_IM_EREIGNIS = {
     'benutzer.deaktiviert': {'benutzer'}, 'benutzer.aktiviert': {'benutzer'}, 'favorit.neu': {'benutzer'},
 }
 VORLAUF_EINHEITEN = {'tage', 'wochen', 'monate'}
-DANN_KARTEN = {'aufgabe', 'feld', 'stopp'}
+DANN_KARTEN = {'aufgabe', 'feld', 'stopp', 'zusammenfassung', 'favoriten', 'anmeldeschutz'}
 # Schnittstelle dms:texterkennung (DMS #458): das Paket übernimmt die Texterkennung, ab DMS 0.133.0.
 DMS_TEXTERKENNUNG_AB = (0, 133, 0)
 # Schnittstelle dms:umwandeln, code.umwandeln und Ereignis datei.umwandeln (DMS #577): Dateien umwandeln, ab DMS 0.137.0.
@@ -521,6 +524,7 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
     oder Rollen, Empfänger-Felder verweisen auf Benutzer; passende DMS-Version. typen: Schlüssel → Liste der Felder."""
     fehler: list[str] = []
     gesehen: set[str] = set()
+    neu = False  # Karten aus DMS #678 (Zeitplan, Favorit geändert, Benachrichtigungen)
     for i, a in enumerate(liste, 1):
         if not isinstance(a, dict):
             continue
@@ -556,8 +560,20 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
                 fehler.append(f'{wo}: wenn.vorlauf muss eine ganze Zahl sein (Tage, Wochen oder Monate vorher)')
             if w.get('einheit', 'tage') not in VORLAUF_EINHEITEN:
                 fehler.append(f'{wo}: wenn.einheit muss tage, wochen oder monate sein')
+        elif art == 'zeitplan':
+            neu = True
+            if typ:
+                fehler.append(f'{wo}: „Zeitplan“ hat keinen Mappentyp – wenn.typ weglassen')
+            if w.get('rolle'):
+                fehler.append(f'{wo}: wenn.rolle – feste Rollen gibt es in Paketen nicht; „für jeden Benutzer“ gilt für alle aktiven Benutzer')
+            if not re.fullmatch(r'([01]\d|2[0-3]):[0-5]\d', str(w.get('uhrzeit', '07:00'))):
+                fehler.append(f'{wo}: wenn.uhrzeit als HH:MM, z. B. 07:00')
+            tage = w.get('tage', [1, 2, 3, 4, 5, 6, 7])
+            if not isinstance(tage, list) or not tage or any(not isinstance(t, int) or not 1 <= t <= 7 for t in tage):
+                fehler.append(f'{wo}: wenn.tage als Liste der Wochentage 1 (Montag) bis 7 (Sonntag)')
         elif art in WENN_MAPPE:
-            pass
+            if art == 'favorit.geaendert':
+                neu = True
         elif art in WENN_OHNE_TYP:
             if typ:
                 fehler.append(f'{wo}: „{art}“ hat keinen Mappentyp – wenn.typ weglassen')
@@ -570,6 +586,21 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
             if k.get('art') not in DANN_KARTEN:
                 fehler.append(f'{kw}: unbekannte Dann-Karte „{k.get("art")}“ (erlaubt: {", ".join(sorted(DANN_KARTEN))})')
                 continue
+            if k['art'] in DANN_BENACHRICHTIGUNGEN:
+                neu = True
+                je = art == 'zeitplan' and w.get('jeBenutzer') is True
+                if k['art'] == 'zusammenfassung' and not je:
+                    fehler.append(f'{kw}: „Tägliche Zusammenfassung senden“ braucht wenn: zeitplan mit jeBenutzer: true')
+                if k['art'] == 'favoriten' and art != 'favorit.geaendert':
+                    fehler.append(f'{kw}: „Favoriten-Änderungen melden“ braucht wenn: favorit.geaendert')
+                if k['art'] == 'anmeldeschutz':
+                    was = k.get('was', 'sammel')
+                    if was not in ('sammel', 'konto'):
+                        fehler.append(f'{kw}: was muss sammel oder konto sein')
+                    elif was == 'sammel' and not (art == 'zeitplan' and not w.get('jeBenutzer')):
+                        fehler.append(f'{kw}: Sammelmeldung braucht wenn: zeitplan (nicht je Benutzer)')
+                    elif was == 'konto' and art != 'benutzer.gesperrt':
+                        fehler.append(f'{kw}: Kontosperre melden braucht wenn: benutzer.gesperrt')
             if k['art'] == 'feld':
                 if not typ:
                     fehler.append(f'{kw}: „Feld ändern“ braucht eine Wenn-Karte mit Mappentyp')
@@ -606,6 +637,8 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
         ab = dms_untergrenze(dms_bereich)
         if ab is None or ab < DMS_AUTOMATISIERUNGEN_AB:
             fehler.append('inhalt.automatisierungen: Automatisierungen in Paketen kennt Ablago erst ab 0.177.0 – bitte dms: ">=0.177.0" angeben')
+        elif neu and ab < DMS_BENACHRICHTIGUNGEN_AB:
+            fehler.append('inhalt.automatisierungen: „Zeitplan“, „Favorit geändert“ und die Karten der Benachrichtigungen kennt Ablago erst ab 0.181.0 – bitte dms: ">=0.181.0" angeben')
     # Ab 0.177.0 erinnert ein Datumsfeld mit frist nicht mehr selbst: Jede Frist braucht eine mitgelieferte Automatisierung.
     ab = dms_untergrenze(dms_bereich)
     if ab is not None and ab >= DMS_AUTOMATISIERUNGEN_AB:

@@ -984,7 +984,7 @@ SAMMEL_SKRIPT = r'''
 // Es wird nichts hochgeladen; die Datei entsteht nur in diesem Browser. Die DMS-Version kommt aus dms.js
 // (Fragment #dms=…, gemerkt nur in diesem Browser) – die Adresse liest diese Seite selbst nicht.
 (function () {
-  var VORAUSWAHL = ['texterkennung'];
+  var VORAUSWAHL = ['texterkennung', 'benachrichtigungen'];
   var KATALOG_URL = 'https://catalog.ablago.app/katalog.json';
   var BEREICH = /^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$/;
   var VERSION = /^\d+\.\d+\.\d+$/;

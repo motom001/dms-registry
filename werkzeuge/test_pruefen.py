@@ -718,6 +718,23 @@ class Automatisierungen(unittest.TestCase):
         self.assertTrue(any('Frist ohne mitgelieferte Automatisierung' in f for f in self.pruefe([])))
         self.assertEqual(pruefen.pruefe_automatisierungen([], self.TYPEN, 'probe', set(), '>=0.127.0'), [], 'ältere Pakete: Feld erinnert selbst')
 
+    def test_benachrichtigungen(self):
+        """Zeitplan, Favorit geändert und die Karten der Benachrichtigungen (DMS #678): passende Wenn-Karte, ab 0.181.0."""
+        z = self.auto(schluessel='z', wenn={'art': 'zeitplan', 'uhrzeit': '07:00', 'jeBenutzer': True, 'profilzeit': True}, dann=[{'art': 'zusammenfassung'}])
+        f = self.auto(schluessel='f', wenn={'art': 'favorit.geaendert'}, dann=[{'art': 'favoriten'}])
+        s = self.auto(schluessel='s', wenn={'art': 'zeitplan', 'uhrzeit': '00:00', 'tage': [1, 2, 3, 4, 5, 6, 7]}, dann=[{'art': 'anmeldeschutz', 'was': 'sammel'}])
+        k = self.auto(schluessel='k2', wenn={'art': 'benutzer.gesperrt'}, dann=[{'art': 'anmeldeschutz', 'was': 'konto'}])
+        self.assertEqual(self.pruefe([self.auto(), z, f, s, k], dms='>=0.181.0'), [])
+        self.assertTrue(any('0.181.0' in x for x in self.pruefe([self.auto(), z])))
+        ohne = self.auto(schluessel='o', wenn={'art': 'zeitplan', 'uhrzeit': '07:00'}, dann=[{'art': 'zusammenfassung'}])
+        self.assertTrue(any('jeBenutzer' in x for x in self.pruefe([self.auto(), ohne], dms='>=0.181.0')))
+        falsch = self.auto(schluessel='x', wenn={'art': 'mappe.angelegt'}, dann=[{'art': 'favoriten'}])
+        self.assertTrue(any('favorit.geaendert' in x for x in self.pruefe([self.auto(), falsch], dms='>=0.181.0')))
+        rolle = self.auto(schluessel='r', wenn={'art': 'zeitplan', 'jeBenutzer': True, 'rolle': 'x'}, dann=[{'art': 'zusammenfassung'}])
+        self.assertTrue(any('feste Rollen' in x for x in self.pruefe([self.auto(), rolle], dms='>=0.181.0')))
+        tage = self.auto(schluessel='t', wenn={'art': 'zeitplan', 'tage': [0, 8]}, dann=[{'art': 'anmeldeschutz', 'was': 'sammel'}])
+        self.assertTrue(any('wenn.tage' in x for x in self.pruefe([self.auto(), tage], dms='>=0.181.0')))
+
     def test_unbekannte_karten(self):
         self.assertTrue(any('unbekannte Wenn-Karte' in f for f in self.pruefe([self.auto(wenn={'art': 'zaehler.geaendert'})])))
         self.assertTrue(any('unbekannte Dann-Karte' in f for f in self.pruefe([self.auto(dann=[{'art': 'email', 'text': 'x'}])])))
