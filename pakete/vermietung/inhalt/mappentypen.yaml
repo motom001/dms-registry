@@ -95,7 +95,7 @@
     - key: ende
       label: Ende
       typ: datum
-      hilfe: Bei befristeten oder gekündigten Verträgen. Das DMS erinnert 60 Tage vorher – Zeit für Übergabe und Nachmieter.
+      hilfe: Bei befristeten oder gekündigten Verträgen. Die mitgelieferte Automatisierung erinnert 60 Tage vorher – Zeit für Übergabe und Nachmieter.
       frist: { vorlauf: 60, einheit: tage }
     - key: mietart
       label: Mietart
@@ -108,7 +108,7 @@
     - key: mieterhoehung_ab
       label: Nächste Mieterhöhung möglich ab
       typ: datum
-      hilfe: Je nach Vertrag nächste Staffel, nächste Indexanpassung oder frühester Termin für eine Erhöhung. Das DMS erinnert 30 Tage vorher.
+      hilfe: Je nach Vertrag nächste Staffel, nächste Indexanpassung oder frühester Termin für eine Erhöhung. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
     - { key: kaution, label: Kaution, typ: betrag, waehrung: EUR, min: 0 }
     - { key: kaution_konto, label: Kaution angelegt bei, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank des Kautionskontos }
@@ -135,7 +135,7 @@
     - key: versenden_bis
       label: Versenden bis
       typ: datum
-      hilfe: Ende des Abrechnungszeitraums plus zwölf Monate – danach sind Nachforderungen in der Regel ausgeschlossen. Das DMS erinnert 60 Tage vorher.
+      hilfe: Ende des Abrechnungszeitraums plus zwölf Monate – danach sind Nachforderungen in der Regel ausgeschlossen. Die mitgelieferte Automatisierung erinnert 60 Tage vorher.
       frist: { vorlauf: 60, einheit: tage }
     - { key: versendet_am, label: Versendet am, typ: datum, max: heute }
     - { key: kosten, label: Umlagefähige Kosten gesamt, typ: betrag, waehrung: EUR }

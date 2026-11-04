@@ -1,0 +1,8 @@
+# Mitgelieferte Automatisierungen (Ablago #712, dms-registry #108/#113). Nach der Installation aus –
+# beim Installieren fragt Ablago, welche gleich eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellt man selbst ein.
+- schluessel: hu_bald
+  name: HU wird bald fällig
+  beschreibung: Einen Monat vor der Hauptuntersuchung bekommt der Verantwortliche eine Frist – ist niemand eingetragen, wer das Fahrzeug angelegt hat.
+  wenn: { art: datum, typ: fahrzeug, feld: hu_faellig, vorlauf: 1, einheit: monate, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: feld, feld: verantwortlich, sonst: ersteller }], text: "Für das Fahrzeug {kennzeichen} ({bezeichnung}) wird bald die HU fällig: {datum}." }

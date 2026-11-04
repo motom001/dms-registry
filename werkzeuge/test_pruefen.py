@@ -623,6 +623,68 @@ class Wortlisten(unittest.TestCase):
         self.assertIn(pruefen.falte('Rechnung'), gesehen)
 
 
+
+class Automatisierungen(unittest.TestCase):
+    """inhalt.automatisierungen (DMS #712, Registry #108): Karten, Felder, Empfänger, DMS-Version, jede Frist erinnert."""
+
+    TYPEN = {'vertrag': [
+        {'key': 'name', 'typ': 'text'},
+        {'key': 'kuendigen_bis', 'typ': 'datum', 'frist': {'vorlauf': 30, 'einheit': 'tage'}},
+        {'key': 'verantwortlich', 'typ': 'referenz', 'ziel': 'dms:benutzer'},
+        {'key': 'partner', 'typ': 'referenz', 'ziel': 'basis:organisation'},
+    ]}
+
+    def auto(self, **x):
+        a = {'schluessel': 'k', 'name': 'Kündigung', 'wenn': {'art': 'datum', 'typ': 'vertrag', 'feld': 'kuendigen_bis', 'vorlauf': 30, 'einheit': 'tage'},
+             'dann': [{'art': 'aufgabe', 'als': 'aufgabe', 'empfaenger': [{'art': 'feld', 'feld': 'verantwortlich', 'sonst': 'ersteller'}], 'text': 'Kündigen bis {datum}'}]}
+        a.update(x)
+        return a
+
+    def pruefe(self, liste, dms='>=0.177.0'):
+        return pruefen.pruefe_automatisierungen(liste, self.TYPEN, 'probe', {'basis'}, dms)
+
+    def test_gueltig(self):
+        self.assertEqual(self.pruefe([self.auto()]), [])
+
+    def test_dms_version(self):
+        self.assertTrue(any('0.177.0' in f for f in self.pruefe([self.auto()], dms='>=0.127.0')))
+
+    def test_frist_ohne_automatisierung(self):
+        self.assertTrue(any('Frist ohne mitgelieferte Automatisierung' in f for f in self.pruefe([])))
+        self.assertEqual(pruefen.pruefe_automatisierungen([], self.TYPEN, 'probe', set(), '>=0.127.0'), [], 'ältere Pakete: Feld erinnert selbst')
+
+    def test_unbekannte_karten(self):
+        self.assertTrue(any('unbekannte Wenn-Karte' in f for f in self.pruefe([self.auto(wenn={'art': 'zaehler.geaendert'})])))
+        self.assertTrue(any('unbekannte Dann-Karte' in f for f in self.pruefe([self.auto(dann=[{'art': 'email', 'text': 'x'}])])))
+
+    def test_feld_und_typ(self):
+        self.assertTrue(any('kein Datumsfeld' in f for f in self.pruefe([self.auto(wenn={'art': 'datum', 'typ': 'vertrag', 'feld': 'name', 'vorlauf': 3})])))
+        self.assertTrue(any('gibt es in diesem Paket nicht' in f for f in self.pruefe([self.auto(wenn={'art': 'mappe.angelegt', 'typ': 'gibtsnicht'})])))
+        self.assertTrue(any('abhaengigkeiten' in f or 'Abhängigkeiten' in f for f in self.pruefe([self.auto(wenn={'art': 'mappe.angelegt', 'typ': 'fremd:x'})])))
+
+    def test_empfaenger(self):
+        dann = lambda e: [{'art': 'aufgabe', 'als': 'aufgabe', 'empfaenger': [e], 'text': 'x'}]  # noqa: E731
+        self.assertTrue(any('feste Personen' in f for f in self.pruefe([self.auto(dann=dann({'art': 'person', 'id': 'abc'}))])))
+        self.assertTrue(any('feste Personen' in f for f in self.pruefe([self.auto(dann=dann({'art': 'rolle', 'id': 'admin'}))])))
+        self.assertTrue(any('Verweis auf Benutzer' in f for f in self.pruefe([self.auto(dann=dann({'art': 'feld', 'feld': 'partner'}))])))
+        self.assertEqual(self.pruefe([self.auto(dann=dann({'art': 'ersteller'}))]), [])
+
+    def test_person_aus_dem_ereignis(self):
+        auto = {'schluessel': 'v', 'name': 'Vertretung', 'wenn': {'art': 'benutzer.abwesenheit_gesetzt'},
+                'dann': [{'art': 'aufgabe', 'als': 'aufgabe', 'empfaenger': [{'art': 'ereignis', 'feld': 'vertreter'}], 'text': 'Du vertrittst {benutzer}.'}]}
+        self.assertEqual(pruefen.pruefe_automatisierungen([auto], {}, 'probe', set(), '>=0.177.0'), [])
+        auto['dann'][0]['empfaenger'] = [{'art': 'ereignis', 'feld': 'chef'}]
+        self.assertTrue(any('keine Person' in f for f in pruefen.pruefe_automatisierungen([auto], {}, 'probe', set(), '>=0.177.0')))
+
+    def test_doppelter_schluessel(self):
+        self.assertTrue(any('doppelt' in f for f in self.pruefe([self.auto(), self.auto()])))
+
+    def test_alle_pakete_mit_fristen_erinnern(self):
+        """Jedes Paket mit einer Frist bringt ab 0.177.0 eine Automatisierung dafür mit (Registry #113)."""
+        for p in ('haushalt', 'haus', 'fahrzeuge', 'vermietung'):
+            self.assertEqual(pruefen.pruefe(WURZEL / 'pakete' / p, None), [], p)
+
+
 if __name__ == '__main__':
     unittest.main()
 

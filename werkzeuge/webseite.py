@@ -583,14 +583,21 @@ def detail(p: dict, pakete: list) -> str:
     wort_html = (f'<h3>Gleichbedeutende Wörter für die Suche</h3><p class="leise klein">Wer eines der Wörter sucht, findet auch die anderen – '
                  f'z. B. „{e(wortlisten[0]["woerter"][1] if len(wortlisten[0]["woerter"]) > 1 else wortlisten[0]["woerter"][0])}“ findet auch „{e(wortlisten[0]["woerter"][0])}“.</p><ul class="woerter">'
                  + ''.join(f'<li>{" · ".join(e(w) for w in g["woerter"])}</li>' for g in wortlisten) + '</ul>') if n_wort else ''
-    if n_typen or n_sichten or n_bsp or n_wort:
+    # Mitgelieferte Automatisierungen (DMS #712, Registry #108): in Klartext, nach der Installation aus.
+    autos = lies_yaml(ordner, (m.get('inhalt') or {}).get('automatisierungen')) if vorhanden else []
+    n_auto = len(autos)
+    auto_html = ('<h3>Vorgefertigte Automatisierungen</h3><p class="leise klein">Nach der Installation aus – beim Installieren fragt Ablago, '
+                 'welche gleich eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellst du selbst ein.</p><ul>'
+                 + ''.join(f'<li><strong>{e(a.get("name", ""))}</strong>{" – " + e(a["beschreibung"]) if a.get("beschreibung") else ""}</li>' for a in autos) + '</ul>') if n_auto else ''
+    if n_typen or n_sichten or n_bsp or n_wort or n_auto:
         bsp = (f'<p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
                if n_bsp else '<p class="leise">keine Beispielmappen</p>')
-        mitkommt = f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>{wort_html}{bsp}'
+        mitkommt = f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>{wort_html}{auto_html}{bsp}'
         kurz_mit = ' · '.join(t for t in [mehrzahl(n_typen, 'Mappentyp', 'Mappentypen') if n_typen else '',
                                           mehrzahl(n_sichten, 'Ansicht', 'Ansichten') if n_sichten else '',
                                           mehrzahl(n_bsp, 'Beispielmappe', 'Beispielmappen') if n_bsp else '',
-                                          mehrzahl(n_wort, 'Wortgruppe', 'Wortgruppen') + ' für die Suche' if n_wort else ''] if t)
+                                          mehrzahl(n_wort, 'Wortgruppe', 'Wortgruppen') + ' für die Suche' if n_wort else '',
+                                          mehrzahl(n_auto, 'Automatisierung', 'Automatisierungen') if n_auto else ''] if t)
     else:
         mitkommt = ('<p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, '
                     'keine Beispielmappen. Es bringt nur eine Funktion mit (siehe „Was das Paket darf“).</p>')

@@ -16,6 +16,7 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 
 - Mappentypen, Sichten, Rollen, Beispiel-Mappen
 - Wortlisten: gleichbedeutende Wörter für die Suche (siehe [Wortlisten](#wortlisten))
+- Vorgefertigte Automatisierungen (siehe [Automatisierungen](#automatisierungen))
 - Code, der über die API von Ablago arbeitet (sobald der Paket-Läufer verfügbar ist)
 - Zugriff auf Netzwerk/Internet nur zu Adressen, die im Manifest stehen (`code.netz`) und deren Zweck das README erklärt. Ohne `code.netz` hat ein Paket keinen Zugriff auf Netzwerk und Internet.
 
@@ -195,6 +196,26 @@ Ein Paket kann **gleichbedeutende Wörter** für die Suche mitbringen (ab Ablago
 - Allgemeine Wörter, die in jeder Ablage vorkommen (Rechnung/Beleg, Vertrag/Vereinbarung), stehen im Paket **Basis**; Fachpakete bringen nur ihre fachlichen Wörter mit. Ein Wort steht in höchstens einem Paket des Katalogs (`werkzeuge/test_pruefen.py` prüft das).
 - `tests/erwartung.yaml` nennt die Zahl der Gruppen: `wortlisten: 5`.
 - Ablago legt die Gruppen beim Installieren an, ersetzt sie bei einem Update durch die des Pakets und entfernt sie mit dem Paket.
+
+## Automatisierungen
+
+Ein Paket kann **vorgefertigte Automatisierungen** mitbringen (ab Ablago 0.177.0, Ablago #712): Wenn · Und · Dann wie im Editor unter *Werkbank → Ablage aufbauen → Automatisierungen*. Im Manifest steht `inhalt.automatisierungen: inhalt/automatisierungen.yaml`, dazu `dms: ">=0.177.0"`.
+
+```yaml
+- schluessel: hu_bald
+  name: HU wird bald fällig
+  beschreibung: Einen Monat vor der Hauptuntersuchung bekommt der Verantwortliche eine Frist.
+  wenn: { art: datum, typ: fahrzeug, feld: hu_faellig, vorlauf: 1, einheit: monate, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: feld, feld: verantwortlich, sonst: ersteller }], text: "Für {kennzeichen} wird bald die HU fällig: {datum}." }
+```
+
+- **Nach der Installation aus.** Beim Installieren fragt Ablago mit dem Namen jeder Automatisierung, ob sie gleich eingeschaltet werden soll (Vorgabe: ja). In der Werkbank stehen sie als „aus Paket …“. Ein Update ersetzt nur unveränderte; beim Entfernen gehen unveränderte, ausgeschaltete mit.
+- **Genau eine Wenn-Karte:** `datum` (*Datum erreicht*, mit `typ`, `feld` als Datumsfeld, `vorlauf`, `einheit` tage/wochen/monate, optional `uhrzeit`, `wiederholung` in Monaten) oder ein Ereignis wie `mappe.angelegt`, `mappe.geaendert`, `dokument.hochgeladen`, `post.angelegt`, `benutzer.abwesenheit_gesetzt`. Mappentypen als eigener Schlüssel oder `paket:typ` einer Abhängigkeit.
+- **Dann-Karten:** `aufgabe` (Aufgabe oder Benachrichtigung mit Text und Platzhaltern), `feld` (Felder setzen), `stopp`. Karten, die Daten nach draußen schicken (E-Mail, Adresse aufrufen), gibt es in Paketen noch nicht.
+- **Keine festen Personen oder Rollen:** Empfänger ist ein Feld der Mappe, das auf Benutzer verweist (`ziel: dms:benutzer`), optional mit `sonst: ersteller`, oder `ersteller` (wer die Mappe angelegt hat).
+- **Jede Frist erinnert:** Seit Ablago 0.177.0 legt ein Datumsfeld mit `frist` keine Aufgaben mehr selbst an. Ein Paket mit `dms: ">=0.177.0"` bringt deshalb für jedes Frist-Feld eine Automatisierung *Datum erreicht* mit; `frist.vorlauf` ist nur noch die Vorgabe. `pruefen.py` meldet Fristen ohne Automatisierung.
+- `tests/erwartung.yaml` nennt die Zahl: `automatisierungen: 3`.
 
 ## Dateien umwandeln
 

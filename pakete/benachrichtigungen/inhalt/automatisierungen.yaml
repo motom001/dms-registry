@@ -1,0 +1,14 @@
+# Mitgelieferte Automatisierungen (Ablago #712, dms-registry #109). Nach der Installation aus – beim Installieren
+# fragt Ablago, welche gleich eingeschaltet werden. Text und Empfänger stellt man selbst ein.
+- schluessel: vertretung_eingetragen
+  name: Vertretung eingetragen
+  beschreibung: Wer als Vertreter hinterlegt wird, bekommt eine Aufgabe. Sie erledigt sich, wenn die Abwesenheit endet oder sich die Vertretung ändert.
+  wenn: { art: benutzer.abwesenheit_gesetzt }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ereignis, feld: vertreter }], text: "Hallo {vertreter}, {benutzer} hat dich {zeitraum} als Vertreter hinterlegt." }
+- schluessel: vertretung_zurueckgezogen
+  name: Vertretung zurückgezogen
+  beschreibung: Der bisherige Vertreter erfährt, wenn die Abwesenheit endet oder jemand anderes eingetragen ist.
+  wenn: { art: benutzer.vertretung_zurueckgezogen }
+  dann:
+    - { art: aufgabe, als: benachrichtigung, empfaenger: [{ art: ereignis, feld: vertreter }], text: "Hallo {vertreter}, {benutzer} hat die Vertretung zurückgezogen. Du bist nicht mehr Vertreter für {benutzer}." }

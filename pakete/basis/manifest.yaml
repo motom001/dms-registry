@@ -2,7 +2,7 @@
 schema: 1
 id: basis
 name: Basis
-version: 1.4.1
+version: 1.4.2
 beschreibung: Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.
 autor:
   name: Thomas Meissner
