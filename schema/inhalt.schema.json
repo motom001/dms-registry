@@ -76,7 +76,8 @@
         "typen": { "type": "array", "items": { "$ref": "#/$defs/typverweis" } },
         "fremde_typen": { "type": "array", "description": "Mappentypen, die das Paket nicht mitbringt (DMS #656, ab 0.178.0): Ablago ordnet sie über die Kennung zu, sonst wird die Ansicht übersprungen.", "items": { "type": "object", "required": ["kennung"], "additionalProperties": false, "properties": { "kennung": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" }, "name": { "type": "string" } } } },
         "bedingungen": { "type": "array", "items": { "type": "object", "required": ["feld", "operator"], "properties": { "feld": { "type": "string" }, "operator": { "type": "string" }, "wert": {} } } },
-        "trefferliste": { "type": "string" }
+        "trefferliste": { "type": "string" },
+        "symbol": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Symbol der Ansicht (DMS #428): ein Lucide-Name aus der festen Liste in shared/src/ansichtsymbole.ts des DMS, z. B. house, car, euro, mail. Unbekannte Namen zeigt Ablago ohne Symbol." }
       }
     },
     "beispiel": {
