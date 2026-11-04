@@ -371,14 +371,23 @@ std::vector<std::string> seitenWoerter(const std::string &s) {
   return r;
 }
 
+// Id aus einem Eintrag: seit 2.3.0 (dms-registry #105, DMS #658) eine Id als Text, vorher ein Listeneintrag { typ }.
+std::string eintragId(const Json &e) { return e.art == Json::TEXT ? e.text() : e["typ"].text(); }
+
 bool typErlaubt(const Json &einstellungen, const std::string &mappe) {
-  const Json &liste = einstellungen["typen"];
-  if (liste.art != Json::LISTE || liste.l.empty()) return true;
+  const Json &nur = einstellungen["typen"];
+  const Json &ohne = einstellungen["ohne_typen"];
+  const bool mitNur = nur.art == Json::LISTE && !nur.l.empty();
+  const bool mitOhne = ohne.art == Json::LISTE && !ohne.l.empty();
+  if (!mitNur && !mitOhne) return true;
   if (!sichereId(mappe)) return false;
   Antwort a = api("GET", "/mappen/" + mappe);
   if (a.status != 200) { log(WARNUNG, "Mappe nicht lesbar (HTTP " + std::to_string(a.status) + ")"); return false; }
   std::string typ = JsonLeser::lies(a.body.data(), a.body.size())["typId"].text();
-  for (const Json &e : liste.l) if (e["typ"].text() == typ) return true;
+  // Ausgeschlossene gelten immer; ist „Nur diese“ leer, sind alle übrigen erlaubt.
+  if (mitOhne) for (const Json &e : ohne.l) if (eintragId(e) == typ) return false;
+  if (!mitNur) return true;
+  for (const Json &e : nur.l) if (eintragId(e) == typ) return true;
   return false;
 }
 
@@ -412,7 +421,7 @@ int verarbeite(const Json &e) {
   if (behalten) for (const Json &x : d["seitenOhneText"].l) if (x.art == Json::ZAHL && x.zahl() >= 1) nurSeiten.push_back((int)x.zahl());
   if (!fortsetzung) {
     if (behalten && nurSeiten.empty()) { ergebnis("Text aus dem PDF bleibt"); return 0; }
-    if (!typErlaubt(einst, d["mappe"].text())) { ergebnis("Mappentyp nicht gewählt"); return 0; }
+    if (!typErlaubt(einst, d["mappe"].text())) { ergebnis("Mappentyp nicht gewählt oder ausgeschlossen"); return 0; }
   }
 
   // Sprache wie in manifest.yaml: Automatisch, Deutsch, Englisch oder beide (je Seite die sicherere Lesung).

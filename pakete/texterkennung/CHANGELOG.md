@@ -1,5 +1,10 @@
 # Änderungen
 
+## 2.3.0
+
+- **„Diese Mappentypen ausschließen“** (dms-registry #105): neben „Nur diese Mappentypen“, beide als Mehrfachauswahl wie in Verweisfeldern (DMS #658). Ist „Nur diese“ leer, erkennt das Paket alle Mappentypen außer den ausgeschlossenen; ein Typ kann nicht in beiden Feldern stehen.
+- Die bisherige Auswahl „Nur diese Mappentypen“ bleibt beim Update erhalten. Braucht Ablago 0.179.0.
+
 ## 2.2.1
 
 - Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.

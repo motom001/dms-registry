@@ -23,7 +23,7 @@ Lange Dokumente erkennt es **abschnittsweise**: Nach etwa einer Minute gibt es s
 
 Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 
-- **Mappen lesen: alle Mappentypen** – Dokumente liegen in Mappen beliebiger Typen; die Mappe selbst liest das Paket nur, wenn du unter „Nur diese Mappentypen“ etwas einträgst.
+- **Mappen lesen: alle Mappentypen** – Dokumente liegen in Mappen beliebiger Typen; die Mappe selbst liest das Paket nur, wenn du unter „Nur diese Mappentypen“ oder „Diese Mappentypen ausschließen“ etwas einträgst.
 - **Dokumente schreiben** – es holt Seiten als Graustufenbild und setzt den Volltext. Dateien ändert oder löscht es nicht.
 - **Texterkennung übernehmen (dms:texterkennung)** – Ablago gibt Dokumente ohne Text an dieses Paket und zeigt „wartet auf Texterkennung“, bis es den Volltext schreibt.
 - **Kein Netz.** Die Sprachdaten liegen im Paket bzw. in Zusatzpaketen.
@@ -43,6 +43,7 @@ Unter **Werkbank → Pakete → Texterkennung → Einstellungen**:
 | Höchstens so viele Seiten | 100 | 1–1000; längere Dokumente erkennt es bis zu dieser Seite („Grenze erreicht“) |
 | Auflösung (dpi) | 300 | 150–400; höher erkennt kleine Schrift besser, braucht aber mehr Zeit und Speicher |
 | Nur diese Mappentypen | leer (alle) | Dokumente nur in Mappen dieser Typen |
+| Diese Mappentypen ausschließen | leer | Dokumente in Mappen dieser Typen bekommen keinen Volltext – praktisch, wenn nur wenige Typen nicht erkannt werden sollen. Ein Typ steht nie in beiden Feldern. |
 
 Wer in Version 1 „Nur Dokumente ohne Text“ ausgeschaltet hatte, schaltet nach dem Update „Vorhandenen Volltext verwerfen und neu erkennen“ ein.
 
