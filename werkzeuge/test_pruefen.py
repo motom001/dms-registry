@@ -432,6 +432,27 @@ class Inhalt(unittest.TestCase):
         kreis = [{'typ': 'a', 'schluessel': 'a', 'werte': {'x': {'beispiel': 'b'}}}, {'typ': 'a', 'schluessel': 'b', 'werte': {'x': [{'beispiel': 'probe:a'}]}}]
         self.assertTrue(any('Kreis' in x for x in f(kreis, 'probe', set())))
 
+    def sicht_alle(self, typen: list, dms: str) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'; m['dms'] = dms
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            sichten = yaml.safe_load((ziel / 'inhalt' / 'sichten.yaml').read_text(encoding='utf-8'))
+            sichten[0]['typen'] = typen
+            (ziel / 'inhalt' / 'sichten.yaml').write_text(yaml.safe_dump(sichten, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_ansicht_ueber_alle_mappentypen(self):
+        # DMS #725: „*“ = alle Mappentypen, allein und ab Ablago 0.182.0.
+        self.assertEqual(self.sicht_alle(['*'], '>=0.182.0'), [])
+        self.assertTrue(any('erst ab 0.182.0' in f for f in self.sicht_alle(['*'], '>=0.150.0')))
+        self.assertTrue(any('steht allein' in f for f in self.sicht_alle(['*', 'beispiel'], '>=0.182.0')))
+
     def test_id_dms_ist_reserviert(self):
         self.assertTrue(any('reserviert' in f for f in self.paket('beispiel', 'dms')))
 

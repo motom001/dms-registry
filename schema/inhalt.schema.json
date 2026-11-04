@@ -73,7 +73,7 @@
       "properties": {
         "schluessel": { "$ref": "#/$defs/schluessel" }, "name": { "type": "string" }, "beschreibung": { "type": "string" },
         "eltern": { "$ref": "#/$defs/schluessel" },
-        "typen": { "type": "array", "items": { "$ref": "#/$defs/typverweis" } },
+        "typen": { "type": "array", "items": { "anyOf": [{ "$ref": "#/$defs/typverweis" }, { "const": "*", "description": "alle Mappentypen (ab Ablago 0.182.0, DMS #725), steht allein" }] } },
         "fremde_typen": { "type": "array", "description": "Mappentypen, die das Paket nicht mitbringt (DMS #656, ab 0.178.0): Ablago ordnet sie über die Kennung zu, sonst wird die Ansicht übersprungen.", "items": { "type": "object", "required": ["kennung"], "additionalProperties": false, "properties": { "kennung": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" }, "name": { "type": "string" } } } },
         "bedingungen": { "type": "array", "items": { "type": "object", "required": ["feld", "operator"], "properties": { "feld": { "type": "string" }, "operator": { "type": "string" }, "wert": {} } } },
         "trefferliste": { "type": "string" },
