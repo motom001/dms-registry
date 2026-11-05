@@ -1,12 +1,80 @@
 {
   "format": 1,
-  "erstellt": "2026-11-04T20:55:12Z",
+  "erstellt": "2026-11-05T11:31:49Z",
   "quelle": "https://github.com/motom001/dms-registry",
   "signatur": null,
   "pakete": [
     {
       "id": "basis",
       "versionen": [
+        {
+          "version": "1.5.0",
+          "dms": ">=0.127.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "organisation",
+                "name": "Organisation"
+              },
+              {
+                "schluessel": "niederlassung",
+                "name": "Niederlassung"
+              },
+              {
+                "schluessel": "person",
+                "name": "Person"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "organisationen",
+                "name": "Organisationen"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "banken",
+                "name": "Banken"
+              },
+              {
+                "schluessel": "behoerden",
+                "name": "Behörden"
+              },
+              {
+                "schluessel": "aerzte",
+                "name": "Ärzte und Praxen"
+              },
+              {
+                "schluessel": "niederlassungen",
+                "name": "Niederlassungen"
+              },
+              {
+                "schluessel": "personen",
+                "name": "Personen"
+              },
+              {
+                "schluessel": "familie",
+                "name": "Familie und Freunde"
+              },
+              {
+                "schluessel": "ansprechpartner",
+                "name": "Ansprechpartner"
+              }
+            ],
+            "beispiele": 8
+          },
+          "code": false,
+          "archiv": "archive/basis-1.5.0.zip",
+          "sha256": "7cec4bbd26a0472696e2d6d9ba09938993c97beee9acaf7ad704bcb46169e533",
+          "groesse": 15451,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/basis",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/basis/CHANGELOG.md"
+        },
         {
           "version": "1.4.2",
           "dms": ">=0.127.0",
@@ -535,7 +603,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.4.2",
+      "aktuell": "1.5.0",
       "kategorien": [
         "vorlagen"
       ],
@@ -668,6 +736,53 @@
     {
       "id": "fahrzeuge",
       "versionen": [
+        {
+          "version": "1.5.0",
+          "dms": ">=0.177.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.1.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "fahrzeug",
+                "name": "Fahrzeug"
+              },
+              {
+                "schluessel": "werkstattrechnung",
+                "name": "Werkstattrechnung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "fahrzeuge",
+                "name": "Fahrzeuge"
+              },
+              {
+                "schluessel": "alle_fahrzeuge",
+                "name": "Alle Fahrzeuge"
+              },
+              {
+                "schluessel": "werkstattrechnungen",
+                "name": "Werkstattrechnungen"
+              },
+              {
+                "schluessel": "hu_faellig",
+                "name": "HU fällig"
+              }
+            ],
+            "beispiele": 3
+          },
+          "code": false,
+          "archiv": "archive/fahrzeuge-1.5.0.zip",
+          "sha256": "5464df90814835f255a0e5f5580291f3a7a5d636ee07e1b0c05e7b2bd88b2c3b",
+          "groesse": 122253,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/fahrzeuge/CHANGELOG.md"
+        },
         {
           "version": "1.4.0",
           "dms": ">=0.177.0",
@@ -1099,7 +1214,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.4.0",
+      "aktuell": "1.5.0",
       "kategorien": [
         "vorlagen"
       ],
@@ -1179,6 +1294,69 @@
     {
       "id": "haus",
       "versionen": [
+        {
+          "version": "1.3.0",
+          "dms": ">=0.177.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.0.0",
+            "haushalt": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "immobilie",
+                "name": "Immobilie"
+              },
+              {
+                "schluessel": "wartung",
+                "name": "Wartung"
+              },
+              {
+                "schluessel": "zaehlerstand",
+                "name": "Zählerstand"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haus",
+                "name": "Haus"
+              },
+              {
+                "schluessel": "immobilien",
+                "name": "Immobilien"
+              },
+              {
+                "schluessel": "wartungen",
+                "name": "Wartungen"
+              },
+              {
+                "schluessel": "zaehlerstaende",
+                "name": "Zählerstände"
+              },
+              {
+                "schluessel": "wartung_faellig",
+                "name": "Wartung fällig"
+              },
+              {
+                "schluessel": "zaehler_dieses_jahr",
+                "name": "Zählerstände dieses Jahr"
+              },
+              {
+                "schluessel": "zaehler_letztes_jahr",
+                "name": "Zählerstände letztes Jahr"
+              }
+            ],
+            "beispiele": 7
+          },
+          "code": false,
+          "archiv": "archive/haus-1.3.0.zip",
+          "sha256": "62b8d0e4ca6546df679959557bd2a50a79c0fd6edd0639cc5db73a538f4493ba",
+          "groesse": 157798,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haus",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haus/CHANGELOG.md"
+        },
         {
           "version": "1.2.0",
           "dms": ">=0.177.0",
@@ -1565,7 +1743,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.2.0",
+      "aktuell": "1.3.0",
       "kategorien": [
         "vorlagen"
       ],
@@ -1574,6 +1752,132 @@
     {
       "id": "haushalt",
       "versionen": [
+        {
+          "version": "1.4.0",
+          "dms": ">=0.177.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "konto",
+                "name": "Konto"
+              },
+              {
+                "schluessel": "vertrag",
+                "name": "Vertrag"
+              },
+              {
+                "schluessel": "versicherung",
+                "name": "Versicherung"
+              },
+              {
+                "schluessel": "steuerjahr",
+                "name": "Steuerjahr"
+              },
+              {
+                "schluessel": "arbeitsverhaeltnis",
+                "name": "Arbeitsverhältnis"
+              },
+              {
+                "schluessel": "vorsorge",
+                "name": "Vorsorge"
+              },
+              {
+                "schluessel": "ausweis",
+                "name": "Ausweis & Urkunde"
+              },
+              {
+                "schluessel": "gesundheit",
+                "name": "Gesundheit"
+              },
+              {
+                "schluessel": "anschaffung",
+                "name": "Anschaffung"
+              },
+              {
+                "schluessel": "bildung",
+                "name": "Bildung"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "haushalt",
+                "name": "Haushalt"
+              },
+              {
+                "schluessel": "konten",
+                "name": "Konten"
+              },
+              {
+                "schluessel": "vertraege",
+                "name": "Verträge"
+              },
+              {
+                "schluessel": "versicherungen",
+                "name": "Versicherungen"
+              },
+              {
+                "schluessel": "steuerjahre",
+                "name": "Steuerjahre"
+              },
+              {
+                "schluessel": "arbeit",
+                "name": "Arbeitsverhältnisse"
+              },
+              {
+                "schluessel": "vorsorge",
+                "name": "Vorsorge"
+              },
+              {
+                "schluessel": "ausweise",
+                "name": "Ausweise & Urkunden"
+              },
+              {
+                "schluessel": "gesundheit",
+                "name": "Gesundheit"
+              },
+              {
+                "schluessel": "anschaffungen",
+                "name": "Anschaffungen"
+              },
+              {
+                "schluessel": "bildung",
+                "name": "Bildung"
+              },
+              {
+                "schluessel": "sachversicherungen",
+                "name": "Sachversicherungen"
+              },
+              {
+                "schluessel": "personenversicherungen",
+                "name": "Personenversicherungen"
+              },
+              {
+                "schluessel": "kuendigung_bald",
+                "name": "Kündigung in den nächsten 3 Monaten"
+              },
+              {
+                "schluessel": "laeuft_ab",
+                "name": "Läuft bald ab"
+              },
+              {
+                "schluessel": "garantie_bald",
+                "name": "Garantie läuft ab"
+              }
+            ],
+            "beispiele": 18
+          },
+          "code": false,
+          "archiv": "archive/haushalt-1.4.0.zip",
+          "sha256": "d47cd1f5c76dda1727885325c773a20350af88aa0ec8997bee28637547764291",
+          "groesse": 377836,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/haushalt",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/haushalt/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/haushalt/CHANGELOG.md"
+        },
         {
           "version": "1.3.0",
           "dms": ">=0.177.0",
@@ -2590,7 +2894,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.3.0",
+      "aktuell": "1.4.0",
       "kategorien": [
         "vorlagen"
       ],
@@ -3006,6 +3310,252 @@
         "sicherung"
       ],
       "symbol": "cloud-upload"
+    },
+    {
+      "id": "sprache_es",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.203.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": false,
+          "archiv": "archive/sprache_es-1.0.0.zip",
+          "sha256": "31de637e9c89f3fde866b0e45142e6ceaf131c2f323d932d2829ffdf2ff7b015",
+          "groesse": 12103,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sprache_es",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_es/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_es/CHANGELOG.md",
+          "sprache": {
+            "kennung": "es",
+            "maschinell": true,
+            "ablago": "0.203.0"
+          }
+        }
+      ],
+      "name": "Sprache: Spanisch (Español)",
+      "beschreibung": "Ablago auf Spanisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen"
+      ],
+      "symbol": "languages",
+      "kuerzel": "ES"
+    },
+    {
+      "id": "sprache_fr",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.203.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": false,
+          "archiv": "archive/sprache_fr-1.0.0.zip",
+          "sha256": "facfa6d0bda6b87c5a7b58e41190ad216acab06f15da2d2e02200683c4746e6a",
+          "groesse": 12193,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sprache_fr",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_fr/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_fr/CHANGELOG.md",
+          "sprache": {
+            "kennung": "fr",
+            "maschinell": true,
+            "ablago": "0.203.0"
+          }
+        }
+      ],
+      "name": "Sprache: Französisch (Français)",
+      "beschreibung": "Ablago auf Französisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen"
+      ],
+      "symbol": "languages",
+      "kuerzel": "FR"
+    },
+    {
+      "id": "sprache_it",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.203.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": false,
+          "archiv": "archive/sprache_it-1.0.0.zip",
+          "sha256": "0b3f2b6073d8be8ee6f4fc30e7573a346caccc582bba5b1063ca6710c1c6b1a9",
+          "groesse": 12004,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sprache_it",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_it/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_it/CHANGELOG.md",
+          "sprache": {
+            "kennung": "it",
+            "maschinell": true,
+            "ablago": "0.203.0"
+          }
+        }
+      ],
+      "name": "Sprache: Italienisch (Italiano)",
+      "beschreibung": "Ablago auf Italienisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen"
+      ],
+      "symbol": "languages",
+      "kuerzel": "IT"
+    },
+    {
+      "id": "sprache_nl",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.203.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": false,
+          "archiv": "archive/sprache_nl-1.0.0.zip",
+          "sha256": "a48d371de4e4427c7a7fc60a15b1252475377d6149136eeaffdce21fd4a5501c",
+          "groesse": 11884,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sprache_nl",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_nl/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_nl/CHANGELOG.md",
+          "sprache": {
+            "kennung": "nl",
+            "maschinell": true,
+            "ablago": "0.203.0"
+          }
+        }
+      ],
+      "name": "Sprache: Niederländisch (Nederlands)",
+      "beschreibung": "Ablago auf Niederländisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen"
+      ],
+      "symbol": "languages",
+      "kuerzel": "NL"
+    },
+    {
+      "id": "sprache_pl",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.203.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": false,
+          "archiv": "archive/sprache_pl-1.0.0.zip",
+          "sha256": "6b807c4cc94a586dab57a6b81fa13cf41cd2c4d6150ec5badfe150e590fe651a",
+          "groesse": 12238,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sprache_pl",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_pl/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_pl/CHANGELOG.md",
+          "sprache": {
+            "kennung": "pl",
+            "maschinell": true,
+            "ablago": "0.203.0"
+          }
+        }
+      ],
+      "name": "Sprache: Polnisch (Polski)",
+      "beschreibung": "Ablago auf Polnisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen"
+      ],
+      "symbol": "languages",
+      "kuerzel": "PL"
+    },
+    {
+      "id": "sprache_tr",
+      "versionen": [
+        {
+          "version": "1.0.0",
+          "dms": ">=0.203.0",
+          "abhaengigkeiten": {},
+          "inhalt": {
+            "mappentypen": [],
+            "sichten": [],
+            "beispiele": 0
+          },
+          "code": false,
+          "archiv": "archive/sprache_tr-1.0.0.zip",
+          "sha256": "0989c7c8071b9de1f1eebc171b1d0a61f9e506bea2a50b75a16a53567630fd75",
+          "groesse": 12057,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/sprache_tr",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_tr/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/sprache_tr/CHANGELOG.md",
+          "sprache": {
+            "kennung": "tr",
+            "maschinell": true,
+            "ablago": "0.203.0"
+          }
+        }
+      ],
+      "name": "Sprache: Türkisch (Türkçe)",
+      "beschreibung": "Ablago auf Türkisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.",
+      "autor": {
+        "name": "Thomas Meissner",
+        "github": "motom001"
+      },
+      "lizenz": "Apache-2.0",
+      "aktuell": "1.0.0",
+      "kategorien": [
+        "sprachen"
+      ],
+      "symbol": "languages",
+      "kuerzel": "TR"
     },
     {
       "id": "texterkennung",
@@ -4316,6 +4866,102 @@
       "id": "vermietung",
       "versionen": [
         {
+          "version": "1.4.0",
+          "dms": ">=0.177.0",
+          "abhaengigkeiten": {
+            "basis": ">=1.1.0",
+            "haushalt": ">=1.0.0",
+            "haus": ">=1.0.0"
+          },
+          "inhalt": {
+            "mappentypen": [
+              {
+                "schluessel": "mietobjekt",
+                "name": "Mietobjekt"
+              },
+              {
+                "schluessel": "wohnung",
+                "name": "Wohnung"
+              },
+              {
+                "schluessel": "mietvertrag",
+                "name": "Mietvertrag"
+              },
+              {
+                "schluessel": "nebenkostenabrechnung",
+                "name": "Nebenkostenabrechnung"
+              },
+              {
+                "schluessel": "ausgabe",
+                "name": "Ausgabe Mietobjekt"
+              }
+            ],
+            "sichten": [
+              {
+                "schluessel": "vermietung",
+                "name": "Vermietung"
+              },
+              {
+                "schluessel": "mietobjekte",
+                "name": "Mietobjekte"
+              },
+              {
+                "schluessel": "wohnungen",
+                "name": "Wohnungen"
+              },
+              {
+                "schluessel": "mietvertraege",
+                "name": "Mietverträge"
+              },
+              {
+                "schluessel": "mietvertraege_laufend",
+                "name": "Laufende Mietverträge"
+              },
+              {
+                "schluessel": "nebenkosten",
+                "name": "Nebenkostenabrechnungen"
+              },
+              {
+                "schluessel": "ausgaben",
+                "name": "Ausgaben"
+              },
+              {
+                "schluessel": "ausgaben_dieses_jahr",
+                "name": "Ausgaben dieses Jahr"
+              },
+              {
+                "schluessel": "ausgaben_letztes_jahr",
+                "name": "Ausgaben letztes Jahr"
+              },
+              {
+                "schluessel": "ausgaben_umlagefaehig",
+                "name": "Umlagefähig letztes Jahr"
+              },
+              {
+                "schluessel": "abrechnung_offen",
+                "name": "Abrechnung offen"
+              },
+              {
+                "schluessel": "mieterhoehung",
+                "name": "Mieterhöhung möglich"
+              },
+              {
+                "schluessel": "vertrag_endet",
+                "name": "Vertrag endet bald"
+              }
+            ],
+            "beispiele": 11
+          },
+          "code": false,
+          "archiv": "archive/vermietung-1.4.0.zip",
+          "sha256": "8c52ce5c4ca22f6d15513bbbc88e0fac7d7bfcce1b501cabe22d6c689ea10b81",
+          "groesse": 344453,
+          "veroeffentlicht": "2026-11-05T11:31:49Z",
+          "quelle": "https://github.com/motom001/dms-registry/tree/main/pakete/vermietung",
+          "readme": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/README.md",
+          "changelog": "https://github.com/motom001/dms-registry/blob/main/pakete/vermietung/CHANGELOG.md"
+        },
+        {
           "version": "1.3.0",
           "dms": ">=0.177.0",
           "abhaengigkeiten": {
@@ -4995,7 +5641,7 @@
         "github": "motom001"
       },
       "lizenz": "Apache-2.0",
-      "aktuell": "1.3.0",
+      "aktuell": "1.4.0",
       "kategorien": [
         "vorlagen"
       ],
