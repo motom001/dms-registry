@@ -305,6 +305,19 @@
         }
       }
     },
+    "sprache": {
+      "description": "Sprachpaket (motom001/dms#731, Registry #116, ab Ablago 0.203.0): Das Paket bringt nur Texte – texte/<bereich>.json und beschriftungen/<paket>.yaml –, keinen Code und keine Inhalte. REGELN.md, „Sprachpakete“.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kennung", "ablago", "maschinell"],
+      "properties": {
+        "kennung": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$", "not": { "enum": ["de", "en"] }, "description": "Sprachkennung wie fr oder pt-BR; Deutsch und Englisch sind in Ablago eingebaut." },
+        "gebietsschema": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$", "description": "Für Datum, Zahlen und Beträge, z. B. fr-FR; fehlt: die Kennung." },
+        "ablago": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Ablago-Version, für die die Texte gemacht sind." },
+        "maschinell": { "type": "boolean", "description": "Maschinell übersetzt: Ablago und Katalog zeigen „Maschinell übersetzt – Verbesserungen willkommen“." },
+        "geprueft_von": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[^<>]*$", "description": "Wer die Übersetzung geprüft hat (z. B. GitHub-Name); dann „Geprüft von …“." }
+      }
+    },
     "code": {
       "type": "object",
       "additionalProperties": false,

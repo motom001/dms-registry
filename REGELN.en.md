@@ -15,6 +15,8 @@ The full licence text is in the package folder as `LICENSE`. Third-party code in
 ## Allowed
 
 - Mappe types, views, roles, sample Mappen
+- Labels per language on Mappe types, fields, choice values, tabs and views (see [Labels per language](#labels-per-language))
+- Language packages: further languages for Ablago, texts only (see [Language packages](#language-packages))
 - Views across **all Mappe types** with `typen: ["*"]` – including future ones, e.g. a "Favoriten" view (alone in `typen`, from Ablago 0.182.0, `dms: ">=0.182.0"`)
 - Word lists: synonyms for the search (see [Word lists](#word-lists))
 - Ready-made automations (see [Automations](#automations))
@@ -55,7 +57,7 @@ They are explained in the administrator manual under [Pakete mit Code](https://h
 - `manifest.yaml`, `README.md`, `LICENSE`, `CHANGELOG.md`, `inhalt/` (empty if need be), `tests/`
 - Package id = folder name: lower-case letters, digits, `_`, starts with a letter, at most 20 characters
 - With every change, a higher version (SemVer) and an entry in `CHANGELOG.md`
-- German texts in fields and views; the README in German, additionally in English if you like
+- German texts in fields and views; the README in German, additionally in English if you like. English labels (`beschriftungen.en`) are welcome – the bundled packages with Mappe types have them.
 - A maintainer for the package in `CODEOWNERS`
 
 ## Settings
@@ -120,6 +122,50 @@ ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }   # or short: ergae
 ```
 
 Ablago from 0.151.0 shows add-ons as checkboxes below the extended package during installation, grouped by `gruppe` (a short question without question mark, at most 40 characters; without a group: "Ergänzungen") – also afterwards, in the setup assistant and in the bundle file. Every add-on stays a package of its own with its own version. Older Ablago versions ignore the field, so no higher `dms` is needed. In the catalogue it appears per version as `ergaenzt: { paket, gruppe }`, on the catalogue website as a group of its own under "Passt dazu".
+
+## Labels per language
+
+Mappe types, fields, choice values, tabs and views of a package can carry labels in further languages (Ablago #728, Registry #135) – an English Ablago then shows them in English:
+
+```yaml
+- schluessel: vertrag
+  name: Vertrag                     # German base text, as before
+  beschriftungen: { en: { name: Contract } }
+  felder:
+    - key: art
+      label: Art
+      typ: auswahl
+      optionen: [Strom, Gas, Wasser]   # the fixed values – exactly these are stored in Mappen
+      beschriftungen:
+        en: { label: Type, optionen: { Strom: Electricity, Gas: Gas, Wasser: Water } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art], beschriftungen: { en: { name: General } } }
+```
+
+- **Where:** on Mappe types and views `name` and `beschreibung`, on fields `label`, `hilfe` and `optionen` (fixed value → text), on tabs `name`.
+- **Languages:** codes like `en`, `fr` or `pt-BR`; at most 30 per entry, at most 500 characters per text, no angle brackets (no HTML).
+- **`optionen` stays a list of strings** – the fixed values stored in Mappen. Keys under `beschriftungen.<language>.optionen` must appear under `optionen`, and only on choice fields.
+- **German is the base text.** `beschriftungen.de` exists only for `optionen`, e.g. a neutral value `strom` labelled “Strom”.
+- **No higher `dms` needed:** Ablago from 0.200.0 takes the labels on install; an update only adds what the administrator hasn't labelled yet. Older versions skip the field. New labels are a minor version.
+
+## Language packages
+
+Further languages for Ablago come as a **language package** (Ablago #731, Registry #116, from Ablago 0.203.0). It contains **texts only** – no code, no Mappe types, no HTML: `texte/<bereich>.json` (same areas, keys and placeholders as Ablago's language files) and optionally `beschriftungen/<paket>.yaml` (labels for packages of this registry). The manifest has `id: sprache_<kennung>`, `dms: ">=0.203.0"`, `symbol: languages`, `kuerzel` = the language code in capitals, `kategorien: [sprachen]`, `inhalt: {}` and:
+
+```yaml
+sprache:
+  kennung: fr            # German and English are built in
+  gebietsschema: fr-FR   # dates, numbers, amounts
+  ablago: 0.203.0        # Ablago version the texts were made for
+  maschinell: true       # machine-translated → notice in Ablago and in the catalogue
+  # geprueft_von: "@github-name"
+```
+
+- Always the **familiar form of address** of the language; no formal version. At most 4000 characters per text, 4 MB in total, no control characters, angle brackets only where the German text has them.
+- Forbidden: `code`, entries under `inhalt`, `abhaengigkeiten`, `ergaenzt` and any other files. Missing texts appear in English; keys unknown to an Ablago version are skipped.
+- Help improve: issue template “Improve a translation” or a pull request. `python3 werkzeuge/sprachen.py --ablago <checkout of motom001/dms>` shows the coverage and, with `--fehlend`, the missing texts in English; the CI compares against the newest released Ablago version.
+
+The German version ([REGELN.md](REGELN.md#sprachpakete)) has the details.
 
 ## Fields for recognition
 

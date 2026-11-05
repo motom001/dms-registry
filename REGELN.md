@@ -15,6 +15,8 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 ## Erlaubt
 
 - Mappentypen, Sichten, Rollen, Beispiel-Mappen
+- Beschriftungen je Sprache an Mappentypen, Feldern, Auswahlwerten, Registern und Ansichten (siehe [Beschriftungen je Sprache](#beschriftungen-je-sprache))
+- Sprachpakete: weitere Sprachen für Ablago, nur Texte (siehe [Sprachpakete](#sprachpakete))
 - Sichten über **alle Mappentypen** mit `typen: ["*"]` – auch künftige, z. B. eine Ansicht „Favoriten“ (allein in `typen`, ab Ablago 0.182.0, `dms: ">=0.182.0"`)
 - Wortlisten: gleichbedeutende Wörter für die Suche (siehe [Wortlisten](#wortlisten))
 - Vorgefertigte Automatisierungen (siehe [Automatisierungen](#automatisierungen))
@@ -55,7 +57,7 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://help.
 - `manifest.yaml`, `README.md`, `LICENSE`, `CHANGELOG.md`, `inhalt/` (ggf. leer), `tests/`
 - Paket-Id = Ordnername: Kleinbuchstaben, Ziffern, `_`, beginnt mit einem Buchstaben, höchstens 20 Zeichen
 - Bei jeder Änderung eine höhere Version (SemVer) und ein Eintrag im `CHANGELOG.md`
-- Deutsche Texte in Feldern und Sichten; das README auf Deutsch, gern zusätzlich auf Englisch
+- Deutsche Texte in Feldern und Sichten; das README auf Deutsch, gern zusätzlich auf Englisch. Englische Beschriftungen (`beschriftungen.en`) sind erwünscht – die mitgelieferten Pakete mit Mappentypen haben sie.
 - Ein Pfleger in `CODEOWNERS`
 - **Größe:** Ein Paket ist höchstens **128 MB** groß – als Archiv im Katalog und in der Sammeldatei ebenso wie alle Dateien unter `code/` zusammen (`modul.wasm`, `daten/`, Quellcode). Ablago hat dieselbe Grenze (DMS #644); `pruefen.py` und `katalog.py` lehnen größere Pakete ab. Große Daten wie Modelle gehören in eigene Ergänzungspakete (z. B. je Sprache), damit niemand mehr lädt als nötig.
 
@@ -121,6 +123,72 @@ ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }   # oder kurz: erga
 ```
 
 Ablago ab 0.151.0 zeigt Ergänzungen beim Installieren als Häkchen unter dem ergänzten Paket, gruppiert nach `gruppe` (kurze Frage ohne Fragezeichen, höchstens 40 Zeichen; ohne Gruppe: „Ergänzungen“) – auch nachträglich, im Einrichtungsassistenten und in der Sammeldatei. Jede Ergänzung bleibt ein eigenes Paket mit eigener Version. Ältere Ablago-Versionen ignorieren das Feld, deshalb braucht es kein höheres `dms`. Im Katalog steht es je Version als `ergaenzt: { paket, gruppe }`, auf der Katalog-Webseite als eigene Gruppe unter „Passt dazu“.
+
+## Beschriftungen je Sprache
+
+Mappentypen, Felder, Auswahlwerte, Register und Ansichten eines Pakets bekommen Beschriftungen in weiteren Sprachen (Ablago #728, Registry #135) – dann erscheinen sie in einer englischen Ablago englisch:
+
+```yaml
+- schluessel: vertrag
+  name: Vertrag                     # deutscher Grundtext, wie bisher
+  beschreibung: Strom, Gas, Internet …
+  beschriftungen: { en: { name: Contract, beschreibung: "Electricity, gas, internet …" } }
+  felder:
+    - key: art
+      label: Art
+      typ: auswahl
+      optionen: [Strom, Gas, Wasser]   # die festen Werte – genau die stehen in den Mappen
+      beschriftungen:
+        en: { label: Type, optionen: { Strom: Electricity, Gas: Gas, Wasser: Water } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art], beschriftungen: { en: { name: General } } }
+```
+
+- **Wo:** am Mappentyp und an Ansichten `name` und `beschreibung`, an Feldern `label`, `hilfe` und `optionen` (fester Wert → Text), an Registern `name`.
+- **Sprachen:** Kennungen wie `en`, `fr` oder `pt-BR`; höchstens 30 je Eintrag, je Text höchstens 500 Zeichen, ohne spitze Klammern (kein HTML).
+- **`optionen` bleiben eine Liste von Zeichenketten** – das sind die festen Werte, die Mappen speichern. Schlüssel unter `beschriftungen.<sprache>.optionen` müssen unter `optionen` stehen, und es gibt sie nur bei Auswahlfeldern.
+- **Deutsch ist der Grundtext** (`label`, `name` …). `beschriftungen.de` gibt es nur für `optionen` – etwa ein neutraler Wert `strom` mit der Beschriftung „Strom“.
+- **Ohne höheres `dms`:** Ablago ab 0.200.0 übernimmt die Beschriftungen beim Installieren, ein Update ergänzt nur, was der Administrator noch nicht beschriftet hat. Ältere Versionen übergehen das Feld; Pakete mit reinen Textoptionen funktionieren unverändert. Neue Beschriftungen sind eine Minor-Version.
+
+`werkzeuge/pruefen.py` prüft Form, Sprachkennungen, Optionen und `de`.
+
+## Sprachpakete
+
+Weitere Sprachen für Ablago kommen als **Sprachpaket** (Ablago #731, Registry #116, ab Ablago 0.203.0). Ein Sprachpaket enthält **nur Texte** – keinen Code, keine Mappentypen, kein HTML:
+
+```
+pakete/sprache_fr/
+  manifest.yaml  README.md  LICENSE  CHANGELOG.md
+  tests/erwartung.yaml            mappentypen: [], sichten: [], sprache: fr
+  texte/<bereich>.json            Texte der Oberfläche, Meldungen, E-Mails – wie shared/src/sprachen/<sprache>/ in Ablago
+  beschriftungen/<paket>.yaml     Beschriftungen der Standardpakete (optional)
+```
+
+```yaml
+id: sprache_fr                    # immer sprache_<kennung>, z. B. sprache_pt_br
+name: "Sprache: Französisch (Français)"
+dms: ">=0.203.0"
+symbol: languages
+kuerzel: FR                       # die Sprachkennung in Großbuchstaben
+kategorien: [sprachen]
+sprache:
+  kennung: fr                     # Deutsch und Englisch sind eingebaut
+  gebietsschema: fr-FR            # Datum, Zahlen, Beträge
+  ablago: 0.203.0                 # Ablago-Version, für die die Texte gemacht sind
+  maschinell: true                # maschinell übersetzt → Hinweis in Ablago und im Katalog
+  # geprueft_von: "@github-name"  # wer die Übersetzung geprüft hat
+inhalt: {}
+```
+
+- **Texte** (`texte/<bereich>.json`): flach, dieselben Bereiche, Schlüssel und Platzhalter wie die deutschen Sprachdateien von Ablago; am einfachsten übersetzt man die englischen. Mehrzahl nach den Regeln der Sprache (`_one`, `_few`, `_many`, `_other`). **Immer die vertraute Anrede** (du, tu, je, ty …) – eine förmliche Fassung gibt es nicht. Je Text höchstens 4000 Zeichen, alle zusammen höchstens 4 MB, keine Steuerzeichen, **spitze Klammern nur, wo der deutsche Text sie hat** (kein HTML).
+- **Beschriftungen** (`beschriftungen/<paket>.yaml`): Mappentypen (Name, Beschreibung, Felder mit `label`, `hilfe`, `optionen`, Register) und Ansichten eines Pakets dieser Registry, mit den Schlüsseln des Pakets ohne Präfix. Ablago ergänzt sie an installierten Paketen, nur wo in dieser Sprache noch nichts steht. `pruefen.py` prüft, dass es Paket, Mappentyp, Feld, Option, Register und Ansicht gibt.
+- **Verboten:** `code`, Einträge unter `inhalt`, `abhaengigkeiten`, `ergaenzt` und alle anderen Dateien (`code/`, Bilder, Skripte). Ablago lehnt solche Sprachpakete ab.
+- **Fehlt etwas**, erscheint es auf Englisch. Schlüssel, die eine Ablago-Version nicht (mehr) kennt, und Texte mit anderen Platzhaltern übergeht Ablago – das Paket bleibt installierbar.
+- **Maschinell übersetzt** (`maschinell: true`) zeigen Ablago (Mein Konto, Paketvorschau) und die Katalog-Webseite „Maschinell übersetzt – Verbesserungen willkommen“ mit Link. Wer eine Sprache durchgesehen hat, trägt sich unter `geprueft_von` ein; dann steht dort „Geprüft von …“.
+- **Mithelfen:** Issue-Vorlage [„Übersetzung verbessern“](https://github.com/motom001/dms-registry/issues/new?template=uebersetzung.yml) oder ein Pull Request (Text ändern, Patch-Version, Eintrag im `CHANGELOG.md`). Neue Texte einer neuen Ablago-Version: Minor-Version, `sprache.ablago` anheben.
+- **Abdeckung:** `python3 werkzeuge/sprachen.py --ablago <checkout von motom001/dms>` prüft jede Sprache gegen die deutschen Texte von Ablago, nennt „Übersetzung … % vollständig“ und mit `--fehlend` die fehlenden Texte auf Englisch. Die CI vergleicht mit der neuesten veröffentlichten Ablago-Version und schreibt die Abdeckung in die Zusammenfassung; nur Fehler wie HTML machen sie rot.
+
+Das Format beschreibt auch das Entwicklerhandbuch von Ablago unter [Sprachpakete](https://help.ablago.app/entwickler/aktuell/pakete/#sprachpakete).
 
 ## Felder für die Erkennung
 

@@ -21,7 +21,7 @@ jobs:
           python-version: '3.12'
       - run: pip install --quiet --require-hashes -r werkzeuge/requirements.txt
       - name: Tests der Prüfung
-        run: python3 -m unittest werkzeuge/test_pruefen.py werkzeuge/test_sammeldatei.py werkzeuge/test_signieren.py werkzeuge/test_symbole.py
+        run: python3 -m unittest werkzeuge/test_pruefen.py werkzeuge/test_sammeldatei.py werkzeuge/test_signieren.py werkzeuge/test_symbole.py werkzeuge/test_sprachen.py
       # Pakete mit Code: aus dem Quellcode bauen (WASI-SDK und Bibliotheken bleiben im Cache), danach prüft
       # pruefen.py das Modul gegen die DMS-Paket-ABI.
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
@@ -49,6 +49,16 @@ jobs:
           basis=""
           if [ "${{ github.event_name }}" = pull_request ]; then basis="--basis origin/${{ github.base_ref }}"; fi
           python3 werkzeuge/pruefen.py $basis
+      # Sprachpakete (#116, motom001/dms#731): Abdeckung je Sprache gegen die neueste veröffentlichte Ablago-Version,
+      # Fehler wie beim Installieren (HTML, Steuerzeichen); Hinweise (unbekannte Schlüssel, Platzhalter) machen nichts rot.
+      - name: Sprachpakete gegen die neueste Ablago-Version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(gh release view --repo motom001/dms --json tagName -q .tagName 2>/dev/null || true)
+          git clone --quiet --depth 1 ${tag:+--branch "$tag"} --filter=blob:none --sparse https://github.com/motom001/dms ../ablago
+          git -C ../ablago sparse-checkout set shared/src/sprachen
+          python3 werkzeuge/sprachen.py --ablago ../ablago
       - name: Kategorien und Issue-Vorlage aktuell (#84, #86)
         run: python3 werkzeuge/vorlagen.py --pruefen
       - name: Katalog lässt sich bauen (ohne veröffentlichte Version zu ändern)

@@ -6,6 +6,28 @@
     "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
     "datumsgrenze": { "anyOf": [{ "const": "heute" }, { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }] },
     "typverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$" },
+    "beschriftung": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "^[^<>]*$" },
+    "sprachkennung": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$" },
+    "teile_name": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" }, "beschreibung": { "$ref": "#/$defs/beschriftung" } } },
+    "teile_register": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" } } },
+    "teile_feld": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "label": { "$ref": "#/$defs/beschriftung" }, "hilfe": { "$ref": "#/$defs/beschriftung" },
+        "optionen": { "type": "object", "description": "Fester Wert (aus optionen) → Text", "additionalProperties": { "$ref": "#/$defs/beschriftung" } }
+      }
+    },
+    "beschriftungen_name": {
+      "description": "Beschriftungen je Sprache (Ablago #728, Registry #135): Sprache → name, beschreibung. Der Ausgangstext (name) bleibt Deutsch.",
+      "type": "object", "propertyNames": { "$ref": "#/$defs/sprachkennung" }, "maxProperties": 30, "additionalProperties": { "$ref": "#/$defs/teile_name" }
+    },
+    "beschriftungen_register": {
+      "type": "object", "propertyNames": { "$ref": "#/$defs/sprachkennung" }, "maxProperties": 30, "additionalProperties": { "$ref": "#/$defs/teile_register" }
+    },
+    "beschriftungen_feld": {
+      "description": "Beschriftungen je Sprache (Ablago #728, Registry #135): Sprache → label, hilfe, optionen (fester Wert → Text). beschriftungen.de nur für optionen.",
+      "type": "object", "propertyNames": { "$ref": "#/$defs/sprachkennung" }, "maxProperties": 30, "additionalProperties": { "$ref": "#/$defs/teile_feld" }
+    },
     "feld": {
       "type": "object", "required": ["key", "label", "typ"],
       "properties": {
@@ -14,6 +36,7 @@
         "typ": { "enum": ["text", "langtext", "formatiert", "zahl", "betrag", "datum", "janein", "auswahl", "referenz", "passwort"] },
         "pflicht": { "type": "boolean" }, "eindeutig": { "type": "boolean" }, "hilfe": { "type": "string" },
         "standard": {}, "minLen": { "type": "integer" }, "maxLen": { "type": "integer" }, "muster": { "type": "string" },
+        "beschriftungen": { "$ref": "#/$defs/beschriftungen_feld" },
         "min": { "description": "Zahl und Betrag: Zahl. Datum (DMS ab 0.121.0, #535): „heute“ oder JJJJ-MM-TT – frühestes erlaubtes Datum.", "oneOf": [{ "type": "number" }, { "$ref": "#/$defs/datumsgrenze" }] },
         "max": { "description": "Zahl und Betrag: Zahl. Datum (DMS ab 0.121.0, #535): „heute“ oder JJJJ-MM-TT – spätestes erlaubtes Datum, z. B. heute für einen Geburtstag.", "oneOf": [{ "type": "number" }, { "$ref": "#/$defs/datumsgrenze" }] }, "nachkomma": { "type": "integer" }, "waehrung": { "type": "string" },
         "optionen": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
@@ -55,7 +78,8 @@
         "art": { "enum": ["felder", "dokumente", "verknuepfungen", "protokoll"] },
         "felder": { "type": "array", "items": { "$ref": "#/$defs/schluessel" } },
         "quellen": { "type": "array", "items": { "type": "object", "required": ["typ", "feld"], "properties": { "typ": { "$ref": "#/$defs/typverweis" }, "feld": { "$ref": "#/$defs/schluessel" } } } },
-        "volltext": { "type": "boolean" }
+        "volltext": { "type": "boolean" },
+        "beschriftungen": { "$ref": "#/$defs/beschriftungen_register" }
       }
     },
     "mappentyp": {
@@ -65,7 +89,8 @@
         "titelVorlage": { "type": "string" },
         "felder": { "type": "array", "items": { "$ref": "#/$defs/feld" } },
         "register": { "type": "array", "items": { "$ref": "#/$defs/register" }, "minItems": 1 },
-        "trefferliste": { "type": "array", "items": { "type": "string" } }
+        "trefferliste": { "type": "array", "items": { "type": "string" } },
+        "beschriftungen": { "$ref": "#/$defs/beschriftungen_name" }
       }
     },
     "sicht": {
@@ -77,6 +102,7 @@
         "fremde_typen": { "type": "array", "description": "Mappentypen, die das Paket nicht mitbringt (DMS #656, ab 0.178.0): Ablago ordnet sie über die Kennung zu, sonst wird die Ansicht übersprungen.", "items": { "type": "object", "required": ["kennung"], "additionalProperties": false, "properties": { "kennung": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" }, "name": { "type": "string" } } } },
         "bedingungen": { "type": "array", "items": { "type": "object", "required": ["feld", "operator"], "properties": { "feld": { "type": "string" }, "operator": { "type": "string" }, "wert": {} } } },
         "trefferliste": { "type": "string" },
+        "beschriftungen": { "$ref": "#/$defs/beschriftungen_name" },
         "symbol": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Symbol der Ansicht (DMS #428): ein Lucide-Name aus der festen Liste in shared/src/ansichtsymbole.ts des DMS, z. B. house, car, euro, mail. Unbekannte Namen zeigt Ablago ohne Symbol." }
       }
     },
@@ -86,6 +112,29 @@
     }
   },
   "mappentypen": { "type": "array", "items": { "$ref": "#/$defs/mappentyp" } },
+  "sprachtexte": {
+    "description": "Sprachpaket (Ablago #731): texte/<bereich>.json – flach, Schlüssel wie in den Sprachdateien von Ablago, nur Texte.",
+    "type": "object", "propertyNames": { "pattern": "^[a-z0-9]+([.-][A-Za-z0-9]+)*(_(zero|one|two|few|many|other))?$" },
+    "additionalProperties": { "type": "string", "maxLength": 4000 }
+  },
+  "sprachbeschriftung": {
+    "description": "Sprachpaket (Ablago #731): beschriftungen/<paket>.yaml – Mappentypen und Ansichten des Pakets in der Sprache des Sprachpakets, mit den Schlüsseln des Pakets (ohne Präfix).",
+    "type": "object", "additionalProperties": false,
+    "properties": {
+      "mappentypen": {
+        "type": "object", "propertyNames": { "$ref": "#/$defs/schluessel" },
+        "additionalProperties": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "name": { "$ref": "#/$defs/beschriftung" }, "beschreibung": { "$ref": "#/$defs/beschriftung" },
+            "felder": { "type": "object", "propertyNames": { "$ref": "#/$defs/schluessel" }, "additionalProperties": { "$ref": "#/$defs/teile_feld" } },
+            "register": { "type": "object", "propertyNames": { "$ref": "#/$defs/schluessel" }, "additionalProperties": { "$ref": "#/$defs/teile_register" } }
+          }
+        }
+      },
+      "sichten": { "type": "object", "propertyNames": { "$ref": "#/$defs/schluessel" }, "additionalProperties": { "$ref": "#/$defs/teile_name" } }
+    }
+  },
   "sichten": { "type": "array", "items": { "$ref": "#/$defs/sicht" } },
   "beispiele": { "type": "array", "items": { "$ref": "#/$defs/beispiel" } },
   "wortlisten": {

@@ -57,6 +57,26 @@ def md(text: str) -> str:
 # Feste Texte der Übersicht und des Seitenrahmens, je Sprache an einer Stelle (#54). Werte mit HTML sind als
 # solches markiert (*_html); alle anderen werden beim Einsetzen maskiert. Deutsch ist führend.
 REGISTRY = 'https://github.com/motom001/dms-registry'
+# Sprachpakete (Ablago #731, Registry #116): wie man eine Übersetzung verbessert, und die Sprachen mit Namen.
+MITMACHEN_SPRACHE = 'https://help.ablago.app/entwickler/aktuell/pakete/#eine-sprache-beitragen'
+SPRACHNAMEN = {'fr': 'Französisch', 'nl': 'Niederländisch', 'es': 'Spanisch', 'it': 'Italienisch', 'tr': 'Türkisch', 'pl': 'Polnisch',
+               'pt': 'Portugiesisch', 'pt-BR': 'Portugiesisch (Brasilien)', 'da': 'Dänisch', 'sv': 'Schwedisch', 'cs': 'Tschechisch',
+               'uk': 'Ukrainisch', 'ru': 'Russisch', 'ar': 'Arabisch', 'el': 'Griechisch', 'hu': 'Ungarisch', 'ro': 'Rumänisch'}
+
+
+def sprach_hinweis(p: dict) -> str:
+    """„Maschinell übersetzt – Verbesserungen willkommen“ mit Link bzw. „Geprüft von …“ (Ablago #731) – wie in Ablago."""
+    s = p['versionen'][0].get('sprache') or {}
+    if s.get('geprueft_von'):
+        return f'<p class="hinweis">Geprüft von {e(s["geprueft_von"])}. Verbesserungen sind trotzdem willkommen: <a href="{e(uebersetzung_melden(p))}">Übersetzung verbessern</a>.</p>'
+    if s.get('maschinell'):
+        return (f'<p class="hinweis"><strong>Maschinell übersetzt</strong> – <a href="{e(MITMACHEN_SPRACHE)}">Verbesserungen willkommen</a>. '
+                f'Einen falschen Text meldest du mit <a href="{e(uebersetzung_melden(p))}">Übersetzung verbessern</a> (auf GitHub).</p>')
+    return ''
+
+
+def uebersetzung_melden(p: dict) -> str:
+    return f'{REGISTRY}/issues/new?template=uebersetzung.yml&title={quote("[" + p["name"] + "] ")}'
 SPRACHEN = {'de': '', 'en': 'en/'}  # Sprache → Ordner ihrer Übersicht (relativ zur Wurzel der Webseite)
 TEXTE = {
     'de': {
@@ -87,6 +107,7 @@ TEXTE = {
         'konfiguration': 'Konfiguration',
         'mit_code': 'Mit Code',
         'kachel_code': 'mit Code',
+        'kachel_maschinell': 'maschinell übersetzt',
         'keine': 'Kein Paket gefunden.',
         'kategorie': 'Kategorie',
         'alle_kategorien': 'Alle Kategorien',
@@ -129,6 +150,7 @@ TEXTE = {
         'konfiguration': 'Configuration',
         'mit_code': 'With code',
         'kachel_code': 'with code',
+        'kachel_maschinell': 'machine-translated',
         'keine': 'No package found.',
         'kategorie': 'Category',
         'alle_kategorien': 'All categories',
@@ -225,6 +247,9 @@ def kachel(p: dict, sprache: str = 'de', vor: str | None = None) -> str:
     # Pakettexte sind deutsch – auch auf der englischen Übersicht als lang="de" ausgezeichnet (Vorlesen, Silbentrennung).
     de = '' if sprache == 'de' else ' lang="de"'
     mit_code = f' · {e(TEXTE[sprache]["kachel_code"])}' if v['code'] else ''
+    # Sprachpaket (Ablago #731): maschinell übersetzt schon in der Übersicht erkennbar.
+    if (v.get('sprache') or {}).get('maschinell'):
+        mit_code += f' · {e(TEXTE[sprache]["kachel_maschinell"])}'
     netz = netz_art(p['id'])
     kats = p.get('kategorien') or []
     chips = ''.join(f'<span class="chip">{e(KATEGORIEN[k][sprache])}</span>' for k in kats if k in KATEGORIEN)
@@ -589,7 +614,19 @@ def detail(p: dict, pakete: list) -> str:
     auto_html = ('<h3>Vorgefertigte Automatisierungen</h3><p class="leise klein">Nach der Installation aus – beim Installieren fragt Ablago, '
                  'welche gleich eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellst du selbst ein.</p><ul>'
                  + ''.join(f'<li><strong>{e(a.get("name", ""))}</strong>{" – " + e(a["beschreibung"]) if a.get("beschreibung") else ""}</li>' for a in autos) + '</ul>') if n_auto else ''
-    if n_typen or n_sichten or n_bsp or n_wort or n_auto:
+    sp = m.get('sprache') if vorhanden and isinstance(m.get('sprache'), dict) else None
+    if sp:
+        # Sprachpaket (Ablago #731): nur Texte; dazu die Pakete, für die es Beschriftungen mitbringt.
+        fuer = sorted(x.stem for x in (ordner / 'beschriftungen').glob('*.yaml')) if (ordner / 'beschriftungen').is_dir() else []
+        bereiche = sorted(x.stem for x in (ordner / 'texte').glob('*.json')) if (ordner / 'texte').is_dir() else []
+        links = ['<a href="../' + e(x) + '/">' + e(x) + '</a>' for x in fuer]
+        mitkommt = (f'<p>Ablago auf <strong>{e(SPRACHNAMEN.get(sp["kennung"], sp["kennung"]))}</strong>: Texte der Oberfläche, Meldungen und E-Mails '
+                    f'({e(", ".join(bereiche)) or "–"}), gemacht für Ablago {e(str(sp.get("ablago", "")))}. Was fehlt, erscheint auf Englisch.</p>'
+                    + (f'<p>Beschriftungen für die Pakete {", ".join(links)} – Mappentypen, Felder, '
+                       'Auswahlwerte und Ansichten in dieser Sprache.</p>' if fuer else '')
+                    + '<p class="leise klein">Nach der Installation erlaubst du die Sprache unter Werkbank → Sprachen; jede Person wählt sie dann in Mein Konto.</p>')
+        kurz_mit = 'Sprachpaket, nur Texte'
+    elif n_typen or n_sichten or n_bsp or n_wort or n_auto:
         bsp = (f'<p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
                if n_bsp else '<p class="leise">keine Beispielmappen</p>')
         mitkommt = f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>{wort_html}{auto_html}{bsp}'
@@ -603,8 +640,11 @@ def detail(p: dict, pakete: list) -> str:
                     'keine Beispielmappen. Es bringt nur eine Funktion mit (siehe „Was das Paket darf“).</p>')
         kurz_mit = 'legt nichts in der Ablage an'
     rechte = rechte_text(m['code'], {t['schluessel']: t['name'] for t in typen if 'schluessel' in t}) if vorhanden and m.get('code') \
+        else '<p>Kein Code: Das Paket bringt nur Texte – kein HTML, keine Programme.</p>' if sp \
         else '<p>Kein Code: Das Paket legt nur Mappentypen, Ansichten und auf Wunsch Beispiele an.</p>'
-    if m.get('code'):
+    if sp:
+        kurz_recht = 'nur Texte, kein Code'
+    elif m.get('code'):
         kurz_recht = 'mit Zugriff auf Netzwerk/Internet' if ((m['code'].get('netz') or []) or adressen(m['code'])) else 'kein Zugriff auf Netzwerk und Internet'
     else:
         kurz_recht = 'nur Konfiguration, kein Code'
@@ -641,7 +681,7 @@ def detail(p: dict, pakete: list) -> str:
               f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p>\n'
               f'        <p class="chips">{kats}</p></div>\n'
               f'    </div>\n'
-              f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + '\n    '.join(teile) + passt_html + '\n')
+              f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + (sprach_hinweis(p) + '\n    ' if sprach_hinweis(p) else '') + '\n    '.join(teile) + passt_html + '\n')
     return seite(f'{p["name"]} – Ablago-Pakete', inhalt, 2, p['beschreibung'])
 
 
