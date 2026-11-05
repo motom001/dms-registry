@@ -17,7 +17,7 @@ In Ablago installierst du Pakete unter **Werkbank → Pakete**. Die Paketverwalt
 pakete/<paket>/        ein Ordner je Paket, Name = Paket-Id
 vorlage/               Vorlage für ein neues Paket – kopieren und loslegen
 schema/                JSON-Schemas für manifest.yaml und die Inhalte
-werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (laufen auch in der CI)
+werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py, sprachen.py (laufen auch in der CI)
 werkzeuge/symbole/     erlaubte Symbole für den Katalog (Lucide, ISC) – siehe REGELN.md, „Symbol“
 schluessel/            öffentliche Schlüssel, mit denen der Katalog signiert ist (siehe „Katalog signieren“)
 REGELN.md              was erlaubt ist, was nicht, welche Lizenzen

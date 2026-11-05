@@ -1,0 +1,51 @@
+# Übersetzung verbessern (Ablago #731, Registry #116): falscher, holpriger oder fehlender Text in einem Sprachpaket.
+name: Übersetzung verbessern · Improve a translation
+description: Ein Text in einem Sprachpaket ist falsch, holprig oder fehlt · A text in a language package is wrong, clumsy or missing
+title: "[Sprache] "
+labels: [paket]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke! Die erste Welle der Sprachpakete ist **maschinell übersetzt** – jede Verbesserung hilft. Gern auch gleich als Pull Request:
+        Text in `pakete/sprache_<kennung>/texte/<bereich>.json` ändern, Version erhöhen, Eintrag im `CHANGELOG.md` (siehe REGELN.md, „Sprachpakete“).
+        Ablago spricht überall mit **du** bzw. der vertrauten Anrede der Sprache – keine förmliche Fassung.
+        **Bitte keine echten Namen, Adressen oder Bildschirmfotos mit echten Daten.**
+
+        Thanks! The first wave of language packages is **machine-translated** – every improvement helps. A pull request is welcome too.
+        Ablago always uses the familiar form of address. **Please no real names, addresses or screenshots with real data.**
+  - type: input
+    id: sprache
+    attributes:
+      label: Sprache · Language
+      description: Kennung oder Name, z. B. fr oder Französisch · Code or name, e.g. fr or French
+      placeholder: fr
+    validations:
+      required: true
+  - type: input
+    id: stelle
+    attributes:
+      label: Wo steht der Text? · Where is the text?
+      description: Seite in Ablago oder Schlüssel aus texte/<bereich>.json, falls bekannt · Page in Ablago or key from texte/<bereich>.json, if known
+      placeholder: z. B. Anmeldeseite oder anmeldung.passwort.vergessen
+    validations:
+      required: true
+  - type: textarea
+    id: jetzt
+    attributes:
+      label: Was steht dort jetzt? · What does it say now?
+    validations:
+      required: true
+  - type: textarea
+    id: besser
+    attributes:
+      label: Was wäre besser? · What would be better?
+      description: Platzhalter in geschweiften Klammern wie {name} bleiben stehen · Keep placeholders in braces like {name}
+    validations:
+      required: true
+  - type: input
+    id: dmsversion
+    attributes:
+      label: Ablago-Version · Ablago version
+      description: Steht unter „Über Ablago“ (Benutzermenü) · Shown under “About Ablago” (user menu)
+      placeholder: z. B. 0.203.0

@@ -40,6 +40,16 @@
           "description": "Optional (motom001/dms#405): Diese Version ergänzt ein anderes Paket (aus manifest.yaml, immer als Objekt). Das DMS ab 0.151.0 zeigt sie als Häkchen unter dem ergänzten Paket; ältere ignorieren das Feld.",
           "type": "object", "additionalProperties": false, "required": ["paket"],
           "properties": { "paket": { "$ref": "#/$defs/id" }, "gruppe": { "type": "string", "minLength": 1, "maxLength": 40 } }
+        },
+        "sprache": {
+          "description": "Optional (motom001/dms#731, Registry #116): Sprachpaket – Sprache, maschinell übersetzt oder geprüft, Ablago-Version der Texte. Ablago und die Katalog-Webseite zeigen daraus den Hinweis „Maschinell übersetzt – Verbesserungen willkommen“ bzw. „Geprüft von …“.",
+          "type": "object", "additionalProperties": false, "required": ["kennung", "maschinell", "ablago"],
+          "properties": {
+            "kennung": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$" },
+            "maschinell": { "type": "boolean" },
+            "ablago": { "$ref": "#/$defs/version" },
+            "geprueft_von": { "type": "string", "minLength": 1, "maxLength": 200 }
+          }
         }
       }
     },

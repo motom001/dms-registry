@@ -101,7 +101,16 @@ def eintrag(ordner: Path, m: dict, archivname: str, daten: bytes, veroeffentlich
         'changelog': f'{REPO}/blob/main/pakete/{pid}/CHANGELOG.md',
         # Ergänzung eines anderen Pakets (motom001/dms#405), im Katalog immer als Objekt.
         **({'ergaenzt': ergaenzt_von(m)} if m.get('ergaenzt') else {}),
+        # Sprachpaket (motom001/dms#731): Ablago und die Katalog-Webseite zeigen „Maschinell übersetzt …“ bzw. „Geprüft von …“.
+        **({'sprache': sprache_von(m)} if isinstance(m.get('sprache'), dict) else {}),
     }
+
+
+def sprache_von(m: dict) -> dict:
+    """sprache aus dem Manifest für den Katalog: kennung, maschinell, ablago, geprueft_von (falls da)."""
+    s = m['sprache']
+    return {'kennung': s['kennung'], 'maschinell': bool(s['maschinell']), 'ablago': str(s['ablago']),
+            **({'geprueft_von': str(s['geprueft_von'])} if s.get('geprueft_von') else {})}
 
 
 def ergaenzt_von(m: dict) -> dict:

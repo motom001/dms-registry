@@ -795,6 +795,181 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set, dms_be
     return fehler
 
 
+# Beschriftungen je Sprache (Ablago #728, Registry #135): Form prüft das Schema; hier, was es nicht kann.
+SPRACHKENNUNG = re.compile(r'^[a-z]{2,3}(-[A-Z]{2})?$')
+
+
+def pruefe_beschriftungen(typen: list, sichten: list) -> list[str]:
+    """Schlüssel unter optionen gibt es im Feld (fester Wert); optionen nur bei Auswahlfeldern; Deutsch nur für optionen."""
+    fehler: list[str] = []
+
+    def deutsch(b, wo: str, nur_optionen: bool):
+        de = (b or {}).get('de') if isinstance(b, dict) else None
+        if isinstance(de, dict) and any(k != 'optionen' for k in de):
+            fehler.append(f'{wo}: beschriftungen.de nur für optionen – {", ".join(sorted(k for k in de if k != "optionen"))} '
+                          'steht als deutscher Grundtext schon am Eintrag')
+        elif isinstance(de, dict) and not nur_optionen:
+            fehler.append(f'{wo}: beschriftungen.de gibt es nur an Auswahlfeldern (für optionen)')
+
+    for t in typen:
+        if not isinstance(t, dict):
+            continue
+        s = t.get('schluessel')
+        deutsch(t.get('beschriftungen'), f'mappentypen/{s}', False)
+        for f in t.get('felder', []) or []:
+            if not isinstance(f, dict) or not isinstance(f.get('beschriftungen'), dict):
+                continue
+            wo = f'mappentypen/{s}/{f.get("key")}'
+            optionen = set(f.get('optionen') or [])
+            deutsch(f['beschriftungen'], wo, f.get('typ') == 'auswahl')
+            for spr, teile in f['beschriftungen'].items():
+                opt = (teile or {}).get('optionen') if isinstance(teile, dict) else None
+                if opt is None:
+                    continue
+                if f.get('typ') != 'auswahl':
+                    fehler.append(f'{wo}: beschriftungen.{spr}.optionen gibt es nur bei Auswahlfeldern')
+                    continue
+                for w in opt:
+                    if w not in optionen:
+                        fehler.append(f'{wo}: beschriftungen.{spr}.optionen nennt „{w}“, das es unter optionen nicht gibt')
+        for r in t.get('register', []) or []:
+            if isinstance(r, dict):
+                deutsch(r.get('beschriftungen'), f'mappentypen/{s}/register/{r.get("key")}', False)
+    for v in sichten:
+        if isinstance(v, dict):
+            deutsch(v.get('beschriftungen'), f'sichten/{v.get("schluessel")}', False)
+    return fehler
+
+
+# Sprachpakete (Ablago #731, Registry #116): nur Texte. Dieselben Grenzen wie Ablago (shared/src/sprachpaket.ts).
+DMS_SPRACHPAKETE_AB = (0, 203, 0)
+SPRACHTEXT_MAX = 4000
+SPRACHTEXTE_MAX = 4 * 1024 * 1024
+SPRACHPAKET_DATEI = re.compile(r'^(manifest\.yaml|README(\.[a-z]{2})?\.md|LICENSE(\.[A-Za-z]{1,10})?|NOTICE|CHANGELOG\.md|'
+                               r'tests/[A-Za-z0-9._-]{1,80}\.(ya?ml|json|md)|texte/[a-z][a-z0-9-]{0,40}\.json|beschriftungen/[a-z][a-z0-9_]{1,19}\.yaml)$')
+STEUERZEICHEN = re.compile('[\x00-\x08\x0b-\x1f\x7f\u2028\u2029]')
+# HTML erkennen ohne die Texte von Ablago: Tags bekannter Elemente, Ereignis-Attribute, javascript:. Den genauen Abgleich
+# („spitze Klammern nur, wo das Deutsche sie hat“) macht Ablago beim Installieren und werkzeuge/sprachen.py.
+HTML = re.compile(r'</?(a|abbr|b|body|br|button|code|div|em|embed|form|h[1-6]|head|hr|html|i|iframe|img|input|li|link|meta|object|ol|p|'
+                  r'pre|script|small|span|strong|style|svg|table|td|th|tr|u|ul|video|audio|source|math|base|frame|frameset|template)\b[^>]*>'
+                  r'|\bon[a-z]+\s*=|javascript:', re.I)
+
+
+def sprachpaket_id(kennung: str) -> str:
+    """Paket-Id eines Sprachpakets: sprache_<kennung>, z. B. sprache_fr, sprache_pt_br."""
+    return 'sprache_' + kennung.lower().replace('-', '_')
+
+
+def pruefe_sprachtext(text, wo: str) -> str | None:
+    if not isinstance(text, str):
+        return f'{wo}: kein Text'
+    if len(text) > SPRACHTEXT_MAX:
+        return f'{wo}: länger als {SPRACHTEXT_MAX} Zeichen'
+    if STEUERZEICHEN.search(text):
+        return f'{wo}: enthält Steuerzeichen'
+    if HTML.search(text):
+        return f'{wo}: enthält HTML – Sprachpakete enthalten nur Texte'
+    return None
+
+
+def pruefe_sprachpaket(ordner: Path, m: dict, pakete: Path | None = None) -> list[str]:
+    """Paketart „Sprache“: Manifest, erlaubte Dateien, Texte, Beschriftungen der Standardpakete (gegen pakete/)."""
+    fehler: list[str] = []
+    s = m.get('sprache') if isinstance(m.get('sprache'), dict) else {}
+    kennung = str(s.get('kennung', ''))
+    if 'code' in m:
+        fehler.append('manifest.yaml: ein Sprachpaket enthält keinen Code (code)')
+    if m.get('inhalt'):
+        fehler.append('manifest.yaml: inhalt bleibt bei einem Sprachpaket leer (inhalt: {})')
+    if m.get('abhaengigkeiten') or m.get('ergaenzt'):
+        fehler.append('manifest.yaml: ein Sprachpaket hängt von keinem Paket ab und ergänzt keins')
+    ab = dms_untergrenze(str(m.get('dms', '')))
+    if ab is None or ab < DMS_SPRACHPAKETE_AB:
+        fehler.append('manifest.yaml: Sprachpakete kennt Ablago erst ab 0.203.0 – bitte dms: ">=0.203.0" angeben')
+    if SPRACHKENNUNG.fullmatch(kennung) and ordner.name != 'vorlage' and m.get('id') != sprachpaket_id(kennung):
+        fehler.append(f'manifest.yaml: ein Sprachpaket heißt {sprachpaket_id(kennung)} (sprache_<kennung>)')
+    if 'kategorien' in m and 'sprachen' not in (m.get('kategorien') or []):
+        fehler.append('manifest.yaml: kategorien eines Sprachpakets enthalten sprachen')
+    if 'kuerzel' in m and kennung and str(m['kuerzel']) != kennung.split('-')[0].upper():
+        fehler.append(f'manifest.yaml: kuerzel eines Sprachpakets ist die Sprachkennung in Großbuchstaben ({kennung.split("-")[0].upper()})')
+    texte_gesamt = 0
+    anzahl = 0
+    for datei in sorted(p for p in ordner.rglob('*') if p.is_file()):
+        rel = datei.relative_to(ordner).as_posix()
+        if not SPRACHPAKET_DATEI.fullmatch(rel):
+            fehler.append(f'{rel}: gehört nicht in ein Sprachpaket (nur texte/<bereich>.json, beschriftungen/<paket>.yaml, README, LICENSE, CHANGELOG, tests/)')
+            continue
+        if rel.startswith('texte/'):
+            try:
+                d = json.loads(datei.read_text(encoding='utf-8'))
+            except Exception as e:  # noqa: BLE001
+                fehler.append(f'{rel}: kein gültiges JSON ({e})')
+                continue
+            fehler += schema_fehler(inhalt_validator('sprachtexte'), d, rel)
+            if isinstance(d, dict):
+                for k, v in d.items():
+                    if (f := pruefe_sprachtext(v, f'{rel}: „{k}“')):
+                        fehler.append(f)
+                    elif isinstance(v, str) and v.strip():
+                        anzahl += 1
+                        texte_gesamt += len(k.encode()) + len(v.encode())
+        elif rel.startswith('beschriftungen/'):
+            fehler += pruefe_sprachbeschriftung(datei, rel, pakete or WURZEL / 'pakete')
+    if texte_gesamt > SPRACHTEXTE_MAX:
+        fehler.append(f'texte/: zusammen größer als {SPRACHTEXTE_MAX // 1048576} MB')
+    if not anzahl and not (ordner / 'beschriftungen').is_dir():
+        fehler.append('texte/: ein Sprachpaket braucht Texte oder Beschriftungen')
+    return fehler
+
+
+def pruefe_sprachbeschriftung(datei: Path, rel: str, pakete: Path) -> list[str]:
+    """beschriftungen/<paket>.yaml: Schema, kein HTML, und jeder Schlüssel gibt es im Paket der Registry."""
+    fehler: list[str] = []
+    b = lies_yaml(datei, fehler)
+    if b is None:
+        return fehler
+    fehler += schema_fehler(inhalt_validator('sprachbeschriftung'), b, rel)
+    if not isinstance(b, dict):
+        return fehler
+    pid = datei.stem
+    ziel = pakete / pid / 'manifest.yaml'
+    if not ziel.exists():
+        return fehler + [f'{rel}: Paket „{pid}“ gibt es in der Registry nicht']
+    zm = yaml.safe_load(ziel.read_text(encoding='utf-8')) or {}
+    zi = zm.get('inhalt') or {}
+    typen = {t['schluessel']: t for t in (yaml.safe_load((ziel.parent / zi['mappentypen']).read_text(encoding='utf-8')) or [] if zi.get('mappentypen') else []) if isinstance(t, dict)}
+    sichten = {s['schluessel'] for s in (yaml.safe_load((ziel.parent / zi['sichten']).read_text(encoding='utf-8')) or [] if zi.get('sichten') else []) if isinstance(s, dict)}
+
+    def texte(o, wo):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                texte(v, f'{wo}.{k}')
+        elif isinstance(o, str) and (f := pruefe_sprachtext(o, wo)):
+            fehler.append(f)
+    texte(b, rel)
+    for s, x in (b.get('mappentypen') or {}).items():
+        t = typen.get(s)
+        if not t:
+            fehler.append(f'{rel}: Mappentyp „{s}“ gibt es in {pid} nicht')
+            continue
+        felder = {f.get('key'): f for f in t.get('felder', []) if isinstance(f, dict)}
+        register = {r.get('key') for r in t.get('register', []) if isinstance(r, dict)}
+        for k, f in ((x or {}).get('felder') or {}).items():
+            if k not in felder:
+                fehler.append(f'{rel}: {s}: Feld „{k}“ gibt es in {pid} nicht')
+                continue
+            for w in ((f or {}).get('optionen') or {}):
+                if w not in (felder[k].get('optionen') or []):
+                    fehler.append(f'{rel}: {s}.{k}: Option „{w}“ gibt es in {pid} nicht')
+        for k in ((x or {}).get('register') or {}):
+            if k not in register:
+                fehler.append(f'{rel}: {s}: Register „{k}“ gibt es in {pid} nicht')
+    for k in (b.get('sichten') or {}):
+        if k not in sichten:
+            fehler.append(f'{rel}: Ansicht „{k}“ gibt es in {pid} nicht')
+    return fehler
+
+
 def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler: list[str] = []
     vorlage = ordner.name == 'vorlage'
@@ -920,6 +1095,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
                 fehler.append(f'mappentypen/{s}: Trefferliste nennt unbekanntes Feld „{k}“')
 
     fehler += pruefe_erkennung(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
+    fehler += pruefe_beschriftungen(geladen.get('mappentypen', []) or [], geladen.get('sichten', []) or [])
     fehler += pruefe_aus_text(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
     fehler += pruefe_formate(geladen.get('mappentypen', []) or [], geladen.get('beispiele', []) or [], str(m.get('dms', '')))
 
@@ -965,8 +1141,14 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             fehler.append('tests/erwartung.yaml: Anzahl wortlisten passt nicht')
         if erw.get('automatisierungen', 0) != len(geladen.get('automatisierungen', [])):
             fehler.append('tests/erwartung.yaml: Anzahl automatisierungen passt nicht')
+        if 'sprache' in m and erw.get('sprache') != (m.get('sprache') or {}).get('kennung'):
+            fehler.append('tests/erwartung.yaml: sprache passt nicht zu manifest.yaml (sprache.kennung)')
     elif not vorlage:
         fehler.append('tests/erwartung.yaml fehlt')
+
+    # Sprachpaket (Ablago #731): nur Texte.
+    if 'sprache' in m:
+        fehler += pruefe_sprachpaket(ordner, m)
 
     if isinstance(m.get('code'), dict):
         fehler += pruefe_einstellungen(m['code'], str(m.get('id')), typen, abh, str(m.get('dms', '')))
