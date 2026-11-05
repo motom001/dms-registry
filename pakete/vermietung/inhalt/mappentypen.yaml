@@ -6,171 +6,189 @@
 - schluessel: mietobjekt
   name: Mietobjekt
   beschreibung: Ein vermietetes Haus oder eine vermietete Eigentumswohnung – mit allen Wohnungen, Abrechnungen und Ausgaben.
+  beschriftungen: { en: { name: "Rental property", beschreibung: "A house or owned flat you let – with all units, statements and expenses." } }
   titelVorlage: "{bezeichnung}"
   felder:
-    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Mehrfamilienhaus Lindenstraße 4“" }
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Mehrfamilienhaus Lindenstraße 4“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Apartment building Lindenstraße 4”" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Mehrfamilienhaus": "Apartment building", "Einfamilienhaus": "Detached house", "Eigentumswohnung": "Owned flat", "Gewerbe": "Commercial", "Garage/Stellplatz": "Garage/parking space", "Sonstiges": "Other" } } }
       typ: auswahl
       optionen: [Mehrfamilienhaus, Einfamilienhaus, Eigentumswohnung, Gewerbe, Garage/Stellplatz, Sonstiges]
-    - { key: strasse, label: Straße, typ: text, maxLen: 120 }
-    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
+    - { key: strasse, label: Straße, typ: text, maxLen: 120, beschriftungen: { en: { label: "Street" } }  }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10, beschriftungen: { en: { label: "House number" } }  }
     # Ab 1.1.0 (DMS 0.121): PLZ mit Format, dazu das Land.
-    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land }
-    - { key: ort, label: Ort, typ: text, maxLen: 80 }
-    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
-    - { key: baujahr, label: Baujahr, typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Vierstellig, z. B. 1965" }
-    - { key: einheiten, label: Anzahl Einheiten, typ: zahl, min: 1, nachkomma: 0 }
-    - { key: immobilie, label: Immobilie (Paket Haus), typ: referenz, ziel: "haus:immobilie", verweisart: bezug, hilfe: Falls du Wartungen und Zählerstände des Hauses im Paket Haus führst }
-    - { key: verwalter, label: Hausverwaltung, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Eigentumswohnungen die WEG-Verwaltung }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land, beschriftungen: { en: { label: "Postcode" } }  }
+    - { key: ort, label: Ort, typ: text, maxLen: 80, beschriftungen: { en: { label: "Town" } }  }
+    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland, beschriftungen: { en: { label: "Country" } }  }
+    - { key: baujahr, label: Baujahr, typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Vierstellig, z. B. 1965", beschriftungen: { en: { label: "Year built", hilfe: "Four digits, e.g. 1965" } }  }
+    - { key: einheiten, label: Anzahl Einheiten, typ: zahl, min: 1, nachkomma: 0, beschriftungen: { en: { label: "Number of units" } }  }
+    - { key: immobilie, label: Immobilie (Paket Haus), typ: referenz, ziel: "haus:immobilie", verweisart: bezug, hilfe: Falls du Wartungen und Zählerstände des Hauses im Paket Haus führst, beschriftungen: { en: { label: "Property (House package)", hilfe: "If you keep the building’s maintenance and meter readings in the House package" } }  }
+    - { key: verwalter, label: Hausverwaltung, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Eigentumswohnungen die WEG-Verwaltung, beschriftungen: { en: { label: "Property management", hilfe: "For owned flats, the owners’ association management" } }  }
     # Für die Erkennung (DMS 0.113): Post mit diesem Aktenzeichen gehört zu diesem Mietobjekt.
-    - { key: grundsteuer_az, label: Aktenzeichen Grundsteuer, typ: text, maxLen: 40, hilfe: Steht auf dem Grundsteuerbescheid, erkennung: { art: nummer } }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Kaufvertrag, Grundbuchauszug und Teilungserklärung auf Papier liegen }
+    - { key: grundsteuer_az, label: Aktenzeichen Grundsteuer, typ: text, maxLen: 40, hilfe: Steht auf dem Grundsteuerbescheid, erkennung: { art: nummer }, beschriftungen: { en: { label: "Property tax reference", hilfe: "Shown on the property tax assessment" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Kaufvertrag, Grundbuchauszug und Teilungserklärung auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the purchase contract is" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, einheiten, immobilie, verwalter, grundsteuer_az, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, einheiten, immobilie, verwalter, grundsteuer_az, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - key: wohnungen
       name: Wohnungen
+      beschriftungen: { en: { name: "Units" } }
       art: verknuepfungen
       quellen: [{ typ: wohnung, feld: mietobjekt }]
     - key: abrechnungen
       name: Nebenkosten
+      beschriftungen: { en: { name: "Service charges" } }
       art: verknuepfungen
       quellen: [{ typ: nebenkostenabrechnung, feld: mietobjekt }]
     - key: ausgaben
       name: Ausgaben
+      beschriftungen: { en: { name: "Expenses" } }
       art: verknuepfungen
       quellen: [{ typ: ausgabe, feld: mietobjekt }]
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [bezeichnung, art, ort, einheiten]
 
 - schluessel: wohnung
   name: Wohnung
   beschreibung: Eine vermietbare Einheit in einem Mietobjekt – Wohnung, Gewerbeeinheit, Garage oder Stellplatz.
+  beschriftungen: { en: { name: "Unit", beschreibung: "A lettable unit in a rental property – flat, commercial unit, garage or parking space." } }
   titelVorlage: "{mietobjekt} – {bezeichnung}"
   felder:
-    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true }
-    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 60, hilfe: "z. B. „EG links“ oder „Whg. 3“" }
+    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Rental property" } }  }
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 60, hilfe: "z. B. „EG links“ oder „Whg. 3“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Ground floor left” or “Flat 3”" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Wohnung": "Unit", "Gewerbe": "Commercial", "Garage/Stellplatz": "Garage/parking space", "Sonstiges": "Other" } } }
       typ: auswahl
       optionen: [Wohnung, Gewerbe, Garage/Stellplatz, Sonstiges]
       standard: Wohnung
-    - { key: lage, label: Lage, typ: text, maxLen: 60, hilfe: "z. B. „2. OG rechts“" }
-    - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2 }
-    - { key: zimmer, label: Zimmer, typ: zahl, min: 0, nachkomma: 1 }
-    - { key: zaehler, label: Zähler, typ: langtext, hilfe: "Zählernummern der Wohnung, z. B. „Strom 1ESY…, Wasser kalt …“" }
-    - { key: notiz, label: Notiz, typ: langtext, hilfe: Ausstattung, Schlüssel, Besonderheiten }
+    - { key: lage, label: Lage, typ: text, maxLen: 60, hilfe: "z. B. „2. OG rechts“", beschriftungen: { en: { label: "Location", hilfe: "e.g. “2nd floor right”" } }  }
+    - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2, beschriftungen: { en: { label: "Living space (m²)" } }  }
+    - { key: zimmer, label: Zimmer, typ: zahl, min: 0, nachkomma: 1, beschriftungen: { en: { label: "Rooms" } }  }
+    - { key: zaehler, label: Zähler, typ: langtext, hilfe: "Zählernummern der Wohnung, z. B. „Strom 1ESY…, Wasser kalt …“", beschriftungen: { en: { label: "Meters", hilfe: "Meter numbers of the unit, e.g. “Electricity 1ESY…, cold water …”" } }  }
+    - { key: notiz, label: Notiz, typ: langtext, hilfe: Ausstattung, Schlüssel, Besonderheiten, beschriftungen: { en: { label: "Note", hilfe: "Fittings" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, bezeichnung, art, lage, wohnflaeche, zimmer, zaehler, notiz] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, bezeichnung, art, lage, wohnflaeche, zimmer, zaehler, notiz], beschriftungen: { en: { name: "General" } }  }
     - key: mietvertraege
       name: Mietverträge
+      beschriftungen: { en: { name: "Tenancy agreements" } }
       art: verknuepfungen
       quellen: [{ typ: mietvertrag, feld: wohnung }]
     - key: ausgaben
       name: Ausgaben
+      beschriftungen: { en: { name: "Expenses" } }
       art: verknuepfungen
       quellen: [{ typ: ausgabe, feld: wohnung }]
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [mietobjekt, bezeichnung, lage, wohnflaeche, zimmer]
 
 - schluessel: mietvertrag
   name: Mietvertrag
   beschreibung: Ein Mietverhältnis über eine Wohnung – Mieter, Miete, Kaution und die Fristen dazu.
+  beschriftungen: { en: { name: "Tenancy agreement", beschreibung: "A tenancy for a unit – tenants, rent, deposit and the deadlines that go with it." } }
   titelVorlage: "{wohnung} – {mieter}"
   felder:
-    - { key: wohnung, label: Wohnung, typ: referenz, ziel: wohnung, verweisart: zugehoerigkeit, pflicht: true }
-    - { key: mieter, label: Mieter, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: Alle Personen, die den Vertrag unterschrieben haben }
+    - { key: wohnung, label: Wohnung, typ: referenz, ziel: wohnung, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Unit" } }  }
+    - { key: mieter, label: Mieter, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: Alle Personen, die den Vertrag unterschrieben haben, beschriftungen: { en: { label: "Tenant", hilfe: "All people" } }  }
     - key: stand
       label: Stand
+      beschriftungen: { en: { label: "Reading", optionen: { "läuft": "running", "gekündigt": "terminated", beendet: "ended" } } }
       typ: auswahl
       pflicht: true
       optionen: [läuft, gekündigt, beendet]
       standard: läuft
-    - { key: beginn, label: Beginn, typ: datum, pflicht: true }
-    - { key: gekuendigt_am, label: Gekündigt am, typ: datum, max: heute }
+    - { key: beginn, label: Beginn, typ: datum, pflicht: true, beschriftungen: { en: { label: "Start" } }  }
+    - { key: gekuendigt_am, label: Gekündigt am, typ: datum, max: heute, beschriftungen: { en: { label: "Closed on" } }  }
     - key: ende
       label: Ende
+      beschriftungen: { en: { label: "End", hilfe: "For fixed-term or terminated agreements. The included automation reminds you 60 days before – time for the handover and a new tenant." } }
       typ: datum
       hilfe: Bei befristeten oder gekündigten Verträgen. Die mitgelieferte Automatisierung erinnert 60 Tage vorher – Zeit für Übergabe und Nachmieter.
       frist: { vorlauf: 60, einheit: tage }
     - key: mietart
       label: Mietart
+      beschriftungen: { en: { label: "Rent type", optionen: { "Festmiete": "Fixed rent", "Staffelmiete": "Graduated rent", "Indexmiete": "Index-linked rent" } } }
       typ: auswahl
       optionen: [Festmiete, Staffelmiete, Indexmiete]
       standard: Festmiete
-    - { key: kaltmiete, label: Kaltmiete (monatlich), typ: betrag, waehrung: EUR, min: 0 }
-    - { key: vorauszahlung, label: Nebenkosten-Vorauszahlung (monatlich), typ: betrag, waehrung: EUR, min: 0 }
-    - { key: sonstiges, label: Sonstiges (monatlich), typ: betrag, waehrung: EUR, min: 0, hilfe: Stellplatz, Garage, Möblierung }
+    - { key: kaltmiete, label: Kaltmiete (monatlich), typ: betrag, waehrung: EUR, min: 0, beschriftungen: { en: { label: "Basic rent (monthly)" } }  }
+    - { key: vorauszahlung, label: Nebenkosten-Vorauszahlung (monatlich), typ: betrag, waehrung: EUR, min: 0, beschriftungen: { en: { label: "Service charge advance (monthly)" } }  }
+    - { key: sonstiges, label: Sonstiges (monatlich), typ: betrag, waehrung: EUR, min: 0, hilfe: Stellplatz, Garage, Möblierung, beschriftungen: { en: { label: "Other (monthly)", hilfe: "Parking space" } }  }
     - key: mieterhoehung_ab
       label: Nächste Mieterhöhung möglich ab
+      beschriftungen: { en: { label: "Next rent increase possible from", hilfe: "Depending on the agreement, the next step, the next index adjustment or the earliest date for an increase. The included automation reminds you 30 days before." } }
       typ: datum
       hilfe: Je nach Vertrag nächste Staffel, nächste Indexanpassung oder frühester Termin für eine Erhöhung. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
-    - { key: kaution, label: Kaution, typ: betrag, waehrung: EUR, min: 0 }
-    - { key: kaution_konto, label: Kaution angelegt bei, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank des Kautionskontos }
-    - { key: kaution_zurueck_am, label: Kaution zurückgezahlt am, typ: datum, max: heute }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der unterschriebene Mietvertrag und das Übergabeprotokoll liegen }
+    - { key: kaution, label: Kaution, typ: betrag, waehrung: EUR, min: 0, beschriftungen: { en: { label: "Deposit" } }  }
+    - { key: kaution_konto, label: Kaution angelegt bei, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank des Kautionskontos, beschriftungen: { en: { label: "Deposit held at", hilfe: "Bank of the deposit account" } }  }
+    - { key: kaution_zurueck_am, label: Kaution zurückgezahlt am, typ: datum, max: heute, beschriftungen: { en: { label: "Deposit returned on" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der unterschriebene Mietvertrag und das Übergabeprotokoll liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the signed tenancy agreement and the handover record are kept" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [wohnung, mieter, stand, beginn, gekuendigt_am, ende, verbleib_original] }
-    - { key: miete, name: Miete, art: felder, felder: [mietart, kaltmiete, vorauszahlung, sonstiges, mieterhoehung_ab] }
-    - { key: kaution, name: Kaution, art: felder, felder: [kaution, kaution_konto, kaution_zurueck_am] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [wohnung, mieter, stand, beginn, gekuendigt_am, ende, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: miete, name: Miete, art: felder, felder: [mietart, kaltmiete, vorauszahlung, sonstiges, mieterhoehung_ab], beschriftungen: { en: { name: "Rent" } }  }
+    - { key: kaution, name: Kaution, art: felder, felder: [kaution, kaution_konto, kaution_zurueck_am], beschriftungen: { en: { name: "Deposit" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [wohnung, mieter, stand, beginn, kaltmiete, vorauszahlung]
 
 - schluessel: nebenkostenabrechnung
   name: Nebenkostenabrechnung
   beschreibung: Die Betriebskostenabrechnung eines Jahres für ein Mietobjekt – mit Frist für den Versand an die Mieter.
+  beschriftungen: { en: { name: "Service charge statement", beschreibung: "One year’s operating cost statement for a rental property – with the deadline for sending it to the tenants." } }
   titelVorlage: "Nebenkosten {jahr} – {mietobjekt}"
   felder:
-    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true }
-    - { key: jahr, label: Abrechnungsjahr, typ: text, pflicht: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025" }
-    - { key: von, label: Zeitraum von, typ: datum }
-    - { key: bis, label: Zeitraum bis, typ: datum }
+    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Rental property" } }  }
+    - { key: jahr, label: Abrechnungsjahr, typ: text, pflicht: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025", beschriftungen: { en: { label: "Statement year", hilfe: "Four digits, e.g. 2025" } }  }
+    - { key: von, label: Zeitraum von, typ: datum, beschriftungen: { en: { label: "Period from" } }  }
+    - { key: bis, label: Zeitraum bis, typ: datum, beschriftungen: { en: { label: "Period until" } }  }
     - key: versenden_bis
       label: Versenden bis
+      beschriftungen: { en: { label: "Send by", hilfe: "End of the statement period plus twelve months – after that, back claims are usually excluded. The included automation reminds you 60 days before." } }
       typ: datum
       hilfe: Ende des Abrechnungszeitraums plus zwölf Monate – danach sind Nachforderungen in der Regel ausgeschlossen. Die mitgelieferte Automatisierung erinnert 60 Tage vorher.
       frist: { vorlauf: 60, einheit: tage }
-    - { key: versendet_am, label: Versendet am, typ: datum, max: heute }
-    - { key: kosten, label: Umlagefähige Kosten gesamt, typ: betrag, waehrung: EUR }
-    - { key: ergebnis, label: Nachzahlungen/Guthaben gesamt, typ: betrag, waehrung: EUR, hilfe: Summe über alle Mieter – Nachzahlungen positiv, Guthaben negativ. Die Abrechnung je Wohnung liegt als Dokument dabei. }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "haushalt:steuerjahr", verweisart: bezug, hilfe: Für die Anlage V }
+    - { key: versendet_am, label: Versendet am, typ: datum, max: heute, beschriftungen: { en: { label: "Sent on" } }  }
+    - { key: kosten, label: Umlagefähige Kosten gesamt, typ: betrag, waehrung: EUR, beschriftungen: { en: { label: "Total rechargeable costs" } }  }
+    - { key: ergebnis, label: Nachzahlungen/Guthaben gesamt, typ: betrag, waehrung: EUR, hilfe: Summe über alle Mieter – Nachzahlungen positiv, Guthaben negativ. Die Abrechnung je Wohnung liegt als Dokument dabei., beschriftungen: { en: { label: "Total back payments/credits", hilfe: "Sum over all tenants – back payments positive" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "haushalt:steuerjahr", verweisart: bezug, hilfe: Für die Anlage V, beschriftungen: { en: { label: "Tax year", hilfe: "For the rental income form (Anlage V)" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, jahr, von, bis, versenden_bis, versendet_am, kosten, ergebnis, steuerjahr] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, jahr, von, bis, versenden_bis, versendet_am, kosten, ergebnis, steuerjahr], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [mietobjekt, jahr, versenden_bis, versendet_am, ergebnis]
 
 - schluessel: ausgabe
   name: Ausgabe Mietobjekt
   beschreibung: Eine Rechnung oder Kosten zu einem Mietobjekt – Handwerker, Versicherung, Grundsteuer, Verwaltung – für die Anlage V und die Nebenkostenabrechnung.
+  beschriftungen: { en: { name: "Rental property expense", beschreibung: "An invoice or cost for a rental property – tradespeople, insurance, property tax, management – for the Anlage V and the service charge statement." } }
   titelVorlage: "{art} {datum} – {mietobjekt}"
   felder:
-    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true }
-    - { key: wohnung, label: Wohnung, typ: referenz, ziel: wohnung, verweisart: bezug, hilfe: Nur wenn die Ausgabe eine einzelne Wohnung betrifft }
+    - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Rental property" } }  }
+    - { key: wohnung, label: Wohnung, typ: referenz, ziel: wohnung, verweisart: bezug, hilfe: Nur wenn die Ausgabe eine einzelne Wohnung betrifft, beschriftungen: { en: { label: "Unit", hilfe: "Only if the expense concerns a single unit" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Reparatur/Instandhaltung": "Repair/upkeep", "Modernisierung": "Modernisation", "Versicherung": "Insurance", "Grundsteuer": "Property tax", "Wasser/Abwasser": "Water/sewage", "Müll": "Waste", "Strom Allgemein": "Communal electricity", "Heizung": "Heating", "Hausmeister/Reinigung": "Caretaker/cleaning", "Verwaltung": "Management", "Finanzierung/Zinsen": "Financing/interest", "Sonstiges": "Other" } } }
       typ: auswahl
       pflicht: true
       optionen: [Reparatur/Instandhaltung, Modernisierung, Versicherung, Grundsteuer, Wasser/Abwasser, Müll, Strom Allgemein, Heizung, Hausmeister/Reinigung, Verwaltung, Finanzierung/Zinsen, Sonstiges]
     # Für die Erkennung: „Aus Dokument ausfüllen“ nimmt Datum, Betrag und Firma aus der Rechnung.
-    - { key: datum, label: Rechnungsdatum, typ: datum, pflicht: true, erkennung: {} }
-    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, pflicht: true, erkennung: {} }
-    - { key: umlagefaehig, label: Auf Mieter umlegbar, typ: janein, hilfe: Gehört in die Nebenkostenabrechnung }
-    - { key: firma, label: Firma, typ: referenz, ziel: "basis:organisation", verweisart: bezug, erkennung: {} }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "haushalt:steuerjahr", verweisart: bezug, hilfe: Für die Anlage V }
-    - { key: notiz, label: Notiz, typ: langtext }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
+    - { key: datum, label: Rechnungsdatum, typ: datum, pflicht: true, erkennung: {}, beschriftungen: { en: { label: "Invoice date" } }  }
+    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, pflicht: true, erkennung: {}, beschriftungen: { en: { label: "Amount" } }  }
+    - { key: umlagefaehig, label: Auf Mieter umlegbar, typ: janein, hilfe: Gehört in die Nebenkostenabrechnung, beschriftungen: { en: { label: "Rechargeable to tenants", hilfe: "Belongs in the service charge statement" } }  }
+    - { key: firma, label: Firma, typ: referenz, ziel: "basis:organisation", verweisart: bezug, erkennung: {}, beschriftungen: { en: { label: "Company" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "haushalt:steuerjahr", verweisart: bezug, hilfe: Für die Anlage V, beschriftungen: { en: { label: "Tax year", hilfe: "For the rental income form (Anlage V)" } }  }
+    - { key: notiz, label: Notiz, typ: langtext, beschriftungen: { en: { label: "Note" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, wohnung, art, datum, betrag, umlagefaehig, firma, steuerjahr, notiz, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, wohnung, art, datum, betrag, umlagefaehig, firma, steuerjahr, notiz, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [datum, mietobjekt, art, betrag, umlagefaehig, firma]

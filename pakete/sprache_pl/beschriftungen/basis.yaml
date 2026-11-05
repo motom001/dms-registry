@@ -1,0 +1,99 @@
+# Beschriftungen des Pakets Basis (maschinell übersetzt aus dem Englischen, Registry #116).
+# Schlüssel wie in pakete/basis/inhalt/*.yaml; Ablago ergänzt sie nur, wo noch nichts in dieser Sprache steht.
+mappentypen:
+  organisation:
+    name: "Organizacja"
+    beschreibung: "Firma, urząd, gabinet lekarski, ubezpieczyciel, bank, stowarzyszenie lub inna instytucja, z którą masz do czynienia."
+    felder:
+      name: { label: "Nazwa" }
+      kuerzel: { label: "Skrót", hilfe: "Krótka nazwa, np. „SWM” dla Stadtwerke Musterstadt" }
+      art: { label: "Rodzaj", optionen: { "Lieferant": "Dostawca", "Kunde": "Klient", "Bank": "Bank", "Versicherung": "Ubezpieczenie", "Behörde": "Urząd", "Arbeitgeber": "Pracodawca", "Arzt/Praxis": "Lekarz/gabinet", "Handwerker": "Fachowiec", "Vermieter": "Wynajmujący", "Verein": "Stowarzyszenie", "Versorger": "Dostawca mediów", "Sonstige": "Inne" } }
+      kundennummer: { label: "Numer klienta", hilfe: "Twój własny numer w tej organizacji (numer klienta, członka, ubezpieczonego lub pacjenta)" }
+      iban: { label: "IBAN", hilfe: "Konto organizacji, np. z nagłówka pisma lub z faktury (DE89 3704 0044 0532 0130 00)" }
+      ustid: { label: "Numer VAT", hilfe: "np. DE123456789 – widnieje na fakturach firm" }
+      beschreibung: { label: "Opis" }
+      telefon: { label: "Telefon" }
+      fax: { label: "Faks" }
+      email: { label: "E-mail", hilfe: "np. kontakt@example.org" }
+      internet: { label: "Strona internetowa", hilfe: "np. https://www.example.org" }
+      strasse: { label: "Ulica" }
+      hausnummer: { label: "Numer domu" }
+      plz: { label: "Kod pocztowy", hilfe: "W Niemczech pięć cyfr" }
+      ort: { label: "Miejscowość" }
+      land: { label: "Kraj" }
+    register:
+      stammdaten: { name: "Dane podstawowe" }
+      kontakt: { name: "Kontakt" }
+      anschrift: { name: "Adres" }
+      niederlassungen: { name: "Oddziały" }
+      ansprechpartner: { name: "Osoby kontaktowe" }
+      dokumente: { name: "Dokumenty" }
+      protokoll: { name: "Historia" }
+  niederlassung:
+    name: "Oddział"
+    beschreibung: "Filia, oddział, gabinet lub placówka zamiejscowa organizacji – z własnym adresem i telefonem."
+    felder:
+      organisation: { label: "Organizacja" }
+      name: { label: "Nazwa", hilfe: "np. „Filia Rynek” albo „Gabinet Północ”" }
+      art: { label: "Rodzaj", hilfe: "np. filia, oddział, gabinet", optionen: { "Filiale": "Filia", "Zweigstelle": "Oddział", "Geschäftsstelle": "Biuro obsługi", "Praxis": "Gabinet", "Außenstelle": "Placówka zamiejscowa", "Werk/Lager": "Zakład/magazyn", "Büro": "Biuro", "Sonstige": "Inne" } }
+      nummer: { label: "Numer", hilfe: "Numer filii lub placówki, np. numer zakładu" }
+      oeffnungszeiten: { label: "Godziny otwarcia" }
+      beschreibung: { label: "Opis" }
+      telefon: { label: "Telefon" }
+      fax: { label: "Faks" }
+      email: { label: "E-mail", hilfe: "np. filia@example.org" }
+      internet: { label: "Strona internetowa" }
+      strasse: { label: "Ulica" }
+      hausnummer: { label: "Numer domu" }
+      plz: { label: "Kod pocztowy" }
+      ort: { label: "Miejscowość" }
+      land: { label: "Kraj" }
+    register:
+      allgemein: { name: "Ogólne" }
+      kontakt: { name: "Kontakt" }
+      anschrift: { name: "Adres" }
+      ansprechpartner: { name: "Osoby kontaktowe" }
+      verknuepfungen: { name: "Powiązania" }
+      dokumente: { name: "Dokumenty" }
+      historie: { name: "Historia" }
+  person:
+    name: "Osoba"
+    beschreibung: "Ktoś, z kim masz do czynienia – osoba kontaktowa, lekarka, wynajmujący, krewni. Osoba nie jest użytkownikiem Ablago i nie może się zalogować."
+    felder:
+      anrede: { label: "Zwrot grzecznościowy", optionen: { "Frau": "Pani", "Herr": "Pan", "divers/keine": "inne/brak" } }
+      titel: { label: "Tytuł", hilfe: "np. dr" }
+      vorname: { label: "Imię" }
+      nachname: { label: "Nazwisko" }
+      beziehung: { label: "Relacja", optionen: { "Familie": "Rodzina", "Freund/in": "Przyjaciel/przyjaciółka", "Ansprechpartner": "Osoby kontaktowe", "Arzt/Ärztin": "Lekarz/lekarka", "Handwerker": "Fachowiec", "Mieter/in": "Najemca", "Vermieter/in": "Wynajmujący/wynajmująca", "Nachbar/in": "Sąsiad/sąsiadka", "Sonstige": "Inne" } }
+      geburtstag: { label: "Urodziny", hilfe: "Jeśli chcesz przypomnienie, utwórz w warsztacie w Automatyzacjach coroczne przypomnienie „Data osiągnięta”." }
+      beschreibung: { label: "Opis" }
+      organisation: { label: "Organizacja", hilfe: "Gdzie ta osoba pracuje albo w jakiej sprawie jest osobą kontaktową" }
+      niederlassung: { label: "Oddział" }
+      funktion: { label: "Funkcja", hilfe: "np. doradczyni klienta" }
+      abteilung: { label: "Dział" }
+      telefon: { label: "Telefon" }
+      mobil: { label: "Komórka" }
+      email: { label: "E-mail", hilfe: "np. imie@example.org" }
+      strasse: { label: "Ulica" }
+      hausnummer: { label: "Numer domu" }
+      plz: { label: "Kod pocztowy" }
+      ort: { label: "Miejscowość" }
+      land: { label: "Kraj" }
+    register:
+      stammdaten: { name: "Dane podstawowe" }
+      arbeit: { name: "Praca" }
+      kontakt: { name: "Kontakt" }
+      anschrift: { name: "Adres" }
+      verknuepfungen: { name: "Powiązania" }
+      dokumente: { name: "Dokumenty" }
+      historie: { name: "Historia" }
+sichten:
+  organisationen: { name: "Organizacje", beschreibung: "Wszystkie organizacje" }
+  versicherungen: { name: "Ubezpieczenia" }
+  banken: { name: "Banki" }
+  behoerden: { name: "Urzędy" }
+  aerzte: { name: "Lekarze i gabinety" }
+  niederlassungen: { name: "Oddziały" }
+  personen: { name: "Osoby", beschreibung: "Kontakty – nie są użytkownikami Ablago" }
+  familie: { name: "Rodzina i przyjaciele" }
+  ansprechpartner: { name: "Osoby kontaktowe" }

@@ -2,7 +2,7 @@
 schema: 1
 id: fahrzeuge
 name: Fahrzeuge
-version: 1.4.0
+version: 1.5.0
 beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.
 autor:
   name: Thomas Meissner

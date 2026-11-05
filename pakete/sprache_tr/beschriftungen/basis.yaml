@@ -1,0 +1,99 @@
+# Beschriftungen des Pakets Basis (maschinell übersetzt aus dem Englischen, Registry #116).
+# Schlüssel wie in pakete/basis/inhalt/*.yaml; Ablago ergänzt sie nur, wo noch nichts in dieser Sprache steht.
+mappentypen:
+  organisation:
+    name: "Kuruluş"
+    beschreibung: "Şirket, resmî kurum, muayenehane, sigorta, banka, dernek ya da muhatap olduğun başka bir kuruluş."
+    felder:
+      name: { label: "Ad" }
+      kuerzel: { label: "Kısaltma", hilfe: "Kısa ad, ör. Stadtwerke Musterstadt için „SWM”" }
+      art: { label: "Tür", optionen: { "Lieferant": "Tedarikçi", "Kunde": "Müşteri", "Bank": "Banka", "Versicherung": "Sigorta", "Behörde": "Resmî kurum", "Arbeitgeber": "İşveren", "Arzt/Praxis": "Doktor/muayenehane", "Handwerker": "Usta", "Vermieter": "Ev sahibi", "Verein": "Dernek", "Versorger": "Altyapı hizmeti", "Sonstige": "Diğer" } }
+      kundennummer: { label: "Müşteri numarası", hilfe: "Bu kuruluştaki kendi numaran (müşteri, üye, sigortalı ya da hasta numarası)" }
+      iban: { label: "IBAN", hilfe: "Kuruluşun hesabı, ör. antetli kâğıttan ya da faturadan (DE89 3704 0044 0532 0130 00)" }
+      ustid: { label: "KDV numarası", hilfe: "ör. DE123456789 – şirketlerin faturalarında yazar" }
+      beschreibung: { label: "Açıklama" }
+      telefon: { label: "Telefon" }
+      fax: { label: "Faks" }
+      email: { label: "E-posta", hilfe: "ör. iletisim@example.org" }
+      internet: { label: "Web sitesi", hilfe: "ör. https://www.example.org" }
+      strasse: { label: "Sokak" }
+      hausnummer: { label: "Kapı numarası" }
+      plz: { label: "Posta kodu", hilfe: "Almanya’da beş haneli" }
+      ort: { label: "Şehir" }
+      land: { label: "Ülke" }
+    register:
+      stammdaten: { name: "Temel bilgiler" }
+      kontakt: { name: "İletişim" }
+      anschrift: { name: "Adres" }
+      niederlassungen: { name: "Şubeler" }
+      ansprechpartner: { name: "İlgili kişiler" }
+      dokumente: { name: "Belgeler" }
+      protokoll: { name: "Geçmiş" }
+  niederlassung:
+    name: "Şube"
+    beschreibung: "Bir kuruluşun şubesi, bürosu, muayenehanesi ya da dış birimi – kendi adresi ve telefonuyla."
+    felder:
+      organisation: { label: "Kuruluş" }
+      name: { label: "Ad", hilfe: "ör. „Pazar Yeri Şubesi” ya da „Kuzey Muayenehanesi”" }
+      art: { label: "Tür", hilfe: "ör. şube, büro, muayenehane", optionen: { "Filiale": "Şube", "Zweigstelle": "Büro", "Geschäftsstelle": "İdari büro", "Praxis": "Muayenehane", "Außenstelle": "Dış birim", "Werk/Lager": "Fabrika/depo", "Büro": "Ofis", "Sonstige": "Diğer" } }
+      nummer: { label: "Numara", hilfe: "Şube ya da yer numarası, ör. işyeri numarası" }
+      oeffnungszeiten: { label: "Çalışma saatleri" }
+      beschreibung: { label: "Açıklama" }
+      telefon: { label: "Telefon" }
+      fax: { label: "Faks" }
+      email: { label: "E-posta", hilfe: "ör. sube@example.org" }
+      internet: { label: "Web sitesi" }
+      strasse: { label: "Sokak" }
+      hausnummer: { label: "Kapı numarası" }
+      plz: { label: "Posta kodu" }
+      ort: { label: "Şehir" }
+      land: { label: "Ülke" }
+    register:
+      allgemein: { name: "Genel" }
+      kontakt: { name: "İletişim" }
+      anschrift: { name: "Adres" }
+      ansprechpartner: { name: "İlgili kişiler" }
+      verknuepfungen: { name: "Bağlantılar" }
+      dokumente: { name: "Belgeler" }
+      historie: { name: "Geçmiş" }
+  person:
+    name: "Kişi"
+    beschreibung: "Muhatap olduğun biri – ilgili kişi, doktor, ev sahibi, akraba. Bir kişi Ablago kullanıcısı değildir ve giriş yapamaz."
+    felder:
+      anrede: { label: "Hitap", optionen: { "Frau": "Hanım", "Herr": "Bey", "divers/keine": "farklı/yok" } }
+      titel: { label: "Unvan", hilfe: "ör. Dr." }
+      vorname: { label: "Ad" }
+      nachname: { label: "Soyad" }
+      beziehung: { label: "İlişki", optionen: { "Familie": "Aile", "Freund/in": "Arkadaş", "Ansprechpartner": "İlgili kişiler", "Arzt/Ärztin": "Doktor", "Handwerker": "Usta", "Mieter/in": "Kiracı", "Vermieter/in": "Ev sahibi", "Nachbar/in": "Komşu", "Sonstige": "Diğer" } }
+      geburtstag: { label: "Doğum günü", hilfe: "Hatırlatma istersen tezgâhta Otomasyonlar altında yıllık bir „Tarih geldi” hatırlatması oluştur." }
+      beschreibung: { label: "Açıklama" }
+      organisation: { label: "Kuruluş", hilfe: "Kişinin nerede çalıştığı ya da neyin ilgili kişisi olduğu" }
+      niederlassung: { label: "Şube" }
+      funktion: { label: "Görev", hilfe: "ör. müşteri danışmanı" }
+      abteilung: { label: "Bölüm" }
+      telefon: { label: "Telefon" }
+      mobil: { label: "Cep telefonu" }
+      email: { label: "E-posta", hilfe: "ör. ad@example.org" }
+      strasse: { label: "Sokak" }
+      hausnummer: { label: "Kapı numarası" }
+      plz: { label: "Posta kodu" }
+      ort: { label: "Şehir" }
+      land: { label: "Ülke" }
+    register:
+      stammdaten: { name: "Temel bilgiler" }
+      arbeit: { name: "İş" }
+      kontakt: { name: "İletişim" }
+      anschrift: { name: "Adres" }
+      verknuepfungen: { name: "Bağlantılar" }
+      dokumente: { name: "Belgeler" }
+      historie: { name: "Geçmiş" }
+sichten:
+  organisationen: { name: "Kuruluşlar", beschreibung: "Tüm kuruluşlar" }
+  versicherungen: { name: "Sigortalar" }
+  banken: { name: "Bankalar" }
+  behoerden: { name: "Resmî kurumlar" }
+  aerzte: { name: "Doktorlar ve muayenehaneler" }
+  niederlassungen: { name: "Şubeler" }
+  personen: { name: "Kişiler", beschreibung: "Kişiler – Ablago kullanıcısı değil" }
+  familie: { name: "Aile ve arkadaşlar" }
+  ansprechpartner: { name: "İlgili kişiler" }

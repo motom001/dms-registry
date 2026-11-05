@@ -1,0 +1,99 @@
+# Beschriftungen des Pakets Basis (maschinell übersetzt aus dem Englischen, Registry #116).
+# Schlüssel wie in pakete/basis/inhalt/*.yaml; Ablago ergänzt sie nur, wo noch nichts in dieser Sprache steht.
+mappentypen:
+  organisation:
+    name: "Organisatie"
+    beschreibung: "Bedrijf, overheidsinstantie, huisartsenpraktijk, verzekeraar, bank, vereniging of een andere instelling waarmee je te maken hebt."
+    felder:
+      name: { label: "Naam" }
+      kuerzel: { label: "Afkorting", hilfe: "Korte naam, bijv. „SWM” voor Stadtwerke Musterstadt" }
+      art: { label: "Soort", optionen: { "Lieferant": "Leverancier", "Kunde": "Klant", "Bank": "Bank", "Versicherung": "Verzekering", "Behörde": "Overheidsinstantie", "Arbeitgeber": "Werkgever", "Arzt/Praxis": "Arts/praktijk", "Handwerker": "Vakman", "Vermieter": "Verhuurder", "Verein": "Vereniging", "Versorger": "Nutsbedrijf", "Sonstige": "Overig" } }
+      kundennummer: { label: "Klantnummer", hilfe: "Je eigen nummer bij deze organisatie (klant-, lid-, verzekerden- of patiëntnummer)" }
+      iban: { label: "IBAN", hilfe: "Rekening van de organisatie, bijv. uit het briefhoofd of de factuur (DE89 3704 0044 0532 0130 00)" }
+      ustid: { label: "Btw-nummer", hilfe: "bijv. DE123456789 – staat op facturen van bedrijven" }
+      beschreibung: { label: "Beschrijving" }
+      telefon: { label: "Telefoon" }
+      fax: { label: "Fax" }
+      email: { label: "E-mail", hilfe: "bijv. contact@example.org" }
+      internet: { label: "Website", hilfe: "bijv. https://www.example.org" }
+      strasse: { label: "Straat" }
+      hausnummer: { label: "Huisnummer" }
+      plz: { label: "Postcode", hilfe: "In Duitsland vijf cijfers" }
+      ort: { label: "Plaats" }
+      land: { label: "Land" }
+    register:
+      stammdaten: { name: "Basisgegevens" }
+      kontakt: { name: "Contact" }
+      anschrift: { name: "Adres" }
+      niederlassungen: { name: "Vestigingen" }
+      ansprechpartner: { name: "Contactpersonen" }
+      dokumente: { name: "Documenten" }
+      protokoll: { name: "Geschiedenis" }
+  niederlassung:
+    name: "Vestiging"
+    beschreibung: "Filiaal, bijkantoor, praktijk of buitenpost van een organisatie – met een eigen adres en een eigen telefoon."
+    felder:
+      organisation: { label: "Organisatie" }
+      name: { label: "Naam", hilfe: "bijv. „Filiaal Markt” of „Praktijk Noord”" }
+      art: { label: "Soort", hilfe: "bijv. filiaal, bijkantoor, praktijk", optionen: { "Filiale": "Filiaal", "Zweigstelle": "Bijkantoor", "Geschäftsstelle": "Kantoor", "Praxis": "Praktijk", "Außenstelle": "Buitenpost", "Werk/Lager": "Fabriek/magazijn", "Büro": "Kantoor", "Sonstige": "Overig" } }
+      nummer: { label: "Nummer", hilfe: "Filiaal- of locatienummer, bijv. vestigingsnummer" }
+      oeffnungszeiten: { label: "Openingstijden" }
+      beschreibung: { label: "Beschrijving" }
+      telefon: { label: "Telefoon" }
+      fax: { label: "Fax" }
+      email: { label: "E-mail", hilfe: "bijv. filiaal@example.org" }
+      internet: { label: "Website" }
+      strasse: { label: "Straat" }
+      hausnummer: { label: "Huisnummer" }
+      plz: { label: "Postcode" }
+      ort: { label: "Plaats" }
+      land: { label: "Land" }
+    register:
+      allgemein: { name: "Algemeen" }
+      kontakt: { name: "Contact" }
+      anschrift: { name: "Adres" }
+      ansprechpartner: { name: "Contactpersonen" }
+      verknuepfungen: { name: "Koppelingen" }
+      dokumente: { name: "Documenten" }
+      historie: { name: "Geschiedenis" }
+  person:
+    name: "Persoon"
+    beschreibung: "Iemand met wie je te maken hebt – contactpersoon, arts, verhuurder, familie. Een persoon is geen gebruiker van Ablago en kan niet inloggen."
+    felder:
+      anrede: { label: "Aanhef", optionen: { "Frau": "Mevrouw", "Herr": "Meneer", "divers/keine": "divers/geen" } }
+      titel: { label: "Titel", hilfe: "bijv. dr." }
+      vorname: { label: "Voornaam" }
+      nachname: { label: "Achternaam" }
+      beziehung: { label: "Relatie", optionen: { "Familie": "Familie", "Freund/in": "Vriend/vriendin", "Ansprechpartner": "Contactpersonen", "Arzt/Ärztin": "Arts", "Handwerker": "Vakman", "Mieter/in": "Huurder", "Vermieter/in": "Verhuurder", "Nachbar/in": "Buurman/buurvrouw", "Sonstige": "Overig" } }
+      geburtstag: { label: "Verjaardag", hilfe: "Wil je een herinnering? Maak dan in de werkbank onder Automatiseringen een jaarlijkse herinnering „Datum bereikt” aan." }
+      beschreibung: { label: "Beschrijving" }
+      organisation: { label: "Organisatie", hilfe: "Waar de persoon werkt of waarvoor hij of zij contactpersoon is" }
+      niederlassung: { label: "Vestiging" }
+      funktion: { label: "Functie", hilfe: "bijv. klantadviseur" }
+      abteilung: { label: "Afdeling" }
+      telefon: { label: "Telefoon" }
+      mobil: { label: "Mobiel" }
+      email: { label: "E-mail", hilfe: "bijv. naam@example.org" }
+      strasse: { label: "Straat" }
+      hausnummer: { label: "Huisnummer" }
+      plz: { label: "Postcode" }
+      ort: { label: "Plaats" }
+      land: { label: "Land" }
+    register:
+      stammdaten: { name: "Basisgegevens" }
+      arbeit: { name: "Werk" }
+      kontakt: { name: "Contact" }
+      anschrift: { name: "Adres" }
+      verknuepfungen: { name: "Koppelingen" }
+      dokumente: { name: "Documenten" }
+      historie: { name: "Geschiedenis" }
+sichten:
+  organisationen: { name: "Organisaties", beschreibung: "Alle organisaties" }
+  versicherungen: { name: "Verzekeringen" }
+  banken: { name: "Banken" }
+  behoerden: { name: "Overheidsinstanties" }
+  aerzte: { name: "Artsen en praktijken" }
+  niederlassungen: { name: "Vestigingen" }
+  personen: { name: "Personen", beschreibung: "Contacten – geen gebruikers van Ablago" }
+  familie: { name: "Familie en vrienden" }
+  ansprechpartner: { name: "Contactpersonen" }

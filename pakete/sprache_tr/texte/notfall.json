@@ -1,0 +1,10 @@
+{
+  "notfall.oeffne-diesen-link-bis": "Bu bağlantıyı {bis} tarihinden önce tarayıcında aç ve kendi parolanı belirle:",
+  "notfall.der-link-gilt-nur": "Bağlantı yalnızca bir kez çalışır. Ablago bu dosyayı 15 dakika sonra kendiliğinden siler.",
+  "notfall.benenne-den-notfall-admin": "Ardından acil durum yöneticisini tezgâhta yeniden adlandır ya da devre dışı bırak.",
+  "notfall.ablago-notfallzugang-angelegt": "Ablago: acil durum erişimi oluşturuldu",
+  "notfall.auf-dem-nas-wurde": "NAS’ta bir RESCUE dosyası oluşturuldu. Ablago bunun üzerine „Tam yönetim” yetkisiyle „{name}” kullanıcısını oluşturdu; giriş bağlantısı yalnızca bu dosyada ve {bis} tarihine kadar geçerli.\n\n",
+  "notfall.warst-du-das-nicht": "{wert}Bunu sen yapmadıysan kullanıcıyı hemen tezgâhta „Kullanıcılar” altında devre dışı bırak ve NAS’a kimin eriştiğini kontrol et.",
+  "rescue.fuer": "„{name}” için {kennung}",
+  "rescue.erstellt": "Oluşturuldu: {zeit}"
+}

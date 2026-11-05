@@ -1,0 +1,99 @@
+# Beschriftungen des Pakets Basis (maschinell übersetzt aus dem Englischen, Registry #116).
+# Schlüssel wie in pakete/basis/inhalt/*.yaml; Ablago ergänzt sie nur, wo noch nichts in dieser Sprache steht.
+mappentypen:
+  organisation:
+    name: "Organizzazione"
+    beschreibung: "Azienda, ente pubblico, studio medico, assicurazione, banca, associazione o altro ente con cui hai a che fare."
+    felder:
+      name: { label: "Nome" }
+      kuerzel: { label: "Sigla", hilfe: "Nome breve, ad es. «SWM» per Stadtwerke Musterstadt" }
+      art: { label: "Tipo", optionen: { "Lieferant": "Fornitore", "Kunde": "Cliente", "Bank": "Banca", "Versicherung": "Assicurazione", "Behörde": "Ente pubblico", "Arbeitgeber": "Datore di lavoro", "Arzt/Praxis": "Medico/studio", "Handwerker": "Artigiano", "Vermieter": "Locatore", "Verein": "Associazione", "Versorger": "Fornitore di servizi", "Sonstige": "Altro" } }
+      kundennummer: { label: "Numero cliente", hilfe: "Il tuo numero presso questa organizzazione (numero cliente, socio, assicurato o paziente)" }
+      iban: { label: "IBAN", hilfe: "Conto dell’organizzazione, ad es. dall’intestazione o dalla fattura (DE89 3704 0044 0532 0130 00)" }
+      ustid: { label: "Partita IVA", hilfe: "ad es. DE123456789 – si trova sulle fatture delle aziende" }
+      beschreibung: { label: "Descrizione" }
+      telefon: { label: "Telefono" }
+      fax: { label: "Fax" }
+      email: { label: "E-mail", hilfe: "ad es. contatto@example.org" }
+      internet: { label: "Sito web", hilfe: "ad es. https://www.example.org" }
+      strasse: { label: "Via" }
+      hausnummer: { label: "Numero civico" }
+      plz: { label: "CAP", hilfe: "In Germania cinque cifre" }
+      ort: { label: "Località" }
+      land: { label: "Paese" }
+    register:
+      stammdaten: { name: "Dati principali" }
+      kontakt: { name: "Contatto" }
+      anschrift: { name: "Indirizzo" }
+      niederlassungen: { name: "Sedi" }
+      ansprechpartner: { name: "Referenti" }
+      dokumente: { name: "Documenti" }
+      protokoll: { name: "Cronologia" }
+  niederlassung:
+    name: "Sede"
+    beschreibung: "Filiale, succursale, studio o sede distaccata di un’organizzazione, con indirizzo e telefono propri."
+    felder:
+      organisation: { label: "Organizzazione" }
+      name: { label: "Nome", hilfe: "ad es. «Filiale Piazza del Mercato» o «Studio Nord»" }
+      art: { label: "Tipo", hilfe: "ad es. filiale, succursale, studio", optionen: { "Filiale": "Filiale", "Zweigstelle": "Succursale", "Geschäftsstelle": "Ufficio", "Praxis": "Studio", "Außenstelle": "Sede distaccata", "Werk/Lager": "Stabilimento/magazzino", "Büro": "Ufficio", "Sonstige": "Altro" } }
+      nummer: { label: "Numero", hilfe: "Numero di filiale o di sede, ad es. numero dello stabilimento" }
+      oeffnungszeiten: { label: "Orari di apertura" }
+      beschreibung: { label: "Descrizione" }
+      telefon: { label: "Telefono" }
+      fax: { label: "Fax" }
+      email: { label: "E-mail", hilfe: "ad es. filiale@example.org" }
+      internet: { label: "Sito web" }
+      strasse: { label: "Via" }
+      hausnummer: { label: "Numero civico" }
+      plz: { label: "CAP" }
+      ort: { label: "Località" }
+      land: { label: "Paese" }
+    register:
+      allgemein: { name: "Generale" }
+      kontakt: { name: "Contatto" }
+      anschrift: { name: "Indirizzo" }
+      ansprechpartner: { name: "Referenti" }
+      verknuepfungen: { name: "Collegamenti" }
+      dokumente: { name: "Documenti" }
+      historie: { name: "Cronologia" }
+  person:
+    name: "Persona"
+    beschreibung: "Qualcuno con cui hai a che fare: un referente, una dottoressa, un locatore, parenti. Una persona non è un utente di Ablago e non può accedere."
+    felder:
+      anrede: { label: "Appellativo", optionen: { "Frau": "Signora", "Herr": "Signore", "divers/keine": "altro/nessuno" } }
+      titel: { label: "Titolo", hilfe: "ad es. Dott." }
+      vorname: { label: "Nome" }
+      nachname: { label: "Cognome" }
+      beziehung: { label: "Relazione", optionen: { "Familie": "Famiglia", "Freund/in": "Amico/amica", "Ansprechpartner": "Referenti", "Arzt/Ärztin": "Medico", "Handwerker": "Artigiano", "Mieter/in": "Inquilino/inquilina", "Vermieter/in": "Locatore/locatrice", "Nachbar/in": "Vicino/vicina", "Sonstige": "Altro" } }
+      geburtstag: { label: "Compleanno", hilfe: "Se vuoi un promemoria, crea nel banco di lavoro sotto Automazioni un promemoria annuale «Data raggiunta»." }
+      beschreibung: { label: "Descrizione" }
+      organisation: { label: "Organizzazione", hilfe: "Dove lavora la persona o per cosa è referente" }
+      niederlassung: { label: "Sede" }
+      funktion: { label: "Funzione", hilfe: "ad es. consulente clienti" }
+      abteilung: { label: "Reparto" }
+      telefon: { label: "Telefono" }
+      mobil: { label: "Cellulare" }
+      email: { label: "E-mail", hilfe: "ad es. nome@example.org" }
+      strasse: { label: "Via" }
+      hausnummer: { label: "Numero civico" }
+      plz: { label: "CAP" }
+      ort: { label: "Località" }
+      land: { label: "Paese" }
+    register:
+      stammdaten: { name: "Dati principali" }
+      arbeit: { name: "Lavoro" }
+      kontakt: { name: "Contatto" }
+      anschrift: { name: "Indirizzo" }
+      verknuepfungen: { name: "Collegamenti" }
+      dokumente: { name: "Documenti" }
+      historie: { name: "Cronologia" }
+sichten:
+  organisationen: { name: "Organizzazioni", beschreibung: "Tutte le organizzazioni" }
+  versicherungen: { name: "Assicurazioni" }
+  banken: { name: "Banche" }
+  behoerden: { name: "Enti pubblici" }
+  aerzte: { name: "Medici e studi" }
+  niederlassungen: { name: "Sedi" }
+  personen: { name: "Persone", beschreibung: "Contatti – non utenti di Ablago" }
+  familie: { name: "Famiglia e amici" }
+  ansprechpartner: { name: "Referenti" }

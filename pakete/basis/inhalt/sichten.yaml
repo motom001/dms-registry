@@ -2,10 +2,12 @@
 - schluessel: organisationen
   name: Organisationen
   beschreibung: Alle Organisationen
+  beschriftungen: { en: { name: "Organisations", beschreibung: "All organisations" } }
   typen: [organisation]
 
 - schluessel: versicherungen
   name: Versicherungen
+  beschriftungen: { en: { name: "Insurance policies" } }
   eltern: organisationen
   typen: [organisation]
   bedingungen:
@@ -13,6 +15,7 @@
 
 - schluessel: banken
   name: Banken
+  beschriftungen: { en: { name: "Banks" } }
   eltern: organisationen
   typen: [organisation]
   bedingungen:
@@ -20,6 +23,7 @@
 
 - schluessel: behoerden
   name: Behörden
+  beschriftungen: { en: { name: "Authorities" } }
   eltern: organisationen
   typen: [organisation]
   bedingungen:
@@ -27,6 +31,7 @@
 
 - schluessel: aerzte
   name: Ärzte und Praxen
+  beschriftungen: { en: { name: "Doctors and practices" } }
   eltern: organisationen
   typen: [organisation]
   bedingungen:
@@ -35,16 +40,19 @@
 # Ab 1.1.0: Niederlassungen und Personen.
 - schluessel: niederlassungen
   name: Niederlassungen
+  beschriftungen: { en: { name: "Branches" } }
   eltern: organisationen
   typen: [niederlassung]
 
 - schluessel: personen
   name: Personen
   beschreibung: Kontakte – keine Benutzer des DMS
+  beschriftungen: { en: { name: "People", beschreibung: "Contacts – not users of Ablago" } }
   typen: [person]
 
 - schluessel: familie
   name: Familie und Freunde
+  beschriftungen: { en: { name: "Family and friends" } }
   eltern: personen
   typen: [person]
   bedingungen:
@@ -52,6 +60,7 @@
 
 - schluessel: ansprechpartner
   name: Ansprechpartner
+  beschriftungen: { en: { name: "Contacts" } }
   eltern: personen
   typen: [person]
   bedingungen:

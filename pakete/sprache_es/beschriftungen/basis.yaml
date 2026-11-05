@@ -1,0 +1,99 @@
+# Beschriftungen des Pakets Basis (maschinell übersetzt aus dem Englischen, Registry #116).
+# Schlüssel wie in pakete/basis/inhalt/*.yaml; Ablago ergänzt sie nur, wo noch nichts in dieser Sprache steht.
+mappentypen:
+  organisation:
+    name: "Organización"
+    beschreibung: "Empresa, administración, consulta médica, aseguradora, banco, asociación u otra entidad con la que tratas."
+    felder:
+      name: { label: "Nombre" }
+      kuerzel: { label: "Abreviatura", hilfe: "Nombre corto, p. ej. «SWM» para Stadtwerke Musterstadt" }
+      art: { label: "Tipo", optionen: { "Lieferant": "Proveedor", "Kunde": "Cliente", "Bank": "Banco", "Versicherung": "Seguro", "Behörde": "Administración", "Arbeitgeber": "Empleador", "Arzt/Praxis": "Médico/consulta", "Handwerker": "Profesional de oficios", "Vermieter": "Arrendador", "Verein": "Asociación", "Versorger": "Suministradora", "Sonstige": "Otros" } }
+      kundennummer: { label: "Número de cliente", hilfe: "Tu propio número en esta organización (número de cliente, de socio, de asegurado o de paciente)" }
+      iban: { label: "IBAN", hilfe: "Cuenta de la organización, p. ej. del membrete o de la factura (DE89 3704 0044 0532 0130 00)" }
+      ustid: { label: "NIF-IVA", hilfe: "p. ej. DE123456789: figura en las facturas de las empresas" }
+      beschreibung: { label: "Descripción" }
+      telefon: { label: "Teléfono" }
+      fax: { label: "Fax" }
+      email: { label: "Correo electrónico", hilfe: "p. ej. contacto@example.org" }
+      internet: { label: "Sitio web", hilfe: "p. ej. https://www.example.org" }
+      strasse: { label: "Calle" }
+      hausnummer: { label: "Número" }
+      plz: { label: "Código postal", hilfe: "En Alemania, cinco cifras" }
+      ort: { label: "Localidad" }
+      land: { label: "País" }
+    register:
+      stammdaten: { name: "Datos básicos" }
+      kontakt: { name: "Contacto" }
+      anschrift: { name: "Dirección" }
+      niederlassungen: { name: "Sucursales" }
+      ansprechpartner: { name: "Personas de contacto" }
+      dokumente: { name: "Documentos" }
+      protokoll: { name: "Historial" }
+  niederlassung:
+    name: "Sucursal"
+    beschreibung: "Sucursal, delegación, consulta u oficina externa de una organización, con dirección y teléfono propios."
+    felder:
+      organisation: { label: "Organización" }
+      name: { label: "Nombre", hilfe: "p. ej. «Sucursal Plaza Mayor» o «Consulta Norte»" }
+      art: { label: "Tipo", hilfe: "p. ej. sucursal, delegación, consulta", optionen: { "Filiale": "Sucursal", "Zweigstelle": "Delegación", "Geschäftsstelle": "Oficina", "Praxis": "Consulta", "Außenstelle": "Oficina externa", "Werk/Lager": "Fábrica/almacén", "Büro": "Despacho", "Sonstige": "Otros" } }
+      nummer: { label: "Número", hilfe: "Número de sucursal o de centro, p. ej. número de establecimiento" }
+      oeffnungszeiten: { label: "Horario" }
+      beschreibung: { label: "Descripción" }
+      telefon: { label: "Teléfono" }
+      fax: { label: "Fax" }
+      email: { label: "Correo electrónico", hilfe: "p. ej. sucursal@example.org" }
+      internet: { label: "Sitio web" }
+      strasse: { label: "Calle" }
+      hausnummer: { label: "Número" }
+      plz: { label: "Código postal" }
+      ort: { label: "Localidad" }
+      land: { label: "País" }
+    register:
+      allgemein: { name: "General" }
+      kontakt: { name: "Contacto" }
+      anschrift: { name: "Dirección" }
+      ansprechpartner: { name: "Personas de contacto" }
+      verknuepfungen: { name: "Vínculos" }
+      dokumente: { name: "Documentos" }
+      historie: { name: "Historial" }
+  person:
+    name: "Persona"
+    beschreibung: "Alguien con quien tratas: una persona de contacto, una médica, un arrendador, familiares. Una persona no es usuaria de Ablago y no puede iniciar sesión."
+    felder:
+      anrede: { label: "Tratamiento", optionen: { "Frau": "Sra.", "Herr": "Sr.", "divers/keine": "diverso/ninguno" } }
+      titel: { label: "Título", hilfe: "p. ej. Dr." }
+      vorname: { label: "Nombre" }
+      nachname: { label: "Apellidos" }
+      beziehung: { label: "Relación", optionen: { "Familie": "Familia", "Freund/in": "Amigo/amiga", "Ansprechpartner": "Personas de contacto", "Arzt/Ärztin": "Médico/médica", "Handwerker": "Profesional de oficios", "Mieter/in": "Inquilino/inquilina", "Vermieter/in": "Arrendador/arrendadora", "Nachbar/in": "Vecino/vecina", "Sonstige": "Otros" } }
+      geburtstag: { label: "Cumpleaños", hilfe: "Si quieres un recordatorio, crea en el taller, en Automatizaciones, un recordatorio anual «Fecha alcanzada»." }
+      beschreibung: { label: "Descripción" }
+      organisation: { label: "Organización", hilfe: "Dónde trabaja la persona o para qué es la persona de contacto" }
+      niederlassung: { label: "Sucursal" }
+      funktion: { label: "Cargo", hilfe: "p. ej. asesora de clientes" }
+      abteilung: { label: "Departamento" }
+      telefon: { label: "Teléfono" }
+      mobil: { label: "Móvil" }
+      email: { label: "Correo electrónico", hilfe: "p. ej. nombre@example.org" }
+      strasse: { label: "Calle" }
+      hausnummer: { label: "Número" }
+      plz: { label: "Código postal" }
+      ort: { label: "Localidad" }
+      land: { label: "País" }
+    register:
+      stammdaten: { name: "Datos básicos" }
+      arbeit: { name: "Trabajo" }
+      kontakt: { name: "Contacto" }
+      anschrift: { name: "Dirección" }
+      verknuepfungen: { name: "Vínculos" }
+      dokumente: { name: "Documentos" }
+      historie: { name: "Historial" }
+sichten:
+  organisationen: { name: "Organizaciones", beschreibung: "Todas las organizaciones" }
+  versicherungen: { name: "Seguros" }
+  banken: { name: "Bancos" }
+  behoerden: { name: "Administraciones" }
+  aerzte: { name: "Médicos y consultas" }
+  niederlassungen: { name: "Sucursales" }
+  personen: { name: "Personas", beschreibung: "Contactos: no son usuarios de Ablago" }
+  familie: { name: "Familia y amigos" }
+  ansprechpartner: { name: "Personas de contacto" }

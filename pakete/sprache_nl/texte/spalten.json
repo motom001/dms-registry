@@ -1,0 +1,10 @@
+{
+  "name.ablage.links": "Weergaven",
+  "name.ablage.rechts": "Map",
+  "name.werkbank.links": "Onderdelen",
+  "name.werkbank.rechts": "Bewerken",
+  "griff.einklappen": "{name} inklappen",
+  "griff.ziehen": "{name} inklappen. Sleep om de breedte te veranderen; de Home-toets zet de standaardbreedte terug.",
+  "lasche.aufklappen": "{name} uitklappen",
+  "lasche.aufklappen.titel": "{name} „{titel}” uitklappen"
+}

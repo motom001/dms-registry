@@ -1,0 +1,10 @@
+{
+  "notfall.oeffne-diesen-link-bis": "Open deze link vóór {bis} in je browser en stel je eigen wachtwoord in:",
+  "notfall.der-link-gilt-nur": "De link werkt maar één keer. Ablago verwijdert dit bestand na 15 minuten vanzelf.",
+  "notfall.benenne-den-notfall-admin": "Geef daarna de noodbeheerder in de werkbank een andere naam of deactiveer hem.",
+  "notfall.ablago-notfallzugang-angelegt": "Ablago: noodtoegang aangemaakt",
+  "notfall.auf-dem-nas-wurde": "Op de NAS is een RESCUE-bestand aangemaakt. Ablago heeft daarop „{name}” met „Volledig beheer” aangemaakt; de inloglink staat alleen in dit bestand en is geldig tot {bis}.\n\n",
+  "notfall.warst-du-das-nicht": "{wert}Was jij dit niet? Deactiveer de gebruiker dan meteen in de werkbank onder „Gebruikers” en controleer wie toegang heeft tot de NAS.",
+  "rescue.fuer": "{kennung} voor „{name}”",
+  "rescue.erstellt": "Aangemaakt: {zeit}"
+}
