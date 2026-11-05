@@ -12,262 +12,287 @@
 - schluessel: konto
   name: Konto
   beschreibung: Girokonto, Sparkonto, Depot, Kreditkarte, Kredit oder Bausparvertrag.
+  beschriftungen: { en: { name: "Account", beschreibung: "Current account, savings account, securities account, credit card, loan or building savings contract." } }
   titelVorlage: "{art} – {bank} – {inhaber_verweis}"
   felder:
-    - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Bank" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Girokonto": "Current account", "Sparkonto": "Savings account", "Depot": "Securities account", "Kreditkarte": "Credit card", "Kredit": "Loan", "Bausparvertrag": "Building savings contract" } } }
       typ: auswahl
       pflicht: true
       optionen: [Girokonto, Sparkonto, Depot, Kreditkarte, Kredit, Bausparvertrag]
-    - { key: inhaber_verweis, label: Inhaber, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, aus_text: inhaber, hilfe: Wem das Konto gehört – beim Gemeinschaftskonto mehrere Personen }
+    - { key: inhaber_verweis, label: Inhaber, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, aus_text: inhaber, hilfe: Wem das Konto gehört – beim Gemeinschaftskonto mehrere Personen, beschriftungen: { en: { label: "Holder", hilfe: "Who owns the account – several people for a joint account" } }  }
     - key: iban
       label: IBAN
+      beschriftungen: { en: { label: "IBAN", hilfe: "Spaces allowed, e.g. DE89 3704 0044 0532 0130 00" } }
       typ: text
       maxLen: 42
       muster: "[A-Z]{2}[0-9]{2}( ?[A-Z0-9]){11,30}"
       # Ab 1.2.0 (DMS 0.121): Länge des Landes und Prüfziffer, Anzeige in Vierergruppen.
       format: iban
       hilfe: Leerzeichen erlaubt, z. B. DE89 3704 0044 0532 0130 00
-    - { key: online_zugang, label: Online-Zugang, typ: passwort, hilfe: Zugangsdaten zum Online-Banking; nur wer die Mappe bearbeiten darf, sieht sie }
-    - { key: eroeffnet_am, label: Eröffnet am, typ: datum }
-    - { key: gekuendigt_am, label: Gekündigt am, typ: datum }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kontovertrag auf Papier liegt }
+    - { key: online_zugang, label: Online-Zugang, typ: passwort, hilfe: Zugangsdaten zum Online-Banking; nur wer die Mappe bearbeiten darf, sieht sie, beschriftungen: { en: { label: "Online access", hilfe: "Online banking login; only for those who may edit the folder" } }  }
+    - { key: eroeffnet_am, label: Eröffnet am, typ: datum, beschriftungen: { en: { label: "Opened on" } }  }
+    - { key: gekuendigt_am, label: Gekündigt am, typ: datum, beschriftungen: { en: { label: "Closed on" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kontovertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper account agreement is kept" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bank, art, inhaber_verweis, iban, online_zugang, eroeffnet_am, gekuendigt_am, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bank, art, inhaber_verweis, iban, online_zugang, eroeffnet_am, gekuendigt_am, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [art, bank, inhaber_verweis, iban]
 
 - schluessel: vertrag
   name: Vertrag
   beschreibung: Strom, Gas, Internet, Mobilfunk, Streaming, Miete, Mitgliedschaft und andere laufende Verträge.
+  beschriftungen: { en: { name: "Contract", beschreibung: "Electricity, gas, internet, mobile, streaming, rent, membership and other running contracts." } }
   titelVorlage: "{art} – {vertragspartner}"
   felder:
-    - { key: vertragspartner, label: Vertragspartner, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: vertragspartner, label: Vertragspartner, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Contract partner" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Strom": "Electricity", "Gas": "Gas", "Wasser": "Water", "Internet": "Internet", "Mobilfunk": "Mobile", "Streaming": "Streaming", "Zeitschrift": "Magazine", "Mitgliedschaft": "Membership", "Miete": "Rent", "Sonstiges": "Other" } } }
       typ: auswahl
       pflicht: true
       optionen: [Strom, Gas, Wasser, Internet, Mobilfunk, Streaming, Zeitschrift, Mitgliedschaft, Miete, Sonstiges]
     # Für die Erkennung (DMS 0.113): Post mit dieser Nummer gehört zu diesem Vertrag.
-    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, erkennung: { art: nummer } }
-    - { key: beginn, label: Beginn, typ: datum }
-    - { key: mindestlaufzeit_bis, label: Mindestlaufzeit bis, typ: datum }
-    - { key: kuendigungsfrist, label: Kündigungsfrist, typ: text, maxLen: 120, hilfe: "Wie im Vertrag, z. B. „3 Monate zum Ende der Laufzeit“" }
+    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Contract number" } }  }
+    - { key: beginn, label: Beginn, typ: datum, beschriftungen: { en: { label: "Start" } }  }
+    - { key: mindestlaufzeit_bis, label: Mindestlaufzeit bis, typ: datum, beschriftungen: { en: { label: "Minimum term until" } }  }
+    - { key: kuendigungsfrist, label: Kündigungsfrist, typ: text, maxLen: 120, hilfe: "Wie im Vertrag, z. B. „3 Monate zum Ende der Laufzeit“", beschriftungen: { en: { label: "Notice period", hilfe: "As in the contract, e.g. “3 months before the end of the term”" } }  }
     - key: kuendigen_bis
       label: Kündigen bis
+      beschriftungen: { en: { label: "Cancel by", hilfe: "Last day the cancellation must arrive. The included automation reminds you 30 days before." } }
       typ: datum
       hilfe: Letzter Tag, an dem die Kündigung ankommen muss. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
-    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR }
-    - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig] }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
+    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, beschriftungen: { en: { label: "Amount" } }  }
+    - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig], beschriftungen: { en: { label: "Payment interval", optionen: { monatlich: "monthly", "vierteljährlich": "quarterly", "halbjährlich": "half-yearly", "jährlich": "yearly", einmalig: "one-off" } } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [vertragspartner, art, vertragsnummer, beginn, mindestlaufzeit_bis, kuendigungsfrist, kuendigen_bis, betrag, zahlweise, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [vertragspartner, art, vertragsnummer, beginn, mindestlaufzeit_bis, kuendigungsfrist, kuendigen_bis, betrag, zahlweise, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [art, vertragspartner, betrag, kuendigen_bis]
 
 - schluessel: versicherung
   name: Versicherung
   beschreibung: Haftpflicht, Hausrat, Kfz, Berufsunfähigkeit und alle anderen Versicherungen.
+  beschriftungen: { en: { name: "Insurance", beschreibung: "Liability, contents, car, occupational disability and all other insurance policies." } }
   titelVorlage: "{art} – {versicherer}"
   felder:
-    - { key: versicherer, label: Versicherer, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: versicherer, label: Versicherer, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Insurer" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Haftpflicht": "Liability", "Hausrat": "Contents", "Wohngebäude": "Buildings", "Kfz": "Car", "Rechtsschutz": "Legal expenses", "Berufsunfähigkeit": "Occupational disability", "Leben": "Life", "Kranken-Zusatz": "Supplementary health", "Reise": "Travel", "Unfall": "Accident", "Sonstige": "Other" } } }
       typ: auswahl
       pflicht: true
       optionen: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz, Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall, Sonstige]
-    - { key: versicherungsnummer, label: Versicherungsnummer, typ: text, maxLen: 60, erkennung: { art: nummer } }
+    - { key: versicherungsnummer, label: Versicherungsnummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Policy number" } }  }
     # Sachen (z. B. ein Fahrzeug) verweisen selbst auf die Versicherung und stehen dort unter „Verknüpfungen“.
-    - { key: versichert_verweis, label: Versichert, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, aus_text: versichert, hilfe: Versicherte Personen. Ein Fahrzeug verweist selbst auf seine Versicherung und steht hier unter „Verknüpfungen“. }
-    - { key: beitrag, label: Beitrag, typ: betrag, min: 0, waehrung: EUR }
-    - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig] }
+    - { key: versichert_verweis, label: Versichert, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, aus_text: versichert, hilfe: Versicherte Personen. Ein Fahrzeug verweist selbst auf seine Versicherung und steht hier unter „Verknüpfungen“., beschriftungen: { en: { label: "Insured", hilfe: "Insured people. A vehicle links to its insurance itself and appears here under “Links”." } }  }
+    - { key: beitrag, label: Beitrag, typ: betrag, min: 0, waehrung: EUR, beschriftungen: { en: { label: "Premium" } }  }
+    - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig], beschriftungen: { en: { label: "Payment interval", optionen: { monatlich: "monthly", "vierteljährlich": "quarterly", "halbjährlich": "half-yearly", "jährlich": "yearly", einmalig: "one-off" } } }  }
     - key: hauptfaelligkeit
       label: Hauptfälligkeit
+      beschriftungen: { en: { label: "Renewal date", hilfe: "Day the insurance year starts. The included automation reminds you 6 weeks before, every year." } }
       typ: datum
       hilfe: Tag, an dem das Versicherungsjahr beginnt. Die mitgelieferte Automatisierung erinnert jedes Jahr 6 Wochen vorher.
       frist: { vorlauf: 6, einheit: wochen, wiederholung: 12 }
     - key: kuendigen_bis
       label: Kündigen bis
+      beschriftungen: { en: { label: "Cancel by", hilfe: "Usually 3 months before the renewal date. The included automation reminds you 30 days before." } }
       typ: datum
       hilfe: Meist 3 Monate vor der Hauptfälligkeit. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Versicherungsschein auf Papier liegt }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Versicherungsschein auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper policy document is kept" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [versicherer, art, versicherungsnummer, versichert_verweis, beitrag, zahlweise, hauptfaelligkeit, kuendigen_bis, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [versicherer, art, versicherungsnummer, versichert_verweis, beitrag, zahlweise, hauptfaelligkeit, kuendigen_bis, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [art, versicherer, versichert_verweis, beitrag, kuendigen_bis]
 
 - schluessel: steuerjahr
   name: Steuerjahr
   beschreibung: Einkommensteuer eines Jahres – Erklärung, Bescheid und die Belege dazu.
+  beschriftungen: { en: { name: "Tax year", beschreibung: "Income tax for one year – return, assessment and the receipts for it." } }
   titelVorlage: "Steuerjahr {jahr}"
   felder:
-    - { key: jahr, label: Jahr, typ: text, pflicht: true, eindeutig: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025" }
-    - { key: abgegeben_am, label: Abgegeben am, typ: datum }
-    - { key: bescheid_vom, label: Bescheid vom, typ: datum }
-    - { key: ergebnis, label: Erstattung/Nachzahlung, typ: betrag, waehrung: EUR, hilfe: Erstattung positiv, Nachzahlung negativ }
+    - { key: jahr, label: Jahr, typ: text, pflicht: true, eindeutig: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025", beschriftungen: { en: { label: "Year", hilfe: "Four digits, e.g. 2025" } }  }
+    - { key: abgegeben_am, label: Abgegeben am, typ: datum, beschriftungen: { en: { label: "Filed on" } }  }
+    - { key: bescheid_vom, label: Bescheid vom, typ: datum, beschriftungen: { en: { label: "Assessment dated" } }  }
+    - { key: ergebnis, label: Erstattung/Nachzahlung, typ: betrag, waehrung: EUR, hilfe: Erstattung positiv, Nachzahlung negativ, beschriftungen: { en: { label: "Refund/back payment", hilfe: "Refund positive" } }  }
     - key: einspruch_bis
       label: Einspruch bis
+      beschriftungen: { en: { label: "Objection by", hilfe: "One month after the assessment (assessment date + 1 month). The included automation reminds you 7 days before." } }
       typ: datum
       hilfe: Ein Monat nach dem Bescheid (Bescheid vom + 1 Monat). Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
       frist: { vorlauf: 7, einheit: tage }
-    - { key: steuerberater, label: Steuerberater, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
+    - { key: steuerberater, label: Steuerberater, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Tax adviser" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis, steuerberater] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis, steuerberater], beschriftungen: { en: { name: "General" } }  }
     - key: belege
       name: Belege
+      beschriftungen: { en: { name: "Receipts" } }
       art: verknuepfungen
       quellen:
         - { typ: anschaffung, feld: steuerjahr }
         - { typ: gesundheit, feld: steuerjahr }
         - { typ: bildung, feld: steuerjahr }
         - { typ: arbeitsverhaeltnis, feld: steuerjahr }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis]
 
 - schluessel: arbeitsverhaeltnis
   name: Arbeitsverhältnis
   beschreibung: Anstellung, Minijob oder Ausbildung – mit Arbeitsvertrag, Gehaltsabrechnungen und Zeugnis.
+  beschriftungen: { en: { name: "Employment", beschreibung: "Job, mini-job or apprenticeship – with employment contract, payslips and reference." } }
   titelVorlage: "{person_verweis} – {arbeitgeber}"
   felder:
-    - { key: arbeitgeber, label: Arbeitgeber, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
-    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
-    - { key: taetigkeit, label: Tätigkeit, typ: text, maxLen: 120 }
-    - { key: beginn, label: Beginn, typ: datum }
-    - { key: ende, label: Ende, typ: datum }
-    - { key: steuerjahr, label: Steuerjahre, typ: referenz, ziel: steuerjahr, mehrfach: true, verweisart: bezug, hilfe: In welchen Steuerjahren es zählt; dort erscheint es unter „Belege“ }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Arbeitsvertrag auf Papier liegt }
+    - { key: arbeitgeber, label: Arbeitgeber, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Employer" } }  }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
+    - { key: taetigkeit, label: Tätigkeit, typ: text, maxLen: 120, beschriftungen: { en: { label: "Job title" } }  }
+    - { key: beginn, label: Beginn, typ: datum, beschriftungen: { en: { label: "Start" } }  }
+    - { key: ende, label: Ende, typ: datum, beschriftungen: { en: { label: "End" } }  }
+    - { key: steuerjahr, label: Steuerjahre, typ: referenz, ziel: steuerjahr, mehrfach: true, verweisart: bezug, hilfe: In welchen Steuerjahren es zählt; dort erscheint es unter „Belege“, beschriftungen: { en: { label: "Tax years", hilfe: "Which tax years it counts for; it appears there under “Receipts”" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Arbeitsvertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper employment contract is kept" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [arbeitgeber, person_verweis, taetigkeit, beginn, ende, steuerjahr, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [arbeitgeber, person_verweis, taetigkeit, beginn, ende, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [person_verweis, arbeitgeber, taetigkeit, beginn, ende]
 
 - schluessel: vorsorge
   name: Vorsorge
   beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester, Rürup und Bausparen.
+  beschriftungen: { en: { name: "Pension", beschreibung: "State, company and private pensions, Riester, Rürup and building savings." } }
   titelVorlage: "{art} – {person_verweis} – {anbieter}"
   felder:
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "gesetzliche Rente": "state pension", "betriebliche Altersvorsorge": "company pension", "Riester": "Riester", "Rürup": "Rürup", "private Rente": "private pension", "Bausparen": "building savings", "Sonstige": "Other" } } }
       typ: auswahl
       pflicht: true
       optionen: [gesetzliche Rente, betriebliche Altersvorsorge, Riester, Rürup, private Rente, Bausparen, Sonstige]
-    - { key: anbieter, label: Anbieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
-    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, hilfe: Bei der gesetzlichen Rente die Versicherungsnummer, erkennung: { art: nummer } }
-    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
-    - { key: beginn, label: Beginn, typ: datum }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
+    - { key: anbieter, label: Anbieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Provider" } }  }
+    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, hilfe: Bei der gesetzlichen Rente die Versicherungsnummer, erkennung: { art: nummer }, beschriftungen: { en: { label: "Contract number", hilfe: "For the state pension, the insurance number" } }  }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
+    - { key: beginn, label: Beginn, typ: datum, beschriftungen: { en: { label: "Start" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [art, anbieter, vertragsnummer, person_verweis, beginn, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, anbieter, vertragsnummer, person_verweis, beginn, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [art, person_verweis, anbieter, vertragsnummer]
 
 - schluessel: ausweis
   name: Ausweis & Urkunde
   beschreibung: Personalausweis, Reisepass, Führerschein, Geburts- und Heiratsurkunde, Zeugnisse.
+  beschriftungen: { en: { name: "ID & certificate", beschreibung: "ID card, passport, driving licence, birth and marriage certificate, school reports." } }
   titelVorlage: "{art} – {person_verweis}"
   felder:
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Personalausweis": "ID card", "Reisepass": "Passport", "Führerschein": "Driving licence", "Geburtsurkunde": "Birth certificate", "Heiratsurkunde": "Marriage certificate", "Zeugnis": "Certificate", "Sonstige": "Other" } } }
       typ: auswahl
       pflicht: true
       optionen: [Personalausweis, Reisepass, Führerschein, Geburtsurkunde, Heiratsurkunde, Zeugnis, Sonstige]
-    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
-    - { key: nummer, label: Nummer, typ: text, maxLen: 60 }
-    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
+    - { key: nummer, label: Nummer, typ: text, maxLen: 60, beschriftungen: { en: { label: "Number" } }  }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, beschriftungen: { en: { label: "Issued on" } }  }
     - key: gueltig_bis
       label: Gültig bis
+      beschriftungen: { en: { label: "Valid until", hilfe: "The included automation reminds you 90 days before – enough time for an appointment at the citizens’ office." } }
       typ: datum
       hilfe: Die mitgelieferte Automatisierung erinnert 90 Tage vorher – Zeit genug für einen Termin beim Bürgeramt.
       frist: { vorlauf: 90, einheit: tage }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [art, person_verweis, nummer, ausgestellt_am, gueltig_bis, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, person_verweis, nummer, ausgestellt_am, gueltig_bis, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [art, person_verweis, gueltig_bis, verbleib_original]
 
 - schluessel: gesundheit
   name: Gesundheit
   beschreibung: Arztbriefe, Befunde, Impfungen, Rezepte und Rechnungen.
+  beschriftungen: { en: { name: "Health", beschreibung: "Doctor’s letters, findings, vaccinations, prescriptions and invoices." } }
   titelVorlage: "{art} – {person_verweis} – {praxis}"
   felder:
-    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Arztbrief": "Doctor’s letter", "Befund": "Findings", "Impfung": "Vaccination", "Rezept": "Prescription", "Rechnung": "Invoice", "Sonstiges": "Other" } } }
       typ: auswahl
       pflicht: true
       optionen: [Arztbrief, Befund, Impfung, Rezept, Rechnung, Sonstiges]
-    - { key: datum, label: Datum, typ: datum }
-    - { key: praxis, label: Praxis, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Arztpraxis, Krankenhaus oder Apotheke }
-    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, hilfe: Bei Rechnungen }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du die Kosten in der Steuererklärung angibst }
+    - { key: datum, label: Datum, typ: datum, beschriftungen: { en: { label: "Date" } }  }
+    - { key: praxis, label: Praxis, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Arztpraxis, Krankenhaus oder Apotheke, beschriftungen: { en: { label: "Practice", hilfe: "Doctor’s practice" } }  }
+    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, hilfe: Bei Rechnungen, beschriftungen: { en: { label: "Amount", hilfe: "For invoices" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du die Kosten in der Steuererklärung angibst, beschriftungen: { en: { label: "Tax year", hilfe: "If you claim the costs in your tax return" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, datum, praxis, betrag, steuerjahr] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, datum, praxis, betrag, steuerjahr], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [person_verweis, art, datum, praxis]
 
 - schluessel: anschaffung
   name: Anschaffung
   beschreibung: Gekaufte Geräte und Möbel – mit Kassenbon, Garantie und Seriennummer.
+  beschriftungen: { en: { name: "Purchase", beschreibung: "Appliances and furniture you bought – with receipt, warranty and serial number." } }
   titelVorlage: "{gegenstand}"
   felder:
-    - { key: gegenstand, label: Gegenstand, typ: text, pflicht: true, maxLen: 120 }
-    - { key: haendler, label: Händler, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
-    - { key: kaufdatum, label: Kaufdatum, typ: datum }
-    - { key: preis, label: Preis, typ: betrag, min: 0, waehrung: EUR }
-    - { key: seriennummer, label: Seriennummer, typ: text, maxLen: 80 }
+    - { key: gegenstand, label: Gegenstand, typ: text, pflicht: true, maxLen: 120, beschriftungen: { en: { label: "Item" } }  }
+    - { key: haendler, label: Händler, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Retailer" } }  }
+    - { key: kaufdatum, label: Kaufdatum, typ: datum, beschriftungen: { en: { label: "Purchase date" } }  }
+    - { key: preis, label: Preis, typ: betrag, min: 0, waehrung: EUR, beschriftungen: { en: { label: "Price" } }  }
+    - { key: seriennummer, label: Seriennummer, typ: text, maxLen: 80, beschriftungen: { en: { label: "Serial number" } }  }
     - key: garantie_bis
       label: Garantie bis
+      beschriftungen: { en: { label: "Warranty until", hilfe: "Statutory or manufacturer’s warranty. The included automation reminds you 30 days before." } }
       typ: datum
       hilfe: Gewährleistung oder Herstellergarantie. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel" }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel", beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct the purchase, e.g. work equipment" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the receipt is – no warranty without it" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [gegenstand, haendler, kaufdatum, preis, seriennummer, garantie_bis, steuerjahr, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [gegenstand, haendler, kaufdatum, preis, seriennummer, garantie_bis, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [gegenstand, haendler, kaufdatum, preis, garantie_bis]
 
 - schluessel: bildung
   name: Bildung
   beschreibung: Schule, Ausbildung, Studium und Kurse – mit Zeugnissen und Bescheinigungen.
+  beschriftungen: { en: { name: "Education", beschreibung: "School, apprenticeship, university and courses – with certificates and confirmations." } }
   titelVorlage: "{art} – {person_verweis} – {einrichtung}"
   felder:
-    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Schule": "School", "Ausbildung": "Apprenticeship", "Studium": "University", "Kurs": "Course", "Sonstige": "Other" } } }
       typ: auswahl
       pflicht: true
       optionen: [Schule, Ausbildung, Studium, Kurs, Sonstige]
-    - { key: einrichtung, label: Einrichtung, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
-    - { key: von, label: Von, typ: datum }
-    - { key: bis, label: Bis, typ: datum }
-    - { key: abschluss, label: Abschluss, typ: text, maxLen: 120, hilfe: "z. B. „Abitur“ oder „Bachelor of Arts“" }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Zeugnisse und Urkunden auf Papier liegen }
+    - { key: einrichtung, label: Einrichtung, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Institution" } }  }
+    - { key: von, label: Von, typ: datum, beschriftungen: { en: { label: "From" } }  }
+    - { key: bis, label: Bis, typ: datum, beschriftungen: { en: { label: "Until" } }  }
+    - { key: abschluss, label: Abschluss, typ: text, maxLen: 120, hilfe: "z. B. „Abitur“ oder „Bachelor of Arts“", beschriftungen: { en: { label: "Qualification", hilfe: "e.g. “Abitur” or “Bachelor of Arts”" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung, beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct costs" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Zeugnisse und Urkunden auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where paper certificates are kept" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, einrichtung, von, bis, abschluss, steuerjahr, verbleib_original] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: protokoll, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, einrichtung, von, bis, abschluss, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [person_verweis, art, einrichtung, abschluss]

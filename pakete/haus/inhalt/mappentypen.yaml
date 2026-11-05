@@ -5,85 +5,94 @@
 - schluessel: immobilie
   name: Immobilie
   beschreibung: Haus, Wohnung, Ferienwohnung, Garage oder Grundstück – gekauft oder gemietet.
+  beschriftungen: { en: { name: "Property", beschreibung: "House, flat, holiday flat, garage or plot – owned or rented." } }
   titelVorlage: "{bezeichnung}"
   felder:
-    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Einfamilienhaus Musterweg 1“" }
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Einfamilienhaus Musterweg 1“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Detached house Musterweg 1”" } }  }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Eigentum": "Owned", "Miete": "Rent", "Ferienwohnung": "Holiday flat", "Garage": "Garage", "Grundstück": "Plot" } } }
       typ: auswahl
       pflicht: true
       optionen: [Eigentum, Miete, Ferienwohnung, Garage, Grundstück]
-    - { key: strasse, label: Straße, typ: text, maxLen: 120 }
-    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10 }
+    - { key: strasse, label: Straße, typ: text, maxLen: 120, beschriftungen: { en: { label: "Street" } }  }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10, beschriftungen: { en: { label: "House number" } }  }
     # Ab 1.1.0 (DMS 0.121): PLZ mit Format, dazu das Land (Ferienwohnung im Ausland).
-    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land }
-    - { key: ort, label: Ort, typ: text, maxLen: 80 }
-    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
-    - { key: baujahr, label: Baujahr, typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Vierstellig, z. B. 1998" }
-    - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2 }
-    - { key: grundstueck, label: Grundstücksgröße (m²), typ: zahl, min: 0, nachkomma: 0 }
-    - { key: eigentuemer, label: Eigentümer/Vermieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Miete der Vermieter oder die Hausverwaltung }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Grundbuchauszug, Kauf- oder Mietvertrag auf Papier liegen }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land, beschriftungen: { en: { label: "Postcode" } }  }
+    - { key: ort, label: Ort, typ: text, maxLen: 80, beschriftungen: { en: { label: "Town" } }  }
+    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland, beschriftungen: { en: { label: "Country" } }  }
+    - { key: baujahr, label: Baujahr, typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Vierstellig, z. B. 1998", beschriftungen: { en: { label: "Year built", hilfe: "Four digits, e.g. 1998" } }  }
+    - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2, beschriftungen: { en: { label: "Living space (m²)" } }  }
+    - { key: grundstueck, label: Grundstücksgröße (m²), typ: zahl, min: 0, nachkomma: 0, beschriftungen: { en: { label: "Plot size (m²)" } }  }
+    - { key: eigentuemer, label: Eigentümer/Vermieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Miete der Vermieter oder die Hausverwaltung, beschriftungen: { en: { label: "Owner/landlord", hilfe: "If rented, the landlord or the property management" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Grundbuchauszug, Kauf- oder Mietvertrag auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the land register extract is" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, wohnflaeche, grundstueck, eigentuemer, verbleib_original] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, wohnflaeche, grundstueck, eigentuemer, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - key: wartungen
       name: Wartungen
+      beschriftungen: { en: { name: "Maintenance" } }
       art: verknuepfungen
       quellen: [{ typ: wartung, feld: immobilie }]
     - key: zaehlerstaende
       name: Zählerstände
+      beschriftungen: { en: { name: "Meter readings" } }
       art: verknuepfungen
       quellen: [{ typ: zaehlerstand, feld: immobilie }]
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [bezeichnung, art, ort, wohnflaeche]
 
 - schluessel: wartung
   name: Wartung
   beschreibung: Regelmäßige Wartung oder Prüfung – Heizung, Schornstein, Rauchmelder, Photovoltaik und mehr.
+  beschriftungen: { en: { name: "Maintenance", beschreibung: "Regular maintenance or inspection – heating, chimney, smoke alarms, solar panels and more." } }
   titelVorlage: "{gegenstand} – {immobilie}"
   felder:
-    - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit }
+    - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Property" } }  }
     - key: gegenstand
       label: Gegenstand
+      beschriftungen: { en: { label: "Item", optionen: { "Heizung": "Heating", "Schornstein": "Chimney", "Rauchmelder": "Smoke alarm", "Dach": "Roof", "Lüftung": "Ventilation", "Photovoltaik": "Solar panels", "Aufzug": "Lift", "Sonstiges": "Other" } } }
       typ: auswahl
       pflicht: true
       optionen: [Heizung, Schornstein, Rauchmelder, Dach, Lüftung, Photovoltaik, Aufzug, Sonstiges]
-    - { key: fachbetrieb, label: Fachbetrieb, typ: referenz, ziel: "basis:organisation", verweisart: bezug }
-    - { key: wartungsvertrag, label: Wartungsvertrag, typ: referenz, ziel: "haushalt:vertrag", verweisart: bezug, hilfe: Falls es einen Wartungsvertrag gibt – ein Vertrag aus dem Paket Haushalt }
-    - { key: zuletzt_am, label: Zuletzt am, typ: datum, max: heute }
-    - { key: turnus, label: Turnus (Monate), typ: zahl, min: 1, max: 120, nachkomma: 0, hilfe: "Alle wie viele Monate, z. B. 12 für jährlich" }
+    - { key: fachbetrieb, label: Fachbetrieb, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Contractor" } }  }
+    - { key: wartungsvertrag, label: Wartungsvertrag, typ: referenz, ziel: "haushalt:vertrag", verweisart: bezug, hilfe: Falls es einen Wartungsvertrag gibt – ein Vertrag aus dem Paket Haushalt, beschriftungen: { en: { label: "Maintenance contract", hilfe: "If there is a maintenance contract – a contract from the Household package" } }  }
+    - { key: zuletzt_am, label: Zuletzt am, typ: datum, max: heute, beschriftungen: { en: { label: "Last on" } }  }
+    - { key: turnus, label: Turnus (Monate), typ: zahl, min: 1, max: 120, nachkomma: 0, hilfe: "Alle wie viele Monate, z. B. 12 für jährlich", beschriftungen: { en: { label: "Interval (months)", hilfe: "Every how many months, e.g. 12 for yearly" } }  }
     - key: naechste_faellig
       label: Nächste fällig
+      beschriftungen: { en: { label: "Next due", hilfe: "“Last on” plus interval. Enter again after each maintenance. The included automation reminds you 30 days before." } }
       typ: datum
       hilfe: "„Zuletzt am“ plus Turnus. Nach jeder Wartung neu eintragen. Die mitgelieferte Automatisierung erinnert 30 Tage vorher."
       frist: { vorlauf: 30, einheit: tage }
-    - { key: notiz, label: Notiz, typ: langtext, hilfe: "Was gemacht wurde, Auffälliges, Ersatzteile" }
+    - { key: notiz, label: Notiz, typ: langtext, hilfe: "Was gemacht wurde, Auffälliges, Ersatzteile", beschriftungen: { en: { label: "Note", hilfe: "What was done, anything unusual, spare parts" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [immobilie, gegenstand, fachbetrieb, wartungsvertrag, zuletzt_am, turnus, naechste_faellig, notiz] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [immobilie, gegenstand, fachbetrieb, wartungsvertrag, zuletzt_am, turnus, naechste_faellig, notiz], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [gegenstand, immobilie, fachbetrieb, zuletzt_am, naechste_faellig]
 
 - schluessel: zaehlerstand
   name: Zählerstand
   beschreibung: Eine Ablesung eines Strom-, Gas-, Wasser- oder Wärmezählers.
+  beschriftungen: { en: { name: "Meter reading", beschreibung: "One reading of an electricity, gas, water or heat meter." } }
   titelVorlage: "{zaehlerart} {zaehlernummer} – {stand} {einheit}"
   felder:
-    - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit }
+    - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Property" } }  }
     - key: zaehlerart
       label: Zählerart
+      beschriftungen: { en: { label: "Meter type", optionen: { "Strom": "Electricity", "Gas": "Gas", "Wasser": "Water", "Wärme": "Heat", "Einspeisung": "Feed-in" } } }
       typ: auswahl
       pflicht: true
       optionen: [Strom, Gas, Wasser, Wärme, Einspeisung]
-    - { key: zaehlernummer, label: Zählernummer, typ: text, maxLen: 40 }
-    - { key: abgelesen_am, label: Abgelesen am, typ: datum, pflicht: true, max: heute }
-    - { key: stand, label: Stand, typ: zahl, pflicht: true, min: 0, nachkomma: 3 }
-    - { key: einheit, label: Einheit, typ: auswahl, optionen: [kWh, m³, MWh] }
+    - { key: zaehlernummer, label: Zählernummer, typ: text, maxLen: 40, beschriftungen: { en: { label: "Meter number" } }  }
+    - { key: abgelesen_am, label: Abgelesen am, typ: datum, pflicht: true, max: heute, beschriftungen: { en: { label: "Read on" } }  }
+    - { key: stand, label: Stand, typ: zahl, pflicht: true, min: 0, nachkomma: 3, beschriftungen: { en: { label: "Reading" } }  }
+    - { key: einheit, label: Einheit, typ: auswahl, optionen: [kWh, m³, MWh], beschriftungen: { en: { label: "Unit", optionen: { "kWh": "kWh", "m³": "m³", "MWh": "MWh" } } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [immobilie, zaehlerart, zaehlernummer, abgelesen_am, stand, einheit] }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [immobilie, zaehlerart, zaehlernummer, abgelesen_am, stand, einheit], beschriftungen: { en: { name: "General" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [zaehlerart, zaehlernummer, abgelesen_am, stand, einheit]

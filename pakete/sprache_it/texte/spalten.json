@@ -1,0 +1,10 @@
+{
+  "name.ablage.links": "Viste",
+  "name.ablage.rechts": "Cartella",
+  "name.werkbank.links": "Aree",
+  "name.werkbank.rechts": "Modifica",
+  "griff.einklappen": "Comprimi {name}",
+  "griff.ziehen": "Comprimi {name}. Trascina per cambiare la larghezza; il tasto Home ripristina la larghezza predefinita.",
+  "lasche.aufklappen": "Espandi {name}",
+  "lasche.aufklappen.titel": "Espandi {name} «{titel}»"
+}

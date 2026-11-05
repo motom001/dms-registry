@@ -2,7 +2,7 @@
 schema: 1
 id: vermietung
 name: Vermietung
-version: 1.3.0
+version: 1.4.0
 beschreibung: Mietobjekte, Wohnungen, Mietverträge, Nebenkostenabrechnungen und Ausgaben – für Vermieter mit wenigen Wohnungen, mit Fristen für Abrechnung, Mieterhöhung und Vertragsende.
 autor:
   name: Thomas Meissner

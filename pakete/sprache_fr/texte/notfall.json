@@ -1,0 +1,10 @@
+{
+  "notfall.oeffne-diesen-link-bis": "Ouvre ce lien dans ton navigateur avant {bis} et définis ton propre mot de passe :",
+  "notfall.der-link-gilt-nur": "Le lien ne fonctionne qu’une fois. Ablago supprime ce fichier tout seul au bout de 15 minutes.",
+  "notfall.benenne-den-notfall-admin": "Ensuite, renomme l’administrateur d’urgence dans l’établi ou désactive-le.",
+  "notfall.ablago-notfallzugang-angelegt": "Ablago : accès d’urgence créé",
+  "notfall.auf-dem-nas-wurde": "Un fichier RESCUE a été créé sur le NAS. Ablago a alors créé « {name} » avec « Administration complète » ; le lien de connexion se trouve uniquement dans ce fichier et est valable jusqu’à {bis}.\n\n",
+  "notfall.warst-du-das-nicht": "{wert}Si ce n’était pas toi, désactive tout de suite l’utilisateur dans l’établi sous « Utilisateurs » et vérifie qui a accès au NAS.",
+  "rescue.fuer": "{kennung} pour « {name} »",
+  "rescue.erstellt": "Créé : {zeit}"
+}

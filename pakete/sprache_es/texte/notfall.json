@@ -1,0 +1,10 @@
+{
+  "notfall.oeffne-diesen-link-bis": "Abre este enlace en tu navegador antes de {bis} y establece tu propia contraseña:",
+  "notfall.der-link-gilt-nur": "El enlace funciona solo una vez. Ablago borra este archivo solo al cabo de 15 minutos.",
+  "notfall.benenne-den-notfall-admin": "Después, cambia el nombre del administrador de emergencia en el taller o desactívalo.",
+  "notfall.ablago-notfallzugang-angelegt": "Ablago: acceso de emergencia creado",
+  "notfall.auf-dem-nas-wurde": "Se ha creado un archivo RESCUE en el NAS. Ablago ha creado entonces «{name}» con «Administración completa»; el enlace de acceso está solo en este archivo y es válido hasta {bis}.\n\n",
+  "notfall.warst-du-das-nicht": "{wert}Si no has sido tú, desactiva enseguida el usuario en el taller, en «Usuarios», y comprueba quién tiene acceso al NAS.",
+  "rescue.fuer": "{kennung} para «{name}»",
+  "rescue.erstellt": "Creado: {zeit}"
+}

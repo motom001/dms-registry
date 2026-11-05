@@ -1,0 +1,10 @@
+{
+  "name.ablage.links": "Vistas",
+  "name.ablage.rechts": "Carpeta",
+  "name.werkbank.links": "Áreas",
+  "name.werkbank.rechts": "Edición",
+  "griff.einklappen": "Contraer {name}",
+  "griff.ziehen": "Contraer {name}. Arrastra para cambiar el ancho; la tecla Inicio restablece el ancho predeterminado.",
+  "lasche.aufklappen": "Desplegar {name}",
+  "lasche.aufklappen.titel": "Desplegar {name} «{titel}»"
+}

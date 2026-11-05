@@ -1,0 +1,10 @@
+{
+  "name.ablage.links": "Görünümler",
+  "name.ablage.rechts": "Klasör",
+  "name.werkbank.links": "Bölümler",
+  "name.werkbank.rechts": "Düzenleme",
+  "griff.einklappen": "{name} daralt",
+  "griff.ziehen": "{name} daralt. Genişliği değiştirmek için sürükle; Home tuşu varsayılan genişliğe döndürür.",
+  "lasche.aufklappen": "{name} genişlet",
+  "lasche.aufklappen.titel": "{name} „{titel}” genişlet"
+}

@@ -1,0 +1,10 @@
+{
+  "name.ablage.links": "Widoki",
+  "name.ablage.rechts": "Teczka",
+  "name.werkbank.links": "Obszary",
+  "name.werkbank.rechts": "Edycja",
+  "griff.einklappen": "Zwiń {name}",
+  "griff.ziehen": "Zwiń {name}. Przeciągnij, żeby zmienić szerokość; klawisz Home przywraca domyślną szerokość.",
+  "lasche.aufklappen": "Rozwiń {name}",
+  "lasche.aufklappen.titel": "Rozwiń {name} „{titel}”"
+}

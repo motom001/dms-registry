@@ -1,0 +1,23 @@
+# Sprachpaket Niederländisch (Ablago #731, Registry #116). Schema: schema/manifest.schema.json
+# Nur Texte: texte/<bereich>.json und beschriftungen/<paket>.yaml – kein Code, keine Mappentypen (REGELN.md, „Sprachpakete“).
+schema: 1
+id: sprache_nl
+name: "Sprache: Niederländisch (Nederlands)"
+version: 1.0.0
+beschreibung: Ablago auf Niederländisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+symbol: languages
+kuerzel: NL
+kategorien: [sprachen]
+# Sprachpakete gibt es ab Ablago 0.203.0 (Ablago #731).
+dms: ">=0.203.0"
+sprache:
+  kennung: nl
+  gebietsschema: nl-NL
+  ablago: 0.203.0
+  # Erste Welle: maschinell übersetzt – Ablago und der Katalog zeigen „Maschinell übersetzt – Verbesserungen willkommen“.
+  maschinell: true
+inhalt: {}

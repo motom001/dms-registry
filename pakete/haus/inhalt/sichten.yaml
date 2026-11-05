@@ -2,19 +2,22 @@
 - schluessel: haus
   name: Haus
   beschreibung: Immobilien, Wartungen und Zählerstände
+  beschriftungen: { en: { name: "House", beschreibung: "Properties, maintenance and meter readings" } }
   typen: [immobilie, wartung, zaehlerstand]
-- { schluessel: immobilien, name: Immobilien, eltern: haus, typen: [immobilie] }
-- { schluessel: wartungen, name: Wartungen, eltern: haus, typen: [wartung] }
-- { schluessel: zaehlerstaende, name: Zählerstände, eltern: haus, typen: [zaehlerstand] }
+- { schluessel: immobilien, name: Immobilien, eltern: haus, typen: [immobilie], beschriftungen: { en: { name: "Properties" } }  }
+- { schluessel: wartungen, name: Wartungen, eltern: haus, typen: [wartung], beschriftungen: { en: { name: "Maintenance" } }  }
+- { schluessel: zaehlerstaende, name: Zählerstände, eltern: haus, typen: [zaehlerstand], beschriftungen: { en: { name: "Meter readings" } }  }
 - schluessel: wartung_faellig
   name: Wartung fällig
   beschreibung: Wartungen, die in den nächsten 3 Monaten fällig sind oder schon überfällig
+  beschriftungen: { en: { name: "Maintenance due", beschreibung: "Maintenance due in the next 3 months or already overdue" } }
   eltern: haus
   typen: [wartung]
   bedingungen:
     - { feld: naechste_faellig, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }
 - schluessel: zaehler_dieses_jahr
   name: Zählerstände dieses Jahr
+  beschriftungen: { en: { name: "Meter readings this year" } }
   eltern: zaehlerstaende
   typen: [zaehlerstand]
   bedingungen:
@@ -22,6 +25,7 @@
 - schluessel: zaehler_letztes_jahr
   name: Zählerstände letztes Jahr
   beschreibung: Zum Vergleich mit diesem Jahr
+  beschriftungen: { en: { name: "Meter readings last year", beschreibung: "To compare with this year" } }
   eltern: zaehlerstaende
   typen: [zaehlerstand]
   bedingungen:

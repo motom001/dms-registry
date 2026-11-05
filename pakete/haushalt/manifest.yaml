@@ -2,7 +2,7 @@
 schema: 1
 id: haushalt
 name: Haushalt
-version: 1.3.0
+version: 1.4.0
 beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Verträge, Versicherungen, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen.
 autor:
   name: Thomas Meissner

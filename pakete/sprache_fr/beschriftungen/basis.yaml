@@ -1,0 +1,99 @@
+# Beschriftungen des Pakets Basis (maschinell übersetzt aus dem Englischen, Registry #116).
+# Schlüssel wie in pakete/basis/inhalt/*.yaml; Ablago ergänzt sie nur, wo noch nichts in dieser Sprache steht.
+mappentypen:
+  organisation:
+    name: "Organisme"
+    beschreibung: "Entreprise, administration, cabinet médical, assurance, banque, association ou tout autre organisme avec lequel tu as affaire."
+    felder:
+      name: { label: "Nom" }
+      kuerzel: { label: "Abréviation", hilfe: "Nom court, par ex. « SWM » pour Stadtwerke Musterstadt" }
+      art: { label: "Type", optionen: { "Lieferant": "Fournisseur", "Kunde": "Client", "Bank": "Banque", "Versicherung": "Assurance", "Behörde": "Administration", "Arbeitgeber": "Employeur", "Arzt/Praxis": "Médecin/cabinet", "Handwerker": "Artisan", "Vermieter": "Bailleur", "Verein": "Association", "Versorger": "Fournisseur d’énergie", "Sonstige": "Autre" } }
+      kundennummer: { label: "Numéro de client", hilfe: "Ton propre numéro auprès de cet organisme (numéro de client, de membre, d’assuré ou de patient)" }
+      iban: { label: "IBAN", hilfe: "Compte de l’organisme, par ex. tiré de l’en-tête ou de la facture (DE89 3704 0044 0532 0130 00)" }
+      ustid: { label: "Numéro de TVA", hilfe: "par ex. DE123456789 – figure sur les factures des entreprises" }
+      beschreibung: { label: "Description" }
+      telefon: { label: "Téléphone" }
+      fax: { label: "Fax" }
+      email: { label: "E-mail", hilfe: "par ex. contact@example.org" }
+      internet: { label: "Site web", hilfe: "par ex. https://www.example.org" }
+      strasse: { label: "Rue" }
+      hausnummer: { label: "Numéro" }
+      plz: { label: "Code postal", hilfe: "Cinq chiffres en Allemagne" }
+      ort: { label: "Ville" }
+      land: { label: "Pays" }
+    register:
+      stammdaten: { name: "Données de base" }
+      kontakt: { name: "Contact" }
+      anschrift: { name: "Adresse" }
+      niederlassungen: { name: "Établissements" }
+      ansprechpartner: { name: "Interlocuteurs" }
+      dokumente: { name: "Documents" }
+      protokoll: { name: "Historique" }
+  niederlassung:
+    name: "Établissement"
+    beschreibung: "Agence, succursale, cabinet ou antenne d’un organisme – avec sa propre adresse et son propre téléphone."
+    felder:
+      organisation: { label: "Organisme" }
+      name: { label: "Nom", hilfe: "par ex. « Agence de la place du marché » ou « Cabinet Nord »" }
+      art: { label: "Type", hilfe: "par ex. agence, succursale, cabinet", optionen: { "Filiale": "Agence", "Zweigstelle": "Succursale", "Geschäftsstelle": "Bureau administratif", "Praxis": "Cabinet", "Außenstelle": "Antenne", "Werk/Lager": "Usine/entrepôt", "Büro": "Bureau", "Sonstige": "Autre" } }
+      nummer: { label: "Numéro", hilfe: "Numéro d’agence ou de site, par ex. numéro d’établissement" }
+      oeffnungszeiten: { label: "Heures d’ouverture" }
+      beschreibung: { label: "Description" }
+      telefon: { label: "Téléphone" }
+      fax: { label: "Fax" }
+      email: { label: "E-mail", hilfe: "par ex. agence@example.org" }
+      internet: { label: "Site web" }
+      strasse: { label: "Rue" }
+      hausnummer: { label: "Numéro" }
+      plz: { label: "Code postal" }
+      ort: { label: "Ville" }
+      land: { label: "Pays" }
+    register:
+      allgemein: { name: "Général" }
+      kontakt: { name: "Contact" }
+      anschrift: { name: "Adresse" }
+      ansprechpartner: { name: "Interlocuteurs" }
+      verknuepfungen: { name: "Liens" }
+      dokumente: { name: "Documents" }
+      historie: { name: "Historique" }
+  person:
+    name: "Personne"
+    beschreibung: "Quelqu’un avec qui tu as affaire – interlocuteur, médecin, bailleur, proches. Une personne n’est pas un utilisateur d’Ablago et ne peut pas se connecter."
+    felder:
+      anrede: { label: "Civilité", optionen: { "Frau": "Madame", "Herr": "Monsieur", "divers/keine": "divers/aucune" } }
+      titel: { label: "Titre", hilfe: "par ex. Dr" }
+      vorname: { label: "Prénom" }
+      nachname: { label: "Nom de famille" }
+      beziehung: { label: "Relation", optionen: { "Familie": "Famille", "Freund/in": "Ami/amie", "Ansprechpartner": "Interlocuteurs", "Arzt/Ärztin": "Médecin", "Handwerker": "Artisan", "Mieter/in": "Locataire", "Vermieter/in": "Bailleur/bailleresse", "Nachbar/in": "Voisin/voisine", "Sonstige": "Autre" } }
+      geburtstag: { label: "Anniversaire", hilfe: "Si tu veux un rappel, crée dans l’établi sous Automatisations un rappel annuel « Date atteinte »." }
+      beschreibung: { label: "Description" }
+      organisation: { label: "Organisme", hilfe: "Où la personne travaille ou pour quoi elle est l’interlocuteur" }
+      niederlassung: { label: "Établissement" }
+      funktion: { label: "Fonction", hilfe: "par ex. conseillère clientèle" }
+      abteilung: { label: "Service" }
+      telefon: { label: "Téléphone" }
+      mobil: { label: "Portable" }
+      email: { label: "E-mail", hilfe: "par ex. nom@example.org" }
+      strasse: { label: "Rue" }
+      hausnummer: { label: "Numéro" }
+      plz: { label: "Code postal" }
+      ort: { label: "Ville" }
+      land: { label: "Pays" }
+    register:
+      stammdaten: { name: "Données de base" }
+      arbeit: { name: "Travail" }
+      kontakt: { name: "Contact" }
+      anschrift: { name: "Adresse" }
+      verknuepfungen: { name: "Liens" }
+      dokumente: { name: "Documents" }
+      historie: { name: "Historique" }
+sichten:
+  organisationen: { name: "Organismes", beschreibung: "Tous les organismes" }
+  versicherungen: { name: "Assurances" }
+  banken: { name: "Banques" }
+  behoerden: { name: "Administrations" }
+  aerzte: { name: "Médecins et cabinets" }
+  niederlassungen: { name: "Établissements" }
+  personen: { name: "Personnes", beschreibung: "Contacts – pas des utilisateurs d’Ablago" }
+  familie: { name: "Famille et amis" }
+  ansprechpartner: { name: "Interlocuteurs" }

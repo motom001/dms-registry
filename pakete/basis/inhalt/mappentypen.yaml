@@ -2,11 +2,13 @@
 - schluessel: organisation
   name: Organisation
   beschreibung: Firma, Behörde, Arztpraxis, Versicherung, Bank, Verein oder andere Stelle, mit der du zu tun hast.
+  beschriftungen: { en: { name: "Organisation", beschreibung: "Company, authority, doctor’s practice, insurer, bank, club or any other body you deal with." } }
   titelVorlage: "{name}"
   felder:
     # Stammdaten
     - key: name
       label: Name
+      beschriftungen: { en: { label: "Name" } }
       typ: text
       pflicht: true
       eindeutig: true
@@ -15,17 +17,20 @@
       erkennung: {}
     - key: kuerzel
       label: Kürzel
+      beschriftungen: { en: { label: "Short name", hilfe: "Abbreviation, e.g. “SWM” for Stadtwerke Musterstadt" } }
       typ: text
       maxLen: 20
       hilfe: Kurzname, z. B. „SWM“ für Stadtwerke Musterstadt
       erkennung: { art: name }
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Lieferant": "Supplier", "Kunde": "Customer", "Bank": "Bank", "Versicherung": "Insurance", "Behörde": "Authority", "Arbeitgeber": "Employer", "Arzt/Praxis": "Doctor/practice", "Handwerker": "Tradesperson", "Vermieter": "Landlord", "Verein": "Club", "Versorger": "Utility", "Sonstige": "Other" } } }
       typ: auswahl
       mehrfach: true
       optionen: [Lieferant, Kunde, Bank, Versicherung, Behörde, Arbeitgeber, Arzt/Praxis, Handwerker, Vermieter, Verein, Versorger, Sonstige]
     - key: kundennummer
       label: Kundennummer
+      beschriftungen: { en: { label: "Customer number", hilfe: "Your own number with this organisation (customer, membership, policyholder or patient number)" } }
       typ: text
       maxLen: 60
       hilfe: Deine eigene Nummer bei dieser Organisation (Kunden-, Mitglieds-, Versicherten- oder Patientennummer)
@@ -34,6 +39,7 @@
     # Ab 1.2.0: IBAN und Umsatzsteuer-Id der Organisation – starke Merkmale für die Erkennung.
     - key: iban
       label: IBAN
+      beschriftungen: { en: { label: "IBAN", hilfe: "The organisation’s account, e.g. from the letterhead or the invoice (DE89 3704 0044 0532 0130 00)" } }
       typ: text
       maxLen: 42
       muster: "[A-Z]{2}[0-9]{2}( ?[A-Z0-9]){11,30}"
@@ -43,28 +49,33 @@
       erkennung: { art: iban }
     - key: ustid
       label: Umsatzsteuer-Id
+      beschriftungen: { en: { label: "VAT ID", hilfe: "e.g. DE123456789 – shown on invoices from companies" } }
       typ: text
       maxLen: 20
       hilfe: z. B. DE123456789 – steht auf Rechnungen von Firmen
       erkennung: { art: ustid }
     - key: beschreibung
       label: Beschreibung
+      beschriftungen: { en: { label: "Description" } }
       typ: langtext
     # Kontakt
     - key: telefon
       label: Telefon
+      beschriftungen: { en: { label: "Phone" } }
       typ: text
       maxLen: 40
       format: telefon
       erkennung: {}
     - key: fax
       label: Fax
+      beschriftungen: { en: { label: "Fax" } }
       typ: text
       maxLen: 40
       format: telefon
       erkennung: {}
     - key: email
       label: E-Mail
+      beschriftungen: { en: { label: "Email", hilfe: "e.g. contact@example.org" } }
       typ: text
       maxLen: 200
       muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
@@ -73,6 +84,7 @@
       erkennung: {}
     - key: internet
       label: Internetseite
+      beschriftungen: { en: { label: "Website", hilfe: "e.g. https://www.example.org" } }
       typ: text
       maxLen: 200
       format: internetseite
@@ -82,16 +94,19 @@
     # Anschrift
     - key: strasse
       label: Straße
+      beschriftungen: { en: { label: "Street" } }
       typ: text
       maxLen: 120
       erkennung: {}
     - key: hausnummer
       label: Hausnummer
+      beschriftungen: { en: { label: "House number" } }
       typ: text
       maxLen: 10
       erkennung: {}
     - key: plz
       label: PLZ
+      beschriftungen: { en: { label: "Postcode", hilfe: "Five digits in Germany" } }
       typ: text
       maxLen: 10
       hilfe: In Deutschland fünfstellig
@@ -101,42 +116,51 @@
       erkennung: {}
     - key: ort
       label: Ort
+      beschriftungen: { en: { label: "Town" } }
       typ: text
       maxLen: 80
       erkennung: {}
     - key: land
       label: Land
+      beschriftungen: { en: { label: "Country" } }
       typ: text
       maxLen: 60
       standard: Deutschland
   register:
     - key: stammdaten
       name: Stammdaten
+      beschriftungen: { en: { name: "Basic data" } }
       art: felder
       felder: [name, kuerzel, art, kundennummer, iban, ustid, beschreibung]
     - key: kontakt
       name: Kontakt
+      beschriftungen: { en: { name: "Contact" } }
       art: felder
       felder: [telefon, fax, email, internet]
     - key: anschrift
       name: Anschrift
+      beschriftungen: { en: { name: "Address" } }
       art: felder
       felder: [strasse, hausnummer, plz, ort, land]
     # Ab 1.1.0: Niederlassungen und Ansprechpartner, die auf diese Organisation verweisen.
     - key: niederlassungen
       name: Niederlassungen
+      beschriftungen: { en: { name: "Branches" } }
       art: verknuepfungen
       quellen: [{ typ: niederlassung, feld: organisation }]
     - key: ansprechpartner
       name: Ansprechpartner
+      beschriftungen: { en: { name: "Contacts" } }
       art: verknuepfungen
       quellen: [{ typ: person, feld: organisation }]
     - key: dokumente
       name: Dokumente
+      beschriftungen: { en: { name: "Documents" } }
       art: dokumente
     # Im DMS seit 0.73 „Historie“ (vorhandene Installationen hat die Migration 036 schon umbenannt).
     - key: protokoll
       name: Historie
+      beschriftungen: { en: { name: "History" } }
       art: protokoll
   trefferliste: [name, art, ort, telefon]
 
@@ -144,10 +168,12 @@
 - schluessel: niederlassung
   name: Niederlassung
   beschreibung: Filiale, Zweigstelle, Praxis oder Außenstelle einer Organisation – mit eigener Anschrift und eigenem Telefon.
+  beschriftungen: { en: { name: "Branch", beschreibung: "Branch, office, practice or outpost of an organisation – with its own address and phone." } }
   titelVorlage: "{organisation} – {name}"
   felder:
     - key: organisation
       label: Organisation
+      beschriftungen: { en: { label: "Organisation" } }
       typ: referenz
       ziel: organisation
       verweisart: zugehoerigkeit
@@ -155,6 +181,7 @@
       erkennung: {}
     - key: name
       label: Name
+      beschriftungen: { en: { label: "Name", hilfe: "e.g. “Market Square branch” or “North practice”" } }
       typ: text
       pflicht: true
       maxLen: 120
@@ -162,98 +189,108 @@
       erkennung: {}
     - key: art
       label: Art
+      beschriftungen: { en: { label: "Type", hilfe: "e.g. branch, office, practice", optionen: { "Filiale": "Branch", "Zweigstelle": "Branch office", "Geschäftsstelle": "Office", "Praxis": "Practice", "Außenstelle": "Outpost", "Werk/Lager": "Plant/warehouse", "Büro": "Office", "Sonstige": "Other" } } }
       typ: auswahl
       optionen: [Filiale, Zweigstelle, Geschäftsstelle, Praxis, Außenstelle, Werk/Lager, Büro, Sonstige]
       hilfe: z. B. Filiale, Zweigstelle, Praxis
     - key: nummer
       label: Nummer
+      beschriftungen: { en: { label: "Number", hilfe: "Branch or site number, e.g. establishment number" } }
       typ: text
       maxLen: 40
       hilfe: Filial- oder Stellennummer, z. B. Betriebsstättennummer
       erkennung: { art: nummer }
     - key: oeffnungszeiten
       label: Öffnungszeiten
+      beschriftungen: { en: { label: "Opening hours" } }
       typ: langtext
     - key: beschreibung
       label: Beschreibung
+      beschriftungen: { en: { label: "Description" } }
       typ: langtext
-    - { key: telefon, label: Telefon, typ: text, maxLen: 40, format: telefon, erkennung: {} }
-    - { key: fax, label: Fax, typ: text, maxLen: 40, format: telefon, erkennung: {} }
+    - { key: telefon, label: Telefon, typ: text, maxLen: 40, format: telefon, erkennung: {}, beschriftungen: { en: { label: "Phone" } }  }
+    - { key: fax, label: Fax, typ: text, maxLen: 40, format: telefon, erkennung: {}, beschriftungen: { en: { label: "Fax" } }  }
     - key: email
       label: E-Mail
+      beschriftungen: { en: { label: "Email", hilfe: "e.g. branch@example.org" } }
       typ: text
       maxLen: 200
       muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
       hilfe: z. B. filiale@beispiel.de
       format: email
       erkennung: {}
-    - { key: internet, label: Internetseite, typ: text, maxLen: 200, format: internetseite, erkennung: {} }
-    - { key: strasse, label: Straße, typ: text, maxLen: 120, erkennung: {} }
-    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10, erkennung: {} }
-    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land, erkennung: {} }
-    - { key: ort, label: Ort, typ: text, maxLen: 80, erkennung: {} }
-    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
+    - { key: internet, label: Internetseite, typ: text, maxLen: 200, format: internetseite, erkennung: {}, beschriftungen: { en: { label: "Website" } }  }
+    - { key: strasse, label: Straße, typ: text, maxLen: 120, erkennung: {}, beschriftungen: { en: { label: "Street" } }  }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10, erkennung: {}, beschriftungen: { en: { label: "House number" } }  }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land, erkennung: {}, beschriftungen: { en: { label: "Postcode" } }  }
+    - { key: ort, label: Ort, typ: text, maxLen: 80, erkennung: {}, beschriftungen: { en: { label: "Town" } }  }
+    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland, beschriftungen: { en: { label: "Country" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [organisation, name, art, nummer, oeffnungszeiten, beschreibung] }
-    - { key: kontakt, name: Kontakt, art: felder, felder: [telefon, fax, email, internet] }
-    - { key: anschrift, name: Anschrift, art: felder, felder: [strasse, hausnummer, plz, ort, land] }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [organisation, name, art, nummer, oeffnungszeiten, beschreibung], beschriftungen: { en: { name: "General" } }  }
+    - { key: kontakt, name: Kontakt, art: felder, felder: [telefon, fax, email, internet], beschriftungen: { en: { name: "Contact" } }  }
+    - { key: anschrift, name: Anschrift, art: felder, felder: [strasse, hausnummer, plz, ort, land], beschriftungen: { en: { name: "Address" } }  }
     - key: ansprechpartner
       name: Ansprechpartner
+      beschriftungen: { en: { name: "Contacts" } }
       art: verknuepfungen
       quellen: [{ typ: person, feld: niederlassung }]
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [organisation, name, art, ort, telefon]
 
 # Mappentyp Person (ab 1.1.0): ein Kontakt – kein Benutzer des DMS.
 - schluessel: person
   name: Person
   beschreibung: Ein Mensch, mit dem du zu tun hast – Ansprechpartner, Ärztin, Vermieter, Verwandte. Eine Person ist kein Benutzer des DMS und kann sich nicht anmelden.
+  beschriftungen: { en: { name: "Person", beschreibung: "Someone you deal with – a contact, a doctor, a landlord, relatives. A person isn’t a user of Ablago and can’t sign in." } }
   titelVorlage: "{titel} {vorname} {nachname}"
   felder:
-    - { key: anrede, label: Anrede, typ: auswahl, optionen: [Frau, Herr, divers/keine] }
-    - { key: titel, label: Titel, typ: text, maxLen: 40, hilfe: z. B. Dr. }
+    - { key: anrede, label: Anrede, typ: auswahl, optionen: [Frau, Herr, divers/keine], beschriftungen: { en: { label: "Title", optionen: { "Frau": "Ms", "Herr": "Mr", "divers/keine": "diverse/none" } } }  }
+    - { key: titel, label: Titel, typ: text, maxLen: 40, hilfe: z. B. Dr., beschriftungen: { en: { label: "Academic title", hilfe: "e.g. Dr" } }  }
     # Für die Erkennung (DMS 0.113): „Visitenkarte scannen“ füllt die markierten Felder.
-    - { key: vorname, label: Vorname, typ: text, maxLen: 80, erkennung: {} }
-    - { key: nachname, label: Nachname, typ: text, pflicht: true, maxLen: 80, erkennung: {} }
+    - { key: vorname, label: Vorname, typ: text, maxLen: 80, erkennung: {}, beschriftungen: { en: { label: "First name" } }  }
+    - { key: nachname, label: Nachname, typ: text, pflicht: true, maxLen: 80, erkennung: {}, beschriftungen: { en: { label: "Last name" } }  }
     - key: beziehung
       label: Beziehung
+      beschriftungen: { en: { label: "Relationship", optionen: { "Familie": "Family", "Freund/in": "Friend", "Ansprechpartner": "Contacts", "Arzt/Ärztin": "Doctor", "Handwerker": "Tradesperson", "Mieter/in": "Tenant", "Vermieter/in": "Landlord", "Nachbar/in": "Neighbour", "Sonstige": "Other" } } }
       typ: auswahl
       mehrfach: true
       optionen: [Familie, Freund/in, Ansprechpartner, Arzt/Ärztin, Handwerker, Mieter/in, Vermieter/in, Nachbar/in, Sonstige]
     - key: geburtstag
       label: Geburtstag
+      beschriftungen: { en: { label: "Birthday", hilfe: "If you want a reminder, add a yearly “Date reached” automation in the Workbench under Automations." } }
       typ: datum
       # Ab 1.3.0 (DMS 0.121): nicht in der Zukunft.
       max: heute
       hilfe: "Wer erinnert werden möchte, legt in der Werkbank unter Automatisierungen eine jährliche Erinnerung „Datum erreicht“ an."
-    - { key: beschreibung, label: Beschreibung, typ: langtext }
-    - { key: organisation, label: Organisation, typ: referenz, ziel: organisation, verweisart: bezug, hilfe: Wo die Person arbeitet bzw. wofür sie Ansprechpartner ist, erkennung: {} }
-    - { key: niederlassung, label: Niederlassung, typ: referenz, ziel: niederlassung, verweisart: bezug }
-    - { key: funktion, label: Funktion, typ: text, maxLen: 80, hilfe: z. B. Kundenberaterin, erkennung: {} }
-    - { key: abteilung, label: Abteilung, typ: text, maxLen: 80 }
-    - { key: telefon, label: Telefon, typ: text, maxLen: 40, format: telefon, erkennung: {} }
-    - { key: mobil, label: Mobil, typ: text, maxLen: 40, format: telefon, erkennung: {} }
+    - { key: beschreibung, label: Beschreibung, typ: langtext, beschriftungen: { en: { label: "Description" } }  }
+    - { key: organisation, label: Organisation, typ: referenz, ziel: organisation, verweisart: bezug, hilfe: Wo die Person arbeitet bzw. wofür sie Ansprechpartner ist, erkennung: {}, beschriftungen: { en: { label: "Organisation", hilfe: "Where the person works or what they are the contact for" } }  }
+    - { key: niederlassung, label: Niederlassung, typ: referenz, ziel: niederlassung, verweisart: bezug, beschriftungen: { en: { label: "Branch" } }  }
+    - { key: funktion, label: Funktion, typ: text, maxLen: 80, hilfe: z. B. Kundenberaterin, erkennung: {}, beschriftungen: { en: { label: "Role", hilfe: "e.g. customer adviser" } }  }
+    - { key: abteilung, label: Abteilung, typ: text, maxLen: 80, beschriftungen: { en: { label: "Department" } }  }
+    - { key: telefon, label: Telefon, typ: text, maxLen: 40, format: telefon, erkennung: {}, beschriftungen: { en: { label: "Phone" } }  }
+    - { key: mobil, label: Mobil, typ: text, maxLen: 40, format: telefon, erkennung: {}, beschriftungen: { en: { label: "Mobile" } }  }
     - key: email
       label: E-Mail
+      beschriftungen: { en: { label: "Email", hilfe: "e.g. name@example.org" } }
       typ: text
       maxLen: 200
       muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
       hilfe: z. B. name@beispiel.de
       format: email
       erkennung: {}
-    - { key: strasse, label: Straße, typ: text, maxLen: 120, erkennung: {} }
-    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10, erkennung: {} }
-    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land, erkennung: {} }
-    - { key: ort, label: Ort, typ: text, maxLen: 80, erkennung: {} }
-    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland }
+    - { key: strasse, label: Straße, typ: text, maxLen: 120, erkennung: {}, beschriftungen: { en: { label: "Street" } }  }
+    - { key: hausnummer, label: Hausnummer, typ: text, maxLen: 10, erkennung: {}, beschriftungen: { en: { label: "House number" } }  }
+    - { key: plz, label: PLZ, typ: text, maxLen: 10, format: plz, landFeld: land, erkennung: {}, beschriftungen: { en: { label: "Postcode" } }  }
+    - { key: ort, label: Ort, typ: text, maxLen: 80, erkennung: {}, beschriftungen: { en: { label: "Town" } }  }
+    - { key: land, label: Land, typ: text, maxLen: 60, standard: Deutschland, beschriftungen: { en: { label: "Country" } }  }
   register:
-    - { key: stammdaten, name: Stammdaten, art: felder, felder: [anrede, titel, vorname, nachname, beziehung, geburtstag, beschreibung] }
-    - { key: arbeit, name: Arbeit, art: felder, felder: [organisation, niederlassung, funktion, abteilung] }
-    - { key: kontakt, name: Kontakt, art: felder, felder: [telefon, mobil, email] }
-    - { key: anschrift, name: Anschrift, art: felder, felder: [strasse, hausnummer, plz, ort, land] }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen }
-    - { key: dokumente, name: Dokumente, art: dokumente }
-    - { key: historie, name: Historie, art: protokoll }
+    - { key: stammdaten, name: Stammdaten, art: felder, felder: [anrede, titel, vorname, nachname, beziehung, geburtstag, beschreibung], beschriftungen: { en: { name: "Basic data" } }  }
+    - { key: arbeit, name: Arbeit, art: felder, felder: [organisation, niederlassung, funktion, abteilung], beschriftungen: { en: { name: "Work" } }  }
+    - { key: kontakt, name: Kontakt, art: felder, felder: [telefon, mobil, email], beschriftungen: { en: { name: "Contact" } }  }
+    - { key: anschrift, name: Anschrift, art: felder, felder: [strasse, hausnummer, plz, ort, land], beschriftungen: { en: { name: "Address" } }  }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [nachname, vorname, beziehung, organisation, telefon]

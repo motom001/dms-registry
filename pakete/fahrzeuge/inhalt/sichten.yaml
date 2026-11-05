@@ -2,12 +2,14 @@
 - schluessel: fahrzeuge
   name: Fahrzeuge
   beschreibung: Fahrzeuge und Werkstattrechnungen
+  beschriftungen: { en: { name: "Vehicles", beschreibung: "Vehicles and garage invoices" } }
   typen: [fahrzeug, werkstattrechnung]
-- { schluessel: alle_fahrzeuge, name: Alle Fahrzeuge, eltern: fahrzeuge, typen: [fahrzeug] }
-- { schluessel: werkstattrechnungen, name: Werkstattrechnungen, eltern: fahrzeuge, typen: [werkstattrechnung] }
+- { schluessel: alle_fahrzeuge, name: Alle Fahrzeuge, eltern: fahrzeuge, typen: [fahrzeug], beschriftungen: { en: { name: "All vehicles" } }  }
+- { schluessel: werkstattrechnungen, name: Werkstattrechnungen, eltern: fahrzeuge, typen: [werkstattrechnung], beschriftungen: { en: { name: "Garage invoices" } }  }
 - schluessel: hu_faellig
   name: HU fällig
   beschreibung: Fahrzeuge, deren Hauptuntersuchung in den nächsten 3 Monaten fällig oder schon überfällig ist
+  beschriftungen: { en: { name: "MOT due", beschreibung: "Vehicles whose main inspection is due in the next 3 months or already overdue" } }
   eltern: fahrzeuge
   typen: [fahrzeug]
   bedingungen:

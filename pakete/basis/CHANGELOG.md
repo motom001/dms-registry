@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.5.0
+
+- Neu: **englische Beschriftungen** für Mappentypen, Felder, Auswahlwerte, Register und Ansichten (`beschriftungen.en`, Registry #116 und #135). Ablago ab 0.200.0 zeigt sie, wenn jemand Englisch gewählt hat; ein Update ergänzt sie an installierten Mappentypen, ohne eigene Beschriftungen zu überschreiben. Ältere Ablago-Versionen übergehen sie – dafür braucht es kein höheres `dms`. Gespeicherte Werte ändern sich nicht.
+
 ## 1.4.2
 
 - Text: Hinweis am Geburtstag – eine jährliche Erinnerung legt man seit Ablago 0.177.0 als Automatisierung „Datum erreicht“ an.

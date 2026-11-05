@@ -1,0 +1,10 @@
+{
+  "name.ablage.links": "Vues",
+  "name.ablage.rechts": "Dossier",
+  "name.werkbank.links": "Domaines",
+  "name.werkbank.rechts": "Édition",
+  "griff.einklappen": "Replier {name}",
+  "griff.ziehen": "Replier {name}. Fais glisser pour changer la largeur ; la touche Début rétablit la largeur par défaut.",
+  "lasche.aufklappen": "Déplier {name}",
+  "lasche.aufklappen.titel": "Déplier {name} « {titel} »"
+}

@@ -2,24 +2,28 @@
 - schluessel: vermietung
   name: Vermietung
   beschreibung: Mietobjekte, Wohnungen, Mietverträge, Nebenkosten und Ausgaben
+  beschriftungen: { en: { name: "Letting", beschreibung: "Rental properties, units, tenancy agreements, service charges and expenses" } }
   typen: [mietobjekt, wohnung, mietvertrag, nebenkostenabrechnung, ausgabe]
-- { schluessel: mietobjekte, name: Mietobjekte, eltern: vermietung, typen: [mietobjekt] }
-- { schluessel: wohnungen, name: Wohnungen, eltern: vermietung, typen: [wohnung] }
-- { schluessel: mietvertraege, name: Mietverträge, eltern: vermietung, typen: [mietvertrag] }
+- { schluessel: mietobjekte, name: Mietobjekte, eltern: vermietung, typen: [mietobjekt], beschriftungen: { en: { name: "Rental properties" } }  }
+- { schluessel: wohnungen, name: Wohnungen, eltern: vermietung, typen: [wohnung], beschriftungen: { en: { name: "Units" } }  }
+- { schluessel: mietvertraege, name: Mietverträge, eltern: vermietung, typen: [mietvertrag], beschriftungen: { en: { name: "Tenancy agreements" } }  }
 - schluessel: mietvertraege_laufend
   name: Laufende Mietverträge
   beschreibung: Verträge, die laufen oder gekündigt sind – ohne beendete
+  beschriftungen: { en: { name: "Running tenancy agreements", beschreibung: "Agreements that are running or terminated – without ended ones" } }
   eltern: mietvertraege
   typen: [mietvertrag]
   bedingungen:
     - { feld: stand, operator: einerVon, wert: [läuft, gekündigt] }
-- { schluessel: nebenkosten, name: Nebenkostenabrechnungen, eltern: vermietung, typen: [nebenkostenabrechnung] }
+- { schluessel: nebenkosten, name: Nebenkostenabrechnungen, eltern: vermietung, typen: [nebenkostenabrechnung], beschriftungen: { en: { name: "Service charge statements" } }  }
 - schluessel: ausgaben
   name: Ausgaben
+  beschriftungen: { en: { name: "Expenses" } }
   eltern: vermietung
   typen: [ausgabe]
 - schluessel: ausgaben_dieses_jahr
   name: Ausgaben dieses Jahr
+  beschriftungen: { en: { name: "Expenses this year" } }
   eltern: ausgaben
   typen: [ausgabe]
   bedingungen:
@@ -27,6 +31,7 @@
 - schluessel: ausgaben_letztes_jahr
   name: Ausgaben letztes Jahr
   beschreibung: Für die Anlage V der letzten Steuererklärung
+  beschriftungen: { en: { name: "Expenses last year", beschreibung: "For the Anlage V of the last tax return" } }
   eltern: ausgaben
   typen: [ausgabe]
   bedingungen:
@@ -34,6 +39,7 @@
 - schluessel: ausgaben_umlagefaehig
   name: Umlagefähig letztes Jahr
   beschreibung: Was in die nächste Nebenkostenabrechnung gehört
+  beschriftungen: { en: { name: "Rechargeable last year", beschreibung: "What belongs in the next service charge statement" } }
   eltern: ausgaben
   typen: [ausgabe]
   bedingungen:
@@ -42,6 +48,7 @@
 - schluessel: abrechnung_offen
   name: Abrechnung offen
   beschreibung: Nebenkostenabrechnungen, die noch nicht versendet sind
+  beschriftungen: { en: { name: "Statement outstanding", beschreibung: "Service charge statements not yet sent" } }
   eltern: vermietung
   typen: [nebenkostenabrechnung]
   bedingungen:
@@ -49,6 +56,7 @@
 - schluessel: mieterhoehung
   name: Mieterhöhung möglich
   beschreibung: Laufende Verträge, bei denen in den nächsten 3 Monaten eine Erhöhung möglich ist oder schon möglich war
+  beschriftungen: { en: { name: "Rent increase possible", beschreibung: "Running agreements where an increase is possible in the next 3 months or was already possible" } }
   eltern: vermietung
   typen: [mietvertrag]
   bedingungen:
@@ -57,6 +65,7 @@
 - schluessel: vertrag_endet
   name: Vertrag endet bald
   beschreibung: Mietverträge, die in den nächsten 3 Monaten enden
+  beschriftungen: { en: { name: "Agreement ending soon", beschreibung: "Tenancy agreements ending in the next 3 months" } }
   eltern: vermietung
   typen: [mietvertrag]
   bedingungen:
