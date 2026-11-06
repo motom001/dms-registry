@@ -18,7 +18,7 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 - **Eigentümer/Vermieter** und **Fachbetrieb** sind **Organisationen** aus dem Paket Basis.
 - **Wartungsvertrag** ist ein **Vertrag** aus dem Paket Haushalt (Art z. B. „Sonstiges“).
-- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** von Ablago – wo Grundbuchauszug, Kauf- oder Mietvertrag liegen.
+- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** aus dem Paket Basis – wo Grundbuchauszug, Kauf- oder Mietvertrag liegen.
 
 **Fristen:** Trag nach jeder Wartung *Zuletzt am* und *Nächste fällig* ein („Zuletzt am“ plus Turnus). Ablago erinnert 30 Tage vorher unter **Zu erledigen** und in der Ansicht **Anstehend**.
 
@@ -28,8 +28,8 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.121 (Feldformate und Datumsgrenzen)
-- Pakete **Basis** ab 1.0.0 und **Haushalt** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
+- Ablago ab Version 0.212 (Ablageort aus dem Paket Basis; vorher 0.121 für Feldformate und Datumsgrenzen)
+- Pakete **Basis** ab 1.6.0 (Ablageort) und **Haushalt** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
 

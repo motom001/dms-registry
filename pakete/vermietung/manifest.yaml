@@ -2,7 +2,7 @@
 schema: 1
 id: vermietung
 name: Vermietung
-version: 1.4.0
+version: 1.4.1
 beschreibung: Mietobjekte, Wohnungen, Mietverträge, Nebenkostenabrechnungen und Ausgaben – für Vermieter mit wenigen Wohnungen, mit Fristen für Abrechnung, Mieterhöhung und Vertragsende.
 autor:
   name: Thomas Meissner
@@ -13,9 +13,11 @@ lizenz: Apache-2.0
 # 0.121.0: Feldformate und Datumsgrenzen (format, landFeld, min/max bei Datum, DMS #535)
 # 0.127.0: Wortlisten für die Suche (inhalt.wortlisten, DMS #356)
 # 0.177.0: mitgelieferte Automatisierungen (inhalt.automatisierungen, Ablago #712) – das Datumsfeld erinnert nicht mehr selbst
-dms: ">=0.177.0"
+# 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
+dms: ">=0.212.0"
 abhaengigkeiten:
-  basis: ">=1.1.0"
+  # Ablageort gibt es ab Basis 1.6.0 (dms-registry #138).
+  basis: ">=1.6.0"
   haushalt: ">=1.0.0"
   haus: ">=1.0.0"
 inhalt:

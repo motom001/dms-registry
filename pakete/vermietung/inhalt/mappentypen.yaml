@@ -27,7 +27,7 @@
     - { key: verwalter, label: Hausverwaltung, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Eigentumswohnungen die WEG-Verwaltung, beschriftungen: { en: { label: "Property management", hilfe: "For owned flats, the owners’ association management" } }  }
     # Für die Erkennung (DMS 0.113): Post mit diesem Aktenzeichen gehört zu diesem Mietobjekt.
     - { key: grundsteuer_az, label: Aktenzeichen Grundsteuer, typ: text, maxLen: 40, hilfe: Steht auf dem Grundsteuerbescheid, erkennung: { art: nummer }, beschriftungen: { en: { label: "Property tax reference", hilfe: "Shown on the property tax assessment" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Kaufvertrag, Grundbuchauszug und Teilungserklärung auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the purchase contract is" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo Kaufvertrag, Grundbuchauszug und Teilungserklärung auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the purchase contract is" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, einheiten, immobilie, verwalter, grundsteuer_az, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - key: wohnungen
@@ -127,7 +127,7 @@
     - { key: kaution, label: Kaution, typ: betrag, waehrung: EUR, min: 0, beschriftungen: { en: { label: "Deposit" } }  }
     - { key: kaution_konto, label: Kaution angelegt bei, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank des Kautionskontos, beschriftungen: { en: { label: "Deposit held at", hilfe: "Bank of the deposit account" } }  }
     - { key: kaution_zurueck_am, label: Kaution zurückgezahlt am, typ: datum, max: heute, beschriftungen: { en: { label: "Deposit returned on" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der unterschriebene Mietvertrag und das Übergabeprotokoll liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the signed tenancy agreement and the handover record are kept" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der unterschriebene Mietvertrag und das Übergabeprotokoll liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the signed tenancy agreement and the handover record are kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [wohnung, mieter, stand, beginn, gekuendigt_am, ende, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: miete, name: Miete, art: felder, felder: [mietart, kaltmiete, vorauszahlung, sonstiges, mieterhoehung_ab], beschriftungen: { en: { name: "Rent" } }  }
@@ -185,7 +185,7 @@
     - { key: firma, label: Firma, typ: referenz, ziel: "basis:organisation", verweisart: bezug, erkennung: {}, beschriftungen: { en: { label: "Company" } }  }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "haushalt:steuerjahr", verweisart: bezug, hilfe: Für die Anlage V, beschriftungen: { en: { label: "Tax year", hilfe: "For the rental income form (Anlage V)" } }  }
     - { key: notiz, label: Notiz, typ: langtext, beschriftungen: { en: { label: "Note" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, wohnung, art, datum, betrag, umlagefaehig, firma, steuerjahr, notiz, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }

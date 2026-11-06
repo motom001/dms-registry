@@ -18,7 +18,7 @@ Das Paket **Fahrzeuge** bringt die Mappentypen **Fahrzeug** und **Werkstattrechn
 - **Versicherung** ist eine **Versicherung** und **Finanzierung/Leasing** ein **Vertrag** aus dem Paket Haushalt.
 - **Werkstatt** ist eine **Organisation** aus dem Paket Basis.
 - **Halter** ist eine **Person** aus dem Paket Basis (Verweisart Bezug). An der Person und an der Versicherung siehst du unter *Verknüpfungen*, welche Fahrzeuge auf sie verweisen.
-- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** von Ablago – beim Fahrzeug der Fahrzeugbrief (Zulassungsbescheinigung Teil II), z. B. im Safe.
+- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** aus dem Paket Basis – beim Fahrzeug der Fahrzeugbrief (Zulassungsbescheinigung Teil II), z. B. im Safe.
 
 **Ansichten:** *Fahrzeuge* mit allem und darunter *Alle Fahrzeuge*, *Werkstattrechnungen* und *HU fällig* – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist.
 
@@ -28,8 +28,8 @@ Das Paket **Fahrzeuge** bringt die Mappentypen **Fahrzeug** und **Werkstattrechn
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.127 (Wortlisten für die Suche; vorher 0.121 für Halter als Verweis, Umwandlung von Text in Verweise, Feldformate und Datumsgrenzen)
-- Pakete **Basis** ab 1.1.0 (Person) und **Haushalt** ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert
+- Ablago ab Version 0.212 (Ablageort aus dem Paket Basis; vorher 0.127 für Wortlisten für die Suche)
+- Pakete **Basis** ab 1.6.0 (Person, Ablageort) und **Haushalt** ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
 

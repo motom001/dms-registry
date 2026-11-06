@@ -62,6 +62,10 @@ DATUM = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 VERWEISE = {'mappentyp', 'feld', 'benutzer', 'rolle', 'sicht'}
 # Mappentypen, die das DMS selbst mitbringt (ab 0.75.0); Verweis als dms:<schluessel>.
 DMS_TYPEN = {'ablageort', 'benutzer', 'rolle'}
+# Veraltete Verweise (DMS #883, Registry #138): Den Ablageort bringt ab DMS 0.212.0 das Paket Basis (1.6.0) mit.
+# dms:ablageort gilt im DMS bis 1.0 weiter als Alias für basis:ablageort – solange gibt es hier eine Warnung statt
+# eines Fehlers.
+DMS_ALIAS = {'dms:ablageort': 'basis:ablageort'}
 
 
 def dms_fehler(v: str, wo: str) -> str | None:
@@ -1188,25 +1192,52 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     return fehler
 
 
-def hinweise(ordner: Path) -> list[str]:
-    """Hinweise ohne Fehler (#98): Paket ohne Symbol, Manifest und werkzeuge/kategorien.yaml verschieden.
+def veraltete_verweise(ordner: Path) -> list[str]:
+    """Warnungen für veraltete Verweise (DMS #883): jeder Wert dms:ablageort im Manifest und in den Inhalten."""
+    gefunden: dict[str, set[str]] = {}
 
-    Leer, wenn pruefen.py allein läuft (ohne vorlagen.py und kategorien.yaml, z. B. im Test des DMS)."""
+    def suche(w, datei: str):
+        if isinstance(w, str) and w in DMS_ALIAS:
+            gefunden.setdefault(w, set()).add(datei)
+        elif isinstance(w, dict):
+            for x in w.values():
+                suche(x, datei)
+        elif isinstance(w, list):
+            for x in w:
+                suche(x, datei)
+
+    for pfad in [ordner / 'manifest.yaml', *sorted((ordner / 'inhalt').glob('*.yaml'))]:
+        if not pfad.is_file():
+            continue
+        try:
+            suche(yaml.safe_load(pfad.read_text(encoding='utf-8')), pfad.relative_to(ordner).as_posix())
+        except Exception:  # noqa: BLE001 – meldet schon pruefe()
+            continue
+    return [f'{", ".join(sorted(dateien))}: „{alt}“ ist veraltet – bitte „{DMS_ALIAS[alt]}“ (Paket Basis, abhaengigkeiten: '
+            f'basis: ">=1.6.0"). Das DMS versteht „{alt}“ nur noch bis 1.0.' for alt, dateien in sorted(gefunden.items())]
+
+
+def hinweise(ordner: Path) -> list[str]:
+    """Hinweise ohne Fehler (#98): veraltete Verweise (DMS #883), Paket ohne Symbol, Manifest und
+    werkzeuge/kategorien.yaml verschieden.
+
+    Ohne vorlagen.py und kategorien.yaml (pruefen.py allein, z. B. im Test des DMS) nur die veralteten Verweise."""
+    veraltet = veraltete_verweise(ordner) if (ordner / 'manifest.yaml').exists() else []
     if ordner.name == 'vorlage' or not (ordner / 'manifest.yaml').exists():
-        return []
+        return veraltet
     if not (WURZEL / 'werkzeuge' / 'vorlagen.py').exists() or not (WURZEL / 'werkzeuge' / 'kategorien.yaml').exists():
-        return []
+        return veraltet
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import vorlagen  # erst hier: pruefen.py läuft auch allein
     try:
         m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
     except Exception:  # noqa: BLE001 – meldet schon pruefe()
-        return []
+        return veraltet
     if not isinstance(m, dict):
-        return []
+        return veraltet
     daten = vorlagen.lies_kategorien()
     pid = str(m.get('id', ordner.name))
-    h = vorlagen.abweichungen(pid, m, daten)
+    h = veraltet + vorlagen.abweichungen(pid, m, daten)
     if not vorlagen.symbol_von(pid, daten, m)[0]:
         h.append('symbol: Das Paket hat kein Symbol – der Katalog zeigt den Anfangsbuchstaben. '
                  f'Bitte ein Symbol im Manifest setzen (symbol: …), erlaubt: {", ".join(vorlagen.symbolnamen())} (REGELN.md, „Symbol“)')

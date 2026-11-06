@@ -35,7 +35,7 @@
     - { key: online_zugang, label: Online-Zugang, typ: passwort, hilfe: Zugangsdaten zum Online-Banking; nur wer die Mappe bearbeiten darf, sieht sie, beschriftungen: { en: { label: "Online access", hilfe: "Online banking login; only for those who may edit the folder" } }  }
     - { key: eroeffnet_am, label: Eröffnet am, typ: datum, beschriftungen: { en: { label: "Opened on" } }  }
     - { key: gekuendigt_am, label: Gekündigt am, typ: datum, beschriftungen: { en: { label: "Closed on" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kontovertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper account agreement is kept" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Kontovertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper account agreement is kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [bank, art, inhaber_verweis, iban, online_zugang, eroeffnet_am, gekuendigt_am, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
@@ -69,7 +69,7 @@
       frist: { vorlauf: 30, einheit: tage }
     - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, beschriftungen: { en: { label: "Amount" } }  }
     - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig], beschriftungen: { en: { label: "Payment interval", optionen: { monatlich: "monthly", "vierteljährlich": "quarterly", "halbjährlich": "half-yearly", "jährlich": "yearly", einmalig: "one-off" } } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [vertragspartner, art, vertragsnummer, beginn, mindestlaufzeit_bis, kuendigungsfrist, kuendigen_bis, betrag, zahlweise, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
@@ -107,7 +107,7 @@
       typ: datum
       hilfe: Meist 3 Monate vor der Hauptfälligkeit. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Versicherungsschein auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper policy document is kept" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Versicherungsschein auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper policy document is kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [versicherer, art, versicherungsnummer, versichert_verweis, beitrag, zahlweise, hauptfaelligkeit, kuendigen_bis, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
@@ -160,7 +160,7 @@
     - { key: beginn, label: Beginn, typ: datum, beschriftungen: { en: { label: "Start" } }  }
     - { key: ende, label: Ende, typ: datum, beschriftungen: { en: { label: "End" } }  }
     - { key: steuerjahr, label: Steuerjahre, typ: referenz, ziel: steuerjahr, mehrfach: true, verweisart: bezug, hilfe: In welchen Steuerjahren es zählt; dort erscheint es unter „Belege“, beschriftungen: { en: { label: "Tax years", hilfe: "Which tax years it counts for; it appears there under “Receipts”" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Arbeitsvertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper employment contract is kept" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Arbeitsvertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper employment contract is kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [arbeitgeber, person_verweis, taetigkeit, beginn, ende, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
@@ -184,7 +184,7 @@
     - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, hilfe: Bei der gesetzlichen Rente die Versicherungsnummer, erkennung: { art: nummer }, beschriftungen: { en: { label: "Contract number", hilfe: "For the state pension, the insurance number" } }  }
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
     - { key: beginn, label: Beginn, typ: datum, beschriftungen: { en: { label: "Start" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [art, anbieter, vertragsnummer, person_verweis, beginn, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
@@ -213,7 +213,7 @@
       typ: datum
       hilfe: Die mitgelieferte Automatisierung erinnert 90 Tage vorher – Zeit genug für einen Termin beim Bürgeramt.
       frist: { vorlauf: 90, einheit: tage }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [art, person_verweis, nummer, ausgestellt_am, gueltig_bis, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
@@ -263,7 +263,7 @@
       hilfe: Gewährleistung oder Herstellergarantie. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel", beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct the purchase, e.g. work equipment" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the receipt is – no warranty without it" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the receipt is – no warranty without it" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [gegenstand, haendler, kaufdatum, preis, seriennummer, garantie_bis, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
@@ -289,7 +289,7 @@
     - { key: bis, label: Bis, typ: datum, beschriftungen: { en: { label: "Until" } }  }
     - { key: abschluss, label: Abschluss, typ: text, maxLen: 120, hilfe: "z. B. „Abitur“ oder „Bachelor of Arts“", beschriftungen: { en: { label: "Qualification", hilfe: "e.g. “Abitur” or “Bachelor of Arts”" } }  }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung, beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct costs" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Zeugnisse und Urkunden auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where paper certificates are kept" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo Zeugnisse und Urkunden auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where paper certificates are kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, einrichtung, von, bis, abschluss, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
