@@ -1,5 +1,5 @@
 # Was nach der Installation im DMS vorhanden sein muss.
-mappentypen: [organisation, niederlassung, person]
-sichten: [organisationen, versicherungen, banken, behoerden, aerzte, niederlassungen, personen, familie, ansprechpartner]
+mappentypen: [organisation, niederlassung, person, ablageort]
+sichten: [organisationen, versicherungen, banken, behoerden, aerzte, niederlassungen, personen, familie, ansprechpartner, ablageorte]
 beispiele: 8
 wortlisten: 9

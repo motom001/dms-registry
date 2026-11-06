@@ -24,7 +24,7 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 **Verweise:**
 
 - Bank, Vertragspartner, Versicherer, Arbeitgeber, Anbieter, Praxis, Händler, Einrichtung und Steuerberater sind **Organisationen** aus dem Paket Basis. Eine Organisation legst du einmal an und wählst sie danach überall aus.
-- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** von Ablago (z. B. „Arbeitszimmer › Schrank › roter Ordner“). So findest du das Papier, wenn du das Original brauchst. Das Feld heißt in allen Typen gleich (`verbleib_original`), deshalb funktionieren gemeinsame Ansichten wie „Originale nach Ort“.
+- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** aus dem Paket Basis (z. B. „Arbeitszimmer › Schrank › roter Ordner“). So findest du das Papier, wenn du das Original brauchst. Das Feld heißt in allen Typen gleich (`verbleib_original`), deshalb funktionieren gemeinsame Ansichten wie „Originale nach Ort“.
 - **Inhaber**, **Versichert** und **Person** sind **Personen** aus dem Paket Basis (Verweisart Bezug). An einer Person siehst du unter *Verknüpfungen* alles, was zu ihr gehört: Konten, Versicherungen, Arbeitsverhältnis, Ausweise, Arztbriefe, Zeugnisse – mit dem Paket Fahrzeuge auch ihre Fahrzeuge. Sachen wie das Auto verweisen selbst auf ihre Versicherung und stehen dort unter *Verknüpfungen*.
 
 **Fristen:** An den Datumsfeldern mit Frist erinnert Ablago rechtzeitig unter **Zu erledigen** und in der Ansicht **Anstehend** – bei der Hauptfälligkeit einer Versicherung jedes Jahr wieder.
@@ -40,8 +40,8 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.121 (Personen als Verweis, Umwandlung von Text in Verweise nach dem Update, Feldformate und Datumsgrenzen)
-- Paket **Basis** ab 1.1.0 (Person) – wird bei der Installation aus dem Katalog mitinstalliert
+- Ablago ab Version 0.212 (Ablageort aus dem Paket Basis; vorher 0.121 für Personen als Verweis, Umwandlung von Text in Verweise nach dem Update, Feldformate und Datumsgrenzen)
+- Paket **Basis** ab 1.6.0 (Person, Ablageort) – wird bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
 

@@ -2,21 +2,22 @@
 schema: 1
 id: haushalt
 name: Haushalt
-version: 1.4.0
+version: 1.4.1
 beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Verträge, Versicherungen, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
-# 0.75.0: Verweise auf den Ablageort von Ablago (dms:ablageort); 0.79.0: Verweise zwischen Beispielen
+# 0.75.0: Verweise auf Mappentypen von Ablago (dms:…); 0.79.0: Verweise zwischen Beispielen
 # 0.113.0: Feld-Eigenschaft „für die Erkennung nutzen“ (erkennung, DMS #336/#391)
 # 0.120.0: Text in Verweis umwandeln (aus_text, DMS #534) – Inhaber, Versichert und Person als Verweis auf eine Person
 # 0.121.0: Feldformate und Datumsgrenzen (format, landFeld, min/max bei Datum, DMS #535)
 # 0.177.0: mitgelieferte Automatisierungen (inhalt.automatisierungen, Ablago #712) – das Datumsfeld erinnert nicht mehr selbst
-dms: ">=0.177.0"
+# 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
+dms: ">=0.212.0"
 abhaengigkeiten:
-  # Person gibt es ab Basis 1.1.0.
-  basis: ">=1.1.0"
+  # Person gibt es ab Basis 1.1.0, den Ablageort ab Basis 1.6.0 (dms-registry #138).
+  basis: ">=1.6.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

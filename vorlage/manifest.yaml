@@ -36,6 +36,8 @@ inhalt:
   beispiele: inhalt/beispiele.yaml   # optional: Beispiel-Mappen, auf Wunsch bei der Installation
 #  wortlisten: inhalt/wortlisten.yaml # optional (Ablago ab 0.127.0): gleichbedeutende Wörter für die Suche,
 #                                     # z. B. - woerter: [Kfz, Auto, PKW]; dann dms: ">=0.127.0"
+#  automatisierungen: inhalt/automatisierungen.yaml # optional (Ablago ab 0.177.0): vorgefertigte Automatisierungen,
+#                                     # z. B. „Neue Dokumente melden“; dann dms: ">=0.177.0"
 
 # Nur für Pakete mit Code (Ablago ab 0.88.0) – sonst weglassen, dazu den Ordner code/. Siehe code/README.md.
 # code:

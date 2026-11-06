@@ -33,7 +33,7 @@
     - { key: verantwortlich, label: Verantwortlich, typ: referenz, ziel: "dms:benutzer", hilfe: "Wer sich um HU und Termine kümmert – bekommt die Erinnerung. Leer: wer das Fahrzeug angelegt hat.", beschriftungen: { en: { label: "Responsible", hilfe: "Who takes care of the inspection and appointments – gets the reminder. Empty: whoever created the vehicle." } }  }
     - { key: versicherung, label: Versicherung, typ: referenz, ziel: "haushalt:versicherung", verweisart: bezug, hilfe: Die Kfz-Versicherung aus dem Paket Haushalt, beschriftungen: { en: { label: "Insurance", hilfe: "The car insurance from the Household package" } }  }
     - { key: finanzierung, label: Finanzierung/Leasing, typ: referenz, ziel: "haushalt:vertrag", verweisart: bezug, hilfe: Kredit- oder Leasingvertrag aus dem Paket Haushalt, beschriftungen: { en: { label: "Financing/leasing", hilfe: "Loan or leasing contract from the Household package" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo der Fahrzeugbrief (Zulassungsbescheinigung Teil II) liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the vehicle title (registration certificate part II) is kept" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Fahrzeugbrief (Zulassungsbescheinigung Teil II) liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the vehicle title (registration certificate part II) is kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, kennzeichen, fin, erstzulassung, halter_verweis, hu_faellig, verantwortlich, versicherung, finanzierung, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - key: werkstattrechnungen
@@ -59,7 +59,7 @@
     - { key: kilometerstand, label: Kilometerstand, typ: zahl, min: 0, nachkomma: 0, beschriftungen: { en: { label: "Mileage" } }  }
     - { key: arbeiten, label: Arbeiten, typ: langtext, hilfe: "z. B. „Inspektion, Bremsbeläge vorn, Ölwechsel“", beschriftungen: { en: { label: "Work done", hilfe: "e.g. “Service, front brake pads, oil change”" } }  }
     - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, erkennung: {}, beschriftungen: { en: { label: "Amount" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo die Rechnung auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper invoice is kept" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo die Rechnung auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper invoice is kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, werkstatt, datum, kilometerstand, arbeiten, betrag, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }

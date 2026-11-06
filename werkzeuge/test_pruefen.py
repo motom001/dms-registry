@@ -415,6 +415,47 @@ class Inhalt(unittest.TestCase):
         self.assertEqual(self.paket('dms:ablageort'), [])
         self.assertEqual(self.paket('dms:benutzer'), [])
 
+    def test_dms_ablageort_veraltet(self):
+        # DMS #883, Registry #138: dms:ablageort ist ein Alias für basis:ablageort – Warnung (Hinweis), kein Fehler.
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            typen = yaml.safe_load((ziel / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+            typen[0]['felder'].append({'key': 'ort', 'label': 'Ort', 'typ': 'referenz', 'ziel': 'dms:ablageort'})
+            (ziel / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump(typen, allow_unicode=True), encoding='utf-8')
+            h = pruefen.veraltete_verweise(ziel)
+            self.assertEqual(len(h), 1, h)
+            self.assertIn('inhalt/mappentypen.yaml', h[0])
+            self.assertIn('„dms:ablageort“ ist veraltet', h[0])
+            self.assertIn('basis:ablageort', h[0])
+            self.assertIn(h[0], pruefen.hinweise(ziel))
+            # Auch in code.rechte.
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['code'] = {'rechte': {'lesen': ['dms:ablageort']}}
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            self.assertTrue(any(x.startswith('inhalt/mappentypen.yaml, manifest.yaml:') for x in pruefen.veraltete_verweise(ziel)))
+
+    def test_registry_ohne_dms_ablageort(self):
+        # Basis bringt den Ablageort (1.6.0); kein Paket der Registry verweist mehr auf dms:ablageort.
+        for o in sorted((WURZEL / 'pakete').iterdir()):
+            if o.is_dir():
+                self.assertEqual(pruefen.veraltete_verweise(o), [], o.name)
+        self.assertEqual(pruefen.veraltete_verweise(WURZEL / 'vorlage'), [])
+
+    def test_basis_bringt_ablageort(self):
+        typen = yaml.safe_load((WURZEL / 'pakete' / 'basis' / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+        a = next(t for t in typen if t['schluessel'] == 'ablageort')
+        self.assertEqual([f['key'] for f in a['felder']], ['name', 'liegt_in', 'beschreibung'])
+        self.assertTrue(a['felder'][0].get('pflicht'))
+        self.assertEqual((a['felder'][1]['ziel'], a['felder'][1]['verweisart']), ('ablageort', 'zugehoerigkeit'))
+        self.assertEqual([r['key'] for r in a['register']], ['allgemein', 'enthaelt', 'liegt_hier', 'fotos'])
+        self.assertEqual(a['titelVorlage'], '{liegt_in} › {name}')
+        self.assertIn('en', a['beschriftungen'])
+        for p in ('haushalt', 'haus', 'vermietung', 'fahrzeuge'):
+            m = yaml.safe_load((WURZEL / 'pakete' / p / 'manifest.yaml').read_text(encoding='utf-8'))
+            self.assertEqual(m['abhaengigkeiten']['basis'], '>=1.6.0', p)
+            self.assertIn('basis:ablageort', (WURZEL / 'pakete' / p / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'), p)
+
     def test_unbekannter_dms_typ(self):
         self.assertTrue(any('bringt das DMS nicht mit' in f for f in self.paket('dms:post')))
 

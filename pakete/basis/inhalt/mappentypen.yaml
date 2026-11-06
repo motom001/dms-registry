@@ -294,3 +294,22 @@
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [nachname, vorname, beziehung, organisation, telefon]
+
+# Mappentyp Ablageort (ab 1.6.0, DMS #883): wo das Papier liegt – verschachtelt, der Titel zeigt den ganzen Pfad.
+# Früher legte ihn das DMS selbst an (Kennung ablageort); Basis übernimmt diesen dann mit gleicher Id (DMS ab 0.212.0).
+- schluessel: ablageort
+  name: Ablageort
+  beschreibung: Wo Originale liegen – verschachtelt, z. B. zu Hause › Arbeitszimmer Schrank › roter Ordner
+  beschriftungen: { en: { name: "Storage location", beschreibung: "Where originals are kept – nested, e.g. at home › study cupboard › red binder" } }
+  titelVorlage: "{liegt_in} › {name}"
+  felder:
+    - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, hilfe: "z. B. roter Ordner, Safe im Flur, beim Notar, vernichtet", beschriftungen: { en: { label: "Name", hilfe: "e.g. red binder, safe in the hallway, at the notary's, destroyed" } }  }
+    - { key: liegt_in, label: Liegt in, typ: referenz, ziel: ablageort, verweisart: zugehoerigkeit, hilfe: "Der Ort, in dem dieser Ort liegt – z. B. der Schrank, in dem der Ordner steht. Leer lassen für ganz oben.", beschriftungen: { en: { label: "Located in", hilfe: "The location this location is in – e.g. the cupboard the binder stands in. Leave empty for the very top." } }  }
+    - { key: beschreibung, label: Beschreibung, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Description" } }  }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [name, liegt_in, beschreibung], beschriftungen: { en: { name: "General" } }  }
+    - { key: enthaelt, name: Enthält, art: verknuepfungen, quellen: [{ typ: ablageort, feld: liegt_in }], beschriftungen: { en: { name: "Contains" } }  }
+    # Alle Mappen, die auf diesen Ort verweisen (z. B. über „Verbleib Originaldokumente“).
+    - { key: liegt_hier, name: Liegt hier, art: verknuepfungen, beschriftungen: { en: { name: "Kept here" } }  }
+    - { key: fotos, name: Fotos, art: dokumente, beschriftungen: { en: { name: "Photos" } }  }
+  trefferliste: [_titel, beschreibung]

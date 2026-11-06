@@ -25,7 +25,7 @@
     - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2, beschriftungen: { en: { label: "Living space (m²)" } }  }
     - { key: grundstueck, label: Grundstücksgröße (m²), typ: zahl, min: 0, nachkomma: 0, beschriftungen: { en: { label: "Plot size (m²)" } }  }
     - { key: eigentuemer, label: Eigentümer/Vermieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Miete der Vermieter oder die Hausverwaltung, beschriftungen: { en: { label: "Owner/landlord", hilfe: "If rented, the landlord or the property management" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "dms:ablageort", verweisart: bezug, hilfe: Wo Grundbuchauszug, Kauf- oder Mietvertrag auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the land register extract is" } }  }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo Grundbuchauszug, Kauf- oder Mietvertrag auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the land register extract is" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, wohnflaeche, grundstueck, eigentuemer, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - key: wartungen

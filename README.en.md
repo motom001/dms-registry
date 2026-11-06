@@ -147,7 +147,7 @@ Packages with code describe their settings in the manifest under `code.einstellu
 
 A **field** has `schluessel`, `name`, `typ` and optionally `hilfe`, `pflicht`, `standard`, `optionen` (choice), `min`/`max` (number), `mappentyp` (for the type `feld`). Types: `text`, `mehrzeilig` (multi-line), `zahl` (number), `janein` (yes/no), `datum` (date), `auswahl` (choice), `mehrfachauswahl` (multiple choice), `geheim` (secret) and the references `mappentyp`, `feld`, `benutzer`, `rolle`, `sicht` (the stable id is stored, chosen from lists). **`code.aktionen`** (`schluessel`, `name`, optional `hilfe`, `bestaetigen`) become buttons in the form. A commented example is in [`vorlage/manifest.yaml`](vorlage/manifest.yaml).
 
-`werkzeuge/pruefen.py` additionally checks: keys are unique per level or list, `standard` matches the type, a choice has `optionen`, `geheim` and references have no default, references to Mappe types of other packages only as `<paket>:<schluessel>` and only to dependencies; to Mappe types of Ablago only `dms:ablageort`, `dms:benutzer` or `dms:rolle`.
+`werkzeuge/pruefen.py` additionally checks: keys are unique per level or list, `standard` matches the type, a choice has `optionen`, `geheim` and references have no default, references to Mappe types of other packages only as `<paket>:<schluessel>` and only to dependencies; to Mappe types of Ablago only `dms:benutzer` or `dms:rolle` (`dms:ablageort` gives a warning: deprecated, please use `basis:ablageort`).
 
 ## Principles
 

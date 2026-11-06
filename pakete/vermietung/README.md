@@ -23,7 +23,7 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 - **Mieter** sind **Personen**, **Hausverwaltung**, **Firma** und die Bank des Kautionskontos **Organisationen** – beides aus dem Paket Basis.
 - **Steuerjahr** ist ein Steuerjahr aus dem Paket Haushalt – dort sammelst du die Unterlagen der Einkommensteuer, zu der die Anlage V gehört.
 - **Immobilie (Paket Haus)** ist optional: Führst du Wartungen und Zählerstände des Hauses im Paket Haus, verweist das Mietobjekt auf die Immobilie.
-- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** von Ablago – wo der unterschriebene Mietvertrag, das Übergabeprotokoll oder der Kaufvertrag liegen.
+- **Verbleib Originaldokumente** zeigt auf einen **Ablageort** aus dem Paket Basis – wo der unterschriebene Mietvertrag, das Übergabeprotokoll oder der Kaufvertrag liegen.
 
 **Fristen:** Ablago erinnert unter **Zu erledigen** und in der Ansicht **Anstehend**:
 
@@ -39,8 +39,8 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.127 (Wortlisten für die Suche; vorher 0.121 für Feldformate und Datumsgrenzen)
-- Pakete **Basis** ab 1.1.0 (Person), **Haushalt** ab 1.0.0 und **Haus** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
+- Ablago ab Version 0.212 (Ablageort aus dem Paket Basis; vorher 0.127 für Wortlisten für die Suche)
+- Pakete **Basis** ab 1.6.0 (Person, Ablageort), **Haushalt** ab 1.0.0 und **Haus** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
 

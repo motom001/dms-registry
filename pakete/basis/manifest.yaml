@@ -1,9 +1,9 @@
-# Basis-Paket: Mappentyp Organisation. Schema: schema/manifest.schema.json
+# Basis-Paket: Mappentypen Organisation, Niederlassung, Person und Ablageort. Schema: schema/manifest.schema.json
 schema: 1
 id: basis
 name: Basis
-version: 1.5.0
-beschreibung: Mappentypen Organisation, Niederlassung und Person – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen und die Menschen, mit denen du zu tun hast.
+version: 1.6.0
+beschreibung: Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -12,7 +12,8 @@ lizenz: Apache-2.0
 # 0.113.0: Feld-Eigenschaft „für die Erkennung nutzen“ (erkennung, DMS #336/#391)
 # 0.121.0: Feldformate und Datumsgrenzen (format, landFeld, min/max bei Datum, DMS #535)
 # 0.127.0: Wortlisten für die Suche (inhalt.wortlisten, DMS #356)
-dms: ">=0.127.0"
+# 0.212.0: Ablageort kommt aus Basis; der frühere des DMS wird übernommen (DMS #883)
+dms: ">=0.212.0"
 abhaengigkeiten: {}
 inhalt:
   mappentypen: inhalt/mappentypen.yaml

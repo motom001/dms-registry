@@ -65,3 +65,10 @@
   typen: [person]
   bedingungen:
     - { feld: beziehung, operator: einerVon, wert: [Ansprechpartner, Handwerker, Arzt/Ärztin] }
+
+# Ab 1.6.0: Ablageorte (DMS #883). Hat die Ablage schon die Ansicht des früheren Ablageorts, übernimmt Basis diese.
+- schluessel: ablageorte
+  name: Ablageorte
+  beschreibung: Wo Originale liegen
+  beschriftungen: { en: { name: "Storage locations", beschreibung: "Where originals are kept" } }
+  typen: [ablageort]

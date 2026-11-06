@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.6.0
+
+- Neu: Mappentyp **Ablageort** (DMS #883, dms-registry #138) – wo das Papier liegt, verschachtelt („zu Hause › Arbeitszimmer Schrank › roter Ordner“). Felder *Name* (Pflicht), *Liegt in* (Verweis auf einen anderen Ablageort) und *Beschreibung*; Register *Allgemein*, *Enthält*, *Liegt hier* und *Fotos*; Titel `{liegt_in} › {name}`; Ansicht *Ablageorte*. Mit englischen Beschriftungen.
+- **Übernahme:** Bisher legte Ablago den Ablageort selbst an. Gibt es ihn in deiner Ablage schon, übernimmt Basis ihn beim Installieren bzw. Update – gleiche Id, alle Ablageorte, Verweise und die vorhandene Ansicht bleiben; danach gehört er zu Basis. Es entsteht kein zweiter Ablageort.
+- Andere Pakete verweisen jetzt mit `basis:ablageort` auf ihn (statt `dms:ablageort`, das Ablago bis 1.0 als Alias versteht).
+- Braucht Ablago ab 0.212.0 (dort kommt der Ablageort nicht mehr aus dem Kern). Organisation, Niederlassung und Person sind unverändert.
+
 ## 1.5.0
 
 - Neu: **englische Beschriftungen** für Mappentypen, Felder, Auswahlwerte, Register und Ansichten (`beschriftungen.en`, Registry #116 und #135). Ablago ab 0.200.0 zeigt sie, wenn jemand Englisch gewählt hat; ein Update ergänzt sie an installierten Mappentypen, ohne eigene Beschriftungen zu überschreiben. Ältere Ablago-Versionen übergehen sie – dafür braucht es kein höheres `dms`. Gespeicherte Werte ändern sich nicht.
