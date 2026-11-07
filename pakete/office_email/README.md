@@ -83,9 +83,10 @@ Das Modul ist 0,2 MB groß.
 | [`code/office_email.cpp`](code/office_email.cpp) | das Modul (Ablago-Paket-ABI 1): Ereignis `datei.volltext` → Datei über die API → Text → `PUT /dokumente/{id}/volltext` |
 | [`code/erkennen.h`](code/erkennen.h) | Dateityp am Inhalt erkennen, an den passenden Leser geben |
 | [`code/office.h`](code/office.h), [`code/zip.h`](code/zip.h), [`code/xml.h`](code/xml.h) | Office Open XML und OpenDocument: ZIP (mit zlib), XML, Text je Format |
-| [`code/mail.h`](code/mail.h), [`code/cfb.h`](code/cfb.h) | E-Mails (MIME, RFC 2047/2231) und Outlook `.msg` (Compound File) |
-| [`code/rtf.h`](code/rtf.h), [`code/zeichen.h`](code/zeichen.h) | RTF; Zeichensätze, Base64, Quoted-Printable, HTML zu Text |
-| [`code/bauen.sh`](code/bauen.sh) | Bau: zlib 1.3.1 aus der Quelle (fester Commit, Hash geprüft) |
+| [`code/mailtext.h`](code/mailtext.h) | Text aus E-Mails für den Volltext (Kopf, Text, Anhänge mit ihrem Text) |
+| [`gemeinsam/mail/mail.h`](../../gemeinsam/mail/mail.h), [`cfb.h`](../../gemeinsam/mail/cfb.h) | E-Mails zerlegen (MIME, RFC 2047/2231) und Outlook `.msg` (Compound File) – **gemeinsam mit dem Paket [PDF/A](../pdfa/)**, das daraus die Archivfassung von Mails setzt |
+| [`code/rtf.h`](code/rtf.h), [`gemeinsam/mail/zeichen.h`](../../gemeinsam/mail/zeichen.h) | RTF; Zeichensätze, Base64, Quoted-Printable, HTML zu Text (`zeichen.h` gemeinsam mit PDF/A) |
+| [`code/bauen.sh`](code/bauen.sh) | Bau: zlib 1.3.1 aus der Quelle (fester Commit, Hash geprüft); bindet `gemeinsam/mail/` ein |
 | [`tests/`](tests/) | `beispiele.py` (Testdateien nur mit der Python-Standardbibliothek, mit erwarteten Texten), `modul_test.mjs` (das Modul mit einer Nachbildung von Ablago), `ci.sh` (CI), `pruefen.sh` (alles lokal) |
 
 ```sh

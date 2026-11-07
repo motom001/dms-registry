@@ -29,12 +29,19 @@ def mit_code() -> list[Path]:
 
 
 def geaendert(ref: str) -> list[Path]:
-    r = subprocess.run(['git', 'diff', '--name-only', f'{ref}...HEAD', '--', 'pakete/', 'werkzeuge/bauen.py', 'werkzeuge/wasi-sdk.sh'],
+    r = subprocess.run(['git', 'diff', '--name-only', f'{ref}...HEAD', '--', 'pakete/', 'gemeinsam/', 'werkzeuge/bauen.py', 'werkzeuge/wasi-sdk.sh'],
                        cwd=WURZEL, capture_output=True, text=True, check=True)
     namen = r.stdout.split()
     if any(n.startswith('werkzeuge/') for n in namen):
         return mit_code()
     betroffen = {n.split('/')[1] for n in namen if n.startswith('pakete/')}
+    # Gemeinsamer Quellcode (gemeinsam/<ordner>/, z. B. der Mail-Zerleger, dms-registry #143): alle Pakete, deren
+    # code/bauen.sh den Ordner einbindet.
+    gemeinsam = {n.split('/')[1] for n in namen if n.startswith('gemeinsam/') and n.count('/') >= 2}
+    for p in mit_code():
+        skript = (p / 'code' / 'bauen.sh').read_text(encoding='utf-8')
+        if any(f'gemeinsam/{g}' in skript for g in gemeinsam):
+            betroffen.add(p.name)
     return [p for p in mit_code() if p.name in betroffen]
 
 

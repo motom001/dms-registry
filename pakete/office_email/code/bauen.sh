@@ -7,6 +7,8 @@
 set -euo pipefail
 : "${WASI_SDK:?WASI_SDK fehlt}" "${BAU:?BAU fehlt}"
 CODE="$(cd "$(dirname "$0")" && pwd)"
+# Den Mail-Zerleger (mail.h, cfb.h, zeichen.h) teilt das Paket mit PDF/A: gemeinsam/mail/ im Repository (#143).
+GEMEINSAM="$(cd "$CODE/../../../gemeinsam/mail" && pwd)"
 
 ZLIB=51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf       # 1.3.1
 PREFIX="$BAU/prefix"
@@ -44,5 +46,5 @@ fi
 
 # Das Modul (DMS-Paket-ABI 1).
 "$WASI_SDK/bin/clang++" --target=wasm32-wasip1 -O2 -Wall -Wextra -Werror -fno-exceptions -mexec-model=reactor \
-  -I "$PREFIX/include" "$CODE/office_email.cpp" "$PREFIX/lib/libz.a" \
+  -I "$PREFIX/include" -I "$GEMEINSAM" "$CODE/office_email.cpp" "$PREFIX/lib/libz.a" \
   -Wl,--import-memory -Wl,--strip-all -o "$CODE/modul.wasm"
