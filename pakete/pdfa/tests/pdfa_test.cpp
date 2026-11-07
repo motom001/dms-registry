@@ -1,5 +1,5 @@
 // Test des PDF-Schreibers (code/pdfa.h) ohne WebAssembly: UTF-16, JPEG-Kopf, Metadaten entfernen, Ausrichtung,
-// Textebene und Aufbau der Datei (Querverweise zeigen auf ihre Objekte).
+// Textebene und Aufbau der Datei (Querverweise zeigen auf ihre Objekte); dazu die Teilmenge einer Schrift (schrift.h).
 //
 //   c++ -std=c++17 -I code tests/pdfa_test.cpp -lz -o /tmp/pdfa_test && /tmp/pdfa_test code/daten [ausgabe.pdf]
 #include <fstream>
@@ -7,6 +7,7 @@
 #include <iterator>
 
 #include "pdfa.h"
+#include "schrift.h"
 
 static int fehler = 0;
 static void pruefe(const std::string &name, bool ok) {
@@ -120,6 +121,25 @@ int main(int argc, char **argv) {
   }
   pruefe("Querverweise zeigen auf ihre Objekte (" + std::to_string(anzahl - 1) + ")", xok && anzahl == 17);
   pruefe("Ende mit %%EOF", t.size() > 6 && t.compare(t.size() - 6, 6, "%%EOF\n") == 0);
+
+  // Schrift für E-Mails (#143): lesen, vermessen, Teilmenge – und die Teilmenge lässt sich wieder lesen.
+  schrift::Schrift noto;
+  const bool gelesen = noto.lies(lies(daten + "/noto-sans.ttf"));
+  pruefe("Noto Sans gelesen", gelesen && noto.einheiten == 1000 && noto.name == "NotoSans-Regular");
+  if (gelesen) {
+    pruefe("Zeichen in der Schrift: A, ä, Ж, Ω, €", noto.gid('A') && noto.gid(0xE4) && noto.gid(0x416) && noto.gid(0x3A9) && noto.gid(0x20AC));
+    pruefe("Zeichen ohne Glyphe: GID 0 (nie benutzt)", noto.gid(0x6F22) == 0);
+    const std::string hallo = "Hallo Köln";
+    pruefe("Breite eines Texts", noto.breite(hallo, 10) > 40 && noto.breite(hallo, 10) < 60);
+    for (size_t i = 0; i < hallo.size();) { const uint32_t u = schrift::naechstes(hallo, i); noto.merke(noto.gid(u), u); }
+    noto.merke(0, 0x6F22);
+    pruefe("Glyphe 0 wird nicht gemerkt", !noto.benutzt.count(0));
+    const std::vector<uint8_t> teil = noto.teilmenge();
+    schrift::Schrift wieder;
+    pruefe("Teilmenge: TrueType, kleiner als die Schrift", teil.size() > 12 && teil[0] == 0 && teil[1] == 1 && teil.size() < lies(daten + "/noto-sans.ttf").size() / 4);
+    pruefe("Teilmenge lässt sich lesen, gleiche GIDs und Breiten", wieder.lies(teil) && wieder.gid('H') == noto.gid('H') && wieder.breite(wieder.gid(0xF6)) == noto.breite(noto.gid(0xF6)));
+  }
+
   if (argc > 2) {
     std::ofstream o(argv[2], std::ios::binary);
     o.write(reinterpret_cast<const char *>(pdf.data()), (std::streamsize)pdf.size());

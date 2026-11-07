@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Baut code/modul.wasm (PDF/A-2b schreiben: zlib, libjpeg-turbo, stb_image) und legt das ICC-Profil (sRGB) und die
-# Schrift der Textebene (GlyphLessFont) nach code/daten/.
+# Baut code/modul.wasm (PDF/A-2b schreiben: zlib, libjpeg-turbo, stb_image) und legt das ICC-Profil (sRGB), die
+# Schrift der Textebene (GlyphLessFont) und die Schrift für E-Mails (Noto Sans, vier Schnitte) nach code/daten/.
+# Den Mail-Zerleger teilt das Paket mit „Office und E-Mail“: gemeinsam/mail/ im Repository (#143).
 #
 # Die CI ruft das über werkzeuge/bauen.py auf: WASI_SDK zeigt auf das WASI-SDK, BAU auf einen Arbeitsordner
 # außerhalb des Pakets (Quellen und Zwischenstände der Bibliotheken; bleibt zwischen Läufen erhalten).
@@ -9,6 +10,7 @@
 set -euo pipefail
 : "${WASI_SDK:?WASI_SDK fehlt}" "${BAU:?BAU fehlt}"
 CODE="$(cd "$(dirname "$0")" && pwd)"
+GEMEINSAM="$(cd "$CODE/../../../gemeinsam/mail" && pwd)"
 VERSION="$(sed -n 's/^version: *//p' "$CODE/../manifest.yaml")"
 
 ZLIB=51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf       # 1.3.1
@@ -16,6 +18,11 @@ JPEG=4e151a4ad91001b3aa8c2ece2205c15f487ce320       # libjpeg-turbo 3.1.2
 STB=d14d46f6b44456eb88beac58cba833a4135d4c89        # stb (stb_image 2.30)
 TESSERACT=3b7c70e34dea179549ed3e995872e2e019eb8477  # 5.5.1 – nur tessdata/pdf.ttf (GlyphLessFont, Apache-2.0)
 ICC=bdd84663061bc4ae95ca70decff54f581e27f702        # saucecontrol/Compact-ICC-Profiles – profiles/sRGB-v2-magic.icc (CC0-1.0)
+NOTO=86ce02c0fe7890f5936c5dffb26fca0797d1be64       # notofonts/notofonts.github.io – Noto Sans 2.x, unhinted TTF (SIL OFL 1.1)
+NOTO_SHA256="f3961a9cde016d41a4879aecda1474d3a36d6bf54fa0e4643de029cc2248b0e8 noto-sans.ttf NotoSans-Regular.ttf
+87cb2d84472a7d66da659ee47b6cdb9552326e8c128245231f191b6ac72529d9 noto-sans-fett.ttf NotoSans-Bold.ttf
+678288f868807d4d64a6f3b51466871d117d915780381ce9d0ed4b3bcbd06d37 noto-sans-kursiv.ttf NotoSans-Italic.ttf
+3d367743f371f28671d2764e911a53d7c20ec9b6aa8791d059e7090389fc52a5 noto-sans-fettkursiv.ttf NotoSans-BoldItalic.ttf"
 SCHRIFT_SHA256=c7845420925a23d88ed830a63957b8af85a66a8daf8d9fc90e843673b2ef1a59
 ICC_SHA256=af4efe28f6d311799865f325ba39184a2e978b113ca74124d60af7de22b105f4
 
@@ -83,23 +90,29 @@ hole stb https://github.com/nothings/stb "$STB"
 # Daten: Schrift der Textebene und sRGB-Profil für den OutputIntent.
 hole_dateien tesseract https://github.com/tesseract-ocr/tesseract "$TESSERACT" tessdata/pdf.ttf
 hole_dateien icc https://github.com/saucecontrol/Compact-ICC-Profiles "$ICC" profiles/sRGB-v2-magic.icc
+hole_dateien noto https://github.com/notofonts/notofonts.github.io "$NOTO" \
+  $(echo "$NOTO_SHA256" | awk '{print "fonts/NotoSans/unhinted/ttf/" $3}')
 mkdir -p "$CODE/daten"
 cp "$BAU/tesseract/tessdata/pdf.ttf" "$CODE/daten/glyphless.ttf"
 cp "$BAU/icc/profiles/sRGB-v2-magic.icc" "$CODE/daten/srgb.icc"
 echo "$SCHRIFT_SHA256  $CODE/daten/glyphless.ttf
 $ICC_SHA256  $CODE/daten/srgb.icc" | sha256sum -c --quiet -
+echo "$NOTO_SHA256" | while read -r sha ziel quelle; do
+  cp "$BAU/noto/fonts/NotoSans/unhinted/ttf/$quelle" "$CODE/daten/$ziel"
+  echo "$sha  $CODE/daten/$ziel" | sha256sum -c --quiet -
+done
 
 # Das Modul (DMS-Paket-ABI 1).
 "$WASI_SDK/bin/clang" --target=wasm32-wasip1 -O2 -c "$CODE/wasi-compat.c" -o "$BAU/wasi-compat.o"
 "$WASI_SDK/bin/clang++" --target=wasm32-wasip1 -O2 -Wall -Werror -fno-exceptions -mexec-model=reactor $WASI_FLAGS \
-  -DPAKET_VERSION="\"$VERSION\"" -I "$PREFIX/include" -I "$BAU/stb" \
+  -DPAKET_VERSION="\"$VERSION\"" -I "$PREFIX/include" -I "$BAU/stb" -I "$GEMEINSAM" \
   "$CODE/pdfa.cpp" "$BAU/wasi-compat.o" "$PREFIX/lib/libjpeg.a" "$PREFIX/lib/libz.a" \
   -lwasi-emulated-signal -lwasi-emulated-process-clocks -lwasi-emulated-mman \
   -Wl,--import-memory -Wl,--strip-all -o "$CODE/modul.wasm"
 
 # Test des PDF-Schreibers (code/pdfa.h) – nativ, wenn ein C++-Compiler und zlib da sind.
 if command -v c++ >/dev/null 2>&1 && echo '#include <zlib.h>' | c++ -x c++ -fsyntax-only - 2>/dev/null; then
-  c++ -std=c++17 -O2 -Wall -Werror -I "$CODE" "$CODE/../tests/pdfa_test.cpp" -lz -o "$BAU/pdfa_test"
+  c++ -std=c++17 -O2 -Wall -Werror -I "$CODE" -I "$GEMEINSAM" "$CODE/../tests/pdfa_test.cpp" -lz -o "$BAU/pdfa_test"
   "$BAU/pdfa_test" "$CODE/daten" >"$BAU/pdfa_test.log" || { cat "$BAU/pdfa_test.log"; exit 1; }
   echo "  PDF-Schreiber: $(grep -c '^ok' "$BAU/pdfa_test.log") Prüfungen bestanden"
 fi

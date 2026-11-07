@@ -2,6 +2,7 @@
 // „Archivfassung erstellen“ (datei.archivfassung), Datei über GET /dokumente/{id}/inhalt bzw. …/fassung, Seitenbilder
 // über GET …/seiten/{nr}/scan (pdftoppm, wie im DMS), Wortpositionen über GET …/wortpositionen (Textebene mit
 // pdftotext -bbox, sonst <name>.woerter.json als „Texterkennung“), Ablage über PUT …/archivfassung.
+// E-Mails (#143) holt das Modul nur über …/inhalt und setzt sie selbst; die Zeitzone kommt über GET /region.
 // Legt jede Archivfassung als <name>.pdfa.pdf in den Ordner (Prüfung: beispiele.py vergleiche, veraPDF).
 //
 //   node tests/modul_test.mjs <ordner mit den Testdateien aus tests/beispiele.py> [--messen]
@@ -16,7 +17,8 @@ if (!ordner) { console.error('Aufruf: node tests/modul_test.mjs <ordner>'); proc
 const modul = new WebAssembly.Module(readFileSync(join(hier, '..', 'code', 'modul.wasm')));
 const DATEN = join(hier, '..', 'code', 'daten');
 const SHA = 'b'.repeat(64);
-const MIME = { jpg: 'image/jpeg', png: 'image/png', pdf: 'application/pdf' };
+const MIME = { jpg: 'image/jpeg', png: 'image/png', pdf: 'application/pdf', eml: 'message/rfc822', msg: 'application/vnd.ms-outlook' };
+const istMail = (mime) => mime === 'message/rfc822' || mime === 'application/vnd.ms-outlook';
 
 const seitenzahl = (pdf) => Number(/Pages:\s+(\d+)/.exec(execFileSync('pdfinfo', [pdf]).toString())[1]);
 function seitenGroessen(pdf) {
@@ -43,6 +45,7 @@ const mitText = (s) => s.woerter.map((w) => w[0]).join('').replace(/\s/g, '').le
 
 /** Wortpositionen wie GET /dokumente/{id}/wortpositionen. */
 function wortpositionen(datei, mime) {
+  if (istMail(mime)) return { dokument: 'dok-1', sha256: SHA, quelle: 'original', mime, vollstaendig: false, seiten: [] };
   const pfad = join(ordner, datei);
   const ocr = existsSync(`${pfad}.woerter.json`) ? JSON.parse(readFileSync(`${pfad}.woerter.json`, 'utf8')) : null;
   if (mime !== 'application/pdf') {
@@ -60,8 +63,8 @@ function wortpositionen(datei, mime) {
 }
 
 /** Ein Aufruf wie im Paket-Läufer: frischer Speicher (höchstens 256 MB), Ereignis rein, Ergebnis und API-Aufrufe raus. */
-function lauf({ datei, daten = {}, archiv = 404, ablegen = 200, vorhanden = null, art = 'datei.archivfassung', version = '1.0.0' }) {
-  const mime = MIME[datei.split('.').pop()];
+function lauf({ datei, daten = {}, archiv = 404, ablegen = 200, vorhanden = null, art = 'datei.archivfassung', version = '1.0.0', zeitzone = 'Europe/Berlin', mime: typ }) {
+  const mime = typ ?? MIME[datei.split('.').pop()];
   const aufrufe = [];
   let antwort = new Uint8Array(0), ergebnis = '', gesetzt = null;
   const protokoll = [];
@@ -77,6 +80,7 @@ function lauf({ datei, daten = {}, archiv = 404, ablegen = 200, vorhanden = null
       return json(archiv, { fehler: 'Zu diesem Dokument gibt es keine Archivfassung.' });
     }
     if (q.methode === 'GET' && q.pfad === '/dokumente/dok-1/wortpositionen') return json(200, wortpositionen(datei, mime));
+    if (q.methode === 'GET' && q.pfad === '/region') return zeitzone ? json(200, { land: 'DE', bundesland: 'BY', zeitzone }) : json(403, { fehler: 'Keine Rechte' });
     if (q.methode === 'GET' && (q.pfad === '/dokumente/dok-1/inhalt' || q.pfad === '/dokumente/dok-1/fassung')) { antwort = new Uint8Array(readFileSync(pfad)); return 200; }
     const s = /^\/dokumente\/dok-1\/seiten\/(\d+)\/scan\?dpi=(\d+)$/.exec(q.pfad);
     if (q.methode === 'GET' && s && mime === 'application/pdf') {
@@ -119,8 +123,8 @@ function lauf({ datei, daten = {}, archiv = 404, ablegen = 200, vorhanden = null
   const ereignis = new TextEncoder().encode(JSON.stringify({
     art, id: 'e-1', versuch: 1, erstellt: '2026-11-03T10:00:00.000Z',
     daten: { dokument: 'dok-1', mappe: 'mappe-1', name: datei, mime, groesse: 1, sha256: SHA, quelle: 'original', seiten: wp.seiten.length,
-      textebene: 'keine', wortpositionen: wp.vollstaendig, sprache: 'deu', signiert: false, erechnung: false, formular: false, extern: datei === 'extern.pdf', ...daten },
-    paket: { id: 'pdfa', version }, einstellungen: { pdf_text: true, pdf_scan: true, bilder: true },
+      textebene: 'keine', wortpositionen: istMail(mime) ? false : wp.vollstaendig, sprache: 'deu', signiert: false, erechnung: false, formular: false, extern: datei === 'extern.pdf', ...daten },
+    paket: { id: 'pdfa', version }, einstellungen: { pdf_text: true, pdf_scan: true, bilder: true, emails: true },
   }));
   const p = inst.exports.dms_puffer(ereignis.length);
   u8().set(ereignis, p);
@@ -174,5 +178,55 @@ r = lauf({ datei: 'foto.jpg', ablegen: 503 });
 pruefe('DMS gestört (503): Fehlercode, Wiederholung', r.code !== 0, r);
 r = lauf({ datei: 'foto.jpg', art: 'paket.einstellungen_geaendert' });
 pruefe('Anderes Ereignis: nichts zu tun', r.code === 0 && r.aufrufe.length === 0, r);
+
+/* ---------- E-Mails (#143) ---------- */
+
+const MAILS = ['text.eml', 'html.eml', 'anhaenge.eml', 'weitergeleitet.eml', 'latin1.eml', 'kyrillisch.eml', 'lang.eml', 'outlook.msg'];
+const textVon = (pdf) => execFileSync('pdftotext', ['-layout', pdf, '-'], { maxBuffer: 64 << 20 }).toString();
+const kurz = (t) => t.replace(/\s+/g, ' ');
+function enthaelt(name, datei, muss, nicht = []) {
+  const pdf = join(ordner, `${datei}.pdfa.pdf`);
+  if (!existsSync(pdf)) { fehler++; console.log(`✗ ${name}: keine Archivfassung`); return; }
+  const t = kurz(textVon(pdf));
+  const fehlt = muss.filter((m) => !t.includes(m)), zuviel = nicht.filter((m) => t.includes(m));
+  if (fehlt.length || zuviel.length) { fehler++; console.log(`✗ ${name}: fehlt ${JSON.stringify(fehlt)}, zu viel ${JSON.stringify(zuviel)}\n  ${t.slice(0, 600)}`); }
+  else console.log(`✓ ${name}`);
+}
+for (const datei of MAILS) {
+  const r = lauf({ datei });
+  pruefe(`${datei} → PDF/A`, r.code === 0 && kopf(r.gesetzt) && r.ergebnis.startsWith('PDF/A-2b') && !r.aufrufe.some((a) => a.includes('wortpositionen') || a.includes('volltext')), r);
+  if (r.gesetzt) writeFileSync(join(ordner, `${datei}.pdfa.pdf`), r.gesetzt);
+}
+enthaelt('Text-Mail: Kopf, Datum in Berlin, Text, Zitat', 'text.eml', ['Ihre Abschlagszahlung ab Dezember', 'Von Stadtwerke Musterstadt <service@example.org>', 'An Lena Muster <lena@example.org>',
+  'Datum 02.11.2026, 10:15 Uhr', 'Ihr monatlicher Abschlag ändert sich ab 01.12.2026 auf 84,00 €', 'Vertragskonto: 4711-0815', 'Bitte den Abschlag anpassen.', 'Ältere Nachricht ganz unten.',
+  'Freundliche Grüße', 'Seite 1 von 1']);
+enthaelt('HTML-Mail: Überschrift, Fett, Tabelle, Listen, Link mit Adresse, Platzhalter; kein Skript, kein Titel, kein Formularwert', 'html.eml',
+  ['Ihre Rechnung November', 'Cc Tom Muster', 'Fällig am 15.11.2026', 'bitte pünktlich', 'Posten', 'Grundpreis', '12,50 €', 'Erster Punkt', '2. Schritt zwei',
+    'Kundenportal (https://example.org/portal)', 'E-Mail (service@example.org)', 'Zitierter Absatz', 'externes Bild nicht geladen: Werbung'],
+  ['SKRIPTINHALT', 'TITELTEXT', 'Klartext-Fassung', 'font-family', 'FORMULARWERT']);
+enthaelt('Anhänge: Liste mit Name, Art und Größe; Inhalt nicht', 'anhaenge.eml', ['Anhänge (3)', 'Mietvertrag.pdf · PDF', 'Hausordnung.docx · Word', 'Zählerstand.jpg · Bild (JPEG)', 'Von Herr Özdemir'], ['ANHANGINHALT']);
+enthaelt('Weitergeleitet: drei Ebenen gesetzt, die vierte nur in der Liste', 'weitergeleitet.eml', ['WG: Ablesetermin', 'Weitergeleitete E-Mail', 'Ebene 1: Ablesetermin', 'Text der Ebene 1.',
+  'Ebene 2: Ablesetermin', 'Text der Ebene 2.', 'Ebene 3: Ablesetermin', 'Text der Ebene 3.', 'Ebene 4: Ablesetermin'], ['Text der Ebene 4.']);
+enthaelt('Windows-1252 und kodierte Kopfzeilen', 'latin1.eml', ['Überweisung für Oktober', 'Jürgen Müller', '1.250 € wird „am Monatsende“ fällig – Grüße', 'Datum 03.11.2026, 10:00 Uhr']);
+enthaelt('Kyrillisch und Griechisch; fehlende Zeichen nie als „?“', 'kyrillisch.eml', ['Привет из Москвы', 'Ирина Петрова', 'Здравствуйте, Лена!', 'Καλημέρα από την Αθήνα', 'Datum 04.11.2026, 10:00 Uhr'], ['?']);
+enthaelt('Lange Mail: mehrere Seiten, Kopf- und Fußzeile', 'lang.eml', ['Seite 1 von', 'Seite 2 von', 'E-Mail · Protokoll der Eigentümerversammlung', 'Punkt 59:', 'Datum 01.08.2026, 18:30 Uhr']);
+enthaelt('Outlook: HTML-Text, Anhang, eingebettete Nachricht', 'outlook.msg', ['Angebot Dachrinne – Petra', 'Petra Sommer <petra@example.org>', 'Markus Weber <markus@example.org>', 'Datum 02.11.2026, 10:30 Uhr',
+  'anbei das Angebot über 1.250 €', 'Angebot.pdf · PDF', 'Altes Angebot.msg · Outlook-Nachricht', 'Eingebettet: Angebot alt', 'Text der eingebetteten Nachricht.'], ['Klartext des Angebots']);
+const schriften = execFileSync('pdffonts', [join(ordner, 'html.eml.pdfa.pdf')]).toString();
+pruefe('Schriften als Teilmenge eingebettet (Noto Sans)', /[A-Z]{6}\+NotoSans-Regular\s+CID TrueType\s+Identity-H\s+yes\s+yes\s+yes/.test(schriften) && /NotoSans-Bold/.test(schriften),
+  { code: 0, ergebnis: schriften, aufrufe: [], protokoll: [] });
+const bilder = execFileSync('pdfimages', ['-list', join(ordner, 'html.eml.pdfa.pdf')]).toString().trim().split('\n').length - 2;
+pruefe('cid:-Bild in der Seite, externes nicht', bilder === 1, { code: 0, ergebnis: `${bilder} Bilder`, aufrufe: [], protokoll: [] });
+r = lauf({ datei: 'text.eml', zeitzone: 'America/New_York' });
+writeFileSync(join(ordner, 'zeitzone.pdfa.pdf'), r.gesetzt ?? Buffer.alloc(0));
+pruefe('Zeitzone der Ablage (New York)', r.code === 0 && kurz(textVon(join(ordner, 'zeitzone.pdfa.pdf'))).includes('Datum 02.11.2026, 04:15 Uhr'), r);
+r = lauf({ datei: 'text.eml', zeitzone: null });
+pruefe('Ohne /region: Europe/Berlin', r.code === 0 && kopf(r.gesetzt), r);
+r = lauf({ datei: 'text.eml', mime: 'application/octet-stream' });
+pruefe('Dateityp octet-stream mit Endung .eml', r.code === 0 && kopf(r.gesetzt), r);
+r = lauf({ datei: 'foto.jpg', mime: 'message/rfc822' });
+pruefe('Keine E-Mail am Inhalt: Grund, nichts abgelegt', r.code === 0 && r.gesetzt === null && r.ergebnis.includes('keine lesbare E-Mail'), r);
+r = lauf({ datei: 'html.eml', vorhanden: readFileSync(join(ordner, 'html.eml.pdfa.pdf')) });
+pruefe('Wiederholung bei E-Mails: nichts zu tun', r.code === 0 && r.gesetzt === null && r.ergebnis === 'Archivfassung schon vorhanden', r);
 
 process.exit(fehler ? 1 : 0);
