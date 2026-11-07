@@ -3,7 +3,7 @@
 #include <string>
 
 #include "cfb.h"
-#include "mail.h"
+#include "mailtext.h"
 #include "office.h"
 #include "rtf.h"
 #include "zeichen.h"
@@ -47,11 +47,11 @@ inline Gelesen lies(const uint8_t *d, size_t n, zeichen::Sammler &s, int tiefe =
     cfb::Datei c;
     if (!c.oeffne(d, n)) { g.art = "Office- oder Outlook-Datei"; g.fehler = c.fehler; return g; }
     if (c.finde(0, "EncryptedPackage") >= 0) { g.art = "Office-Datei"; g.fehler = "mit einem Passwort verschlüsselt"; g.verschluesselt = true; return g; }
-    if (c.finde(0, "__properties_version1.0") >= 0) {
+    if (mail::istMsg(c)) {
       g.art = "Outlook-Nachricht";
-      mail::Ergebnis e;
-      mail::Msg(c).lies(0, s, e, tiefe, true);
+      mailtext::Ergebnis e = mailtext::msg(c, s, tiefe);
       g.anhaenge = e.anhaenge;
+      g.verschluesselt = e.verschluesselt;
       return g;
     }
     if (c.finde(0, "WordDocument") >= 0) { g.art = "Word 97–2003 (.doc)"; g.fehler = "das alte Word-Format liest das Paket nicht – in Word als .docx speichern"; return g; }
@@ -66,7 +66,7 @@ inline Gelesen lies(const uint8_t *d, size_t n, zeichen::Sammler &s, int tiefe =
   }
   if (mail::istEml(d, n, emlHinweis)) {
     g.art = "E-Mail";
-    mail::Ergebnis e = mail::eml(std::string((const char *)d, n), s, tiefe);
+    mailtext::Ergebnis e = mailtext::eml(std::string((const char *)d, n), s, tiefe);
     g.anhaenge = e.anhaenge;
     g.verschluesselt = e.verschluesselt;
     return g;

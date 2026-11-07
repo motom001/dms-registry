@@ -3,7 +3,7 @@
 schema: 1
 id: office_email
 name: Office und E-Mail
-version: 1.1.1
+version: 1.1.2
 beschreibung: Macht Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und E-Mails (.eml, .msg) im Volltext durchsuchbar. Makros und eingebettete Objekte führt es nie aus. Abgeschottet im Paket-Läufer, ohne Netz.
 autor:
   name: Thomas Meissner

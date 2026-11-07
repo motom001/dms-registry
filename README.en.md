@@ -17,6 +17,7 @@ In Ablago you install packages under **Werkbank → Pakete**. Package management
 
 ```
 pakete/<paket>/        one folder per package, name = package id
+gemeinsam/<ordner>/    source code that several packages include when built (e.g. mail/: parsing e-mails for Office und E-Mail and PDF/A)
 vorlage/               template for a new package – copy it and get started
 schema/                JSON schemas for manifest.yaml and the contents
 werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (also run in the CI)

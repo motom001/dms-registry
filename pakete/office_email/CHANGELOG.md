@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.2
+
+- Der Mail-Zerleger (`mail.h`, `cfb.h`, `zeichen.h`) liegt jetzt als **gemeinsamer Quellcode** unter `gemeinsam/mail/` im Repository; das Paket PDF/A setzt damit die Archivfassung von E-Mails (dms-registry #143). Beide Pakete lesen Mails damit gleich. Der Volltext bleibt, wie er war.
+
 ## 1.1.1
 
 - Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.
