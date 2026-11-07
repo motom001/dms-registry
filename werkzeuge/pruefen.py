@@ -146,6 +146,9 @@ MEHRFACH_VERWEISE = ('mappentyp', 'benutzer', 'rolle', 'sicht')
 # Ansichten mit fremde_typen (DMS #656): Mappentypen, die das Paket nicht mitbringt, über ihre Kennung.
 DMS_FREMDE_TYPEN_AB = (0, 178, 0)
 DMS_ARCHIV_AUSWAHL_AB = (0, 176, 0)
+# Art emails in code.archivfassung.auswahl (DMS #946): Archivfassung für E-Mails (.eml, .msg), dms-registry #143.
+# Vorläufig – die Version nennt Entwicklung, sobald #946 eingereiht ist.
+DMS_ARCHIV_EMAILS_AB = (0, 217, 0)
 # Ereignisse zu Mappen aus dem Ereigniskatalog und code.mappentypen (DMS #670): eigene Mappentypen ab DMS 0.153.0.
 MAPPEN_EREIGNISSE = ('mappe.angelegt', 'mappe.geaendert', 'mappe.geloescht', 'mappe.wiederhergestellt', 'frist.erreicht')
 DMS_MAPPEN_EREIGNISSE_AB = (0, 153, 0)
@@ -245,8 +248,8 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
     if (volltext or vtypen or vereignis) and (ab is None or ab < DMS_VOLLTEXT_AB):
         fehler.append('code.rechte.schnittstellen: dms:volltext kennt das DMS erst ab 0.145.0 – bitte dms: ">=0.145.0" angeben')
     # dms:archivfassung (DMS #631): ab 0.149.0; nur mit code.archivfassung.typen, dem Ereignis datei.archivfassung und Lesen
-    # von Dokumenten. auswahl (DMS #660, ab 0.176.0) nennt je Art (pdf_text, pdf_scan, bilder) eine Ja/Nein-Einstellung eines
-    # Abschnitts (an: diese Dokumente bekommen eine Archivfassung).
+    # von Dokumenten. auswahl (DMS #660, ab 0.176.0) nennt je Art (pdf_text, pdf_scan, bilder; emails ab DMS #946) eine
+    # Ja/Nein-Einstellung eines Abschnitts (an: diese Dokumente bekommen eine Archivfassung).
     archiv = 'dms:archivfassung' in (rechte.get('schnittstellen') or [])
     afass = code.get('archivfassung')
     aereignis = 'datei.archivfassung' in (code.get('ereignisse') or [])
@@ -270,6 +273,9 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
                 fehler.append(f'code.archivfassung.auswahl.{art}: der Schlüssel einer Einstellung vom Typ janein (Abschnitt, keine Liste) – an: diese Dokumente bekommen eine Archivfassung')
         if ab is None or ab < DMS_ARCHIV_AUSWAHL_AB:
             fehler.append('code.archivfassung.auswahl kennt das DMS erst ab 0.176.0 – bitte dms: ">=0.176.0" angeben')
+        if 'emails' in afass['auswahl'] and (ab is None or ab < DMS_ARCHIV_EMAILS_AB):
+            v = '.'.join(map(str, DMS_ARCHIV_EMAILS_AB))
+            fehler.append(f'code.archivfassung.auswahl.emails kennt das DMS erst ab {v} – bitte dms: ">={v}" angeben')
     if (archiv or afass is not None or aereignis) and (ab is None or ab < DMS_ARCHIVFASSUNG_AB):
         fehler.append('code.rechte.schnittstellen: dms:archivfassung kennt das DMS erst ab 0.149.0 – bitte dms: ">=0.149.0" angeben')
     # dms:sicherung-lesen (DMS #585): ab 0.142.0, nur zusammen mit dem Ereignis sicherung.fertig.

@@ -3,8 +3,8 @@
 schema: 1
 id: pdfa
 name: PDF/A
-version: 1.1.0
-beschreibung: Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.
+version: 1.2.0
+beschreibung: Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Auch E-Mails (.eml, .msg) werden so zu Seiten. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -12,8 +12,9 @@ lizenz: Apache-2.0
 kategorien: [dateiformate]
 symbol: file-text
 # 0.149.0: Recht dms:archivfassung, code.archivfassung, Ereignis datei.archivfassung, Wortpositionen,
-# PUT /dokumente/{id}/archivfassung (DMS #631); 0.176.0: code.archivfassung.auswahl (DMS #660)
-dms: ">=0.176.0"
+# PUT /dokumente/{id}/archivfassung (DMS #631); 0.176.0: code.archivfassung.auswahl (DMS #660);
+# 0.217.0 (vorläufig): Art emails (DMS #946) – E-Mails ohne Wortpositionen, GET /region (DMS #726)
+dms: ">=0.217.0"
 inhalt: {}
 code:
   sprache: c
@@ -21,11 +22,14 @@ code:
   ereignisse: [datei.archivfassung]
   archivfassung:
     # PDF, JPEG und PNG liest das Paket selbst; TIFF, WebP, GIF und BMP über die Lesefassung des Pakets Bildformate.
-    typen: [application/pdf, image/jpeg, image/png, image/tiff, image/webp, image/gif, image/bmp]
+    # E-Mails (.eml, .msg; bei application/octet-stream nur mit dieser Endung) setzt das Paket selbst zu Seiten (#143).
+    typen: [application/pdf, image/jpeg, image/png, image/tiff, image/webp, image/gif, image/bmp, message/rfc822,
+            application/vnd.ms-outlook, application/octet-stream]
     auswahl:              # je Art eine Ja/Nein-Einstellung unten (an: bekommt eine Archivfassung)
       pdf_text: pdf_text
       pdf_scan: pdf_scan
       bilder: bilder
+      emails: emails
   rechte:
     lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen
     dokumente: lesen      # Datei, Seitenbilder und Wortpositionen lesen; das Paket ändert keine Dokumente
@@ -49,3 +53,8 @@ code:
           typ: janein
           standard: true
           hilfe: Immer .jpg, .jpeg und .png; mit dem Paket Bildformate auch .tif, .tiff, .webp, .gif und .bmp. Den Text liefert das Paket Texterkennung.
+        - schluessel: emails
+          name: E-Mails (.eml, .msg)
+          typ: janein
+          standard: true
+          hilfe: Kopf, Text und Bilder der Mail als Seiten; Anhänge nur als Liste (sie bleiben im Original). Bilder aus dem Internet werden nie geladen.

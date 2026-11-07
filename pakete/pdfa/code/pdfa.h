@@ -363,13 +363,41 @@ class Schreiber {
     objekt(nr + 1);
     strom("", packe(reinterpret_cast<const uint8_t *>(c.data()), c.size()), true);
     objekt(nr + 2);
-    const Bild &b = s.bild;
-    std::string kopf = "/Type /XObject /Subtype /Image /Width " + std::to_string(b.breite) + " /Height " + std::to_string(b.hoehe) +
-                       " /ColorSpace " + (b.kanaele == 3 ? "/DeviceRGB" : "/DeviceGray") + " /BitsPerComponent 8";
-    if (b.jpeg) kopf += " /Filter /DCTDecode";
-    else kopf += " /Filter /FlateDecode /DecodeParms << /Predictor 15 /Colors " + std::to_string(b.kanaele) + " /BitsPerComponent 8 /Columns " + std::to_string(b.breite) + " >>";
-    strom(kopf, b.daten);
+    bildStrom(s.bild);
   }
+
+  /* Für frei gesetzte Seiten (E-Mails, dms-registry #143): Objekte selbst anlegen, Bilder einmal ablegen und auf
+     mehreren Seiten zeigen, Seiten mit eigenem Inhalt und eigenen Schriften. */
+  int neuesObjekt() { return naechstes++; }
+  int bild(const Bild &b) {
+    const int nr = naechstes++;
+    objekt(nr);
+    bildStrom(b);
+    return nr;
+  }
+  // schriften: je /F<i> die Objektnummer der Type0-Schrift (0 = nicht benutzt); bilder: (Index n für /Im<n>, Objekt).
+  void freieSeite(double breite, double hoehe, const std::string &inhalt, const std::vector<int> &schriften, const std::vector<std::pair<int, int>> &bilder) {
+    const int nr = naechstes;
+    naechstes += 2;
+    kinder.push_back(nr);
+    objekt(nr);
+    std::string res = "<<";
+    std::string f;
+    for (size_t i = 0; i < schriften.size(); i++) if (schriften[i]) f += " /F" + std::to_string(i) + " " + std::to_string(schriften[i]) + " 0 R";
+    if (!f.empty()) res += " /Font <<" + f + " >>";
+    if (!bilder.empty()) {
+      res += " /XObject <<";
+      for (auto &b : bilder) res += " /Im" + std::to_string(b.first) + " " + std::to_string(b.second) + " 0 R";
+      res += " >>";
+    }
+    res += " >>";
+    schreib("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + zahl(breite, 3) + " " + zahl(hoehe, 3) + "] /Resources " + res + " /Contents " + std::to_string(nr + 1) + " 0 R >>\nendobj\n");
+    objekt(nr + 1);
+    strom("", packe(reinterpret_cast<const uint8_t *>(inhalt.data()), inhalt.size()), true);
+  }
+  // Ein Objekt mit Wörterbuch bzw. Strom (Nummer aus neuesObjekt()).
+  void woerterbuch(int nr, const std::string &w) { objekt(nr); schreib(w + "\nendobj\n"); }
+  void stromObjekt(int nr, const std::string &kopf, const std::vector<uint8_t> &d, bool flate) { objekt(nr); strom(kopf, d, flate); }
 
   size_t seiten() const { return kinder.size(); }
 
@@ -403,6 +431,13 @@ class Schreiber {
     if ((size_t)nr > stellen.size()) stellen.resize((size_t)nr, 0);
     stellen[(size_t)nr - 1] = o.size();
     schreib(std::to_string(nr) + " 0 obj\n");
+  }
+  void bildStrom(const Bild &b) {
+    std::string kopf = "/Type /XObject /Subtype /Image /Width " + std::to_string(b.breite) + " /Height " + std::to_string(b.hoehe) +
+                       " /ColorSpace " + (b.kanaele == 3 ? "/DeviceRGB" : "/DeviceGray") + " /BitsPerComponent 8";
+    if (b.jpeg) kopf += " /Filter /DCTDecode";
+    else kopf += " /Filter /FlateDecode /DecodeParms << /Predictor 15 /Colors " + std::to_string(b.kanaele) + " /BitsPerComponent 8 /Columns " + std::to_string(b.breite) + " >>";
+    strom(kopf, b.daten);
   }
   void strom(const std::string &kopf, const std::vector<uint8_t> &d, bool flate = false) {
     schreib("<< " + kopf + (kopf.empty() ? "" : " ") + (flate ? "/Filter /FlateDecode " : "") + "/Length " + std::to_string(d.size()) + " >>\nstream\n");

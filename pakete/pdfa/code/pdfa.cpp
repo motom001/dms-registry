@@ -17,12 +17,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include <jpeglib.h>
 
 #include "json.h"
+#include "mailsatz.h"
 #include "pdfa.h"
 
 #pragma clang diagnostic push
@@ -30,6 +32,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
+#define STBI_ONLY_GIF
 #define STBI_NO_STDIO
 #define STBI_NO_LINEAR
 #define STBI_NO_HDR
@@ -59,6 +62,8 @@ enum Stufe { DEBUG = 0, INFO = 1, WARNUNG = 2, FEHLER = 3 };
 // Wie im DMS: höchstens so groß und so viele Seiten nimmt es eine Archivfassung an.
 constexpr size_t ARCHIV_MAX = 100u * 1024u * 1024u;
 constexpr int SEITEN_MAX = 1000;
+// Größer nimmt das DMS keine Quelle für eine Archivfassung an (ARCHIV_QUELLE_MAX_BYTES).
+constexpr size_t QUELLE_MAX = 50u * 1024u * 1024u;
 // Bilder, die das Paket dekodieren muss (PNG, CMYK-JPEG): höchstens so viele Bildpunkte (Speicher des Läufers).
 constexpr size_t PUNKTE_MAX = 20u * 1000u * 1000u;
 // Qualität der JPEG-Seiten (Seitenbilder von PDFs, umgerechnete JPEG).
@@ -303,6 +308,154 @@ bool pgm(const std::vector<uint8_t> &b, int &w, int &h, size_t &start) {
 // Auflösung der Seitenbilder: 300 dpi, bei langen Dokumenten weniger (Zeit je Aufruf, höchstens 100 MB).
 int dpiFuer(int seiten) { return seiten <= 50 ? 300 : seiten <= 200 ? 200 : 150; }
 
+/* ---------- E-Mails (dms-registry #143) ---------- */
+
+bool endetMit(const std::string &s, const char *e) { const size_t n = strlen(e); return s.size() >= n && s.compare(s.size() - n, n, e) == 0; }
+
+// Dateityp (wie das DMS ihn meldet) oder Endung sagen „E-Mail“; ob es wirklich eine ist, entscheidet danach der Inhalt.
+bool istMail(const std::string &mime, const std::string &name) {
+  const std::string m = zeichen::klein(mime.substr(0, mime.find(';'))), n = zeichen::klein(name);
+  if (m == "message/rfc822" || m == "application/vnd.ms-outlook") return true;
+  return (m == "application/octet-stream" || m.empty()) && (endetMit(n, ".eml") || endetMit(n, ".msg"));
+}
+
+pdfa::Angaben angabenAus(const Json &e, const std::string &sha, const std::string &werkzeug) {
+  pdfa::Angaben ang;
+  ang.werkzeug = werkzeug;
+  const std::string erstellt = e["erstellt"].text();
+  bool zeitOk = erstellt.size() >= 20 && erstellt.size() <= 30;
+  for (char c : erstellt) if (!(isdigit((unsigned char)c) || c == '-' || c == ':' || c == 'T' || c == 'Z' || c == '.' || c == '+')) zeitOk = false;
+  if (zeitOk) ang.erstellt = erstellt;
+  ang.id = sha.substr(0, 32);
+  return ang;
+}
+
+// Das fertige PDF/A ablegen (PUT /dokumente/{id}/archivfassung?sha256=…) und das Ergebnis melden.
+int ablegen(const std::string &dok, const std::string &sha, std::vector<uint8_t> fertig, const std::string &meldung) {
+  const std::string q = "{\"methode\":\"PUT\",\"pfad\":\"/dokumente/" + dok + "/archivfassung?sha256=" + sha + "\"}";
+  int s = dms_api_binaer(q.data(), (int32_t)q.size(), fertig.data(), (int32_t)fertig.size());
+  std::vector<uint8_t>().swap(fertig);
+  if (s == 200) { log(INFO, "Dokument " + dok + ": " + meldung); ergebnis(meldung); return 0; }
+  const std::string grund = grundAus(antwort());
+  if (s == 403 || s == 404 || s == 409 || s == 413 || s == 415 || s == 422) {
+    log(WARNUNG, "Dokument " + dok + ": Archivfassung nicht angenommen (HTTP " + std::to_string(s) + ") " + grund);
+    ergebnis("Archivfassung nicht angenommen: " + grund);
+    return 0;
+  }
+  log(FEHLER, "Archivfassung ablegen: HTTP " + std::to_string(s) + " " + grund);
+  return 2;
+}
+
+// Bild aus einer Mail (JPEG, PNG, GIF) → fertig gepacktes Bild: JPEG möglichst unverändert, PNG verlustfrei, sonst JPEG.
+bool mailBild(const std::string &d, pdfa::Bild &bild) {
+  const std::vector<uint8_t> v(d.begin(), d.end());
+  if (v.size() >= 3 && v[0] == 0xFF && v[1] == 0xD8) {
+    pdfa::JpegInfo j = pdfa::jpegInfo(v.data(), v.size());
+    if (j.ok && pdfa::jpegDurchreichen(j) && j.orientierung == 1) {
+      bild.breite = j.breite; bild.hoehe = j.hoehe; bild.kanaele = j.kanaele; bild.jpeg = true;
+      bild.daten = pdfa::jpegOhneMetadaten(v.data(), v.size());
+      return !bild.daten.empty();
+    }
+  }
+  std::string fehler;
+  const bool png = v.size() >= 8 && !memcmp(v.data(), "\x89PNG", 4);
+  const bool gif = v.size() >= 6 && !memcmp(v.data(), "GIF8", 4);
+  return dekodiere(v, png || gif, bild, fehler);
+}
+
+// Zeitzone der Ablage (GET /region, DMS #726); ohne Antwort Europe/Berlin.
+std::string zeitzone() {
+  Antwort a = get("/region");
+  if (a.status == 200) {
+    Json j = JsonLeser::lies(reinterpret_cast<const char *>(a.body.data()), a.body.size());
+    const std::string z = j["zeitzone"].text();
+    bool ok = !z.empty() && z.size() < 64;
+    for (char c : z) if (!(isalnum((unsigned char)c) || c == '/' || c == '_' || c == '-' || c == '+')) ok = false;
+    if (ok) return z;
+  }
+  return "Europe/Berlin";
+}
+
+int email(const Json &e, const std::string &dok, const std::string &sha, const std::string &werkzeug, long start) {
+  Antwort b = get("/dokumente/" + dok + "/inhalt");
+  if (b.status == 404) { ergebnis("Das Dokument gibt es nicht mehr – nichts zu tun"); return 0; }
+  if (b.status != 200) { log(FEHLER, "Datei holen: HTTP " + std::to_string(b.status) + " " + grundAus(b.body)); return 2; }
+  if (b.body.size() > QUELLE_MAX) { ergebnis("Keine Archivfassung: Die E-Mail ist größer als 50 MB"); return 0; }
+  std::string roh(b.body.begin(), b.body.end());
+  std::vector<uint8_t>().swap(b.body);
+
+  // Am Inhalt erkennen: Outlook (.msg) oder Internet-Nachricht (.eml).
+  std::unique_ptr<cfb::Datei> c;
+  mail::Nachricht n;
+  if (cfb::erkannt((const uint8_t *)roh.data(), roh.size())) {
+    c = std::make_unique<cfb::Datei>();
+    if (!c->oeffne((const uint8_t *)roh.data(), roh.size()) || !mail::istMsg(*c)) { ergebnis("Keine Archivfassung: Outlook-Datei nicht lesbar" + (c->fehler.empty() ? std::string() : " (" + c->fehler + ")")); return 0; }
+    n = mail::Msg(*c).lies(0, true);
+  } else if (mail::istEml((const uint8_t *)roh.data(), roh.size(), true)) {
+    n = mail::eml(roh);
+  } else {
+    ergebnis("Keine Archivfassung: Die Datei ist keine lesbare E-Mail (am Inhalt erkannt)");
+    return 0;
+  }
+
+  std::vector<uint8_t> icc, glyphless, daten[4];
+  static const char *DATEIEN[4] = {"noto-sans.ttf", "noto-sans-fett.ttf", "noto-sans-kursiv.ttf", "noto-sans-fettkursiv.ttf"};
+  if (!datei("srgb.icc", icc) || !datei("glyphless.ttf", glyphless)) { log(FEHLER, "code/daten/srgb.icc oder glyphless.ttf fehlt im Paket"); return 3; }
+  schrift::Schrift schriften[4];
+  for (int i = 0; i < 4; i++) {
+    if (!datei(DATEIEN[i], daten[i]) || !schriften[i].lies(std::move(daten[i]))) { log(FEHLER, std::string("Schrift code/daten/") + DATEIEN[i] + " fehlt oder ist nicht lesbar"); return 3; }
+  }
+
+  satz::Setzer setzer;
+  for (int i = 0; i < 4; i++) setzer.schriften[i] = &schriften[i];
+  setzer.seitenMax = SEITEN_MAX;
+  mailsatz::Leser leser(setzer, zeitzone(), mailBild);
+  {
+    satz::Elemente el = leser.nachricht(n, 0, c.get());
+    setzer.setze(el);
+  }
+  if (setzer.zuViel) { ergebnis("Keine Archivfassung: mehr als " + std::to_string(SEITEN_MAX) + " Seiten"); return 0; }
+  if (jetztMs() - start > ZEIT_MS) { ergebnis("Keine Archivfassung: Die E-Mail ist zu lang für einen Durchgang"); return 0; }
+  const std::string betreff = n.feld("Betreff");
+  setzer.kopfUndFuss("E-Mail" + std::string(betreff.empty() ? "" : " · " + betreff));
+  std::string().swap(roh);
+
+  pdfa::Schreiber pdf;
+  pdf.beginne(angabenAus(e, sha, werkzeug), icc, glyphless, 2 * 1024 * 1024);
+  std::vector<int> schriftNr(4, 0);
+  for (int i = 0; i < 4; i++) if (!schriften[i].benutzt.empty()) schriftNr[(size_t)i] = pdf.neuesObjekt();
+  std::vector<int> bildNr;
+  for (const pdfa::Bild &x : setzer.bilder) {
+    bildNr.push_back(pdf.bild(x));
+    if (pdf.o.size() > ARCHIV_MAX) { ergebnis("Keine Archivfassung: größer als 100 MB"); return 0; }
+  }
+  std::vector<pdfa::Bild>().swap(setzer.bilder);
+  for (const satz::Seite &s : setzer.seiten) {
+    std::vector<std::pair<int, int>> bilder;
+    for (int i : s.bilder) bilder.push_back({i, bildNr[(size_t)i]});
+    pdf.freieSeite(satz::Setzer::BREITE, satz::Setzer::HOEHE, satz::inhalt(s), schriftNr, bilder);
+  }
+  // Kennung der Teilmengen: sechs Buchstaben aus dem Prüfwert (je Schnitt verschieden).
+  for (int i = 0; i < 4; i++) {
+    if (!schriftNr[(size_t)i]) continue;
+    std::string k;
+    for (int j = 0; j < 6; j++) k += (char)('A' + (sha[(size_t)(j + 6 * i) % sha.size()] * 7 + j + 11 * i) % 26);
+    satz::schreibeSchrift(pdf, schriftNr[(size_t)i], schriften[i], k);
+  }
+  const size_t seiten = pdf.seiten();
+  std::vector<uint8_t> fertig = pdf.fertig();
+  if (fertig.size() > ARCHIV_MAX) { ergebnis("Keine Archivfassung: " + pdfa::groesse(fertig.size()) + " – höchstens 100 MB"); return 0; }
+
+  const mailsatz::Zaehler &z = leser.zaehler;
+  std::string meldung = "PDF/A-2b, " + std::to_string(seiten) + (seiten == 1 ? " Seite, " : " Seiten, ") + pdfa::groesse(fertig.size()) + "; E-Mail mit Kopf und Text";
+  if (z.bilder) meldung += ", " + std::to_string(z.bilder) + (z.bilder == 1 ? " Bild" : " Bilder");
+  if (z.anhaenge) meldung += ", " + std::to_string(z.anhaenge) + (z.anhaenge == 1 ? " Anhang" : " Anhänge") + " als Liste";
+  if (z.weitergeleitet) meldung += ", " + std::to_string(z.weitergeleitet) + (z.weitergeleitet == 1 ? " weitergeleitete E-Mail" : " weitergeleitete E-Mails");
+  if (z.extern_) meldung += "; " + std::to_string(z.extern_) + (z.extern_ == 1 ? " externes Bild" : " externe Bilder") + " nicht geladen";
+  if (z.verschluesselt) meldung += "; verschlüsselte Teile nicht lesbar";
+  return ablegen(dok, sha, std::move(fertig), meldung);
+}
+
 /* ---------- Ein Ereignis ---------- */
 
 int verarbeite(const Json &e) {
@@ -321,6 +474,8 @@ int verarbeite(const Json &e) {
       if (std::search(a.body.begin(), a.body.end(), kennung.begin(), kennung.end()) != a.body.end()) { ergebnis("Archivfassung schon vorhanden"); return 0; }
     }
   }
+  // E-Mails (#143): Das Paket setzt die Mail selbst zu Seiten – ohne Wortpositionen, ohne Volltext.
+  if (istMail(d["mime"].text(), d["name"].text())) return email(e, dok, sha, werkzeug, start);
   if (!d["wortpositionen"].wahr()) {
     ergebnis("Wortpositionen fehlen – Texterkennung aktualisieren (Paket Texterkennung ab 2.2.0) und den Volltext neu erzeugen");
     return 0;

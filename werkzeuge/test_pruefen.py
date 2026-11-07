@@ -307,6 +307,15 @@ class Einstellungen(unittest.TestCase):
         falsch = copy.deepcopy(mit)
         falsch['archivfassung']['nur_scans'] = 'pdf_text'
         self.assertTrue(self.paket(falsch, dms='>=0.176.0'))
+        # emails (DMS #946, dms-registry #143): erst ab der Version mit der Art emails.
+        mail = copy.deepcopy(mit)
+        mail['archivfassung']['typen'] += ['message/rfc822', 'application/vnd.ms-outlook']
+        mail['archivfassung']['auswahl']['emails'] = 'emails'
+        mail['einstellungen'][0]['felder'].append({'schluessel': 'emails', 'name': 'E-Mails', 'typ': 'janein', 'standard': True})
+        v = '.'.join(map(str, pruefen.DMS_ARCHIV_EMAILS_AB))
+        self.assertEqual(self.paket(mail, dms=f'>={v}'), [])
+        alt = self.paket(mail, dms='>=0.176.0')
+        self.assertTrue(any('auswahl.emails kennt das DMS erst ab' in f for f in alt), alt)
         # Schema: unbekannte Angaben, keine Dateitypen, Dateitypen in Kurzform.
         kern = copy.deepcopy(c)
         kern['archivfassung']['stufe'] = 'B'

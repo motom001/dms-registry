@@ -10,18 +10,27 @@ Archivfassungen.
 Bild bzw. zur Seite (0…1, Ursprung oben links). Für PDFs mit Textebene liest die Nachbildung des DMS die Wörter
 selbst (pdftotext -bbox, wie das DMS mit Poppler).
 
+E-Mails (dms-registry #143) erzeugt mails() nur mit der Python-Standardbibliothek (email) – Outlook-Dateien (.msg) mit dem
+Compound-File-Schreiber aus den Tests des Pakets „Office und E-Mail“, das denselben Mail-Zerleger nutzt. Was in den
+Seiten einer Mail stehen muss, prüft tests/modul_test.mjs (pdftotext, pdffonts, pdfimages).
+
 Geprüft wird je Archivfassung: Seitenzahl und -größe (pdfinfo), PDF/A-Kennung in den XMP-Metadaten, keine Fehler
 (qpdf --check, wenn da) und dass jedes Wort mit seiner Lage in der Textebene steht (pdftotext -bbox) – höchstens
 1,5 pt daneben. Die Konformität prüft veraPDF (tests/verapdf.sh).
 """
+import importlib.util
 import io
 import json
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import zlib
 from pathlib import Path
+
+from email.message import EmailMessage
+from email.policy import SMTP
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -151,8 +160,136 @@ def erzeuge(ordner: Path):
     bild('grau.png', w4, 1240, 1754, 150)
     sw, sh = 1240 * 72 / 150, 1754 * 72 / 150
     erwarte('scan.pdf', [(sw, sh)] * 2, [(i, t, x * sw, y * sh, b * sw, h * sh) for i, ws in ((1, ws1), (2, ws2)) for t, x, y, b, h in ws])
+    mails(ordner)
     for name in ('rechnung.pdf', 'extern.pdf', 'lang.pdf'):
         erwarte(name, seiten_im_pdf(ordner / name), [(s, t, x, y, x2 - x, y2 - y) for s, t, x, y, x2, y2 in woerter_im_pdf(ordner / name)])
+
+
+def office_beispiele():
+    """Die Testhilfen des Pakets Office und E-Mail (Compound File für .msg)."""
+    pfad = Path(__file__).resolve().parents[2] / 'office_email' / 'tests' / 'beispiele.py'
+    spec = importlib.util.spec_from_file_location('office_beispiele', pfad)
+    modul = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modul)
+    return modul
+
+
+def png(breite, hoehe, farbe=(30, 90, 170)):
+    b = Image.new('RGB', (breite, hoehe), 'white')
+    z = ImageDraw.Draw(b)
+    z.rectangle([breite // 8, hoehe // 8, breite * 7 // 8, hoehe * 7 // 8], fill=farbe)
+    z.text((breite // 6, hoehe // 3), 'Logo', fill='white', font=ImageFont.load_default(size=max(10, hoehe // 4)))
+    o = io.BytesIO()
+    b.save(o, 'PNG')
+    return o.getvalue()
+
+
+def jpeg(breite, hoehe):
+    b, _ = brief(breite, hoehe)
+    o = io.BytesIO()
+    b.save(o, 'JPEG', quality=80)
+    return o.getvalue()
+
+
+def kopf(m, betreff, von='Stadtwerke Musterstadt <service@example.org>', an='Lena Muster <lena@example.org>', datum='Mon, 02 Nov 2026 10:15:00 +0100', cc=None):
+    m['From'] = von
+    m['To'] = an
+    if cc:
+        m['Cc'] = cc
+    m['Date'] = datum
+    m['Subject'] = betreff
+    return m
+
+
+HTML = '''<!DOCTYPE html><html><head><title>TITELTEXT</title><style>body{font-family:Arial}</style><script>SKRIPTINHALT()</script>
+<link rel="stylesheet" href="https://example.org/stil.css"></head><body>
+<img src="cid:logo@example.org" width="120" height="40" alt="Logo">
+<h1>Ihre Rechnung November</h1>
+<p>Guten Tag Frau Muster,<br>anbei Ihre Rechnung. <b>Fällig am 15.11.2026</b>, <i>bitte pünktlich</i>.</p>
+<table border="1"><tr><th>Posten</th><th>Betrag</th></tr><tr><td>Grundpreis</td><td>12,50 €</td></tr><tr><td>Arbeitspreis</td><td>71,50 €</td></tr></table>
+<ul><li>Erster Punkt</li><li>Zweiter Punkt</li></ul><ol><li>Schritt eins</li><li>Schritt zwei</li></ol>
+<p>Mehr im <a href="https://example.org/portal">Kundenportal</a> oder per <a href="mailto:service@example.org">E-Mail</a>.</p>
+<blockquote>Zitierter Absatz aus Ihrer Nachricht.</blockquote>
+<img src="https://tracker.example.net/bild.png" width="300" height="80" alt="Werbung">
+<img src="https://tracker.example.net/p.gif" width="1" height="1">
+<form action="https://example.org/abschicken"><input type="text" value="FORMULARWERT"><button>Senden</button></form>
+</body></html>'''
+
+
+def mails(ordner: Path):
+    """Die Test-E-Mails (alles erfunden): nur Standardbibliothek."""
+    # Reine Text-Mail mit Zitat, langer Adresse und einem sehr langen Wort.
+    m = kopf(EmailMessage(policy=SMTP), 'Ihre Abschlagszahlung ab Dezember')
+    m.set_content('Hallo Lena,\n\nIhr monatlicher Abschlag ändert sich ab 01.12.2026 auf 84,00 €. Bitte prüfen Sie die Angaben in Ihrem Kundenportal: '
+                  'https://example.org/kundenportal/vertraege/4711-0815/abschlag?ansicht=uebersicht&jahr=2026\n\n'
+                  '    Vertragskonto: 4711-0815\n    Zähler:        1ESY1160123456\n\n'
+                  '> Am 28.10.2026 schrieb Lena Muster:\n> Bitte den Abschlag anpassen.\n>> Ältere Nachricht ganz unten.\n\n'
+                  'Donaudampfschifffahrtsgesellschaftskapitänswitwenrentenversicherungsanstaltsverwaltungsvorschriftenergänzungsbeilage\n\n'
+                  'Freundliche Grüße\nIhre Stadtwerke\n-- \nStadtwerke Musterstadt · Kundenservice\n')
+    (ordner / 'text.eml').write_bytes(m.as_bytes())
+
+    # HTML-Mail: Alternative mit Klartext und HTML mit cid:-Bild, externem Bild, Zählpixel, Tabelle, Liste, Link, Skript.
+    m = kopf(EmailMessage(policy=SMTP), 'Ihre Rechnung November', cc='Tom Muster <tom@example.org>')
+    m.set_content('Klartext-Fassung: Ihre Rechnung November.\n')
+    m.add_alternative(HTML, subtype='html')
+    m.get_payload()[1].add_related(png(240, 80), maintype='image', subtype='png', cid='<logo@example.org>')
+    (ordner / 'html.eml').write_bytes(m.as_bytes())
+
+    # Mit Anhängen (PDF, Word, Foto) – die Inhalte kommen nicht in die Archivfassung.
+    m = kopf(EmailMessage(policy=SMTP), 'Unterlagen zum Mietvertrag', von='Herr Özdemir <hausverwaltung@example.org>')
+    m.set_content('Hallo Lena,\nanbei die Unterlagen.\n')
+    m.add_attachment(b'%PDF-1.4\n%ANHANGINHALT\n', maintype='application', subtype='pdf', filename='Mietvertrag.pdf')
+    m.add_attachment(b'PK\x03\x04' + b'\0' * 2000, maintype='application', subtype='vnd.openxmlformats-officedocument.wordprocessingml.document', filename='Hausordnung.docx')
+    m.add_attachment(jpeg(400, 560), maintype='image', subtype='jpeg', filename='Zählerstand.jpg')
+    (ordner / 'anhaenge.eml').write_bytes(m.as_bytes())
+
+    # Weitergeleitet: vier Ebenen tief – gesetzt werden drei, die vierte steht nur noch als Anhang in der Liste.
+    innen = None
+    for ebene in (4, 3, 2, 1):
+        x = kopf(EmailMessage(policy=SMTP), f'Ebene {ebene}: Ablesetermin', von=f'Absender{ebene} <a{ebene}@example.org>', datum=f'Mon, 0{ebene} Nov 2026 08:00:00 +0000')
+        x.set_content(f'Text der Ebene {ebene}.\n')
+        if innen is not None:
+            x.add_attachment(innen)
+        innen = x
+    m = kopf(EmailMessage(policy=SMTP), 'WG: Ablesetermin', von='Jonas Muster <jonas@example.org>')
+    m.set_content('Siehe unten.\n')
+    m.add_attachment(innen)
+    (ordner / 'weitergeleitet.eml').write_bytes(m.as_bytes())
+
+    # Windows-1252 im Text, ISO-8859-1 und Base64 im Kopf.
+    t = 'Sehr geehrte Damen und Herren,\r\nder Betrag von 1.250 € wird „am Monatsende“ fällig – Grüße.\r\n'.encode('cp1252')
+    roh = (b'From: =?ISO-8859-1?Q?J=FCrgen_M=FCller?= <juergen@example.org>\r\nTo: lena@example.org\r\nDate: Tue, 3 Nov 2026 09:00:00 GMT\r\n'
+           b'Subject: =?UTF-8?B?w5xiZXJ3ZWlzdW5n?= =?ISO-8859-1?Q?_f=FCr_Oktober?=\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=windows-1252\r\n'
+           b'Content-Transfer-Encoding: 8bit\r\n\r\n' + t)
+    (ordner / 'latin1.eml').write_bytes(roh)
+
+    # Kyrillisch, Griechisch – und Zeichen, die die Schrift nicht hat (Rahmen statt Fragezeichen).
+    m = kopf(EmailMessage(policy=SMTP), 'Привет из Москвы', von='Ирина Петрова <irina@example.org>', datum='Wed, 04 Nov 2026 12:00:00 +0300')
+    m.set_content('Здравствуйте, Лена!\nΚαλημέρα από την Αθήνα.\nPfeil → und Schriftzeichen 漢字 ohne Glyphe.\n')
+    (ordner / 'kyrillisch.eml').write_bytes(m.as_bytes())
+
+    # Lang: mehrere Seiten (Kopf- und Fußzeile mit „Seite x von y“).
+    m = kopf(EmailMessage(policy=SMTP), 'Protokoll der Eigentümerversammlung', datum='Sat, 01 Aug 2026 18:30:00 +0200')
+    m.set_content('\n\n'.join(f'Punkt {i}: ' + 'Die Versammlung beschließt einstimmig, die Fassade im kommenden Jahr streichen zu lassen. ' * 6 for i in range(1, 60)))
+    (ordner / 'lang.eml').write_bytes(m.as_bytes())
+
+    # Outlook (.msg): HTML-Text, ein Anhang und eine eingebettete Nachricht.
+    o = office_beispiele()
+    eig = bytearray(32)
+    eig += struct.pack('<IIQ', 0x0E060040, 0, (1793611800 + 11644473600) * 10000000)  # 2026-11-02 09:30 UTC
+    eingebettet = {'__properties_version1.0': bytes(24), '__substg1.0_0037001F': o.u('Eingebettet: Angebot alt'),
+                   '__substg1.0_1000001F': o.u('Text der eingebetteten Nachricht.')}
+    (ordner / 'outlook.msg').write_bytes(o.cfb({
+        '__properties_version1.0': bytes(eig),
+        '__substg1.0_0037001F': o.u('Angebot Dachrinne – Petra'),
+        '__substg1.0_0C1A001F': o.u('Petra Sommer'),
+        '__substg1.0_5D01001F': o.u('petra@example.org'),
+        '__substg1.0_1000001F': o.u('Klartext des Angebots.'),
+        '__substg1.0_10130102': '<html><body><p>Hallo Markus,</p><p>anbei das <b>Angebot</b> über 1.250 €.</p></body></html>'.encode(),
+        '__recip_version1.0_#00000000': {'__substg1.0_3001001F': o.u('Markus Weber'), '__substg1.0_39FE001F': o.u('markus@example.org')},
+        '__attach_version1.0_#00000000': {'__substg1.0_3707001F': o.u('Angebot.pdf'), '__substg1.0_37010102': b'%PDF-1.4\n'},
+        '__attach_version1.0_#00000001': {'__substg1.0_3707001F': o.u('Altes Angebot.msg'), '__substg1.0_3701000D': eingebettet},
+    }))
 
 
 def erwarte(name, seiten, woerter):

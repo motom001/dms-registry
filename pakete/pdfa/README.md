@@ -1,6 +1,6 @@
 # PDF/A
 
-Mit dem Paket **PDF/A** legt Ablago zu jedem Dokument zusätzlich eine **Archivfassung** ab: ein durchsuchbares **PDF/A** – das Format für die **Langzeitaufbewahrung**. Das Original bleibt unverändert das Dokument; die Archivfassung kommt dazu. So nimmt dir Ablago die Umwandlung ab, die sonst irgendwann nötig wird, wenn ein Format oder Programm aus der Mode kommt.
+Mit dem Paket **PDF/A** legt Ablago zu jedem Dokument zusätzlich eine **Archivfassung** ab: ein durchsuchbares **PDF/A** – das Format für die **Langzeitaufbewahrung**. Das Original bleibt unverändert das Dokument; die Archivfassung kommt dazu. So nimmt dir Ablago die Umwandlung ab, die sonst irgendwann nötig wird, wenn ein Format oder Programm aus der Mode kommt. Das gilt auch für **E-Mails** (`.eml`, `.msg`): Das Paket setzt sie zu Seiten, die du lesen kannst wie einen Brief (siehe [E-Mails](#e-mails)).
 
 Es läuft im **Paket-Läufer** von Ablago: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit.
 
@@ -13,7 +13,7 @@ Das Paket schreibt **PDF/A-2b** – „b“ heißt: Das Aussehen ist gesichert. 
 ## So arbeitet es
 
 1. Ein Dokument kommt in Ablago. Sobald sein **Volltext feststeht** – bei Scans und Fotos also nach der Texterkennung –, meldet Ablago es dem Paket (Ereignis **Archivfassung erstellen**). Am Dokument steht so lange „Archivfassung wird erstellt“.
-2. Das Paket holt die **Wortpositionen** (wo jedes Wort auf der Seite steht) und baut daraus das PDF/A:
+2. Das Paket holt die **Wortpositionen** (wo jedes Wort auf der Seite steht) und baut daraus das PDF/A (E-Mails ohne Wortpositionen, siehe unten):
 
    | Dokument | Archivfassung |
    | --- | --- |
@@ -21,6 +21,7 @@ Das Paket schreibt **PDF/A-2b** – „b“ heißt: Das Aussehen ist gesichert. 
    | **PNG** (Bildschirmfoto, Grafik) | **verlustfrei**; Durchsichtiges kommt auf Weiß |
    | **PDF** (Scan, Online-Rechnung, Formular) | jede Seite als **Bild mit 300 dpi in Graustufen** (ab 51 Seiten 200 dpi, ab 201 Seiten 150 dpi), darüber die Textebene. Formularfelder sind damit eingefroren (die Werte sind zu sehen, ausfüllen lässt sich nichts mehr); JavaScript, Aktionen und Verweise auf externe Inhalte kommen nie mit. |
    | **TIFF, WebP, GIF, BMP** | aus der Lesefassung des Pakets [Bildformate](../bildformate/), wie oben |
+   | **E-Mail** (`.eml`, Outlook `.msg`) | als Text gesetzt, mit Kopfblock, Bildern aus der Mail und der Liste der Anhänge – siehe [E-Mails](#e-mails) |
 
    Die Seitengröße kommt bei Bildern aus ihrer Auflösung; fehlt sie oder ist sie kleiner als 100 dpi (Handyfotos schreiben 72 dpi hinein), gilt 300 dpi.
 3. Ablago prüft die Archivfassung (PDF, PDF/A-Kennung, nichts Externes), legt sie neben das Original und zeigt sie an: „Ansicht: Archivfassung (PDF/A)“ mit **Original anzeigen**. Die Historie der Mappe vermerkt sie („JPEG → PDF/A-2b (PDF/A 1.0.0)“). Herunterladen und Weitergeben bieten die Wahl zwischen Archivfassung und Original.
@@ -40,8 +41,8 @@ Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 
 - **Mappen lesen: alle Mappentypen** – Dokumente liegen in Mappen beliebiger Typen; die Mappen selbst liest das Paket nicht.
 - **Dokumente lesen** – es liest die Datei, die Seitenbilder und die Wortpositionen. Dokumente ändert, ersetzt oder löscht es nicht.
-- **Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung): PDF, JPEG, PNG, TIFF, WebP, GIF, BMP** – Ablago gibt diese Dokumente an das Paket und nimmt die Archivfassung an.
-- **Kein Netz.** Alles geschieht im Paket; Farbprofil und Schrift bringt es mit.
+- **Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung): PDF, JPEG, PNG, TIFF, WebP, GIF, BMP, E-Mails (`message/rfc822`, `application/vnd.ms-outlook`, `application/octet-stream` mit Endung `.eml`/`.msg`)** – Ablago gibt diese Dokumente an das Paket und nimmt die Archivfassung an. Für E-Mails liest das Paket außerdem die **Region** der Ablage (Zeitzone, `GET /region`), nur lesend.
+- **Kein Netz.** Alles geschieht im Paket; Farbprofil und Schriften bringt es mit. Auch Bilder, auf die eine E-Mail im Internet verweist, lädt es **nie**.
 - Es reagiert auf **Ein Dokument mit fertigem Volltext braucht seine Archivfassung (PDF/A)** (`datei.archivfassung`).
 
 ## Einstellungen
@@ -53,10 +54,26 @@ Unter **Werkbank → Pakete → PDF/A → Einstellungen** kreuzt du unter „Arc
 | PDFs mit Text | an | z. B. Online-Rechnungen, Kontoauszüge. Aus spart Platz; diese PDFs bleiben dann nur im Original. |
 | Gescannte PDFs | an | PDFs ohne Text oder nur mit Text auf einzelnen Seiten. Den Text liefert das Paket Texterkennung. |
 | Fotos und Bilder | an | Immer .jpg, .jpeg und .png; mit dem Paket Bildformate auch .tif, .tiff, .webp, .gif und .bmp. Den Text liefert das Paket Texterkennung. |
+| E-Mails (.eml, .msg) | an | Kopf, Text und Bilder der Mail als Seiten; Anhänge nur als Liste (sie bleiben im Original). Bilder aus dem Internet werden nie geladen. Ablago mit der Art `emails` (DMS #946). |
 
 Was du abwählst, steht am Dokument als „ausgelassen – laut Einstellung“. Kreuzt du eine Art später an, holt Ablago die Dokumente nach.
 
 Die PDF/A-Stufe ist fest (**PDF/A-2b**) und nicht wählbar: Sie passt für alles, was ein Haushalt aufbewahrt, und jede weitere Stufe müsste dauerhaft gepflegt und geprüft werden.
+
+## E-Mails
+
+Eine Mail (`.eml` oder Outlook `.msg`) setzt das Paket **selbst** zu Seiten (A4) – ohne Browser, ohne Netz, abgeschottet im Paket-Läufer. Ob es eine Mail ist, entscheidet der Inhalt, nicht der Name.
+
+- **Kopfblock** wie ein Briefkopf: Betreff groß, darunter **Von, An, Cc und Datum** – das Datum in der **Zeitzone der Ablage** (Werkbank → Einstellungen → Region) und deutsch geschrieben, z. B. „02.11.2026, 10:15 Uhr“.
+- **Text:** Klartext mit Umbruch an Wortgrenzen, Zitate (`>`) eingerückt mit Strich. Gibt es eine HTML-Fassung (oder nur HTML), nimmt das Paket sie und setzt **Absätze, Überschriften, Listen, Fett, Kursiv, einfache Tabellen und Zeilenumbrüche**; Links stehen als Text mit der Adresse in Klammern. Skripte, Stile, Formulare und Knöpfe gibt es nicht.
+- **Bilder in der Mail** (`cid:`, auch `data:`) stehen als JPEG, PNG oder GIF an ihrer Stelle, höchstens so breit wie die Seite.
+- **Bilder aus dem Internet** (`http…`) werden **nie geladen** – an ihrer Stelle steht ein kleiner Kasten „externes Bild nicht geladen“. Zählpixel, mit denen Absender sehen wollen, ob eine Mail geöffnet wurde, bleiben so wirkungslos (für die ganz kleinen gibt es nicht einmal einen Kasten).
+- **Anhänge** stehen am Ende als Liste mit Name, Art und Größe. Ihr Inhalt kommt nicht in die Archivfassung (PDF/A-2b erlaubt keine eingebetteten Dateien; das Original mit allen Anhängen bleibt ja erhalten). **Weitergeleitete Mails** (als Anhang oder eingebettet) folgen darunter mit eigenem Kopfblock, bis zur dritten Ebene.
+- **Verschlüsselte Teile** (S/MIME, PGP/MIME) bleiben verschlüsselt; dort steht „verschlüsselter Teil – nicht lesbar“.
+- **Schrift:** Noto Sans, eingebettet nur mit den Zeichen, die vorkommen – der Text ist sichtbar, durchsuchbar und kopierbar. Umlaute, die europäischen Schriften, Griechisch und Kyrillisch werden richtig gezeigt; was die Schrift nicht kann (z. B. chinesische Schriftzeichen, manche Symbole), steht als Rahmen „□“ da, nie als „?“.
+- Oben auf jeder Seite steht der Betreff, unten „Seite 1 von 3“.
+
+Am Dokument steht danach z. B. „PDF/A-2b, 2 Seiten, 45 KB; E-Mail mit Kopf und Text, 1 Bild, 3 Anhänge als Liste; 1 externes Bild nicht geladen“.
 
 ## Platz und Qualität
 
@@ -74,13 +91,16 @@ Gemessen am 03.11.2026 auf amd64 mit 2 Kernen, Node 22, mit den erfundenen Testd
 | Scan-PDF, 2 Seiten A4 | 97 KB | 178 KB | 0,7 s | 29 MB |
 | PDF mit 60 Seiten (200 dpi) | 23 KB | 1,7 MB | 7,3 s | 50 MB |
 
-Das Modul ist 0,5 MB groß.
+Das Modul ist 0,7 MB groß. Eine E-Mail mit einer Seite wird als Archivfassung etwa 30–50 KB groß (die Teilmengen der Schriften stecken darin), dazu kommen ihre Bilder.
+
+E-Mails aus den Testdateien (`tests/beispiele.py`): eine Seite in 10–25 ms, die 8 Seiten lange Mail in rund 40 ms, je unter 8 MB Speicher.
 
 ## Grenzen
 
 - Eine Archivfassung entsteht in **einem Aufruf** des Läufers (höchstens 100 Sekunden) – ein halbes PDF lässt sich nicht als Zwischenstand weitergeben. Sehr lange PDFs (mehrere hundert Seiten) bekommen deshalb unter Umständen keine; der Grund steht am Dokument.
 - Höchstens 1000 Seiten und 100 MB je Archivfassung (Grenze von Ablago); Bilder, die das Paket dekodieren muss (PNG, CMYK-JPEG), höchstens 20 Millionen Bildpunkte.
 - Seiten von PDFs nur in **Graustufen** (siehe oben).
+- **E-Mails** (Stufe 1): HTML wird vereinfacht gesetzt – keine Spalten, Farben oder Schriften aus dem Layout der Mail, Tabellen mit mehr als sechs Spalten und verschachtelte Tabellen werden nacheinander gesetzt. Eine bessere HTML-Darstellung folgt mit Stufe 2 ([dms-registry #144](https://github.com/motom001/dms-registry/issues/144)). Fotos in Mails stehen so, wie sie gespeichert sind (EXIF-Ausrichtung wird bei Mails nicht ausgewertet). Kennt das Paket die Zeitzone der Ablage nicht, zeigt es UTC mit dem Zusatz „(UTC)“.
 - Scans brauchen die **Wortpositionen** der Texterkennung – das Paket [Texterkennung](../texterkennung/) ab 2.2.0. Bei sehr langen Scans (über etwa 150 dicht beschriebene Seiten) schickt die Texterkennung sie nicht für alle Seiten; dann gibt es keine Archivfassung.
 
 ## Voraussetzungen
@@ -88,6 +108,7 @@ Das Modul ist 0,5 MB groß.
 - Ablago **0.149.0** oder neuer (Schnittstelle „Archivfassung ablegen“, `dms:archivfassung`).
 - Für Scans und Fotos: das Paket [Texterkennung](../texterkennung/) **2.2.0** oder neuer (Wortpositionen). Ohne Text bekommt ein Scan keine Archivfassung.
 - Für TIFF, WebP, GIF und BMP: das Paket [Bildformate](../bildformate/).
+- Für E-Mails: Ablago mit der Archiv-Art `emails` ([DMS #946](https://github.com/motom001/dms/issues/946), vorläufig 0.217.0). Das Paket [Office und E-Mail](../office_email/) braucht es dafür nicht.
 
 ## Warum so gebaut? (Werkzeug und Lizenz)
 
@@ -97,6 +118,8 @@ Das Paket bringt einen **eigenen kleinen PDF/A-Schreiber** mit ([`code/pdfa.h`](
 - **Keine „Bereinigung“ des Original-PDFs** (wie mit qpdf): Ein beliebiges PDF wird erst PDF/A, wenn man Schriften nachbettet, Farben umrechnet, Transparenz und Formulare auflöst – das geht nur mit einem vollständigen PDF-Renderer. Das Rastern über das Seitenbild von Ablago (Poppler, im Kern ohnehin da) ergibt für **jedes** PDF eine gültige Archivfassung, ohne Rendering im Paket.
 - **Schrift der Textebene:** GlyphLessFont aus Tesseract (Apache-2.0, 572 Bytes) – eine Schrift ohne sichtbare Zeichen; die Breite jedes Worts stellt die horizontale Skalierung ein, so liegt die Markierung genau auf dem Wort.
 - **Farbprofil:** sRGB aus [Compact-ICC-Profiles](https://github.com/saucecontrol/Compact-ICC-Profiles) (CC0-1.0, 736 Bytes, ICC v2).
+- **E-Mails ohne Browser:** Ein eigener kleiner Satz ([`code/satz.h`](code/satz.h), [`code/mailsatz.h`](code/mailsatz.h)) statt eines HTML-Renderers: Er kann weniger, lädt aber garantiert nichts nach und passt in den Läufer. Die Schrift **Noto Sans** (SIL OFL 1.1) wird als **Teilmenge** eingebettet ([`code/schrift.h`](code/schrift.h)): Die Glyphen-Nummern bleiben, unbenutzte Glyphen werden leer – so stimmen die Breiten im PDF genau mit der Schrift überein, wie PDF/A es verlangt. Kein Kerning, keine Ligaturen: Der Text bleibt so suchbar, wie er gesetzt ist.
+- **Mail-Zerleger gemeinsam:** Die Mails liest derselbe Code wie im Paket [Office und E-Mail](../office_email/) (`gemeinsam/mail/` im Repository) – beide verstehen eine Mail also gleich.
 
 Die Konformität prüft **veraPDF** (Profil PDF/A-2b) in der CI an allen Testdateien (`tests/verapdf.sh`, feste Version mit Prüfsumme); im Paket selbst steckt veraPDF nicht.
 
@@ -106,9 +129,13 @@ Die Konformität prüft **veraPDF** (Profil PDF/A-2b) in der CI an allen Testdat
 | --- | --- |
 | [`code/pdfa.cpp`](code/pdfa.cpp) | das Modul (Ablago-Paket-ABI 1): Ereignis → schon vorhanden? → Wortpositionen → Bild bzw. Seitenbilder über die API → PDF/A → `PUT /dokumente/{id}/archivfassung` |
 | [`code/pdfa.h`](code/pdfa.h) | ohne Bibliotheken außer zlib: PDF/A-2b schreiben (Seite für Seite), Textebene, JPEG-Kopf lesen und Metadaten entfernen, EXIF-Ausrichtung, PNG-Prädiktoren; Test in [`tests/pdfa_test.cpp`](tests/pdfa_test.cpp) |
-| [`code/bauen.sh`](code/bauen.sh) | Bau: zlib 1.3.1, libjpeg-turbo 3.1.2 und stb_image aus den Quellen (feste Commits, wie im Paket Bildformate), Schrift und Farbprofil mit Prüfsumme nach `code/daten/` |
+| [`code/satz.h`](code/satz.h) | Seiten setzen: Absätze, Zeilenumbruch, Zitate, Listen, einfache Tabellen, Bilder, Kopf- und Fußzeile; Schriften als Type0/CIDFontType2 mit Teilmenge und ToUnicode |
+| [`code/mailsatz.h`](code/mailsatz.h) | eine E-Mail als Seiten: Kopfblock, Klartext, einfaches HTML, `cid:`-Bilder, Anhänge, weitergeleitete Mails, Datum in der Zeitzone der Ablage |
+| [`code/schrift.h`](code/schrift.h) | TrueType lesen (cmap, hmtx, glyf) und eine Teilmenge schreiben |
+| [`gemeinsam/mail/`](../../gemeinsam/mail/) | der Mail-Zerleger, gemeinsam mit „Office und E-Mail“ |
+| [`code/bauen.sh`](code/bauen.sh) | Bau: zlib 1.3.1, libjpeg-turbo 3.1.2 und stb_image aus den Quellen (feste Commits, wie im Paket Bildformate), Schriften und Farbprofil mit Prüfsumme nach `code/daten/` |
 | [`code/lizenzen/`](code/lizenzen/) | Lizenztexte der Bibliotheken und Daten |
-| [`tests/`](tests/) | `beispiele.py` (erfundene Testdateien und Prüfung: Seiten, jedes Wort an seiner Stelle, qpdf), `modul_test.mjs` (das Modul mit einer Nachbildung von Ablago), `verapdf.sh` (veraPDF, PDF/A-2b), `ci.sh` (CI), `pruefen.sh` (alles lokal) |
+| [`tests/`](tests/) | `beispiele.py` (erfundene Testdateien – E-Mails nur mit der Standardbibliothek – und Prüfung: Seiten, jedes Wort an seiner Stelle, qpdf), `modul_test.mjs` (das Modul mit einer Nachbildung von Ablago; bei Mails Text, Schriften und Bilder der Seiten), `verapdf.sh` (veraPDF, PDF/A-2b), `ci.sh` (CI), `pruefen.sh` (alles lokal) |
 
 ```sh
 WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/pdfa   # beim ersten Mal einige Minuten
@@ -128,5 +155,6 @@ Apache-2.0 (siehe `LICENSE`). Im Modul und in `code/daten/` stecken fremde Bibli
 | [stb_image](https://github.com/nothings/stb) | 2.30 | MIT oder Public Domain – `stb.txt` |
 | GlyphLessFont (`tessdata/pdf.ttf` aus [Tesseract](https://github.com/tesseract-ocr/tesseract)) | 5.5.1 | Apache-2.0 – `glyphless-font.md` |
 | sRGB-Profil (`sRGB-v2-magic.icc` aus [Compact-ICC-Profiles](https://github.com/saucecontrol/Compact-ICC-Profiles)) | Commit `bdd8466` | CC0-1.0 – `srgb-icc-cc0.txt` |
+| [Noto Sans](https://notofonts.github.io/) (normal, fett, kursiv, fett-kursiv; unhinted TTF) | Commit `86ce02c` von notofonts.github.io | SIL OFL 1.1 – `noto-sans.md`, `noto-sans-ofl.txt` |
 
 Diese Software beruht teilweise auf der Arbeit der Independent JPEG Group. – This software is based in part on the work of the Independent JPEG Group.
