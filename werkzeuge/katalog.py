@@ -90,6 +90,8 @@ def eintrag(ordner: Path, m: dict, archivname: str, daten: bytes, veroeffentlich
             'mappentypen': [{'schluessel': t['schluessel'], 'name': t['name']} for t in typen],
             'sichten': [{'schluessel': s['schluessel'], 'name': s['name']} for s in sichten],
             'beispiele': len(beispiele),
+            # Beispiel-Dokumente (motom001/dms#878, Registry #137): nur, wenn es welche gibt.
+            **({'beispieldokumente': n} if (n := sum(len(b.get('dokumente') or []) for b in beispiele if isinstance(b, dict))) else {}),
         },
         'code': 'code' in m,
         'archiv': f'archive/{archivname}',

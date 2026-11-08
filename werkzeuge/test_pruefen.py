@@ -829,6 +829,115 @@ class Automatisierungen(unittest.TestCase):
             self.assertEqual(pruefen.pruefe(WURZEL / 'pakete' / p, None), [], p)
 
 
+PDF = b'%PDF-1.4\n% Beispiel fuer Lena, example.org\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n'
+PNG = b'\x89PNG\r\n\x1a\n' + b'\x01' * 32
+JPEG = b'\xff\xd8\xff\xe0' + b'\x02' * 32
+
+
+class BeispielDokumente(unittest.TestCase):
+    """Beispiel-Dokumente in Paketen (Registry #137, motom001/dms#878)."""
+
+    def paket(self, dokumente: list, dateien: dict, dms: str = '>=0.222.0', typ: str = 'beispiel') -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'], m['dms'] = 'probe', dms
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            mt = ziel / 'inhalt' / 'mappentypen.yaml'
+            mt.write_text('\n'.join(z for z in mt.read_text(encoding='utf-8').splitlines() if not z.strip().startswith('frist:')) + '\n', encoding='utf-8')
+            bsp = [{'typ': typ, 'schluessel': 'erstes', 'werte': {'bezeichnung': 'Wartungsvertrag Heizung'}, **({'dokumente': dokumente} if dokumente is not None else {})}]
+            (ziel / 'inhalt' / 'beispiele.yaml').write_text(yaml.safe_dump(bsp, allow_unicode=True), encoding='utf-8')
+            for name, inhalt in dateien.items():
+                (ziel / 'inhalt' / name).parent.mkdir(parents=True, exist_ok=True)
+                (ziel / 'inhalt' / name).write_bytes(inhalt)
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            self.hinweise = pruefen.hinweise(ziel)
+            return pruefen.pruefe(ziel, None)
+
+    GUT = [{'datei': 'beispiele/heizung/vertrag.pdf', 'titel': 'Wartungsvertrag', 'datum': '2023-04-01'},
+           {'datei': 'beispiele/heizung/rechnung.png', 'register': 'dokumente'}, {'datei': 'beispiele/heizung/foto.JPG'}]
+    DATEIEN = {'beispiele/heizung/vertrag.pdf': PDF, 'beispiele/heizung/rechnung.png': PNG, 'beispiele/heizung/foto.JPG': JPEG}
+
+    def test_gueltig_und_groessen_gemeldet(self):
+        self.assertEqual(self.paket(self.GUT, self.DATEIEN), [])
+        h = '\n'.join(self.hinweise)
+        self.assertIn('Beispiel-Dokumente: 3 Datei(en), zusammen', h)
+        self.assertIn('inhalt/beispiele/heizung/vertrag.pdf', h)
+
+    def test_schema(self):
+        f = '\n'.join(self.paket([{'datei': 'beispiele/heizung/vertrag.pdf', 'unbekannt': 1}], self.DATEIEN))
+        self.assertIn('unbekannt', f)
+        f = '\n'.join(self.paket([{'datei': 'beispiele/heizung/vertrag.pdf', 'datum': '1.4.2023'}], self.DATEIEN))
+        self.assertIn('datum', f)
+        f = '\n'.join(self.paket([{'titel': 'ohne Datei'}], self.DATEIEN))
+        self.assertIn('datei', f)
+
+    def test_pfad_unter_beispiele(self):
+        f = '\n'.join(self.paket([{'datei': 'mappentypen.yaml'}], {}))
+        self.assertIn('muss unter inhalt/beispiele/ liegen', f)
+        f = '\n'.join(self.paket([{'datei': 'beispiele/../manifest.pdf'}], {}))
+        self.assertIn('muss unter inhalt/beispiele/ liegen', f)
+
+    def test_datei_fehlt_oder_ist_leer(self):
+        self.assertTrue(any('fehlt' in x for x in self.paket([{'datei': 'beispiele/gibtsnicht.pdf'}], {})))
+        self.assertTrue(any('ist leer' in x for x in self.paket([{'datei': 'beispiele/leer.pdf'}], {'beispiele/leer.pdf': b''})))
+
+    def test_nur_pdf_png_jpeg_passend_zur_endung(self):
+        f = '\n'.join(self.paket([{'datei': 'beispiele/falsch.pdf'}], {'beispiele/falsch.pdf': PNG}))
+        self.assertIn('kein PDF, PNG oder JPEG', f)
+        f = '\n'.join(self.paket([{'datei': 'beispiele/notiz.txt'}], {'beispiele/notiz.txt': b'Hallo'}))
+        self.assertTrue('notiz.txt' in f, f)
+        self.assertEqual(pruefen.dateiart('a.gif', b'GIF89a'), None)
+        self.assertEqual(pruefen.dateiart('a.jpeg', JPEG), 'image/jpeg')
+
+    def test_jede_datei_genannt(self):
+        f = '\n'.join(self.paket(self.GUT, {**self.DATEIEN, 'beispiele/uebrig.pdf': PDF}))
+        self.assertIn('inhalt/beispiele/uebrig.pdf: liegt unter inhalt/beispiele/, aber kein Beispiel nennt', f)
+        # Auch ohne ein einziges genanntes Dokument.
+        f = '\n'.join(self.paket(None, {'beispiele/uebrig.pdf': PDF}, dms='>=0.41.0'))
+        self.assertIn('kein Beispiel nennt', f)
+
+    def test_groesse_je_datei_und_gesamt(self):
+        alt = pruefen.BEISPIEL_DATEI_MAX, pruefen.PAKET_MAX
+        try:
+            pruefen.BEISPIEL_DATEI_MAX, pruefen.PAKET_MAX = 40, 200
+            f = '\n'.join(self.paket(self.GUT, self.DATEIEN))
+            self.assertIn('höchstens 0 MB je Datei', f)
+            pruefen.BEISPIEL_DATEI_MAX = 1000
+            gross = {f'beispiele/teil{i}.pdf': PDF for i in range(4)}
+            f = '\n'.join(self.paket([{'datei': n} for n in gross], gross))
+            self.assertIn('inhalt/beispiele/: zusammen', f)
+        finally:
+            pruefen.BEISPIEL_DATEI_MAX, pruefen.PAKET_MAX = alt
+        # Die Grenze von 2 MB je Datei gilt für Beispiel-Dokumente nicht.
+        gross = PDF + b'0' * (3 * 1024 * 1024)
+        self.assertEqual(self.paket([{'datei': 'beispiele/gross.pdf'}], {'beispiele/gross.pdf': gross}), [])
+
+    def test_register_muss_dokumentenregister_sein(self):
+        f = '\n'.join(self.paket([{'datei': 'beispiele/heizung/vertrag.pdf', 'register': 'daten'}], self.DATEIEN))
+        self.assertIn('kein Dokumentenregister „daten“', f)
+
+    def test_braucht_ablago_0_222(self):
+        f = '\n'.join(self.paket(self.GUT, self.DATEIEN, dms='>=0.221.0'))
+        self.assertIn('dms: ">=0.222.0"', f)
+
+    def test_katalog_zaehlt_beispiel_dokumente(self):
+        import katalog
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            ziel.mkdir()
+            (ziel / 'inhalt').mkdir()
+            (ziel / 'inhalt' / 'beispiele.yaml').write_text(yaml.safe_dump([{'typ': 'a', 'werte': {}, 'dokumente': [{'datei': 'beispiele/a.pdf'}, {'datei': 'beispiele/b.pdf'}]}, {'typ': 'a', 'werte': {}}]), encoding='utf-8')
+            m = {'id': 'probe', 'version': '1.0.0', 'dms': '>=0.222.0', 'inhalt': {'beispiele': 'inhalt/beispiele.yaml'}}
+            e = katalog.eintrag(ziel, m, 'probe-1.0.0.zip', b'x', '2026-11-08T00:00:00Z')
+            self.assertEqual((e['inhalt']['beispiele'], e['inhalt']['beispieldokumente']), (2, 2))
+            (ziel / 'inhalt' / 'beispiele.yaml').write_text(yaml.safe_dump([{'typ': 'a', 'werte': {}}]), encoding='utf-8')
+            self.assertNotIn('beispieldokumente', katalog.eintrag(ziel, m, 'probe-1.0.0.zip', b'x', '2026-11-08T00:00:00Z')['inhalt'])
+
+
 if __name__ == '__main__':
     unittest.main()
 

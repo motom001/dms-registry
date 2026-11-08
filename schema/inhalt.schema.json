@@ -107,8 +107,23 @@
       }
     },
     "beispiel": {
-      "type": "object", "required": ["typ", "werte"],
-      "properties": { "typ": { "$ref": "#/$defs/typverweis" }, "schluessel": { "$ref": "#/$defs/schluessel" }, "werte": { "type": "object" } }
+      "type": "object", "required": ["typ", "werte"], "additionalProperties": false,
+      "properties": {
+        "typ": { "$ref": "#/$defs/typverweis" }, "schluessel": { "$ref": "#/$defs/schluessel" }, "werte": { "type": "object" },
+        "dokumente": {
+          "description": "Beispiel-Dokumente (Ablago #878, ab 0.222.0): Dateien unter inhalt/beispiele/, nur PDF, PNG und JPEG mit erfundenen Inhalten.",
+          "type": "array", "items": { "$ref": "#/$defs/beispiel_dokument" }
+        }
+      }
+    },
+    "beispiel_dokument": {
+      "type": "object", "required": ["datei"], "additionalProperties": false,
+      "properties": {
+        "datei": { "type": "string", "description": "Pfad relativ zu inhalt/, z. B. beispiele/heizung/wartungsvertrag.pdf", "pattern": "^beispiele/([A-Za-z0-9_-][A-Za-z0-9._-]{0,79}/){0,4}[A-Za-z0-9_-][A-Za-z0-9._-]{0,99}\\.([Pp][Dd][Ff]|[Pp][Nn][Gg]|[Jj][Pp][Ee]?[Gg])$" },
+        "titel": { "type": "string", "description": "Name des Dokuments in Ablago (ohne Endung hängt Ablago die der Datei an)", "minLength": 1, "maxLength": 200, "pattern": "^[^/\\\\]+$" },
+        "datum": { "type": "string", "description": "„Hochgeladen am“ (JJJJ-MM-TT)", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "register": { "$ref": "#/$defs/schluessel", "description": "Dokumentenregister des Mappentyps; ohne Angabe das erste" }
+      }
     }
   },
   "mappentypen": { "type": "array", "items": { "$ref": "#/$defs/mappentyp" } },

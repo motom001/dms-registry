@@ -31,7 +31,7 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 - Zugriff auf Netzwerk/Internet zu Adressen, die nicht im Manifest stehen – außer zur Dienst-Adresse, die der Administrator in einer Einstellung vom Typ `adresse` einträgt und bestätigt
 - Eine voreingestellte Dienst-Adresse eines fremden Anbieters (Cloud) – auch nicht als `beispiel`
 - Mehr Rechte als nötig, z. B. Schreibrecht, wo Lesen reicht
-- Echte persönliche Daten in Beispielen, Tests oder Screenshots
+- Echte persönliche Daten in Beispielen, Beispiel-Dokumenten, Tests oder Screenshots
 - Löschen von Feldern, Registern oder Mappen bei einem Update (ein Textfeld, das ein Verweis mit `aus_text` ablöst, darf aus dem Paket – siehe [Text in Verweis umwandeln](#text-in-verweis-umwandeln))
 
 ## So sehen Administratoren die Rechte
@@ -59,7 +59,7 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://help.
 - Bei jeder Änderung eine höhere Version (SemVer) und ein Eintrag im `CHANGELOG.md`
 - Deutsche Texte in Feldern und Sichten; das README auf Deutsch, gern zusätzlich auf Englisch. Englische Beschriftungen (`beschriftungen.en`) sind erwünscht – die mitgelieferten Pakete mit Mappentypen haben sie.
 - Ein Pfleger in `CODEOWNERS`
-- **Größe:** Ein Paket ist höchstens **128 MB** groß – als Archiv im Katalog und in der Sammeldatei ebenso wie alle Dateien unter `code/` zusammen (`modul.wasm`, `daten/`, Quellcode). Ablago hat dieselbe Grenze (DMS #644); `pruefen.py` und `katalog.py` lehnen größere Pakete ab. Große Daten wie Modelle gehören in eigene Ergänzungspakete (z. B. je Sprache), damit niemand mehr lädt als nötig.
+- **Größe:** Ein Paket ist höchstens **128 MB** groß – als Archiv im Katalog und in der Sammeldatei ebenso wie alle Dateien unter `code/` zusammen (`modul.wasm`, `daten/`, Quellcode). Ablago hat dieselbe Grenze (DMS #644); `pruefen.py` und `katalog.py` lehnen größere Pakete ab. Große Daten wie Modelle gehören in eigene Ergänzungspakete (z. B. je Sprache), damit niemand mehr lädt als nötig. Beispiel-Dokumente unter `inhalt/beispiele/` zählen mit (siehe [Beispiel-Dokumente](#beispiel-dokumente)).
 
 ## Einstellungen
 
@@ -111,6 +111,26 @@ kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unte
 Schlüssel von Mappentypen, Feldern und Registern sind **im Paket lokal**, z. B. `versicherung`. Ablago legt sie mit der Paket-Id davor an (`haushalt_versicherung`), damit sich zwei Pakete nicht in die Quere kommen. Angezeigt wird nur der Name („Versicherung“). Verweise auf Typen anderer Pakete schreibst du als `<paket>:<schluessel>`, z. B. `basis:organisation`. Das andere Paket muss dann unter `abhaengigkeiten` stehen. Auf Mappentypen, die Ablago selbst mitbringt, verweist du mit `dms:` – ohne Abhängigkeit: `dms:benutzer` und `dms:rolle`. Dafür muss im Manifest `dms: ">=0.75.0"` stehen. Den **Ablageort** (wo ein Original liegt) bringt seit Ablago 0.212.0 das Paket Basis mit: `basis:ablageort` mit `basis: ">=1.6.0"` unter `abhaengigkeiten` (Ablago #883, Registry #138). Das frühere `dms:ablageort` versteht Ablago bis 1.0 noch als Alias; `pruefen.py` warnt davor. Die Paket-Id `dms` ist deshalb vergeben.
 
 Beispiel-Mappen dürfen aufeinander verweisen (ab Ablago 0.79.0): Ein Beispiel bekommt einen `schluessel`, ein Verweisfeld eines anderen Beispiels den Wert `{ beispiel: strom }` – oder `{ beispiel: "basis:stadtwerke" }` für ein Beispiel einer Abhängigkeit. Dann muss im Manifest `dms: ">=0.79.0"` stehen.
+
+### Beispiel-Dokumente { #beispiel-dokumente }
+
+Ab Ablago 0.222.0 (motom001/dms#878, Registry #137) kann ein Beispiel Dokumente mitbringen – etwa einen Wartungsvertrag und Rechnungen zur Beispiel-Mappe „Heizung“. Die Dateien liegen unter `inhalt/beispiele/`, das Beispiel nennt sie unter `dokumente`:
+
+```yaml
+- typ: vertrag
+  schluessel: heizung_wartung
+  werte: { bezeichnung: Wartungsvertrag Heizung }
+  dokumente:
+    - { datei: beispiele/heizung/wartungsvertrag.pdf, titel: Wartungsvertrag, datum: "2023-04-01" }
+    - { datei: beispiele/heizung/rechnung-2026.png, register: rechnungen }
+```
+
+- `datei` ist relativ zu `inhalt/` und beginnt mit `beispiele/`; Ordner und Namen nur aus Buchstaben, Ziffern, `.`, `-` und `_`. `titel` wird der Name in Ablago, `datum` „hochgeladen am“, `register` das Dokumentenregister (ohne Angabe das erste).
+- **Nur PDF, PNG und JPEG** – am Inhalt erkannt, die Endung muss passen. Je Datei höchstens 100 MB wie beim Hochladen in Ablago, alle zusammen höchstens 128 MB; halte sie trotzdem klein (verkleinerte PDFs, Bilder als JPEG). Die Grenze von 2 MB je Datei gilt hier nicht.
+- **Jede genannte Datei muss da sein, und jede Datei unter `inhalt/beispiele/` muss genannt sein.** `pruefen.py` meldet bei jeder Prüfung die Größe je Datei und zusammen.
+- Pakete mit Beispiel-Dokumenten verlangen `dms: ">=0.222.0"`.
+- **Keine echten Daten:** nur erfundene Personen und Firmen (Persona-Namen wie Lena, Jonas, Markus, Petra, Herr Özdemir, Katrin), Beispiel-Domains (`example.org`, `example.com`, `example.net`), ungültige oder ausdrücklich als Beispiel gedachte Werte für IBAN, Steuer- und Versichertennummern. Keine eingescannten echten Briefe, auch nicht geschwärzt – Metadaten, Unterschriften und Logos verraten oft mehr als gedacht.
+- **Große Pakete:** Der Katalog liegt auf dem Branch `gh-pages` (Registry #133), und git nimmt keine Datei über 100 MB an. Ein Paket, dessen Archiv größer würde, lässt sich so nicht veröffentlichen; `pruefen.py` weist ab 90 MB darauf hin.
 
 ## Ergänzungen
 

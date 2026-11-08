@@ -41,5 +41,24 @@ class VersionNurImFragment(unittest.TestCase):
         self.assertIn(f'sammeldatei.js?v={w.STAND}', w.sammelseite())
 
 
+
+class BeispielDokumente(unittest.TestCase):
+    """Katalogseite zeigt die Zahl der Beispiel-Dokumente neben der Zahl der Beispiele (Registry #137)."""
+
+    def seite(self, inhalt: dict) -> str:
+        v = {'version': '1.0.0', 'dms': '>=0.222.0', 'abhaengigkeiten': {}, 'inhalt': inhalt, 'code': False, 'archiv': 'archive/x.zip',
+             'sha256': '0' * 64, 'groesse': 1, 'veroeffentlicht': '2026-11-08T00:00:00Z', 'quelle': '', 'readme': '', 'changelog': ''}
+        p = {'id': 'probe_gibtsnicht', 'name': 'Probe', 'beschreibung': 'Test.', 'lizenz': 'MIT', 'autor': {'name': 'Lena', 'github': 'lena'}, 'aktuell': '1.0.0', 'versionen': [v]}
+        return w.detail(p, [p])
+
+    def test_mit_und_ohne_dokumente(self):
+        h = self.seite({'mappentypen': [{'schluessel': 'a', 'name': 'A'}], 'sichten': [], 'beispiele': 2, 'beispieldokumente': 3})
+        self.assertIn('2 Beispielmappen und 3 Beispiel-Dokumenten mit erfundenen Daten', h)
+        self.assertIn('2 Beispielmappen (3 Dokumente)', h)
+        h = self.seite({'mappentypen': [{'schluessel': 'a', 'name': 'A'}], 'sichten': [], 'beispiele': 2})
+        self.assertIn('2 Beispielmappen mit erfundenen Daten', h)
+        self.assertNotIn('Dokumente)', h)
+
+
 if __name__ == '__main__':
     unittest.main()

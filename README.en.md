@@ -36,7 +36,7 @@ Every package contains at least:
 | `README.md` | what the package does, for whom, with an example |
 | `LICENSE` | licence text (open source, see [REGELN.en.md](REGELN.en.md)) |
 | `CHANGELOG.md` | changes per version |
-| `inhalt/` | Mappe types, views, samples (YAML) |
+| `inhalt/` | Mappe types, views, samples (YAML), optionally example documents under `inhalt/beispiele/` – invented content only ([REGELN.en.md](REGELN.en.md#beispiel-dokumente)) |
 | `code/` | only for packages with code: source code, built in the CI |
 | `tests/` | expectations for the package |
 
@@ -54,7 +54,7 @@ The same branch holds the **catalogue website** (`werkzeuge/webseite.py`): brows
 
 With GitHub Pages (source: branch `gh-pages`), the website is available at **`https://catalog.ablago.app/`**, and the catalogue also at `…/katalog.json`.
 
-`katalog.json` (format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) contains the format version, creation time, source and, per package, id, name, description, author, licence, current version and **all versions**, newest first. Per version it lists: required Ablago version, dependencies, content overview (Mappe types and views with names, number of samples), whether the package has code, address of the archive (relative to `katalog.json`), **SHA-256** and size of the archive, time of publication, and links to the source folder, README and changelog.
+`katalog.json` (format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) contains the format version, creation time, source and, per package, id, name, description, author, licence, current version and **all versions**, newest first. Per version it lists: required Ablago version, dependencies, content overview (Mappe types and views with names, number of samples and – if any – `beispieldokumente`, the number of example documents), whether the package has code, address of the archive (relative to `katalog.json`), **SHA-256** and size of the archive, time of publication, and links to the source folder, README and changelog.
 
 ```json
 {
@@ -71,7 +71,7 @@ With GitHub Pages (source: branch `gh-pages`), the website is available at **`ht
 }
 ```
 
-Older versions remain in the catalogue and available as archives. An archive with the same id and version never changes: if a package changes without a new version, the check in the pull request fails. Locally, you build the catalogue with `python3 werkzeuge/katalog.py <folder>`. The field `signatur` stays `null`: the signature is kept separately in `katalog.sig`.
+Archives go onto `gh-pages`, and git doesn't accept files over 100 MB (#133) – keep packages with example documents well below that. Older versions remain in the catalogue and available as archives. An archive with the same id and version never changes: if a package changes without a new version, the check in the pull request fails. Locally, you build the catalogue with `python3 werkzeuge/katalog.py <folder>`. The field `signatur` stays `null`: the signature is kept separately in `katalog.sig`.
 
 ## Signing the catalogue
 
