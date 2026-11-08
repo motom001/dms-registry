@@ -2,7 +2,7 @@
 # Keine echten Daten!
 # Verweise zwischen Beispielen (ab Ablago 0.79.0): einem Beispiel einen schluessel geben und in einem
 # Verweisfeld eines anderen  feld: { beispiel: erstes }  schreiben – auf Abhängigkeiten: { beispiel: "basis:stadtwerke" }.
-# Beispiel-Dokumente (ab Ablago 0.222.0, dann dms: ">=0.222.0"): Dateien unter inhalt/beispiele/ unter dokumente nennen,
+# Beispiel-Dokumente (ab Ablago 0.223.0, dann dms: ">=0.223.0"): Dateien unter inhalt/beispiele/ unter dokumente nennen,
 #   dokumente:
 #     - { datei: beispiele/erstes/vertrag.pdf, titel: Vertrag, datum: "2027-01-31", register: dokumente }
 # Nur PDF, PNG und JPEG; jede Datei dort muss genannt sein. NUR ERFUNDENE INHALTE: Persona-Namen (Lena, Jonas, Markus,

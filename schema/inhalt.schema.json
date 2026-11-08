@@ -111,7 +111,7 @@
       "properties": {
         "typ": { "$ref": "#/$defs/typverweis" }, "schluessel": { "$ref": "#/$defs/schluessel" }, "werte": { "type": "object" },
         "dokumente": {
-          "description": "Beispiel-Dokumente (Ablago #878, ab 0.222.0): Dateien unter inhalt/beispiele/, nur PDF, PNG und JPEG mit erfundenen Inhalten.",
+          "description": "Beispiel-Dokumente (Ablago #878, ab 0.223.0): Dateien unter inhalt/beispiele/, nur PDF, PNG und JPEG mit erfundenen Inhalten.",
           "type": "array", "items": { "$ref": "#/$defs/beispiel_dokument" }
         }
       }

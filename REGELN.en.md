@@ -113,7 +113,7 @@ Sample Mappen may refer to each other (from Ablago 0.79.0): a sample gets a `sch
 
 ### Example documents { #beispiel-dokumente }
 
-From Ablago 0.222.0 (motom001/dms#878, registry #137) a sample can bring documents – for instance a maintenance contract and invoices for the sample Mappe "Heating". The files are under `inhalt/beispiele/`, the sample names them under `dokumente`:
+From Ablago 0.223.0 (motom001/dms#878, registry #137) a sample can bring documents – for instance a maintenance contract and invoices for the sample Mappe "Heating". The files are under `inhalt/beispiele/`, the sample names them under `dokumente`:
 
 ```yaml
 - typ: vertrag
@@ -127,7 +127,7 @@ From Ablago 0.222.0 (motom001/dms#878, registry #137) a sample can bring documen
 - `datei` is relative to `inhalt/` and starts with `beispiele/`; folders and names only of letters, digits, `.`, `-` and `_`. `titel` becomes the name in Ablago, `datum` "uploaded on", `register` the document tab (without it, the first one).
 - **Only PDF, PNG and JPEG** – recognised by the content, the extension must match. Each file at most 100 MB as when uploading in Ablago, all together at most 128 MB; still keep them small (reduced PDFs, pictures as JPEG). The 2 MB per file limit doesn't apply here.
 - **Every named file must exist, and every file under `inhalt/beispiele/` must be named.** `pruefen.py` reports the size per file and in total on every check.
-- Packages with example documents require `dms: ">=0.222.0"`.
+- Packages with example documents require `dms: ">=0.223.0"`.
 - **No real data:** only invented people and companies (persona names such as Lena, Jonas, Markus, Petra, Herr Özdemir, Katrin), example domains (`example.org`, `example.com`, `example.net`), invalid or explicitly sample values for IBAN, tax and insurance numbers. No scanned real letters, not even redacted – metadata, signatures and logos often reveal more than you think.
 - **Large packages:** the catalogue lives on the branch `gh-pages` (registry #133), and git doesn't accept files over 100 MB. A package whose archive would be larger can't be published that way; `pruefen.py` points this out from 90 MB.
 

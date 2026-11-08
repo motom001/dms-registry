@@ -102,7 +102,7 @@ DMS_WORTLISTEN_AB = (0, 127, 0)
 # Ansichten über alle Mappentypen (typen: ["*"], DMS #725).
 DMS_ALLE_TYPEN_AB = (0, 182, 0)
 # Beispiel-Dokumente (motom001/dms#878): ältere Ablago übergehen dokumente an Beispielen.
-DMS_BEISPIEL_DOKUMENTE_AB = (0, 222, 0)
+DMS_BEISPIEL_DOKUMENTE_AB = (0, 223, 0)
 ALLE_TYPEN = '*'
 # Mitgelieferte Automatisierungen (inhalt.automatisierungen, DMS #712, Registry #108), ab DMS 0.177.0. Seit dieser
 # Version legt ein Datumsfeld mit frist keine Aufgaben mehr selbst an – erinnern muss eine Automatisierung.
@@ -726,7 +726,7 @@ def mb(n: int) -> str:
 def pruefe_beispiel_dokumente(ordner: Path, beispiele: list, typen: list, paket_id: str, dms_bereich: str) -> list[str]:
     """Beispiel-Dokumente (motom001/dms#878): Jede genannte Datei liegt unter inhalt/beispiele/, ist PDF, PNG oder JPEG
     und nicht zu groß; jede Datei dort ist auch genannt; zusammen passen sie unter die Paketgrenze; das Register gibt es
-    (bei eigenen Mappentypen) und das Paket verlangt Ablago ab 0.222.0."""
+    (bei eigenen Mappentypen) und das Paket verlangt Ablago ab 0.223.0."""
     fehler: list[str] = []
     genannt: set[str] = set()
     eigene = {t.get('schluessel'): t for t in typen if isinstance(t, dict)}
@@ -771,7 +771,7 @@ def pruefe_beispiel_dokumente(ordner: Path, beispiele: list, typen: list, paket_
     if genannt:
         ab = dms_untergrenze(dms_bereich)
         if ab is None or ab < DMS_BEISPIEL_DOKUMENTE_AB:
-            fehler.append('beispiele: dokumente kennt Ablago erst ab 0.222.0 – bitte dms: ">=0.222.0" angeben')
+            fehler.append('beispiele: dokumente kennt Ablago erst ab 0.223.0 – bitte dms: ">=0.223.0" angeben')
     return fehler
 
 

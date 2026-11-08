@@ -837,7 +837,7 @@ JPEG = b'\xff\xd8\xff\xe0' + b'\x02' * 32
 class BeispielDokumente(unittest.TestCase):
     """Beispiel-Dokumente in Paketen (Registry #137, motom001/dms#878)."""
 
-    def paket(self, dokumente: list, dateien: dict, dms: str = '>=0.222.0', typ: str = 'beispiel') -> list[str]:
+    def paket(self, dokumente: list, dateien: dict, dms: str = '>=0.223.0', typ: str = 'beispiel') -> list[str]:
         with tempfile.TemporaryDirectory() as tmp:
             ziel = Path(tmp) / 'probe'
             shutil.copytree(WURZEL / 'vorlage', ziel)
@@ -922,7 +922,7 @@ class BeispielDokumente(unittest.TestCase):
 
     def test_braucht_ablago_0_222(self):
         f = '\n'.join(self.paket(self.GUT, self.DATEIEN, dms='>=0.221.0'))
-        self.assertIn('dms: ">=0.222.0"', f)
+        self.assertIn('dms: ">=0.223.0"', f)
 
     def test_katalog_zaehlt_beispiel_dokumente(self):
         import katalog
@@ -931,7 +931,7 @@ class BeispielDokumente(unittest.TestCase):
             ziel.mkdir()
             (ziel / 'inhalt').mkdir()
             (ziel / 'inhalt' / 'beispiele.yaml').write_text(yaml.safe_dump([{'typ': 'a', 'werte': {}, 'dokumente': [{'datei': 'beispiele/a.pdf'}, {'datei': 'beispiele/b.pdf'}]}, {'typ': 'a', 'werte': {}}]), encoding='utf-8')
-            m = {'id': 'probe', 'version': '1.0.0', 'dms': '>=0.222.0', 'inhalt': {'beispiele': 'inhalt/beispiele.yaml'}}
+            m = {'id': 'probe', 'version': '1.0.0', 'dms': '>=0.223.0', 'inhalt': {'beispiele': 'inhalt/beispiele.yaml'}}
             e = katalog.eintrag(ziel, m, 'probe-1.0.0.zip', b'x', '2026-11-08T00:00:00Z')
             self.assertEqual((e['inhalt']['beispiele'], e['inhalt']['beispieldokumente']), (2, 2))
             (ziel / 'inhalt' / 'beispiele.yaml').write_text(yaml.safe_dump([{'typ': 'a', 'werte': {}}]), encoding='utf-8')
