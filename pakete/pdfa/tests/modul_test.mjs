@@ -2,7 +2,7 @@
 // „Archivfassung erstellen“ (datei.archivfassung), Datei über GET /dokumente/{id}/inhalt bzw. …/fassung, Seitenbilder
 // über GET …/seiten/{nr}/scan (pdftoppm, wie im DMS), Wortpositionen über GET …/wortpositionen (Textebene mit
 // pdftotext -bbox, sonst <name>.woerter.json als „Texterkennung“), Ablage über PUT …/archivfassung.
-// E-Mails (#143) holt das Modul nur über …/inhalt und setzt sie selbst; die Zeitzone kommt über GET /region.
+// E-Mails (#143) holt das Modul nur über …/inhalt und setzt sie selbst; die Zeitzone steht im Ereignis (Feld zeitzone, DMS #946).
 // Legt jede Archivfassung als <name>.pdfa.pdf in den Ordner (Prüfung: beispiele.py vergleiche, veraPDF).
 //
 //   node tests/modul_test.mjs <ordner mit den Testdateien aus tests/beispiele.py> [--messen]
@@ -80,7 +80,6 @@ function lauf({ datei, daten = {}, archiv = 404, ablegen = 200, vorhanden = null
       return json(archiv, { fehler: 'Zu diesem Dokument gibt es keine Archivfassung.' });
     }
     if (q.methode === 'GET' && q.pfad === '/dokumente/dok-1/wortpositionen') return json(200, wortpositionen(datei, mime));
-    if (q.methode === 'GET' && q.pfad === '/region') return zeitzone ? json(200, { land: 'DE', bundesland: 'BY', zeitzone }) : json(403, { fehler: 'Keine Rechte' });
     if (q.methode === 'GET' && (q.pfad === '/dokumente/dok-1/inhalt' || q.pfad === '/dokumente/dok-1/fassung')) { antwort = new Uint8Array(readFileSync(pfad)); return 200; }
     const s = /^\/dokumente\/dok-1\/seiten\/(\d+)\/scan\?dpi=(\d+)$/.exec(q.pfad);
     if (q.methode === 'GET' && s && mime === 'application/pdf') {
@@ -122,8 +121,8 @@ function lauf({ datei, daten = {}, archiv = 404, ablegen = 200, vorhanden = null
   const wp = wortpositionen(datei, mime);
   const ereignis = new TextEncoder().encode(JSON.stringify({
     art, id: 'e-1', versuch: 1, erstellt: '2026-11-03T10:00:00.000Z',
-    daten: { dokument: 'dok-1', mappe: 'mappe-1', name: datei, mime, groesse: 1, sha256: SHA, quelle: 'original', seiten: wp.seiten.length,
-      textebene: 'keine', wortpositionen: istMail(mime) ? false : wp.vollstaendig, sprache: 'deu', signiert: false, erechnung: false, formular: false, extern: datei === 'extern.pdf', ...daten },
+    daten: { dokument: 'dok-1', mappe: 'mappe-1', name: datei, mime, groesse: 1, sha256: SHA, quelle: 'original', seiten: istMail(mime) ? null : wp.seiten.length,
+      textebene: 'keine', wortpositionen: istMail(mime) ? true : wp.vollstaendig, sprache: 'deu', signiert: false, erechnung: false, formular: false, extern: datei === 'extern.pdf', ...(zeitzone ? { zeitzone } : {}), ...daten },
     paket: { id: 'pdfa', version }, einstellungen: { pdf_text: true, pdf_scan: true, bilder: true, emails: true },
   }));
   const p = inst.exports.dms_puffer(ereignis.length);
@@ -221,7 +220,8 @@ r = lauf({ datei: 'text.eml', zeitzone: 'America/New_York' });
 writeFileSync(join(ordner, 'zeitzone.pdfa.pdf'), r.gesetzt ?? Buffer.alloc(0));
 pruefe('Zeitzone der Ablage (New York)', r.code === 0 && kurz(textVon(join(ordner, 'zeitzone.pdfa.pdf'))).includes('Datum 02.11.2026, 04:15 Uhr'), r);
 r = lauf({ datei: 'text.eml', zeitzone: null });
-pruefe('Ohne /region: Europe/Berlin', r.code === 0 && kopf(r.gesetzt), r);
+pruefe('Ohne Feld zeitzone (ältere Ablago): Europe/Berlin', r.code === 0 && kopf(r.gesetzt), r);
+pruefe('E-Mail: kein Aufruf von /region, /wortpositionen, /volltext', !r.aufrufe.some((a) => /\/region|\/wortpositionen|\/volltext/.test(a)), r);
 r = lauf({ datei: 'text.eml', mime: 'application/octet-stream' });
 pruefe('Dateityp octet-stream mit Endung .eml', r.code === 0 && kopf(r.gesetzt), r);
 r = lauf({ datei: 'foto.jpg', mime: 'message/rfc822' });

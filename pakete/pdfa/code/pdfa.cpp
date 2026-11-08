@@ -363,17 +363,12 @@ bool mailBild(const std::string &d, pdfa::Bild &bild) {
   return dekodiere(v, png || gif, bild, fehler);
 }
 
-// Zeitzone der Ablage (GET /region, DMS #726); ohne Antwort Europe/Berlin.
-std::string zeitzone() {
-  Antwort a = get("/region");
-  if (a.status == 200) {
-    Json j = JsonLeser::lies(reinterpret_cast<const char *>(a.body.data()), a.body.size());
-    const std::string z = j["zeitzone"].text();
-    bool ok = !z.empty() && z.size() < 64;
-    for (char c : z) if (!(isalnum((unsigned char)c) || c == '/' || c == '_' || c == '-' || c == '+')) ok = false;
-    if (ok) return z;
-  }
-  return "Europe/Berlin";
+// Zeitzone der Ablage: Feld zeitzone im Ereignis (IANA-Name aus Werkbank → Region, DMS #946); fehlt es, Europe/Berlin.
+std::string zeitzone(const Json &d) {
+  const std::string z = d["zeitzone"].text();
+  bool ok = !z.empty() && z.size() < 64;
+  for (char c : z) if (!(isalnum((unsigned char)c) || c == '/' || c == '_' || c == '-' || c == '+')) ok = false;
+  return ok ? z : "Europe/Berlin";
 }
 
 int email(const Json &e, const std::string &dok, const std::string &sha, const std::string &werkzeug, long start) {
@@ -409,7 +404,7 @@ int email(const Json &e, const std::string &dok, const std::string &sha, const s
   satz::Setzer setzer;
   for (int i = 0; i < 4; i++) setzer.schriften[i] = &schriften[i];
   setzer.seitenMax = SEITEN_MAX;
-  mailsatz::Leser leser(setzer, zeitzone(), mailBild);
+  mailsatz::Leser leser(setzer, zeitzone(e["daten"]), mailBild);
   {
     satz::Elemente el = leser.nachricht(n, 0, c.get());
     setzer.setze(el);

@@ -147,8 +147,7 @@ MEHRFACH_VERWEISE = ('mappentyp', 'benutzer', 'rolle', 'sicht')
 DMS_FREMDE_TYPEN_AB = (0, 178, 0)
 DMS_ARCHIV_AUSWAHL_AB = (0, 176, 0)
 # Art emails in code.archivfassung.auswahl (DMS #946): Archivfassung für E-Mails (.eml, .msg), dms-registry #143.
-# Vorläufig – die Version nennt Entwicklung, sobald #946 eingereiht ist.
-DMS_ARCHIV_EMAILS_AB = (0, 217, 0)
+DMS_ARCHIV_EMAILS_AB = (0, 221, 0)
 # Ereignisse zu Mappen aus dem Ereigniskatalog und code.mappentypen (DMS #670): eigene Mappentypen ab DMS 0.153.0.
 MAPPEN_EREIGNISSE = ('mappe.angelegt', 'mappe.geaendert', 'mappe.geloescht', 'mappe.wiederhergestellt', 'frist.erreicht')
 DMS_MAPPEN_EREIGNISSE_AB = (0, 153, 0)

@@ -6,7 +6,7 @@
 - **Schrift Noto Sans** (SIL OFL 1.1; normal, fett, kursiv, fett-kursiv), eingebettet als **Teilmenge**: sichtbarer, durchsuchbarer, kopierbarer Text. Umlaute, europäische Schriften, Griechisch und Kyrillisch; was die Schrift nicht kann, steht als Rahmen „□“ da, nie als „?“.
 - Neue Einstellung **„E-Mails (.eml, .msg)“** (Vorgabe an). Dateitypen `message/rfc822`, `application/vnd.ms-outlook` und `application/octet-stream` mit Endung `.eml`/`.msg`.
 - Den Mail-Zerleger teilt das Paket mit „Office und E-Mail“ (`gemeinsam/mail/`).
-- Braucht Ablago mit der Art `emails` (vorläufig 0.217.0).
+- Braucht Ablago 0.221.0 oder neuer (Art `emails`, Zeitzone der Ablage im Ereignis).
 
 ## 1.1.0
 

@@ -13,8 +13,8 @@ kategorien: [dateiformate]
 symbol: file-text
 # 0.149.0: Recht dms:archivfassung, code.archivfassung, Ereignis datei.archivfassung, Wortpositionen,
 # PUT /dokumente/{id}/archivfassung (DMS #631); 0.176.0: code.archivfassung.auswahl (DMS #660);
-# 0.217.0 (vorläufig): Art emails (DMS #946) – E-Mails ohne Wortpositionen, GET /region (DMS #726)
-dms: ">=0.217.0"
+# 0.221.0: Art emails und Feld zeitzone in datei.archivfassung (DMS #946)
+dms: ">=0.221.0"
 inhalt: {}
 code:
   sprache: c
