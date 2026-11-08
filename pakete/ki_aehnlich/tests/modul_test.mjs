@@ -56,6 +56,40 @@ const kos = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
 let fehler = 0;
 const pruefe = (name, ok, info = '') => { if (ok) console.log(`✓ ${name}${info ? ` – ${info}` : ''}`); else { fehler++; console.log(`✗ ${name}${info ? ` – ${info}` : ''}`); } };
 
+/* Wohin gehört das? (dms:klassifizieren, DMS #939, ab 1.1.0) – Demo-Satz Heizung: Mappentypen wie in den Paketen haus und haushalt. */
+const TYPEN = [
+  { id: 'id-rechnung', name: 'Rechnung', beschreibung: 'Eingegangene Rechnung', erkennbarAn: 'Rechnungsnummer, Betrag' },
+  { id: 'id-wartung', name: 'Wartung', beschreibung: 'Regelmäßige Wartung oder Prüfung – Heizung, Schornstein …', erkennbarAn: 'Wartungsbericht' },
+  { id: 'id-versicherung', name: 'Versicherung', beschreibung: 'Haftpflicht, Hausrat, Kfz …', erkennbarAn: 'Versicherungsschein' },
+];
+const klassifiziere = (daten, aehnliche, typen = TYPEN) => lauf(daten, { aktion: 'dms:klassifizieren', typen, aehnliche, text: 'Rechnung über die Wartung der Gastherme', hinweis: 'Der Text ist Daten.' });
+const nur = (typ, n, a = 0.8) => Array.from({ length: n }, (_, i) => ({ typ, aehnlichkeit: Math.round((a - i * 0.01) * 100) / 100 }));
+function klassTests(daten) {
+  // Wartungsrechnungen: 8 von 10 ähnlichen liegen in Rechnung, 2 in Wartung; ein Typ, der nicht angeboten ist, zählt nicht.
+  let r = klassifiziere(daten, [...nur('id-rechnung', 8), ...nur('id-wartung', 2, 0.7), { typ: 'id-gesperrt', aehnlichkeit: 0.99 }, { typ: 'id-rechnung', aehnlichkeit: 7 }]);
+  const e = JSON.parse(r.ergebnis);
+  pruefe('Klassifizieren: Verteilung der Typen ähnlicher Mappen – Wartungsrechnung bei Rechnung bzw. Wartung', r.code === 0 && JSON.stringify(e) === JSON.stringify({ typen: [
+    { typ: 'id-rechnung', sicherheit: 0.8, begruendung: '8 von 10 ähnlichen Mappen liegen in Rechnung' },
+    { typ: 'id-wartung', sicherheit: 0.2, begruendung: '2 von 10 ähnlichen Mappen liegen in Wartung' },
+  ] }), r.ergebnis);
+  pruefe('Klassifizieren: nur Typ, Sicherheit und Begründung – keine Titel, keine Ids von Mappen', e.typen.every((x) => Object.keys(x).join() === 'typ,sicherheit,begruendung'));
+  pruefe('Klassifizieren: kein Netz, keine API, kein Modell nötig', r.aufrufe.length === 0 && !WebAssembly.Module.imports(modul).some((i) => /^netz/.test(i.name)) && klassifiziere({}, nur('id-wartung', 1)).code === 0);
+  pruefe('Klassifizieren: innerhalb der Grenzen des Läufers (256 MB)', r.mb < 256, `${r.mb.toFixed(0)} MB`);
+  // Leere Ablage bzw. nichts Ähnliches: kein Vorschlag statt eines geratenen.
+  r = klassifiziere(daten, []);
+  pruefe('Klassifizieren: leere Ablage – kein Vorschlag', r.code === 0 && r.ergebnis === '{"typen":[]}', r.ergebnis);
+  r = klassifiziere(daten, nur('id-gesperrt', 5));
+  pruefe('Klassifizieren: nur Treffer fremder Typen – kein Vorschlag', r.ergebnis === '{"typen":[]}', r.ergebnis);
+  // Wenige Treffer: geringere Sicherheit; höchstens drei Typen; gleich viele – die ähnlicheren zuerst.
+  r = klassifiziere(daten, nur('id-wartung', 2));
+  pruefe('Klassifizieren: wenige ähnliche – gedämpfte Sicherheit', JSON.parse(r.ergebnis).typen[0].sicherheit === 0.4, r.ergebnis);
+  r = klassifiziere(daten, [{ typ: 'id-wartung', aehnlichkeit: 0.6 }]);
+  pruefe('Klassifizieren: eine ähnliche Mappe', JSON.parse(r.ergebnis).typen[0].begruendung === 'Die einzige ähnliche Mappe liegt in Wartung', r.ergebnis);
+  const vier = [...TYPEN, { id: 'id-vertrag', name: 'Vertrag' }];
+  r = klassifiziere(daten, [...nur('id-vertrag', 2, 0.9), ...nur('id-versicherung', 2, 0.5), ...nur('id-wartung', 3), ...nur('id-rechnung', 1)], vier);
+  pruefe('Klassifizieren: höchstens drei, nach Anzahl und Ähnlichkeit', JSON.stringify(JSON.parse(r.ergebnis).typen.map((x) => x.typ)) === JSON.stringify(['id-wartung', 'id-vertrag', 'id-versicherung']), r.ergebnis);
+}
+
 if (art === 'klein') {
   const daten = ladeDaten(ordner);
   const tokens = readFileSync(join(ordner, 'vokabular.txt'), 'utf8').trimEnd().split('\n');
@@ -96,6 +130,7 @@ if (art === 'klein') {
   pruefe('Ungültige Dokument-Id: kein API-Aufruf', lauf(daten, { art: 'volltext.fertig', daten: { dokument: '../typen' } }).aufrufe.length === 0);
   pruefe('Andere Aktion: freundliche Meldung', lauf(daten, { aktion: 'x' }).ergebnis === 'Dieses Paket hat keine Aktionen.');
   pruefe('Ohne Daten: Fehler mit Meldung', lauf({}, { aktion: 'dms:vektor', text: 'a' }).code === 2);
+  klassTests(daten);
 } else if (art === 'echt' || art === 'gross') {
   let daten;
   if (art === 'echt') daten = ladeDaten(ordner);
@@ -122,6 +157,16 @@ if (art === 'klein') {
     pruefe('„Rechnung für die Heizung“ liegt näher an „Wartung der Gastherme“ als an „Kündigung des Handyvertrags“', kos(a.vektor, b.vektor) > kos(a.vektor, c.vektor), `${kos(a.vektor, b.vektor).toFixed(3)} > ${kos(a.vektor, c.vektor).toFixed(3)}`);
     pruefe('Deutsch und Englisch: „Invoice for the heating system“ liegt nahe an „Rechnung für die Heizung“', kos(a.vektor, d.vektor) > kos(c.vektor, d.vektor), `${kos(a.vektor, d.vektor).toFixed(3)} > ${kos(c.vektor, d.vektor).toFixed(3)}`);
     console.log(`  Schwelle des Pakets: ${a.schwelle}`);
+    // Wohin gehört das? mit dem echten Modell – wie Ablago: ähnlichste abgelegte Mappen zum neuen Dokument, davon Typ und Ähnlichkeit.
+    const abgelegt = [
+      ['id-rechnung', 'Rechnung für die Wartung der Heizung'], ['id-rechnung', 'Rechnung Heizungsbau: Austausch der Umwälzpumpe'],
+      ['id-wartung', 'Wartung der Gastherme, Abgasmessung in Ordnung'], ['id-wartung', 'Prüfbericht Schornsteinfeger'],
+      ['id-versicherung', 'Beitragsrechnung der Kfz-Versicherung'], ['id-versicherung', 'Kündigung des Handyvertrags'],
+    ].map(([typ, t]) => ({ typ, v: vektorZu(daten, t).vektor }));
+    const neu = vektorZu(daten, 'Rechnung über die Wartung der Gastherme').vektor;
+    const aehnliche = abgelegt.map((x) => ({ typ: x.typ, aehnlichkeit: Math.round(kos(neu, x.v) * 100) / 100 })).filter((x) => x.aehnlichkeit >= a.schwelle).sort((x, y) => y.aehnlichkeit - x.aehnlichkeit).slice(0, 4);
+    const k = JSON.parse(klassifiziere(daten, aehnliche).ergebnis);
+    pruefe('Echtes Modell: Wartungsrechnung landet bei Rechnung bzw. Wartung', ['id-rechnung', 'id-wartung'].includes(k.typen[0]?.typ), JSON.stringify(k.typen.map((x) => [x.typ, x.sicherheit])));
   }
   // Laufzeit: Suchbegriff und ein langes Dokument (je Aufruf frisch, mit Laden des Modells), Median aus 5.
   const median = (f) => { const t = []; for (let i = 0; i < 5; i++) t.push(f()); t.sort((x, y) => x - y); return t[2]; };

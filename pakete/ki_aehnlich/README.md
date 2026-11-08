@@ -6,6 +6,7 @@ In Ablago siehst du danach:
 
 - an jeder Mappe mit Dokumenten **„Ähnliche Dokumente“** aus anderen Mappen,
 - in der Suche der Startseite mit **„auch in Dokumenten“** zusätzlich **„Ähnliche Treffer“** mit dem Kennzeichen **ähnlich**,
+- ab 1.1.0 auf der Seite **Dokument übernehmen** unter **Wohin gehört das?** einen Vorschlag für den Mappentyp aus ähnlichen, schon abgelegten Mappen (siehe *Wohin gehört das?* unten),
 - unter **Werkbank → Pakete → KI lokal – Ähnlichkeit** den Abschnitt **Ähnlichkeit**: wie viele Dokumente schon berechnet sind, die Einstellung „Ähnliche Treffer in der Suche zeigen“ und **Neu berechnen**.
 
 Jeder sieht nur Mappen, die er lesen darf. Was die KI tut, ist ein Vorschlag: Sie ändert keine Mappe und kein Dokument.
@@ -17,6 +18,7 @@ Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 - **Mappen lesen: alle Mappentypen** – Dokumente liegen in Mappen beliebiger Typen; das Paket liest nur deren Volltext.
 - **Dokumente lesen** – den Volltext eines Dokuments. Dateien und Volltext ändert es nicht.
 - **Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)** – zu jedem Dokument eine Liste von Zahlen, die seinen Inhalt beschreibt. Ablago vergleicht sie; die Suche fragt das Paket nach dem Vektor des Suchbegriffs.
+- **Mappentyp vorschlagen („Wohin gehört das?“) – nur aus dem Anfang des Dokuments und der Liste der Mappentypen, die Ablago mitgibt (dms:klassifizieren)** – neu in 1.1.0; beim Update zeigt Ablago das neue Recht und lässt es dich bestätigen.
 - **kein Zugriff auf Netzwerk und Internet.** Das Modell liegt im Paket.
 - Es reagiert auf **Der Volltext eines Dokuments ist da** – für neue Dokumente und, gedrosselt, für den Bestand.
 
@@ -29,6 +31,17 @@ Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 3. In der Suche fragt Ablago das Paket nach dem Vektor des Suchbegriffs (höchstens 1,5 Sekunden) und vergleicht ihn mit den gespeicherten.
 
 Berücksichtigt wird höchstens der erste Megabyte Volltext eines Dokuments.
+
+## Wohin gehört das?
+
+Ab 1.1.0 (Ablago 0.226.0) gibt das Paket auf der Seite *Dokument übernehmen* einen ersten Hinweis, **wo vergleichbare Post liegt** – lokal, schnell und gelernt aus deiner eigenen Ablage:
+
+1. Ablago fragt das Paket nach dem Vektor des neuen Dokuments (wie bei der Suche) und sucht die **ähnlichsten schon abgelegten Mappen** (je Mappe das beste Dokument, höchstens 10, ab der Schwelle des Modells) – **nur Mappen, die du lesen darfst und die das Paket lesen darf**, und nur aus Mappentypen, die man aus Post anlegen kann, in denen du anlegen darfst und die für KI-Dienste zugelassen sind.
+2. Davon bekommt das Paket **nur den Mappentyp und das Maß der Ähnlichkeit** – keine Titel, keine Inhalte, keine Ids.
+3. Das Paket zählt: „8 von 10 ähnlichen Mappen liegen in Rechnung“ – daraus werden bis zu drei Mappentypen mit Sicherheit (der Anteil, bei weniger als fünf Treffern gedämpft).
+4. Ablago verbindet das mit seinen übrigen Hinweisen (Überschrift im Text, wiedergefundene Mappen, ein KI-Dienst) zu **einem** Vorschlag.
+
+Gibt es noch keine ähnlichen Mappen – etwa in einer leeren Ablage –, schlägt das Paket **nichts** vor statt zu raten. Dafür lädt es das Modell nicht und braucht weder Netz noch Sprachmodell.
 
 ## Das Modell
 
@@ -62,14 +75,14 @@ Auf einem **Intel N100** erwarten wir ähnliche Werte, also deutlich unter einer
 
 ## Voraussetzungen
 
-- Ablago **0.122.0** oder neuer (Schnittstelle `dms:vektoren`, Ereignis „Der Volltext eines Dokuments ist da“).
+- Ablago **0.226.0** oder neuer (Schnittstelle `dms:klassifizieren`; seit 0.122.0 `dms:vektoren` und das Ereignis „Der Volltext eines Dokuments ist da“).
 - Dokumente mit Volltext – ohne Volltext gibt es keinen Vektor.
 
 ## Für Entwickler
 
 | Datei | Inhalt |
 | --- | --- |
-| [`code/aehnlich.cpp`](code/aehnlich.cpp) | das Modul (Ablago-Paket-ABI 1): Tokenizer (BertNormalizer, BertPreTokenizer, WordPiece wie in `tokenizers`), Mittelwert der Vektoren, Ereignis und Aktion `dms:vektor` |
+| [`code/aehnlich.cpp`](code/aehnlich.cpp) | das Modul (Ablago-Paket-ABI 1): Tokenizer (BertNormalizer, BertPreTokenizer, WordPiece wie in `tokenizers`), Mittelwert der Vektoren, Ereignis und Aktion `dms:vektor`, ab 1.1.0 Aktion `dms:klassifizieren` (zählt die Typen ähnlicher Mappen) |
 | [`code/umwandeln.py`](code/umwandeln.py) | beim Bau: Modell und Tokenizer → `code/daten/` (256 Dimensionen, 8 Bit), Zeichentabellen aus Unicode |
 | [`code/bauen.sh`](code/bauen.sh) | Bau: Modul mit wasi-sdk; Modell von Hugging Face auf einem festen Commit, große Datei gegen die SHA-256 aus ihrem Git-LFS-Zeiger geprüft (feste Prüfsummen lassen sich zusätzlich eintragen) |
 | [`code/json.h`](code/json.h) | kleiner JSON-Leser (wie bei Trennblatt) |

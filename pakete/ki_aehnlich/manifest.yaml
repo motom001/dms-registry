@@ -2,14 +2,15 @@
 schema: 1
 id: ki_aehnlich
 name: KI lokal – Ähnlichkeit
-version: 1.0.1
-beschreibung: Findet ähnliche Dokumente und sucht mit eigenen Worten – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.
+version: 1.1.0
+beschreibung: Findet ähnliche Dokumente, sucht mit eigenen Worten und schlägt vor, wohin neue Post gehört – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
 # 0.122.0: Schnittstelle dms:vektoren und Ereignis volltext.fertig (DMS #442)
-dms: ">=0.122.0"
+# 0.226.0: Schnittstelle dms:klassifizieren – „Wohin gehört das?“ aus ähnlichen, schon abgelegten Dokumenten (DMS #939)
+dms: ">=0.226.0"
 inhalt: {}
 code:
   sprache: c
@@ -19,7 +20,10 @@ code:
   rechte:
     lesen: ["*"]                       # Dokumente liegen in Mappen beliebiger Typen
     dokumente: lesen                   # nur den Volltext lesen – nichts ändern
-    schnittstellen: ["dms:vektoren"]   # je Dokument einen Vektor ablegen; Suche fragt nach dem Vektor eines Begriffs
+    # dms:vektoren: je Dokument einen Vektor ablegen; Suche fragt nach dem Vektor eines Begriffs.
+    # dms:klassifizieren (ab 1.1.0): Mappentyp vorschlagen – Ablago gibt nur Typ und Ähnlichkeit der ähnlichsten
+    # Mappen mit, die Person und Paket lesen dürfen; das Paket zählt nur.
+    schnittstellen: ["dms:vektoren", "dms:klassifizieren"]
   netz: []
   # Speicher und Zeit: Die Standardgrenzen des Läufers (256 MB, 120 s je Aufruf) reichen – ein Aufruf braucht
   # etwa 30 MB (Modell 28 MB) und für einen Suchbegriff rund 50 ms, für ein Dokument mit 50 000 Zeichen rund

@@ -9,7 +9,16 @@
  *
  * Ereignis volltext.fertig → GET /dokumente/{id}/volltext → Vektor → PUT /dokumente/{id}/vektor
  * Aktion  dms:vektor { text } → Ergebnis { modell, vektor, schwelle } (leerer Text: nur modell und schwelle)
+ * Aktion  dms:klassifizieren { typen, aehnliche } („Wohin gehört das?“, DMS #939, ab 1.1.0) → Ergebnis { typen: [ … ] }
+ *
+ * Klassifizieren rechnet nichts Neues und braucht weder Netz noch Modell: Ablago holt vorher über dms:vektor den Vektor
+ * des neuen Dokuments, sucht die ähnlichsten schon abgelegten Mappen – nur solche, die die Person und dieses Paket
+ * lesen dürfen, nur aus den angebotenen Mappentypen (für KI-Dienste zugelassen) – und gibt davon nur Typ und
+ * Ähnlichkeit mit (aehnliche). Das Paket zählt, in welchen Typen sie liegen („8 von 10 ähnlichen liegen in Rechnung“),
+ * und schlägt daraus bis zu drei Typen vor. Ohne ähnliche Dokumente (leere Ablage) kein Vorschlag statt eines geratenen.
+ * Titel oder Inhalte fremder Mappen bekommt es nicht und nennt es nicht.
  */
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
@@ -262,8 +271,53 @@ extern "C" __attribute__((export_name("dms_ereignis"))) int32_t dms_ereignis(cha
   return 0;
 }
 
+/* ---------- Wohin gehört das? (dms:klassifizieren, ab 1.1.0) ---------- */
+
+/** Höchstens so viele Typen im Vorschlag. */
+static const size_t KLASS_MAX = 3;
+/** Ab so vielen ähnlichen Mappen ist die Verteilung voll aussagekräftig; darunter sinkt die Sicherheit. */
+static const double KLASS_VOLL_AB = 5;
+
+static int32_t klassifiziere(const Json &e) {
+  // Kandidaten: nur Typen, die Ablago anbietet – ein Treffer eines anderen Typs zählt nicht.
+  struct Typ { std::string id, name; int anzahl = 0; double summe = 0; };
+  std::vector<Typ> typen;
+  for (const Json &t : e["typen"].l) {
+    std::string id = t["id"].text(), name = t["name"].text();
+    if (!id.empty() && !name.empty()) typen.push_back({id, name.substr(0, 80)});
+  }
+  int gesamt = 0;
+  for (const Json &a : e["aehnliche"].l) {
+    std::string typ = a["typ"].text();
+    double s = a["aehnlichkeit"].zahl(-2);
+    if (s < -1 || s > 1) continue;
+    for (Typ &t : typen) if (t.id == typ) { t.anzahl++; t.summe += s; gesamt++; break; }
+  }
+  // Leere Ablage oder nichts Ähnliches: kein Vorschlag statt eines geratenen.
+  if (!gesamt) { ergebnis("{\"typen\":[]}"); return 0; }
+  std::vector<Typ *> rang;
+  for (Typ &t : typen) if (t.anzahl) rang.push_back(&t);
+  std::sort(rang.begin(), rang.end(), [](const Typ *a, const Typ *b) { return a->anzahl != b->anzahl ? a->anzahl > b->anzahl : a->summe > b->summe; });
+  std::string r = "{\"typen\":[";
+  double voll = gesamt >= KLASS_VOLL_AB ? 1.0 : gesamt / KLASS_VOLL_AB;
+  for (size_t i = 0; i < rang.size() && i < KLASS_MAX; i++) {
+    const Typ &t = *rang[i];
+    // Anteil an den ähnlichen Mappen, bei wenigen Treffern gedämpft; nie ganz sicher.
+    double s = std::min(0.95, (double)t.anzahl / gesamt * voll);
+    // Nur Zahlen und der Name des Typs – keine Titel ähnlicher Mappen.
+    std::string grund = gesamt == 1 ? "Die einzige ähnliche Mappe liegt in " + t.name
+      : std::to_string(t.anzahl) + " von " + std::to_string(gesamt) + (t.anzahl == 1 ? " ähnlichen Mappen liegt in " : " ähnlichen Mappen liegen in ") + t.name;
+    char b[64];
+    snprintf(b, sizeof b, "%.2f", s);
+    r += std::string(i ? "," : "") + "{\"typ\":" + jsonText(t.id) + ",\"sicherheit\":" + b + ",\"begruendung\":" + jsonText(grund) + "}";
+  }
+  ergebnis(r + "]}");
+  return 0;
+}
+
 extern "C" __attribute__((export_name("dms_aktion"))) int32_t dms_aktion(char *json, int32_t len) {
   Json e = JsonLeser::lies(json, (size_t)len);
+  if (e["aktion"].text() == "dms:klassifizieren") return klassifiziere(e);
   if (e["aktion"].text() != "dms:vektor") { ergebnis("Dieses Paket hat keine Aktionen."); return 0; }
   Modell m;
   if (!m.laden()) { log(3, m.fehler); ergebnis(m.fehler); return 2; }
