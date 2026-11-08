@@ -374,21 +374,29 @@ std::vector<std::string> seitenWoerter(const std::string &s) {
 // Id aus einem Eintrag: seit 2.3.0 (dms-registry #105, DMS #658) eine Id als Text, vorher ein Listeneintrag { typ }.
 std::string eintragId(const Json &e) { return e.art == Json::TEXT ? e.text() : e["typ"].text(); }
 
-bool typErlaubt(const Json &einstellungen, const std::string &mappe) {
+// Regel (dms-registry #105): Beide leer – alle Mappentypen. „Nur diese“ leer – alle außer den ausgeschlossenen.
+// „Nur diese“ gefüllt – nur diese; ausgeschlossene gelten zusätzlich. Den Mappentyp nennt das Ereignis (`daten.typ`,
+// seit DMS 0.153.0); fehlt er (z. B. bei nachgeschickten Ereignissen), liest das Paket die Mappe.
+// Ergebnis: leer – erkennen; sonst der Grund, warum das Paket das Dokument auslässt.
+std::string typGrund(const Json &einstellungen, const Json &daten) {
   const Json &nur = einstellungen["typen"];
   const Json &ohne = einstellungen["ohne_typen"];
   const bool mitNur = nur.art == Json::LISTE && !nur.l.empty();
   const bool mitOhne = ohne.art == Json::LISTE && !ohne.l.empty();
-  if (!mitNur && !mitOhne) return true;
-  if (!sichereId(mappe)) return false;
-  Antwort a = api("GET", "/mappen/" + mappe);
-  if (a.status != 200) { log(WARNUNG, "Mappe nicht lesbar (HTTP " + std::to_string(a.status) + ")"); return false; }
-  std::string typ = JsonLeser::lies(a.body.data(), a.body.size())["typId"].text();
+  if (!mitNur && !mitOhne) return "";
+  std::string typ = daten["typ"].art == Json::TEXT ? daten["typ"].text() : "";
+  if (typ.empty()) {
+    const std::string mappe = daten["mappe"].text();
+    if (!sichereId(mappe)) return "Mappe unbekannt";
+    Antwort a = api("GET", "/mappen/" + mappe);
+    if (a.status != 200) { log(WARNUNG, "Mappe nicht lesbar (HTTP " + std::to_string(a.status) + ")"); return "Mappe nicht lesbar"; }
+    typ = JsonLeser::lies(a.body.data(), a.body.size())["typId"].text();
+  }
   // Ausgeschlossene gelten immer; ist „Nur diese“ leer, sind alle übrigen erlaubt.
-  if (mitOhne) for (const Json &e : ohne.l) if (eintragId(e) == typ) return false;
-  if (!mitNur) return true;
-  for (const Json &e : nur.l) if (eintragId(e) == typ) return true;
-  return false;
+  if (mitOhne) for (const Json &e : ohne.l) if (eintragId(e) == typ) return "Mappentyp ausgeschlossen";
+  if (!mitNur) return "";
+  for (const Json &e : nur.l) if (eintragId(e) == typ) return "";
+  return "Mappentyp nicht gewählt";
 }
 
 std::string seitenText(int n) { return std::to_string(n) + (n == 1 ? " Seite" : " Seiten"); }
@@ -421,7 +429,9 @@ int verarbeite(const Json &e) {
   if (behalten) for (const Json &x : d["seitenOhneText"].l) if (x.art == Json::ZAHL && x.zahl() >= 1) nurSeiten.push_back((int)x.zahl());
   if (!fortsetzung) {
     if (behalten && nurSeiten.empty()) { ergebnis("Text aus dem PDF bleibt"); return 0; }
-    if (!typErlaubt(einst, d["mappe"].text())) { ergebnis("Mappentyp nicht gewählt oder ausgeschlossen"); return 0; }
+    // Ausgelassen heißt Erfolg ohne Text: Ablago wartet dann nicht länger auf die Texterkennung (Text aus dem PDF bleibt).
+    const std::string grund = typGrund(einst, d);
+    if (!grund.empty()) { ergebnis(grund); return 0; }
   }
 
   // Sprache wie in manifest.yaml: Automatisch, Deutsch, Englisch oder beide (je Seite die sicherere Lesung).

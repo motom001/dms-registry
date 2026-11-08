@@ -1,5 +1,14 @@
 # Änderungen
 
+## 2.4.0
+
+Mappentypen ausschließen fertig gestellt (dms-registry #105). **Braucht Ablago 0.179.0** wie 2.3.0.
+
+- **Regel im Hilfetext vollständig:** Beide leer – alle Mappentypen. „Nur diese“ leer – alle außer den ausgeschlossenen. „Nur diese“ gefüllt – nur diese, ausgeschlossene gelten zusätzlich.
+- **Ausgelassene Dokumente warten nicht (wie bisher, jetzt getestet):** Ein Dokument in einem ausgeschlossenen oder nicht gewählten Mappentyp beendet das Paket mit Erfolg und ohne Volltext; Ablago zeigt es dann nicht mehr als „wartet auf Texterkennung“ (Text aus dem PDF bleibt). Die Meldung am Dokument nennt den Grund: „Mappentyp ausgeschlossen“ bzw. „Mappentyp nicht gewählt“.
+- **Weniger Anfragen:** Den Mappentyp nimmt das Paket aus dem Ereignis (`daten.typ`); die Mappe liest es nur noch, wenn das Ereignis ihn nicht nennt.
+- Neu: Tests der Regel im Modultest (`tests/ci.sh`) – leer mit Ausschluss, gefüllt mit Ausschluss, alte Form der Auswahl, Mappentyp aus dem Ereignis und aus der Mappe.
+
 ## 2.3.0
 
 - **„Diese Mappentypen ausschließen“** (dms-registry #105): neben „Nur diese Mappentypen“, beide als Mehrfachauswahl wie in Verweisfeldern (DMS #658). Ist „Nur diese“ leer, erkennt das Paket alle Mappentypen außer den ausgeschlossenen; ein Typ kann nicht in beiden Feldern stehen.
