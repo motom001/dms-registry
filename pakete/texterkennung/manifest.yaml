@@ -2,7 +2,7 @@
 schema: 1
 id: texterkennung
 name: Texterkennung (Deutsch und Englisch)
-version: 2.3.0
+version: 2.4.0
 beschreibung: Das Grundpaket für die Texterkennung von Ablago – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.
 autor:
   name: Thomas Meissner
@@ -22,7 +22,7 @@ code:
   quelle: code/
   ereignisse: [volltext.fertig]
   rechte:
-    lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen; Lesen der Mappe nur für „Nur diese Mappentypen“
+    lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen; die Mappe liest das Paket nur für den Mappentyp-Filter, wenn das Ereignis ihn nicht nennt
     dokumente: schreiben  # Seiten als Bild lesen und den Volltext schreiben
     schnittstellen: ["dms:texterkennung"]  # die Texterkennung von Ablago: Dokumente ohne Text warten auf dieses Paket
   netz: []
@@ -59,7 +59,7 @@ code:
           max: 400
           standard: 300
     - abschnitt: Mappentypen
-      hilfe: Beide leer – Dokumente in allen Mappen. „Nur diese“ leer – alle außer den ausgeschlossenen.
+      hilfe: Beide leer – Dokumente in allen Mappen. „Nur diese“ leer – alle außer den ausgeschlossenen. „Nur diese“ gefüllt – nur diese, ausgeschlossene gelten zusätzlich.
       felder:
-        - { schluessel: typen, name: Nur diese Mappentypen, typ: mappentyp, mehrfach: true, schliesst_aus: ohne_typen, hilfe: "Leer – alle Mappentypen." }
-        - { schluessel: ohne_typen, name: Diese Mappentypen ausschließen, typ: mappentyp, mehrfach: true, schliesst_aus: typen, hilfe: "Dokumente in Mappen dieser Typen bekommen keinen Volltext vom Paket." }
+        - { schluessel: typen, name: Nur diese Mappentypen, typ: mappentyp, mehrfach: true, schliesst_aus: ohne_typen, hilfe: "Leer – alle Mappentypen außer den ausgeschlossenen." }
+        - { schluessel: ohne_typen, name: Diese Mappentypen ausschließen, typ: mappentyp, mehrfach: true, schliesst_aus: typen, hilfe: "Dokumente in Mappen dieser Typen bekommen keinen Volltext vom Paket und warten nicht auf die Texterkennung – praktisch, wenn nur wenige Typen nicht erkannt werden sollen." }
