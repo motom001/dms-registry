@@ -151,6 +151,15 @@ class Einstellungen(unittest.TestCase):
         alt = self.paket(c, dms='>=0.124.0')
         self.assertTrue(any('dms:erkennen kennt das DMS erst ab 0.125.0' in f for f in alt), alt)
 
+    def test_schnittstelle_klassifizieren(self):
+        # dms:klassifizieren (DMS #939): ab DMS 0.226.0, ohne weitere Rechte.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'schnittstellen': ['dms:klassifizieren']}
+        self.assertEqual(self.paket(c, dms='>=0.226.0'), [])
+        alt = self.paket(c, dms='>=0.225.0')
+        self.assertTrue(any('dms:klassifizieren kennt das DMS erst ab 0.226.0' in f for f in alt), alt)
+
     def test_schnittstelle_antworten(self):
         # dms:antworten und Einstellung adresse (DMS #444): ab DMS 0.124.0; adresse ohne Vorgabe, nur im Abschnitt, höchstens eine.
         import copy

@@ -97,6 +97,9 @@ DMS_ANTWORTEN_AB = (0, 124, 0)
 DMS_FUNKTIONEN_ANTWORTEN = {'netz_strom', 'netz_weiter', 'teil'}
 # Schnittstelle dms:erkennen („Aus Dokument ausfüllen“ per Paket) gibt es im DMS ab 0.125.0 (DMS #511).
 DMS_ERKENNEN_AB = (0, 125, 0)
+# Schnittstelle dms:klassifizieren („Wohin gehört das?“, DMS #939). Die Versionsnummer vergibt Ablago erst beim Merge (#952);
+# 0.226.0 ist die erste Version nach 0.225.0 (Verweisfelder, #935).
+DMS_KLASSIFIZIEREN_AB = (0, 226, 0)
 # Wortlisten (inhalt.wortlisten, DMS #356): gleichbedeutende Wörter für die Suche, ab DMS 0.127.0.
 DMS_WORTLISTEN_AB = (0, 127, 0)
 # Ansichten über alle Mappentypen (typen: ["*"], DMS #725).
@@ -198,6 +201,9 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
     # dms:erkennen (DMS #511): ab 0.125.0.
     if 'dms:erkennen' in (rechte.get('schnittstellen') or []) and (ab is None or ab < DMS_ERKENNEN_AB):
         fehler.append('code.rechte.schnittstellen: dms:erkennen kennt das DMS erst ab 0.125.0 – bitte dms: ">=0.125.0" angeben')
+    # dms:klassifizieren (DMS #939): ab 0.226.0, ohne weitere Rechte.
+    if 'dms:klassifizieren' in (rechte.get('schnittstellen') or []) and (ab is None or ab < DMS_KLASSIFIZIEREN_AB):
+        fehler.append('code.rechte.schnittstellen: dms:klassifizieren kennt das DMS erst ab 0.226.0 – bitte dms: ">=0.226.0" angeben')
     # dms:texterkennung (DMS #458): ab 0.133.0; das Paket schreibt den Volltext, braucht also dokumente: schreiben.
     if 'dms:texterkennung' in (rechte.get('schnittstellen') or []):
         if rechte.get('dokumente') != 'schreiben':

@@ -10,8 +10,11 @@
 // das Feld ab (HTTP 400) wie Dienste, die es nicht kennen. Modell „kurz:1b“ liest wie Ollama ohne Grafikkarte nur
 // 2048 Token (grob 3 Zeichen je Token): Ist die Anfrage mit max_tokens länger, lässt es vorne still Nachrichten weg
 // (nach der Systemnachricht) – im Paket die Kontextlänge 2048 eintragen, dann kürzt das Paket vorher selbst.
-// Schreibt nichts mit außer der Anzahl der Anfragen.
+// Mit dem Schema „klassifizierung“ (Wohin gehört das?, ab 1.3.0) wählt sie den ersten Mappentyp der Liste, dessen Name
+// oder ein Wort aus „erkennbar an“ im Text steht, und zitiert die Zeile, in der er steht.
+// Schreibt nichts mit außer der Anzahl der Anfragen. Die Antwortfunktionen nutzt auch tests/modul_test.mjs.
 import { createServer } from 'node:http';
+import { pathToFileURL } from 'node:url';
 
 const MODELL = 'attrappe:1b';
 const ALT = 'alt:1b';
@@ -38,7 +41,7 @@ function antwortFuer(nachrichten) {
 }
 
 /** Felder aus dem Text nach dem Schema – ohne KI, nur damit etwas Passendes zurückkommt. */
-function felderFuer(nachrichten, schema) {
+export function felderFuer(nachrichten, schema) {
   const daten = nachrichten.filter((m) => m.role === 'user').map((m) => m.content).join('\n');
   const text = /<dokument>\n([\s\S]*)\n<\/dokument>/.exec(daten)?.[1] ?? '';
   // Ohne Schema in response_format (json_object): das Schema steht in der letzten Nachricht.
@@ -46,14 +49,38 @@ function felderFuer(nachrichten, schema) {
   const aus = {};
   for (const [k, f] of Object.entries(s.properties ?? {})) {
     const w = f.properties?.wert ?? {};
-    const zeile = new RegExp(`^\\s*${(f.title ?? k).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*:\\s*(.+)$`, 'mi').exec(text)?.[1]?.trim();
-    let wert;
-    if (w.format === 'date') { const d = /(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(zeile ?? text); if (d) wert = `${d[3]}-${d[2].padStart(2, '0')}-${d[1].padStart(2, '0')}`; }
-    else if (/mail/i.test(k) || /mail/i.test(f.title ?? '')) wert = /[\w.+-]+@[\w-]+(\.[\w-]+)+/.exec(text)?.[0];
-    else if (zeile && (w.type === 'string' || (w.enum ?? []).includes(zeile))) wert = zeile;
-    if (wert !== undefined) aus[k] = { wert, sicherheit: 'mittel', fundstelle: String(wert) };
+    const treffer = new RegExp(`^\\s*${(f.title ?? k).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*:\\s*(.+)$`, 'mi').exec(text);
+    const zeile = treffer?.[1]?.trim();
+    let wert, quelle;
+    if (w.format === 'date') { const d = /(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(zeile ?? text); if (d) { wert = `${d[3]}-${d[2].padStart(2, '0')}-${d[1].padStart(2, '0')}`; quelle = d[0]; } }
+    else if (/mail/i.test(k) || /mail/i.test(f.title ?? '')) quelle = wert = /[\w.+-]+@[\w-]+(\.[\w-]+)+/.exec(text)?.[0];
+    else if (zeile && (w.type === 'string' || (w.enum ?? []).includes(zeile))) { wert = zeile; quelle = treffer[0].trim(); }
+    // Fundstelle (ab 1.3.0): die ganze Zeile, in der der Wert steht – wörtlich aus dem Text.
+    if (wert !== undefined) aus[k] = { wert, sicherheit: 'mittel', fundstelle: text.split('\n').find((z) => z.includes(quelle))?.trim() ?? quelle };
   }
   return JSON.stringify(aus);
+}
+
+/** Wohin gehört das? Der erste Mappentyp der Liste („1: Name – …; erkennbar an: …“), dessen Name oder Merkmal im Text steht. */
+export function klassenFuer(nachrichten) {
+  const daten = nachrichten.filter((m) => m.role === 'user').map((m) => m.content).join('\n');
+  const text = /<dokument>\n([\s\S]*)\n<\/dokument>/.exec(daten)?.[1] ?? '';
+  const zeilen = text.split('\n');
+  const typen = [];
+  for (const z of daten.split('\n')) {
+    const m = /^(\d+): ([^–;]+?)(?: – [^;]*)?(?:; erkennbar an: (.*))?$/.exec(z);
+    if (m) typen.push({ nr: m[1], name: m[2].trim(), merkmale: (m[3] ?? '').split(/[,;]\s*|\s+und\s+/).map((x) => x.trim()).filter((x) => x.length >= 4) });
+  }
+  const klein = (x) => x.toLocaleLowerCase('de-DE');
+  const aus = [];
+  for (const t of typen) {
+    const wort = [t.name, ...t.merkmale].find((w) => klein(text).includes(klein(w)));
+    if (!wort) continue;
+    const zeile = zeilen.find((z) => klein(z).includes(klein(wort)))?.trim() ?? '';
+    aus.push({ typ: t.nr, sicherheit: wort === t.name ? 0.8 : 0.5, begruendung: `„${wort}“ steht im Text`, zitat: zeile });
+    if (aus.length === 3) break;
+  }
+  return JSON.stringify({ typen: aus });
 }
 
 const server = createServer((q, a) => {
@@ -74,7 +101,8 @@ const server = createServer((q, a) => {
     if (j.model === KURZ) j.messages = abschneiden(j.messages ?? [], j.max_tokens);
     const format = j.response_format?.type;
     if (format === 'json_schema' && j.model === ALT) { fehler("invalid response_format type 'json_schema'"); return; }
-    const text = format === 'json_schema' || format === 'json_object' ? felderFuer(j.messages ?? [], j.response_format.json_schema?.schema) : antwortFuer(j.messages ?? []);
+    const klassifizieren = j.response_format?.json_schema?.name === 'klassifizierung' || (format === 'json_object' && /Mappentypen zur Wahl/.test(JSON.stringify(j.messages ?? [])));
+    const text = klassifizieren ? klassenFuer(j.messages ?? []) : format === 'json_schema' || format === 'json_object' ? felderFuer(j.messages ?? [], j.response_format.json_schema?.schema) : antwortFuer(j.messages ?? []);
     if (!j.stream) { a.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ choices: [{ index: 0, message: { role: 'assistant', content: text } }] })); return; }
     a.writeHead(200, { 'content-type': 'text/event-stream' });
     const teile = text.match(/.{1,12}/gsu) ?? [];
@@ -87,5 +115,8 @@ const server = createServer((q, a) => {
     weiter();
   });
 });
-server.listen(port, () => console.log(`Attrappe auf http://127.0.0.1:${server.address().port}/v1 (Modell ${MODELL})`));
-process.on('SIGINT', () => { console.log(`${anfragen} Anfragen`); process.exit(0); });
+// Nur als Programm gestartet ein Dienst – beim Import (Tests) nur die Antwortfunktionen.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  server.listen(port, () => console.log(`Attrappe auf http://127.0.0.1:${server.address().port}/v1 (Modell ${MODELL})`));
+  process.on('SIGINT', () => { console.log(`${anfragen} Anfragen`); process.exit(0); });
+}
