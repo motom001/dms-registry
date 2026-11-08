@@ -3,8 +3,8 @@
 schema: 1
 id: ki_assistent
 name: KI-Assistent
-version: 1.2.1
-beschreibung: Beantwortet Fragen an die Ablage („Frag deine Ablage“) und füllt Felder aus Dokumenten („Aus Dokument ausfüllen“) mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst – z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.
+version: 1.3.0
+beschreibung: Beantwortet Fragen an die Ablage, füllt Felder aus Dokumenten und schlägt vor, wohin neue Post gehört – mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst, z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -12,7 +12,8 @@ lizenz: Apache-2.0
 # 0.124.0: Schnittstelle dms:antworten, Einstellung vom Typ adresse, netz_strom/netz_weiter/teil (DMS #444)
 # 0.125.0: Schnittstelle dms:erkennen – „Aus Dokument ausfüllen“ per Paket (DMS #511)
 # 0.138.0: Kürzen sichtbar („6 von 9 Ausschnitten (gekürzt)“, „Dokumenttext gekürzt“), „hat nichts Brauchbares geliefert“ (DMS #564)
-dms: ">=0.138.0"
+# 0.226.0: Schnittstelle dms:klassifizieren – „Wohin gehört das?“, Fundstellen aus dms:erkennen als Rahmen (DMS #939)
+dms: ">=0.226.0"
 inhalt: {}
 code:
   sprache: c
@@ -20,8 +21,9 @@ code:
   rechte:
     # Fragen beantworten: Ablago gibt je Frage wenige Ausschnitte mit (mit den Rechten des Fragenden).
     # Felder vorschlagen (ab 1.1.0): Ablago gibt den Text des Dokuments und die Beschreibung der Felder mit.
+    # Mappentyp vorschlagen (ab 1.3.0): Ablago gibt den Anfang des Dokuments und die zugelassenen Mappentypen mit.
     # Keine Mappen, keine Dokumente – das Paket liest nichts selbst aus der Ablage.
-    schnittstellen: ["dms:antworten", "dms:erkennen"]
+    schnittstellen: ["dms:antworten", "dms:erkennen", "dms:klassifizieren"]
   # Keine feste Adresse: Netz nur zur Dienst-Adresse, die der Administrator einträgt und bestätigt.
   netz: []
   einstellungen:
@@ -71,7 +73,23 @@ code:
           min: 10
           max: 55
           standard: 50
-          hilfe: So lange wartet das Paket auf die Antwort des Dienstes. Ablago wartet höchstens 60 Sekunden und nimmt danach die eingebaute Erkennung.
+          hilfe: So lange wartet das Paket auf die Antwort des Dienstes. Ablago wartet höchstens 60 Sekunden und nimmt danach die eingebaute Erkennung. Für „Wohin gehört das?“ gilt dieselbe Zeit, höchstens 40 Sekunden.
+        - schluessel: hinweis_erkennen
+          name: Eigene Hinweise an den Dienst
+          typ: mehrzeilig
+          hilfe: Zusätzliche Hinweise für das Ausfüllen, z. B. „Beträge immer brutto angeben.“ Sie kommen zum Hinweis von Ablago dazu; das Antwortformat bleibt fest, und der Text des Dokuments gilt weiter nur als Daten. Höchstens 1 000 Zeichen.
+    - abschnitt: Wohin gehört das?
+      hilfe: Auf der Seite „Dokument übernehmen“ schlägt der KI-Dienst vor, zu welchem Mappentyp neue Post gehört – nur, wenn das Paket unter Werkbank → Pakete → KI-Assistent → Aus Dokument ausfüllen als Standard für alle Mappentypen gewählt ist. Der Dienst bekommt den Anfang des Dokuments und Name, Kurzbeschreibung und „Woran man ihn erkennt“ der Mappentypen, die für KI-Dienste zugelassen sind – keine Mappen. Antwortet er nicht oder unbrauchbar, schlägt Ablago den Typ ohne ihn vor.
+      felder:
+        - schluessel: klassifizieren
+          name: Für „Wohin gehört das?“ nutzen
+          typ: janein
+          standard: true
+          hilfe: Aus heißt, das Paket lehnt jede Anfrage ab und Ablago schlägt den Mappentyp ohne den KI-Dienst vor.
+        - schluessel: hinweis_klassifizieren
+          name: Eigene Hinweise an den Dienst
+          typ: mehrzeilig
+          hilfe: Zusätzliche Hinweise für die Zuordnung, z. B. „Arztbriefe gehören nie zu Rechnung.“ Sie kommen zum Hinweis von Ablago dazu; das Antwortformat bleibt fest, und der Text des Dokuments gilt weiter nur als Daten. Höchstens 1 000 Zeichen.
   aktionen:
     - schluessel: verbindung_testen
       name: Verbindung testen

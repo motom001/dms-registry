@@ -341,6 +341,8 @@ SCHNITTSTELLEN = {
     # DMS #614, ab 0.145.0 – dahinter die Dateitypen aus code.volltext
     'dms:volltext': ('Volltext für Dateien liefern, die Ablago nicht selbst lesen kann – das Paket liest die Datei und schreibt nur ihren Volltext; Dokumente ändern, ersetzen oder löschen kann es nicht (dms:volltext)', 'recht-volltext', 'Volltext liefern'),
     # DMS #631, ab 0.149.0 – dahinter die Dateitypen aus code.archivfassung.typen
+    # DMS #939, ab 0.226.0
+    'dms:klassifizieren': ('Mappentyp vorschlagen („Wohin gehört das?“) – nur aus dem Anfang des Dokuments und der Liste der Mappentypen, die Ablago mitgibt (dms:klassifizieren)', 'recht-klassifizieren', 'Mappentyp vorschlagen'),
     'dms:archivfassung': ('Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung)', 'recht-archivfassung', 'Archivfassung ablegen'),
 }
 # Kurze Namen der Dateitypen hinter dms:umwandeln, dms:volltext und dms:archivfassung (wie DATEITYP_NAMEN im DMS,
