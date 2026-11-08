@@ -31,7 +31,7 @@ The full licence text is in the package folder as `LICENSE`. Third-party code in
 - Access to the network/internet to addresses not listed in the manifest – except to the service address the administrator enters and confirms in a setting of type `adresse`
 - A preset service address of an external provider (cloud) – not even as `beispiel`
 - More permissions than necessary, e.g. write access where read access is enough
-- Real personal data in samples, tests or screenshots
+- Real personal data in samples, example documents, tests or screenshots
 - Deleting fields, tabs or Mappen during an update (a text field replaced by a reference with `aus_text` may leave the package – see [Turning text into a reference](#turning-text-into-a-reference))
 
 ## How administrators see the permissions
@@ -110,6 +110,26 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versicherung`. Ablago creates them with the package id in front (`haushalt_versicherung`) so that two packages do not get in each other's way. Only the name ("Versicherung") is displayed. You write references to types of other packages as `<paket>:<schluessel>`, e.g. `basis:organisation`. The other package must then be listed under `abhaengigkeiten` (dependencies). To Mappe types that Ablago brings itself, you refer with `dms:` – without a dependency: `dms:benutzer` (user) and `dms:rolle` (role). This requires `dms: ">=0.75.0"` in the manifest. The **storage location** (where an original is kept) comes with the Basis package since Ablago 0.212.0: `basis:ablageort` with `basis: ">=1.6.0"` under `abhaengigkeiten` (Ablago #883, Registry #138). Ablago still understands the former `dms:ablageort` as an alias until 1.0; `pruefen.py` warns about it. The package id `dms` is therefore taken.
 
 Sample Mappen may refer to each other (from Ablago 0.79.0): a sample gets a `schluessel`, a reference field of another sample gets the value `{ beispiel: strom }` – or `{ beispiel: "basis:stadtwerke" }` for a sample from a dependency. The manifest must then contain `dms: ">=0.79.0"`.
+
+### Example documents { #beispiel-dokumente }
+
+From Ablago 0.222.0 (motom001/dms#878, registry #137) a sample can bring documents – for instance a maintenance contract and invoices for the sample Mappe "Heating". The files are under `inhalt/beispiele/`, the sample names them under `dokumente`:
+
+```yaml
+- typ: vertrag
+  schluessel: heizung_wartung
+  werte: { bezeichnung: Wartungsvertrag Heizung }
+  dokumente:
+    - { datei: beispiele/heizung/wartungsvertrag.pdf, titel: Wartungsvertrag, datum: "2023-04-01" }
+    - { datei: beispiele/heizung/rechnung-2026.png, register: rechnungen }
+```
+
+- `datei` is relative to `inhalt/` and starts with `beispiele/`; folders and names only of letters, digits, `.`, `-` and `_`. `titel` becomes the name in Ablago, `datum` "uploaded on", `register` the document tab (without it, the first one).
+- **Only PDF, PNG and JPEG** – recognised by the content, the extension must match. Each file at most 100 MB as when uploading in Ablago, all together at most 128 MB; still keep them small (reduced PDFs, pictures as JPEG). The 2 MB per file limit doesn't apply here.
+- **Every named file must exist, and every file under `inhalt/beispiele/` must be named.** `pruefen.py` reports the size per file and in total on every check.
+- Packages with example documents require `dms: ">=0.222.0"`.
+- **No real data:** only invented people and companies (persona names such as Lena, Jonas, Markus, Petra, Herr Özdemir, Katrin), example domains (`example.org`, `example.com`, `example.net`), invalid or explicitly sample values for IBAN, tax and insurance numbers. No scanned real letters, not even redacted – metadata, signatures and logos often reveal more than you think.
+- **Large packages:** the catalogue lives on the branch `gh-pages` (registry #133), and git doesn't accept files over 100 MB. A package whose archive would be larger can't be published that way; `pruefen.py` points this out from 90 MB.
 
 ## Add-ons (`ergaenzt`)
 

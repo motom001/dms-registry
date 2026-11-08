@@ -33,7 +33,7 @@ Jedes Paket enthält mindestens:
 | `README.md` | was das Paket kann, für wen, mit Beispiel |
 | `LICENSE` | Lizenztext (Open Source, siehe [REGELN.md](REGELN.md)) |
 | `CHANGELOG.md` | Änderungen je Version |
-| `inhalt/` | Mappentypen, Sichten, Beispiele (YAML) |
+| `inhalt/` | Mappentypen, Sichten, Beispiele (YAML), optional Beispiel-Dokumente unter `inhalt/beispiele/` – nur erfundene Inhalte ([REGELN.md](REGELN.md#beispiel-dokumente)) |
 | `code/` | nur bei Paketen mit Code: Quellcode, wird in der CI gebaut |
 | `tests/` | Erwartungen an das Paket |
 
@@ -51,7 +51,7 @@ Auf demselben Branch liegt die **Katalog-Webseite** (`werkzeuge/webseite.py`): P
 
 Mit GitHub Pages (Quelle: Branch `gh-pages`) ist die Webseite unter **`https://catalog.ablago.app/`** erreichbar, der Katalog dann auch unter `…/katalog.json`.
 
-`katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige Ablago-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele), ob das Paket Code hat, Adresse des Archivs (relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
+`katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige Ablago-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele und – falls vorhanden – `beispieldokumente`, die Anzahl der Beispiel-Dokumente), ob das Paket Code hat, Adresse des Archivs (relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
 
 ```json
 {
@@ -68,7 +68,7 @@ Mit GitHub Pages (Quelle: Branch `gh-pages`) ist die Webseite unter **`https://c
 }
 ```
 
-Ältere Versionen bleiben im Katalog und als Archiv abrufbar. Ein Archiv mit gleicher Id und Version ändert sich nie: Ändert sich ein Paket ohne neue Version, schlägt die Prüfung im Pull Request fehl. Lokal baust du den Katalog mit `python3 werkzeuge/katalog.py <ordner>`. Das Feld `signatur` bleibt `null`: Die Signatur steht getrennt in `katalog.sig`.
+Die Archive liegen auf `gh-pages`, und git nimmt keine Datei über 100 MB an (#133) – Pakete mit Beispiel-Dokumenten deshalb deutlich darunter halten. Ältere Versionen bleiben im Katalog und als Archiv abrufbar. Ein Archiv mit gleicher Id und Version ändert sich nie: Ändert sich ein Paket ohne neue Version, schlägt die Prüfung im Pull Request fehl. Lokal baust du den Katalog mit `python3 werkzeuge/katalog.py <ordner>`. Das Feld `signatur` bleibt `null`: Die Signatur steht getrennt in `katalog.sig`.
 
 ## Katalog signieren
 

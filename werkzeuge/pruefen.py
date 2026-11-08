@@ -24,6 +24,15 @@ MAX_GROESSE = 2 * 1024 * 1024  # je Datei; Bilder fürs README gern kleiner
 # katalog.py und sammeldatei.py nutzen dieselbe Zahl (test_grenzen prüft das).
 PAKET_MAX = 128 * 1024 * 1024
 CODE_MAX = PAKET_MAX  # alle Dateien unter code/ zusammen
+# Beispiel-Dokumente (motom001/dms#878, Registry #137): Dateien unter inhalt/beispiele/, die ein Beispiel unter
+# dokumente nennt. Dieselben Grenzen wie in Ablago: nur PDF, PNG und JPEG (am Inhalt erkannt, Endung passend), je Datei
+# höchstens so groß wie ein hochgeladenes Dokument (MAX_DATEIGROESSE, 100 MB), alle zusammen höchstens PAKET_MAX.
+BEISPIEL_ORDNER = 'inhalt/beispiele/'
+BEISPIEL_DATEI_MAX = 100 * 1024 * 1024
+BEISPIEL_ENDUNGEN = {'pdf': 'application/pdf', 'png': 'image/png', 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg'}
+BEISPIEL_PFAD = re.compile(r'^beispiele/([A-Za-z0-9_-][A-Za-z0-9._-]{0,79}/){0,4}[A-Za-z0-9_-][A-Za-z0-9._-]{0,99}$')
+# git (und damit der Katalog auf gh-pages, Registry #133) nimmt keine Datei über 100 MB an; ab hier ein Hinweis.
+GIT_DATEI_MAX = 100 * 1024 * 1024
 
 
 def inhalt_validator(art: str) -> Draft202012Validator:
@@ -92,6 +101,8 @@ DMS_ERKENNEN_AB = (0, 125, 0)
 DMS_WORTLISTEN_AB = (0, 127, 0)
 # Ansichten über alle Mappentypen (typen: ["*"], DMS #725).
 DMS_ALLE_TYPEN_AB = (0, 182, 0)
+# Beispiel-Dokumente (motom001/dms#878): ältere Ablago übergehen dokumente an Beispielen.
+DMS_BEISPIEL_DOKUMENTE_AB = (0, 222, 0)
 ALLE_TYPEN = '*'
 # Mitgelieferte Automatisierungen (inhalt.automatisierungen, DMS #712, Registry #108), ab DMS 0.177.0. Seit dieser
 # Version legt ein Datumsfeld mit frist keine Aufgaben mehr selbst an – erinnern muss eine Automatisierung.
@@ -700,6 +711,88 @@ def pruefe_beispiel_verweise(beispiele: list, paket_id: str, abh: set) -> list[s
     return fehler
 
 
+def dateiart(name: str, kopf: bytes) -> str | None:
+    """Art einer Beispiel-Datei am Inhalt (wie beispielDateiart in Ablago): PDF, PNG oder JPEG, und nur mit passender Endung."""
+    erwartet = BEISPIEL_ENDUNGEN.get(name.rsplit('.', 1)[-1].lower()) if '.' in name else None
+    ist = ('application/pdf' if kopf.startswith(b'%PDF-') else 'image/png' if kopf.startswith(b'\x89PNG') else
+           'image/jpeg' if kopf.startswith(b'\xff\xd8\xff') else None)
+    return ist if erwartet and ist == erwartet else None
+
+
+def mb(n: int) -> str:
+    return f'{n / 1048576:.1f} MB' if n >= 1048576 else f'{max(1, round(n / 1024))} KB'
+
+
+def pruefe_beispiel_dokumente(ordner: Path, beispiele: list, typen: list, paket_id: str, dms_bereich: str) -> list[str]:
+    """Beispiel-Dokumente (motom001/dms#878): Jede genannte Datei liegt unter inhalt/beispiele/, ist PDF, PNG oder JPEG
+    und nicht zu groß; jede Datei dort ist auch genannt; zusammen passen sie unter die Paketgrenze; das Register gibt es
+    (bei eigenen Mappentypen) und das Paket verlangt Ablago ab 0.222.0."""
+    fehler: list[str] = []
+    genannt: set[str] = set()
+    eigene = {t.get('schluessel'): t for t in typen if isinstance(t, dict)}
+    for i, b in enumerate(beispiele or []):
+        if not isinstance(b, dict) or not isinstance(b.get('dokumente'), list):
+            continue
+        typ = str(b.get('typ', ''))
+        eigen = eigene.get(typ.split(':', 1)[1] if typ.startswith(f'{paket_id}:') else typ) if (':' not in typ or typ.startswith(f'{paket_id}:')) else None
+        dokreg = [r.get('key') for r in (eigen or {}).get('register') or [] if isinstance(r, dict) and r.get('art') == 'dokumente']
+        for j, d in enumerate(b['dokumente']):
+            if not isinstance(d, dict):
+                continue
+            wo = f'beispiele[{i}].dokumente[{j}]'
+            datei = str(d.get('datei', ''))
+            if not BEISPIEL_PFAD.match(datei) or '..' in datei.split('/'):
+                fehler.append(f'{wo}: „{datei}“ muss unter inhalt/beispiele/ liegen (Pfad relativ zu inhalt/, z. B. beispiele/heizung/vertrag.pdf)')
+                continue
+            genannt.add(datei)
+            pfad = ordner / 'inhalt' / datei
+            if not pfad.is_file():
+                fehler.append(f'{wo}: inhalt/{datei} fehlt')
+                continue
+            groesse = pfad.stat().st_size
+            if not groesse:
+                fehler.append(f'{wo}: inhalt/{datei} ist leer')
+            elif groesse > BEISPIEL_DATEI_MAX:
+                fehler.append(f'{wo}: inhalt/{datei} ist {mb(groesse)} groß – höchstens {BEISPIEL_DATEI_MAX // 1048576} MB je Datei (wie beim Hochladen in Ablago)')
+            with pfad.open('rb') as f:
+                if not dateiart(datei, f.read(8)):
+                    fehler.append(f'{wo}: inhalt/{datei} ist kein PDF, PNG oder JPEG, oder die Endung passt nicht zum Inhalt')
+            if eigen is not None:
+                reg = d.get('register')
+                if (reg and reg not in dokreg) or (not reg and not dokreg):
+                    fehler.append(f'{wo}: Der Mappentyp „{typ}“ hat kein Dokumentenregister „{reg or "–"}“')
+    unten = ordner / BEISPIEL_ORDNER
+    vorhanden = {p.relative_to(ordner / 'inhalt').as_posix(): p.stat().st_size for p in sorted(unten.rglob('*')) if p.is_file()} if unten.is_dir() else {}
+    for rel in sorted(set(vorhanden) - genannt):
+        fehler.append(f'inhalt/{rel}: liegt unter inhalt/beispiele/, aber kein Beispiel nennt die Datei unter dokumente')
+    summe = sum(vorhanden.values())
+    if summe > PAKET_MAX:
+        fehler.append(f'inhalt/beispiele/: zusammen {mb(summe)} – höchstens {PAKET_MAX // 1048576} MB je Paket (Grenze des DMS, DMS #644)')
+    if genannt:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_BEISPIEL_DOKUMENTE_AB:
+            fehler.append('beispiele: dokumente kennt Ablago erst ab 0.222.0 – bitte dms: ">=0.222.0" angeben')
+    return fehler
+
+
+def beispiel_groessen(ordner: Path) -> list[str]:
+    """Größe der Beispiel-Dokumente je Datei und gesamt (Registry #137), als Hinweis bei jeder Prüfung."""
+    unten = ordner / BEISPIEL_ORDNER
+    if not unten.is_dir():
+        return []
+    dateien = [(p.relative_to(ordner).as_posix(), p.stat().st_size) for p in sorted(unten.rglob('*')) if p.is_file()]
+    if not dateien:
+        return []
+    summe = sum(g for _, g in dateien)
+    h = [f'Beispiel-Dokumente: {len(dateien)} Datei(en), zusammen {mb(summe)} von höchstens {PAKET_MAX // 1048576} MB je Paket – '
+         + ', '.join(f'{n} {mb(g)}' for n, g in dateien)]
+    gesamt = sum(p.stat().st_size for p in ordner.rglob('*') if p.is_file())
+    if gesamt > GIT_DATEI_MAX * 0.9:
+        h.append(f'Paket zusammen {mb(gesamt)}: Ein Archiv über 100 MB nimmt git nicht an – der Katalog auf gh-pages (Registry #133) '
+                 'ginge dann nicht. Beispiel-Dokumente klein halten (z. B. PDF verkleinern, Bilder als JPEG).')
+    return h
+
+
 def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set, dms_bereich: str = '') -> list[str]:
     """Einstellungen und Aktionen im Manifest (code.einstellungen, code.aktionen) über das Schema hinaus."""
     fehler: list[str] = []
@@ -987,7 +1080,9 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             if VERBOTEN.search(datei.name) and datei.relative_to(ordner).as_posix() != 'code/modul.wasm':
                 fehler.append(f'{datei.relative_to(ordner)}: fertige Programmdateien sind nicht erlaubt (REGELN.md)')
             erzeugt = datei.relative_to(ordner).as_posix() == 'code/modul.wasm' or datei.relative_to(ordner).as_posix().startswith('code/daten/')
-            if datei.stat().st_size > MAX_GROESSE and not erzeugt:
+            # Beispiel-Dokumente (motom001/dms#878) haben ihre eigene Grenze je Datei (pruefe_beispiel_dokumente).
+            beispiel = datei.relative_to(ordner).as_posix().startswith(BEISPIEL_ORDNER)
+            if datei.stat().st_size > MAX_GROESSE and not erzeugt and not beispiel:
                 fehler.append(f'{datei.relative_to(ordner)}: größer als 2 MB')
     # Das ganze Paket (gepackt höchstens so groß wie alle Dateien zusammen) muss unter die Grenze des DMS passen (#644).
     gesamt = sum(p.stat().st_size for p in ordner.rglob('*') if p.is_file())
@@ -1127,6 +1222,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         if isinstance(b, dict) and b.get('typ'):
             verweis_ok(b['typ'], 'beispiele')
     fehler += pruefe_beispiel_verweise(geladen.get('beispiele', []) or [], str(m.get('id')), abh)
+    fehler += pruefe_beispiel_dokumente(ordner, geladen.get('beispiele', []) or [], geladen.get('mappentypen', []) or [], str(m.get('id')), str(m.get('dms', '')))
     fehler += pruefe_wortlisten(geladen.get('wortlisten', []) or [], str(m.get('dms', '')))
     typfelder = {t.get('schluessel'): t.get('felder') or [] for t in geladen.get('mappentypen', []) if isinstance(t, dict)}
     fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')))
@@ -1222,7 +1318,7 @@ def hinweise(ordner: Path) -> list[str]:
     werkzeuge/kategorien.yaml verschieden.
 
     Ohne vorlagen.py und kategorien.yaml (pruefen.py allein, z. B. im Test des DMS) nur die veralteten Verweise."""
-    veraltet = veraltete_verweise(ordner) if (ordner / 'manifest.yaml').exists() else []
+    veraltet = (veraltete_verweise(ordner) if (ordner / 'manifest.yaml').exists() else []) + beispiel_groessen(ordner)
     if ordner.name == 'vorlage' or not (ordner / 'manifest.yaml').exists():
         return veraltet
     if not (WURZEL / 'werkzeuge' / 'vorlagen.py').exists() or not (WURZEL / 'werkzeuge' / 'kategorien.yaml').exists():

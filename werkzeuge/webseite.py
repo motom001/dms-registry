@@ -603,6 +603,8 @@ def detail(p: dict, pakete: list) -> str:
         n_sichten = len(v['inhalt']['sichten'])
         sicht_html = ('<ul>' + ''.join(f'<li>{e(s["name"])}</li>' for s in v['inhalt']['sichten']) + '</ul>') if n_sichten else '<p class="leise">keine</p>'
     n_bsp = v['inhalt']['beispiele']
+    # Beispiel-Dokumente (motom001/dms#878, Registry #137); fehlt bei älteren Katalog-Einträgen.
+    n_dok = v['inhalt'].get('beispieldokumente', 0)
     wortlisten = lies_yaml(ordner, (m.get('inhalt') or {}).get('wortlisten')) if vorhanden else []
     n_wort = len(wortlisten)
     wort_html = (f'<h3>Gleichbedeutende Wörter für die Suche</h3><p class="leise klein">Wer eines der Wörter sucht, findet auch die anderen – '
@@ -627,12 +629,13 @@ def detail(p: dict, pakete: list) -> str:
                     + '<p class="leise klein">Nach der Installation erlaubst du die Sprache unter Werkbank → Sprachen; jede Person wählt sie dann in Mein Konto.</p>')
         kurz_mit = 'Sprachpaket, nur Texte'
     elif n_typen or n_sichten or n_bsp or n_wort or n_auto:
-        bsp = (f'<p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
+        mit_dok = f' und {mehrzahl(n_dok, "Beispiel-Dokument", "Beispiel-Dokumenten")}' if n_dok else ''
+        bsp = (f'<p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")}{mit_dok} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
                if n_bsp else '<p class="leise">keine Beispielmappen</p>')
         mitkommt = f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>{wort_html}{auto_html}{bsp}'
         kurz_mit = ' · '.join(t for t in [mehrzahl(n_typen, 'Mappentyp', 'Mappentypen') if n_typen else '',
                                           mehrzahl(n_sichten, 'Ansicht', 'Ansichten') if n_sichten else '',
-                                          mehrzahl(n_bsp, 'Beispielmappe', 'Beispielmappen') if n_bsp else '',
+                                          (mehrzahl(n_bsp, 'Beispielmappe', 'Beispielmappen') + (f' ({mehrzahl(n_dok, "Dokument", "Dokumente")})' if n_dok else '')) if n_bsp else '',
                                           mehrzahl(n_wort, 'Wortgruppe', 'Wortgruppen') + ' für die Suche' if n_wort else '',
                                           mehrzahl(n_auto, 'Automatisierung', 'Automatisierungen') if n_auto else ''] if t)
     else:

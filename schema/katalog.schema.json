@@ -25,7 +25,8 @@
           "properties": {
             "mappentypen": { "type": "array", "items": { "$ref": "#/$defs/benannt" } },
             "sichten": { "type": "array", "items": { "$ref": "#/$defs/benannt" } },
-            "beispiele": { "type": "integer", "minimum": 0 }
+            "beispiele": { "type": "integer", "minimum": 0 },
+            "beispieldokumente": { "type": "integer", "minimum": 1, "description": "Optional (motom001/dms#878): Anzahl der Beispiel-Dokumente zu den Beispielen; fehlt ohne. Ablago liest das Feld nicht." }
           }
         },
         "code": { "type": "boolean" },
