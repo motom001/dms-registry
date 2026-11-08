@@ -41,7 +41,7 @@ Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 
 - **Mappen lesen: alle Mappentypen** – Dokumente liegen in Mappen beliebiger Typen; die Mappen selbst liest das Paket nicht.
 - **Dokumente lesen** – es liest die Datei, die Seitenbilder und die Wortpositionen. Dokumente ändert, ersetzt oder löscht es nicht.
-- **Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung): PDF, JPEG, PNG, TIFF, WebP, GIF, BMP, E-Mails (`message/rfc822`, `application/vnd.ms-outlook`, `application/octet-stream` mit Endung `.eml`/`.msg`)** – Ablago gibt diese Dokumente an das Paket und nimmt die Archivfassung an. Für E-Mails liest das Paket außerdem die **Region** der Ablage (Zeitzone, `GET /region`), nur lesend.
+- **Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung): PDF, JPEG, PNG, TIFF, WebP, GIF, BMP, E-Mails (`message/rfc822`, `application/vnd.ms-outlook`, `application/octet-stream` mit Endung `.eml`/`.msg`)** – Ablago gibt diese Dokumente an das Paket und nimmt die Archivfassung an. Die Zeitzone der Ablage (Werkbank → Region) für das Datum im Kopf der E-Mail bringt Ablago im Ereignis mit.
 - **Kein Netz.** Alles geschieht im Paket; Farbprofil und Schriften bringt es mit. Auch Bilder, auf die eine E-Mail im Internet verweist, lädt es **nie**.
 - Es reagiert auf **Ein Dokument mit fertigem Volltext braucht seine Archivfassung (PDF/A)** (`datei.archivfassung`).
 
@@ -100,7 +100,7 @@ E-Mails aus den Testdateien (`tests/beispiele.py`): eine Seite in 10–25 ms, di
 - Eine Archivfassung entsteht in **einem Aufruf** des Läufers (höchstens 100 Sekunden) – ein halbes PDF lässt sich nicht als Zwischenstand weitergeben. Sehr lange PDFs (mehrere hundert Seiten) bekommen deshalb unter Umständen keine; der Grund steht am Dokument.
 - Höchstens 1000 Seiten und 100 MB je Archivfassung (Grenze von Ablago); Bilder, die das Paket dekodieren muss (PNG, CMYK-JPEG), höchstens 20 Millionen Bildpunkte.
 - Seiten von PDFs nur in **Graustufen** (siehe oben).
-- **E-Mails** (Stufe 1): HTML wird vereinfacht gesetzt – keine Spalten, Farben oder Schriften aus dem Layout der Mail, Tabellen mit mehr als sechs Spalten und verschachtelte Tabellen werden nacheinander gesetzt. Eine bessere HTML-Darstellung folgt mit Stufe 2 ([dms-registry #144](https://github.com/motom001/dms-registry/issues/144)). Fotos in Mails stehen so, wie sie gespeichert sind (EXIF-Ausrichtung wird bei Mails nicht ausgewertet). Kennt das Paket die Zeitzone der Ablage nicht, zeigt es UTC mit dem Zusatz „(UTC)“.
+- **E-Mails** (Stufe 1): HTML wird vereinfacht gesetzt – keine Spalten, Farben oder Schriften aus dem Layout der Mail, Tabellen mit mehr als sechs Spalten und verschachtelte Tabellen werden nacheinander gesetzt. Eine bessere HTML-Darstellung folgt mit Stufe 2 ([dms-registry #144](https://github.com/motom001/dms-registry/issues/144)). Fotos in Mails stehen so, wie sie gespeichert sind (EXIF-Ausrichtung wird bei Mails nicht ausgewertet). Fehlt die Zeitzone im Ereignis, gilt Europe/Berlin; kennt das Paket den Namen der Zeitzone nicht, zeigt es UTC mit dem Zusatz „(UTC)“.
 - Scans brauchen die **Wortpositionen** der Texterkennung – das Paket [Texterkennung](../texterkennung/) ab 2.2.0. Bei sehr langen Scans (über etwa 150 dicht beschriebene Seiten) schickt die Texterkennung sie nicht für alle Seiten; dann gibt es keine Archivfassung.
 
 ## Voraussetzungen
@@ -108,7 +108,7 @@ E-Mails aus den Testdateien (`tests/beispiele.py`): eine Seite in 10–25 ms, di
 - Ablago **0.149.0** oder neuer (Schnittstelle „Archivfassung ablegen“, `dms:archivfassung`).
 - Für Scans und Fotos: das Paket [Texterkennung](../texterkennung/) **2.2.0** oder neuer (Wortpositionen). Ohne Text bekommt ein Scan keine Archivfassung.
 - Für TIFF, WebP, GIF und BMP: das Paket [Bildformate](../bildformate/).
-- Für E-Mails: Ablago mit der Archiv-Art `emails` ([DMS #946](https://github.com/motom001/dms/issues/946), vorläufig 0.217.0). Das Paket [Office und E-Mail](../office_email/) braucht es dafür nicht.
+- Für E-Mails: Ablago mit der Archiv-Art `emails` (ab 0.221.0, [DMS #946](https://github.com/motom001/dms/issues/946)). Das Paket [Office und E-Mail](../office_email/) braucht es dafür nicht.
 
 ## Warum so gebaut? (Werkzeug und Lizenz)
 
