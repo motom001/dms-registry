@@ -2,7 +2,7 @@
 schema: 1
 id: basis
 name: Basis
-version: 1.6.0
+version: 1.6.1
 beschreibung: Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.
 autor:
   name: Thomas Meissner

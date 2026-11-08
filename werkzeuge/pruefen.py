@@ -388,6 +388,83 @@ def pruefe_aus_text(typen: list, dms_bereich: str) -> list[str]:
     return fehler
 
 
+# Auswahlfilter (DMS #172, #173) und „folgt aus“ (DMS #886, ab 0.225.0) an Verweisfeldern. Ablago prüft beim Installieren
+# alles noch einmal gegen die echten Mappentypen; hier, was sich im Paket selbst sehen lässt.
+DMS_FOLGT_AUS_AB = (0, 225, 0)
+
+
+def pruefe_verweise(typen: list, dms_bereich: str) -> list[str]:
+    """auswahlFilter und folgtAus nur an Verweisfeldern, Felder gibt es (soweit im Paket), keine Kreise; folgtAus braucht dms: ">=0.225.0"."""
+    fehler: list[str] = []
+    benutzt = False
+    eigene = {t.get('schluessel'): t for t in typen if isinstance(t, dict)}
+
+    def felder_von(ziel) -> dict | None:
+        """Felder eines Typs dieses Pakets (ziel ohne Präfix); None bei Typen anderer Pakete."""
+        t = eigene.get(ziel) if isinstance(ziel, str) and ':' not in ziel else None
+        return {f.get('key'): f for f in t.get('felder') or [] if isinstance(f, dict)} if t else None
+
+    for t in typen:
+        if not isinstance(t, dict):
+            continue
+        felder = {f.get('key'): f for f in t.get('felder') or [] if isinstance(f, dict)}
+        for f in felder.values():
+            wo = f'mappentypen/{t.get("schluessel")}/{f.get("key")}'
+            af = f.get('auswahlFilter')
+            if af is not None:
+                if f.get('typ') != 'referenz':
+                    fehler.append(f'{wo}: auswahlFilter gibt es nur bei Verweisfeldern (typ: referenz)')
+                elif not isinstance(af, list) or not all(isinstance(b, dict) and b.get('art') == 'feld' and isinstance(b.get('feld'), str) and isinstance(b.get('op'), str) for b in af):
+                    fehler.append(f'{wo}: auswahlFilter ist eine Liste von Bedingungen {{ art: feld, feld, op, wert }}')
+                else:
+                    ziel = felder_von(f.get('ziel'))
+                    for b in af:
+                        if ziel is not None and b['feld'] not in ziel and not b['feld'].startswith('_'):
+                            fehler.append(f'{wo}: auswahlFilter nennt „{b["feld"]}“ – das Feld gibt es im Ziel-Mappentyp nicht')
+                        w = b.get('wert')
+                        if isinstance(w, dict) and w.get('art') == 'eigenesFeld' and (w.get('feld') == f.get('key') or w.get('feld') not in felder):
+                            fehler.append(f'{wo}: auswahlFilter nimmt den Wert aus „{w.get("feld")}“ – das muss ein anderes Feld dieses Mappentyps sein')
+            fa = f.get('folgtAus')
+            if fa is None:
+                continue
+            benutzt = True
+            if f.get('typ') != 'referenz':
+                fehler.append(f'{wo}: folgtAus gibt es nur bei Verweisfeldern (typ: referenz)')
+                continue
+            if not isinstance(fa, dict) or not isinstance(fa.get('feld'), str) or not isinstance(fa.get('zielFeld'), str):
+                fehler.append(f'{wo}: folgtAus braucht feld (ein Verweisfeld dieses Mappentyps) und zielFeld (ein Verweisfeld in dessen Ziel)')
+                continue
+            q = felder.get(fa['feld'])
+            if q is None or q is f:
+                fehler.append(f'{wo}: folgtAus.feld „{fa["feld"]}“ ist kein anderes Feld dieses Mappentyps')
+            elif q.get('typ') != 'referenz' or q.get('mehrfach'):
+                fehler.append(f'{wo}: folgtAus.feld „{fa["feld"]}“ ist kein Verweisfeld mit einer Mappe')
+            else:
+                ziel = felder_von(q.get('ziel'))
+                zf = ziel.get(fa['zielFeld']) if ziel is not None else None
+                if ziel is not None and zf is None:
+                    fehler.append(f'{wo}: folgtAus.zielFeld „{fa["zielFeld"]}“ gibt es in „{q.get("ziel")}“ nicht')
+                elif zf is not None and (zf.get('typ') != 'referenz' or zf.get('mehrfach') or zf.get('ziel') != f.get('ziel')):
+                    fehler.append(f'{wo}: folgtAus.zielFeld „{fa["zielFeld"]}“ zeigt nicht auf eine einzelne Mappe vom selben Mappentyp wie dieses Feld')
+        # Keine Kreise (a folgt aus b, b folgt aus a).
+        kante = {k: f['folgtAus'].get('feld') for k, f in felder.items() if isinstance(f.get('folgtAus'), dict)}
+        im_kreis: set = set()
+        for start in kante:
+            weg, k = [], start
+            while k in kante and k not in weg:
+                weg.append(k)
+                k = kante[k]
+            if k in weg:
+                im_kreis.update(weg[weg.index(k):])
+        if im_kreis:
+            fehler.append(f'mappentypen/{t.get("schluessel")}: folgtAus im Kreis: {", ".join(sorted(im_kreis))}')
+    if benutzt:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_FOLGT_AUS_AB:
+            fehler.append('mappentypen: folgtAus kennt das DMS erst ab 0.225.0 – bitte dms: ">=0.225.0" angeben')
+    return fehler
+
+
 # Feldformate und Datumsgrenzen (DMS #535, ab 0.121.0) – wie shared/src/feldformate.ts im DMS.
 DMS_FORMATE_AB = (0, 121, 0)
 FELDFORMATE = ('email', 'telefon', 'internetseite', 'iban', 'plz')
@@ -1196,6 +1273,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler += pruefe_erkennung(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
     fehler += pruefe_beschriftungen(geladen.get('mappentypen', []) or [], geladen.get('sichten', []) or [])
     fehler += pruefe_aus_text(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
+    fehler += pruefe_verweise(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
     fehler += pruefe_formate(geladen.get('mappentypen', []) or [], geladen.get('beispiele', []) or [], str(m.get('dms', '')))
 
     sichten = {s.get('schluessel') for s in geladen.get('sichten', []) if isinstance(s, dict)}

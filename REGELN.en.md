@@ -225,6 +225,33 @@ If a package holds a person, a company or another thing as **text** where a **re
 
 `werkzeuge/pruefen.py` checks field type, source, `pflicht` and Ablago version.
 
+## Restricting the choice and references that follow from others
+
+A reference field can offer only fitting folders – with `auswahlFilter`, conditions as in a view (DMS #172). With `wert: { art: eigenesFeld, feld: … }` a condition takes the value of another field of the same folder (DMS #173), e.g. for the person (Basis): only branches of the chosen organisation.
+
+```yaml
+- key: niederlassung
+  label: Niederlassung
+  typ: referenz
+  ziel: niederlassung
+  auswahlFilter: [{ art: feld, feld: organisation, op: zeigtAuf, wert: { art: eigenesFeld, feld: organisation } }]
+```
+
+- `feld` is a field of the **target** folder type, `wert.feld` **another** field of this folder type. If it is empty, the condition doesn't apply – then all appear.
+- **Strict:** a newly chosen value that doesn't fit is rejected on saving; saved ones stay valid, and Ablago then shows on the field what they don't match (from 0.225.0, DMS #887). Only use the filter where it has to be like that (a branch belongs to exactly one organisation).
+
+The **other direction** is called `folgtAus` (DMS #886): a reference field fills in from another reference field of this folder, via a reference field of its target – e.g. *Organisation* from *Branch* → *Organisation*.
+
+```yaml
+- { key: organisation, label: Organisation, typ: referenz, ziel: organisation, folgtAus: { feld: niederlassung, zielFeld: organisation } }
+```
+
+- `feld` is another reference field of this folder type with **one** folder, `zielFeld` a reference field with one folder in its target that points to the same folder type as this field. No circles.
+- Ablago only fills an **empty** field, never overwrites and asks when the details don't match. Existing folders stay as they are.
+- If you use `folgtAus`, write `dms: ">=0.225.0"` in the manifest. A selection filter alone needs no new version.
+
+`werkzeuge/pruefen.py` checks field type, the fields named (as far as they are in the package), circles and the Ablago version.
+
 ## Formats and date limits
 
 Ablago checks values in text fields against a **format** and date fields against **limits** (DMS #535). This keeps postcodes with letters, phone numbers with letters and birthdays in the future out of the Mappen. On a phone the matching keyboard appears, and phone numbers and e-mail addresses can be tapped.

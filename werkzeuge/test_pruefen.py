@@ -624,6 +624,35 @@ class AusText(unittest.TestCase):
         self.assertTrue(any('erst ab 0.120.0' in f for f in self.paket([self.VERWEIS], dms='>=0.113.0')))
 
 
+class Verweise(unittest.TestCase):
+    """Auswahlfilter (DMS #172, #173) und „folgt aus“ (DMS #886): dms-registry #139."""
+
+    paket = AusText.paket
+
+    ORG = {'key': 'oberes', 'label': 'Oberes', 'typ': 'referenz', 'ziel': 'beispiel'}
+    TEIL = {'key': 'teil', 'label': 'Teil', 'typ': 'referenz', 'ziel': 'beispiel'}
+    # Im Beispiel-Typ zeigt „oberes“ auf ein Beispiel; „teil“ ist ein anderes Beispiel, dessen „oberes“ übernommen wird.
+    FOLGT = {**ORG, 'folgtAus': {'feld': 'teil', 'zielFeld': 'oberes'}}
+    FILTER = {**TEIL, 'auswahlFilter': [{'art': 'feld', 'feld': 'oberes', 'op': 'zeigtAuf', 'wert': {'art': 'eigenesFeld', 'feld': 'oberes'}}]}
+
+    def test_gueltig(self):
+        self.assertEqual(self.paket([self.FOLGT, self.FILTER], dms='>=0.225.0'), [])
+        self.assertEqual(self.paket([self.ORG, self.FILTER], dms='>=0.212.0'), [], 'Auswahlfilter allein braucht keine neue Version')
+
+    def test_auswahlfilter(self):
+        self.assertTrue(any('nur bei Verweisfeldern' in f for f in self.paket([{'key': 'x', 'label': 'X', 'typ': 'text', 'auswahlFilter': []}])))
+        self.assertTrue(any('gibt es im Ziel-Mappentyp nicht' in f for f in self.paket([{**self.TEIL, 'auswahlFilter': [{'art': 'feld', 'feld': 'fehlt', 'op': 'leer'}]}])))
+        self.assertTrue(any('anderes Feld dieses Mappentyps' in f for f in self.paket([{**self.TEIL, 'auswahlFilter': [{'art': 'feld', 'feld': 'teil', 'op': 'zeigtAuf', 'wert': {'art': 'eigenesFeld', 'feld': 'teil'}}]}])))
+
+    def test_folgt_aus(self):
+        self.assertTrue(any('kein anderes Feld' in f for f in self.paket([{**self.ORG, 'folgtAus': {'feld': 'fehlt', 'zielFeld': 'oberes'}}], dms='>=0.225.0')))
+        self.assertTrue(any('kein Verweisfeld mit einer Mappe' in f for f in self.paket([{**self.FOLGT}, {**self.TEIL, 'mehrfach': True}], dms='>=0.225.0')))
+        self.assertTrue(any('gibt es in „beispiel“ nicht' in f for f in self.paket([{**self.ORG, 'folgtAus': {'feld': 'teil', 'zielFeld': 'fehlt'}}, self.TEIL], dms='>=0.225.0')))
+        self.assertTrue(any('selben Mappentyp' in f for f in self.paket([{**self.ORG, 'folgtAus': {'feld': 'teil', 'zielFeld': 'datum'}}, self.TEIL], dms='>=0.225.0')))
+        self.assertTrue(any('im Kreis' in f for f in self.paket([self.FOLGT, {**self.TEIL, 'folgtAus': {'feld': 'oberes', 'zielFeld': 'teil'}}], dms='>=0.225.0')))
+        self.assertTrue(any('erst ab 0.225.0' in f for f in self.paket([self.FOLGT, self.TEIL], dms='>=0.212.0')))
+
+
 class Formate(unittest.TestCase):
     """Feldformate und Datumsgrenzen (dms-registry #55, DMS #535)."""
 
