@@ -114,7 +114,7 @@ Beispiel-Mappen dürfen aufeinander verweisen (ab Ablago 0.79.0): Ein Beispiel b
 
 ### Beispiel-Dokumente { #beispiel-dokumente }
 
-Ab Ablago 0.222.0 (motom001/dms#878, Registry #137) kann ein Beispiel Dokumente mitbringen – etwa einen Wartungsvertrag und Rechnungen zur Beispiel-Mappe „Heizung“. Die Dateien liegen unter `inhalt/beispiele/`, das Beispiel nennt sie unter `dokumente`:
+Ab Ablago 0.223.0 (motom001/dms#878, Registry #137) kann ein Beispiel Dokumente mitbringen – etwa einen Wartungsvertrag und Rechnungen zur Beispiel-Mappe „Heizung“. Die Dateien liegen unter `inhalt/beispiele/`, das Beispiel nennt sie unter `dokumente`:
 
 ```yaml
 - typ: vertrag
@@ -128,7 +128,7 @@ Ab Ablago 0.222.0 (motom001/dms#878, Registry #137) kann ein Beispiel Dokumente 
 - `datei` ist relativ zu `inhalt/` und beginnt mit `beispiele/`; Ordner und Namen nur aus Buchstaben, Ziffern, `.`, `-` und `_`. `titel` wird der Name in Ablago, `datum` „hochgeladen am“, `register` das Dokumentenregister (ohne Angabe das erste).
 - **Nur PDF, PNG und JPEG** – am Inhalt erkannt, die Endung muss passen. Je Datei höchstens 100 MB wie beim Hochladen in Ablago, alle zusammen höchstens 128 MB; halte sie trotzdem klein (verkleinerte PDFs, Bilder als JPEG). Die Grenze von 2 MB je Datei gilt hier nicht.
 - **Jede genannte Datei muss da sein, und jede Datei unter `inhalt/beispiele/` muss genannt sein.** `pruefen.py` meldet bei jeder Prüfung die Größe je Datei und zusammen.
-- Pakete mit Beispiel-Dokumenten verlangen `dms: ">=0.222.0"`.
+- Pakete mit Beispiel-Dokumenten verlangen `dms: ">=0.223.0"`.
 - **Keine echten Daten:** nur erfundene Personen und Firmen (Persona-Namen wie Lena, Jonas, Markus, Petra, Herr Özdemir, Katrin), Beispiel-Domains (`example.org`, `example.com`, `example.net`), ungültige oder ausdrücklich als Beispiel gedachte Werte für IBAN, Steuer- und Versichertennummern. Keine eingescannten echten Briefe, auch nicht geschwärzt – Metadaten, Unterschriften und Logos verraten oft mehr als gedacht.
 - **Große Pakete:** Der Katalog liegt auf dem Branch `gh-pages` (Registry #133), und git nimmt keine Datei über 100 MB an. Ein Paket, dessen Archiv größer würde, lässt sich so nicht veröffentlichen; `pruefen.py` weist ab 90 MB darauf hin.
 

@@ -46,7 +46,7 @@ class BeispielDokumente(unittest.TestCase):
     """Katalogseite zeigt die Zahl der Beispiel-Dokumente neben der Zahl der Beispiele (Registry #137)."""
 
     def seite(self, inhalt: dict) -> str:
-        v = {'version': '1.0.0', 'dms': '>=0.222.0', 'abhaengigkeiten': {}, 'inhalt': inhalt, 'code': False, 'archiv': 'archive/x.zip',
+        v = {'version': '1.0.0', 'dms': '>=0.223.0', 'abhaengigkeiten': {}, 'inhalt': inhalt, 'code': False, 'archiv': 'archive/x.zip',
              'sha256': '0' * 64, 'groesse': 1, 'veroeffentlicht': '2026-11-08T00:00:00Z', 'quelle': '', 'readme': '', 'changelog': ''}
         p = {'id': 'probe_gibtsnicht', 'name': 'Probe', 'beschreibung': 'Test.', 'lizenz': 'MIT', 'autor': {'name': 'Lena', 'github': 'lena'}, 'aktuell': '1.0.0', 'versionen': [v]}
         return w.detail(p, [p])
