@@ -29,7 +29,7 @@ Eine Bank mit mehreren Filialen, eine Arztpraxis mit zwei Praxen, eine Behörde 
 
 ### Person
 
-Eine **Person** ist ein Kontakt – Ansprechpartnerin bei der Bank, Hausarzt, Vermieter, Oma. Sie ist **kein Benutzer** von Ablago und kann sich nicht anmelden (Benutzer verwaltest du unter *Werkbank → Benutzer*). Register *Stammdaten* (mit **Beziehung**: Familie, Freund/in, Ansprechpartner, Arzt/Ärztin, Handwerker, Mieter/in, Vermieter/in, Nachbar/in, Sonstige), *Arbeit* (Organisation, Niederlassung, Funktion, Abteilung), *Kontakt*, *Anschrift*, *Verknüpfungen*, *Dokumente*, *Historie*. Wer an Geburtstage erinnert werden möchte, schaltet am Feld *Geburtstag* unter *Werkbank → Mappentypen* eine jährliche Erinnerung ein.
+Eine **Person** ist ein Kontakt – Ansprechpartnerin bei der Bank, Hausarzt, Vermieter, Oma. Sie ist **kein Benutzer** von Ablago und kann sich nicht anmelden (Benutzer verwaltest du unter *Werkbank → Benutzer*). Register *Stammdaten* (mit **Beziehung**: Familie, Freund/in, Ansprechpartner, Arzt/Ärztin, Handwerker, Mieter/in, Vermieter/in, Nachbar/in, Sonstige), *Arbeit* (Organisation, Niederlassung, Funktion, Abteilung – bei *Niederlassung* erscheinen nur die Niederlassungen der gewählten Organisation, ab 1.6.1), *Kontakt*, *Anschrift*, *Verknüpfungen*, *Dokumente*, *Historie*. Wer an Geburtstage erinnert werden möchte, schaltet am Feld *Geburtstag* unter *Werkbank → Mappentypen* eine jährliche Erinnerung ein.
 
 ### Ablageort
 

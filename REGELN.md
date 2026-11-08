@@ -248,6 +248,33 @@ Steht in einem Paket ein Mensch, eine Firma oder ein anderes Ding als **Text**, 
 
 `werkzeuge/pruefen.py` prüft Feldart, Quelle, Pflicht und Ablago-Version.
 
+## Auswahl einschränken und Verweise, die aus anderen folgen
+
+Ein Verweisfeld kann nur passende Mappen anbieten – mit `auswahlFilter`, Bedingungen wie bei einer Ansicht (DMS #172). Mit `wert: { art: eigenesFeld, feld: … }` nimmt eine Bedingung den Wert eines anderen Felds derselben Mappe (DMS #173), z. B. bei der Person (Basis): nur Niederlassungen der gewählten Organisation.
+
+```yaml
+- key: niederlassung
+  label: Niederlassung
+  typ: referenz
+  ziel: niederlassung
+  auswahlFilter: [{ art: feld, feld: organisation, op: zeigtAuf, wert: { art: eigenesFeld, feld: organisation } }]
+```
+
+- `feld` ist ein Feld des **Ziel**-Mappentyps, `wert.feld` ein **anderes** Feld dieses Mappentyps. Ist es leer, gilt die Bedingung nicht – dann erscheinen alle.
+- **Streng:** Ein neu gewählter Wert, der nicht passt, wird beim Speichern abgelehnt; gespeicherte bleiben gültig, Ablago zeigt dann am Feld, womit sie nicht passen (ab 0.225.0, DMS #887). Nimm den Filter nur, wenn das fachlich so sein muss (eine Zweigstelle gehört zu genau einer Organisation).
+
+Die **Gegenrichtung** heißt `folgtAus` (DMS #886): Ein Verweisfeld füllt sich aus einem anderen Verweisfeld dieser Mappe, über ein Verweisfeld von dessen Ziel – etwa *Organisation* aus *Niederlassung* → *Organisation*.
+
+```yaml
+- { key: organisation, label: Organisation, typ: referenz, ziel: organisation, folgtAus: { feld: niederlassung, zielFeld: organisation } }
+```
+
+- `feld` ist ein anderes Verweisfeld dieses Mappentyps mit **einer** Mappe, `zielFeld` ein Verweisfeld mit einer Mappe in dessen Ziel, das auf denselben Mappentyp zeigt wie dieses Feld. Keine Kreise.
+- Ablago füllt nur ein **leeres** Feld, überschreibt nie und fragt nach, wenn die Angaben nicht zusammenpassen. Bestehende Mappen bleiben, wie sie sind.
+- Wer `folgtAus` nutzt, schreibt im Manifest `dms: ">=0.225.0"`. Ein Auswahlfilter allein braucht keine neue Version.
+
+`werkzeuge/pruefen.py` prüft Feldart, die genannten Felder (soweit sie im Paket stehen), Kreise und die Ablago-Version.
+
 ## Formate und Datumsgrenzen
 
 Ablago prüft Angaben in Textfeldern nach einem **Format** und Datumsfelder nach **Grenzen** (DMS #535). So landen keine PLZ mit Buchstaben, keine Telefonnummer mit Buchstaben und kein Geburtstag in der Zukunft in den Mappen. Am Handy erscheint die passende Tastatur, Telefon und E-Mail lassen sich antippen.

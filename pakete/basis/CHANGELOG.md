@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.6.1
+
+- Person: Bei **Niederlassung** erscheinen nur noch die Niederlassungen der gewählten **Organisation** (Auswahlfilter, dms-registry #139). Ist die Organisation leer, erscheinen alle wie bisher.
+- Neu gewählt muss die Niederlassung zur Organisation passen, sonst lehnt Ablago das Speichern ab – für dieses Paar richtig, denn eine Zweigstelle gehört zu genau einer Organisation. Bestehende Personen bleiben gültig; passen ihre Angaben nicht zusammen, zeigt Ablago ab 0.225.0 am Feld und über den Registern „Niederlassung passt nicht zu „Organisation““ (DMS #887).
+- Die Gegenrichtung (Niederlassung gewählt → Organisation füllt sich, DMS #886) kommt mit einer späteren Version. Andere Mappentypen mit Organisation und Niederlassung gibt es in Basis und den Paketen darauf nicht. Braucht kein neueres Ablago.
+
 ## 1.6.0
 
 - Neu: Mappentyp **Ablageort** (DMS #883, dms-registry #138) – wo das Papier liegt, verschachtelt („zu Hause › Arbeitszimmer Schrank › roter Ordner“). Felder *Name* (Pflicht), *Liegt in* (Verweis auf einen anderen Ablageort) und *Beschreibung*; Register *Allgemein*, *Enthält*, *Liegt hier* und *Fotos*; Titel `{liegt_in} › {name}`; Ansicht *Ablageorte*. Mit englischen Beschriftungen.

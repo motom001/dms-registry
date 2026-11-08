@@ -266,7 +266,14 @@
       hilfe: "Wer erinnert werden möchte, legt in der Werkbank unter Automatisierungen eine jährliche Erinnerung „Datum erreicht“ an."
     - { key: beschreibung, label: Beschreibung, typ: langtext, beschriftungen: { en: { label: "Description" } }  }
     - { key: organisation, label: Organisation, typ: referenz, ziel: organisation, verweisart: bezug, hilfe: Wo die Person arbeitet bzw. wofür sie Ansprechpartner ist, erkennung: {}, beschriftungen: { en: { label: "Organisation", hilfe: "Where the person works or what they are the contact for" } }  }
-    - { key: niederlassung, label: Niederlassung, typ: referenz, ziel: niederlassung, verweisart: bezug, beschriftungen: { en: { label: "Branch" } }  }
+    # Ab 1.6.1 (dms-registry #139): nur Niederlassungen der gewählten Organisation; ist sie leer, alle.
+    - key: niederlassung
+      label: Niederlassung
+      beschriftungen: { en: { label: "Branch" } }
+      typ: referenz
+      ziel: niederlassung
+      verweisart: bezug
+      auswahlFilter: [{ art: feld, feld: organisation, op: zeigtAuf, wert: { art: eigenesFeld, feld: organisation } }]
     - { key: funktion, label: Funktion, typ: text, maxLen: 80, hilfe: z. B. Kundenberaterin, erkennung: {}, beschriftungen: { en: { label: "Role", hilfe: "e.g. customer adviser" } }  }
     - { key: abteilung, label: Abteilung, typ: text, maxLen: 80, beschriftungen: { en: { label: "Department" } }  }
     - { key: telefon, label: Telefon, typ: text, maxLen: 40, format: telefon, erkennung: {}, beschriftungen: { en: { label: "Phone" } }  }

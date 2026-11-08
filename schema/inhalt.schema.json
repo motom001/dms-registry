@@ -44,6 +44,16 @@
         "ziel": { "$ref": "#/$defs/typverweis" },
         "verweisart": { "enum": ["zugehoerigkeit", "bezug"] },
         "frist": { "type": "object", "required": ["vorlauf", "einheit"], "properties": { "vorlauf": { "type": "integer", "minimum": 0 }, "einheit": { "enum": ["tage", "wochen", "monate"] }, "wiederholung": { "type": "integer" } } },
+        "auswahlFilter": {
+          "description": "Nur bei typ referenz (DMS #172, #173): Das Feld bietet nur Mappen des Ziels an, die alle Bedingungen erfüllen – wie die Bedingungen einer Ansicht. wert { art: eigenesFeld, feld } nimmt den Wert eines anderen Felds dieser Mappe (ist es leer, gilt die Bedingung nicht). Neu gewählte Werte müssen passen, gespeicherte bleiben gültig.",
+          "type": "array", "maxItems": 20,
+          "items": { "type": "object", "required": ["art", "feld", "op"], "properties": { "art": { "const": "feld" }, "feld": { "type": "string" }, "op": { "type": "string" }, "wert": {} } }
+        },
+        "folgtAus": {
+          "description": "Nur bei typ referenz (DMS ab 0.225.0, #886): Das Feld folgt aus einem anderen Verweisfeld dieser Mappe (feld, eine Mappe) über ein Verweisfeld von dessen Ziel (zielFeld, eine Mappe, gleicher Ziel-Mappentyp wie dieses Feld) – z. B. Organisation aus Niederlassung → Organisation. Ablago füllt nur ein leeres Feld und überschreibt nie.",
+          "type": "object", "additionalProperties": false, "required": ["feld", "zielFeld"],
+          "properties": { "feld": { "$ref": "#/$defs/schluessel" }, "zielFeld": { "$ref": "#/$defs/schluessel" } }
+        },
         "aus_text": {
           "description": "Text → Verweis (DMS ab 0.120.0, DMS #534): Kennung des bisherigen Textfelds, aus dem sich dieses Verweisfeld nach einem Update füllen lässt. Das DMS legt den Verweis zusätzlich an; umgewandelt wird erst nach einer Vorschau in der Werkbank.",
           "$ref": "#/$defs/schluessel"
