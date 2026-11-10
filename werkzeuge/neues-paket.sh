@@ -4,7 +4,7 @@
 set -euo pipefail
 ID="${1:?Paket-Id angeben (Kleinbuchstaben, Ziffern, _)}"
 NAME="${2:?Namen angeben, z. B. \"Haushalt\"}"
-[[ "$ID" =~ ^[a-z][a-z0-9_]{1,19}$ ]] || { echo "Ungültige Id „$ID“: Kleinbuchstaben, Ziffern, _, beginnt mit einem Buchstaben, max. 20 Zeichen."; exit 1; }
+[[ "$ID" =~ ^[a-z][a-z0-9_]{1,39}$ ]] || { echo "Ungültige Id „$ID“: Kleinbuchstaben, Ziffern, _, beginnt mit einem Buchstaben, max. 40 Zeichen (über 20 erst ab Ablago 0.229.0). Ergänzungen mit Punkt (<paket>.<zusatz>) legst du von Hand an (REGELN.md, „Ergänzungen“)."; exit 1; }
 cd "$(dirname "$0")/.."
 ZIEL="pakete/$ID"
 [ -e "$ZIEL" ] && { echo "$ZIEL gibt es schon."; exit 1; }

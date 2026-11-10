@@ -745,7 +745,8 @@ def detail(p: dict, pakete: list) -> str:
         f'<td><a href="{e(x["archiv"] if "://" in x["archiv"] else "../../" + x["archiv"])}">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="{e(p["id"])}@{e(x["version"])}">installieren</button></td></tr>'
         for x in p['versionen'])
     technik = (f'<dl class="eckdaten"><dt>Version</dt><dd>{e(v["version"])} vom {datum(v["veroeffentlicht"])}</dd>'
-               f'<dt>Lizenz</dt><dd>{e(p["lizenz"])}</dd><dt>Nötige Ablago-Version</dt><dd>{e(v["dms"])}</dd>'
+               + (f'<dt>Herausgeber</dt><dd>{e(p["herausgeber"])} <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd>' if p.get('herausgeber') else '')
+               + f'<dt>Lizenz</dt><dd>{e(p["lizenz"])}</dd><dt>Nötige Ablago-Version</dt><dd>{e(v["dms"])}</dd>'
                + (f'<dt>Downloads</dt><dd>{downloads_text(p.get("downloads"))} <span class="leise">– Downloads aller Versionen laut GitHub, nicht Installationen; Updates und Tests zählen mit</span></dd>' if downloads_text(p.get('downloads')) else '')
                + f'<dt>Abhängigkeiten</dt><dd>{abh}</dd><dt>Quellcode</dt><dd><a href="{e(v["quelle"])}">auf GitHub ansehen</a></dd></dl>'
                f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th></th></tr></thead>'

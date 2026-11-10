@@ -46,6 +46,8 @@ OHNE_BAU = False
 
 # Releases (#156): eine je Paketversion, die Datei heißt wie das Archiv.
 RELEASES = f'{REPO}/releases/download'
+# Herausgeber aller Pakete dieser Registry (#173, motom001/dms#1084): der offizielle Katalog des Projekts.
+HERAUSGEBER = 'app.ablago'
 # Wie viele Versionen je Paket als Spiegel auf GitHub Pages bleiben – für die Sammeldatei im Browser (#133,
 # Entscheidung Thomas 10.11.2026 16:54: nur die aktuelle). werkzeuge/releases.py ausduennen entfernt die übrigen;
 # alle Versionen bleiben am Release und im Katalog. None = alle.
@@ -159,6 +161,26 @@ def versionsschluessel(v: str):
     return tuple(int(x) for x in v.split('.'))
 
 
+def herausgeber_und_umzug(pakete: dict, manifeste: dict) -> list[str]:
+    """Herausgeber und Umzug (Registry #173, motom001/dms#1084): Im offiziellen Katalog ist jedes Paket von app.ablago
+    (so sieht es Ablago auch bei älteren Versionen ohne das Feld). Eine Id unter `ersetzt` fällt aus dem Katalog:
+    Ablago ab 0.229.0 findet das Update einer Installation unter der alten Id über `ersetzt` am neuen Paket."""
+    fehler = []
+    for pid, p in pakete.items():
+        p['herausgeber'] = HERAUSGEBER
+        e = manifeste[pid].get('ersetzt') if pid in manifeste else p.get('ersetzt')
+        e = [e] if isinstance(e, str) else list(e or [])
+        if e:
+            p['ersetzt'] = e
+        else:
+            p.pop('ersetzt', None)
+    for alt_id in sorted({x for p in pakete.values() for x in p.get('ersetzt', [])}):
+        if alt_id in pakete and (WURZEL / 'pakete' / alt_id).is_dir():
+            fehler.append(f'{alt_id}: wird ersetzt, hat aber noch einen Paketordner')
+        pakete.pop(alt_id, None)
+    return fehler
+
+
 def baue(ausgabe: Path, probe: bool) -> list[str]:
     fehler: list[str] = []
     alt_pfad = ausgabe / 'katalog.json'
@@ -193,6 +215,11 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
                 fehler.append(f'{pid}: Inhalt geändert, aber Version {version} ist schon veröffentlicht – Version erhöhen')
                 continue
         else:
+            # Herausgeber (Registry #173, motom001/dms#1084): Pflicht für jede neue Version (nicht beim ersten Bau aus dem
+            # Nichts, etwa in Tests – dann ist alles „neu“).
+            if alt.get('pakete') and m.get('herausgeber') != HERAUSGEBER:
+                fehler.append(f'{pid}: neue Version {version} ohne herausgeber: {HERAUSGEBER} (Registry #173)')
+                continue
             if (ordner / 'code' / 'bauen.sh').exists() and 'code/modul.wasm' not in inhalt and not probe and not OHNE_BAU:
                 fehler.append(f'{pid}: code/modul.wasm fehlt – vorher bauen (python3 werkzeuge/bauen.py --unveroeffentlicht <ausgabe>)')
                 continue
@@ -209,6 +236,7 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         if p['versionen'][0]['version'] == version:
             p.update({'name': m['name'], 'beschreibung': m['beschreibung'], 'autor': m['autor'], 'lizenz': m['lizenz'], 'aktuell': version})
             manifeste[pid] = m
+    fehler += herausgeber_und_umzug(pakete, manifeste)
     # Kategorien (#84) und Symbol (#98): aus dem Manifest der neuesten Version, sonst aus werkzeuge/kategorien.yaml
     # (Übergang, bis die Pakete die Felder mit ihrer nächsten Version mitbringen). Das DMS ignoriert die Felder.
     kat = lies_kategorien()

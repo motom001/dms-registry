@@ -58,7 +58,9 @@ They are explained in the administrator manual under [Pakete mit Code](https://h
 ## Mandatory
 
 - `manifest.yaml`, `README.md`, `LICENSE`, `CHANGELOG.md`, `inhalt/` (empty if need be), `tests/`
-- Package id = folder name: lower-case letters, digits, `_`, starts with a letter, at most 20 characters
+- Package id = folder name: lower-case letters, digits, `_`, starts with a letter, at most 40 characters (more than 20 only from Ablago 0.229.0, `dms: ">=0.229.0"`). It may add **one** dot with a suffix of up to 20 characters – for add-ons only (see [Add-ons](#add-ons-ergaenzt)).
+- **Publisher** (registry #173, motom001/dms#1084): `herausgeber: app.ablago` – mandatory for every new version; the Ablago project publishes all packages of this registry. Ablago from 0.229.0 shows it next to the name (“Verträge · app.ablago”) and accepts `app.ablago` only from the official catalogue. Older versions without the field also count as `app.ablago` in the catalogue; older Ablago versions skip it.
+- **Keys** (folder types, fields, tabs, views, examples, automations) up to 60 characters; more than 40 only from Ablago 0.229.0.
 - **An id only once** (registry #173): a new package adds its id to `werkzeuge/ids.txt` in the same pull request. Every id that was ever in the catalogue stays there for good, even if the package is withdrawn. `pruefen.py` rejects a previously used id for a new package, and so does removing a line.
 - With every change, a higher version (SemVer) and an entry in `CHANGELOG.md`
 - German texts in fields and views; the README in German, additionally in English if you like. English labels (`beschriftungen.en`) are welcome – the bundled packages with Mappe types have them.
@@ -111,7 +113,7 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 
 ## Names
 
-Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versicherung`. Ablago creates them with the package id in front (`haushalt_versicherung`) so that two packages do not get in each other's way. Only the name ("Versicherung") is displayed. You write references to types of other packages as `<paket>:<schluessel>`, e.g. `basis:organisation`. The other package must then be listed under `abhaengigkeiten` (dependencies). To Mappe types that Ablago brings itself, you refer with `dms:` – without a dependency: `dms:benutzer` (user) and `dms:rolle` (role). This requires `dms: ">=0.75.0"` in the manifest. The **storage location** (where an original is kept) comes with the Basis package since Ablago 0.212.0: `basis:ablageort` with `basis: ">=1.6.0"` under `abhaengigkeiten` (Ablago #883, Registry #138). Ablago still understands the former `dms:ablageort` as an alias until 1.0; `pruefen.py` warns about it. The package id `dms` is therefore taken.
+Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versicherung`. Ablago creates them with the package id in front – from 0.229.0 as `haushalt:versicherung` (package and key stored separately, motom001/dms#1084), up to 0.228 as `haushalt_versicherung` – so that two packages do not get in each other's way. Only the name ("Versicherung") is displayed. You write references to types of other packages as `<paket>:<schluessel>`, e.g. `basis:organisation`. The other package must then be listed under `abhaengigkeiten` (dependencies). To Mappe types that Ablago brings itself, you refer with `dms:` – without a dependency: `dms:benutzer` (user) and `dms:rolle` (role). This requires `dms: ">=0.75.0"` in the manifest. The **storage location** (where an original is kept) comes with the Basis package since Ablago 0.212.0: `basis:ablageort` with `basis: ">=1.6.0"` under `abhaengigkeiten` (Ablago #883, Registry #138). Ablago still understands the former `dms:ablageort` as an alias until 1.0; `pruefen.py` warns about it. The package id `dms` is therefore taken.
 
 Sample Mappen may refer to each other (from Ablago 0.79.0): a sample gets a `schluessel`, a reference field of another sample gets the value `{ beispiel: strom }` – or `{ beispiel: "basis:stadtwerke" }` for a sample from a dependency. The manifest must then contain `dms: ">=0.79.0"`.
 
@@ -207,9 +209,27 @@ abhaengigkeiten:
 ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }   # or short: ergaenzt: texterkennung
 ```
 
+**Id with a dot** (from Ablago 0.229.0, motom001/dms#1084): an add-on may be called `<main package>.<suffix>`, e.g. `texterkennung.fra`. The dot always means “extends the package before the dot” – the package must then say `ergaenzt: <main package>`, the main package exists in the registry, and `dms` is at least `">=0.229.0"`. New add-ons use this form.
+
 Ablago from 0.151.0 shows add-ons as checkboxes below the extended package during installation, grouped by `gruppe` (a short question without question mark, at most 40 characters; without a group: "Ergänzungen") – also afterwards, in the setup assistant and in the bundle file. Every add-on stays a package of its own with its own version. Older Ablago versions ignore the field, so no higher `dms` is needed. In the catalogue it appears per version as `ergaenzt: { paket, gruppe }`, on the catalogue website as a group of its own under "Passt dazu".
 
 **What an add-on may do:** it adds something to the extended package – data (e.g. a language model) or documents on its defaults (e.g. a template on an existing contract type). It **changes no folder types and no permissions** of the extended package, brings no folder types of its own and changes no other templates. Removing it takes away only what it added itself.
+
+## New id (move)
+
+When a package gets a new id (motom001/dms#1084, e.g. `texterkennung_fra` → `texterkennung.fra`), the **folder** moves and the manifest names the old id under `ersetzt` (a string or a list, at most 5):
+
+```yaml
+id: texterkennung.fra
+version: 1.1.0          # higher than the last version under the old id
+dms: ">=0.229.0"
+ersetzt: texterkennung_fra
+```
+
+- Ablago from 0.229.0 takes the new id as an **update** of the installation under the old one – with all folder types, Mappen, settings and data; no second package appears. This only works from the same source and the same publisher.
+- The old id **leaves the catalogue**; `katalog.json` names it under `ersetzt` on the new package. Its releases stay, their downloads count towards the new package. Older Ablago versions keep the package under the old id until they are updated.
+- The old id stays in `werkzeuge/ids.txt` and is never given out again; the new one is added. `pruefen.py` checks that the old id existed and its folder is gone.
+- No alias: whatever names the package by its old id (dependencies, references) moves in the same pull request.
 
 ## Labels per language
 

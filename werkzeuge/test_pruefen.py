@@ -1222,3 +1222,83 @@ class IdsNurEinmal(unittest.TestCase):
             f = pruefen.id_pruefung([o], 'x', '# Kommentar\nalt\n', 'alt\n', gab_es=lambda pid: False)
             self.assertTrue(any('schon vergeben' in x for x in f), f)
             self.assertEqual(pruefen.id_pruefung([o], 'x', 'alt\n', 'alt\n', gab_es=lambda pid: True), [])
+
+
+class KennungenNach1084(unittest.TestCase):
+    """Registry #173 nach motom001/dms#1084: Ids 40 + Punkt-Zusatz 20, Schlüssel 60, herausgeber, ersetzt."""
+
+    def paket(self, pid: str, **felder) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / pid
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = pid
+            m.pop('code', None)
+            shutil.rmtree(ziel / 'code', ignore_errors=True)
+            m.update(felder)
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_id_mit_punkt(self):
+        neu = {'dms': '>=0.229.0', 'abhaengigkeiten': {'texterkennung': '>=2.0.0'}}
+        self.assertEqual(self.paket('texterkennung.fra', ergaenzt='texterkennung', **neu), [])
+        self.assertTrue(any('ergänzt das Paket vor dem Punkt' in f for f in self.paket('texterkennung.fra', **neu)))
+        self.assertTrue(any('ergänzt das Paket vor dem Punkt' in f for f in self.paket('haus.fra', ergaenzt='texterkennung', **neu)))
+        self.assertTrue(any('erst ab 0.229.0' in f for f in self.paket('texterkennung.fra', ergaenzt='texterkennung', dms='>=0.228.0',
+                                                                      abhaengigkeiten={'texterkennung': '>=2.0.0'})))
+        for falsch in ('a.b.c', 'haus..x', '.haus', 'haus.', 'haus.' + 'x' * 21):
+            self.assertTrue(self.paket(falsch, dms='>=0.229.0'), falsch)
+
+    def test_laengen(self):
+        self.assertEqual(self.paket('h' * 40, dms='>=0.229.0'), [])
+        self.assertTrue(any('über 20 Zeichen' in f for f in self.paket('h' * 21, dms='>=0.228.0')))
+        self.assertTrue(self.paket('h' * 41, dms='>=0.229.0'))
+
+    def test_ersetzt(self):
+        self.assertEqual(self.paket('neu', dms='>=0.229.0', ersetzt='alt'), [])
+        self.assertEqual(self.paket('neu', dms='>=0.229.0', ersetzt=['alt', 'aelter']), [])
+        self.assertTrue(any('erst ab 0.229.0' in f for f in self.paket('neu', dms='>=0.228.0', ersetzt='alt')))
+        self.assertTrue(any('nicht die eigene' in f for f in self.paket('neu', dms='>=0.229.0', ersetzt='neu')))
+        self.assertTrue(self.paket('neu', dms='>=0.229.0', ersetzt=['a1', 'a2', 'a3', 'a4', 'a5', 'a6']))
+
+    def test_herausgeber_nur_app_ablago(self):
+        self.assertTrue(self.paket('probe', herausgeber='org.example'))
+        self.assertEqual(self.paket('probe', herausgeber='app.ablago'), [])
+
+    def test_herausgeber_pflicht_fuer_neue_version(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            o = Path(tmp) / 'probe_neu_gibtsnicht'
+            o.mkdir()
+            m = {'id': o.name, 'version': '1.0.0', 'dms': '>=0.1.0'}
+            f = pruefen.kennungen_pruefung(o, m, None, 'HEAD', False)
+            self.assertTrue(any('herausgeber: app.ablago fehlt' in x for x in f), f)
+            self.assertEqual(pruefen.kennungen_pruefung(o, {**m, 'herausgeber': 'app.ablago'}, None, 'HEAD', False), [])
+            self.assertEqual(pruefen.kennungen_pruefung(o, m, None, None, False), [])  # ohne Basis (main): katalog.py prüft
+        # Unveränderte Version eines vorhandenen Pakets braucht das Feld nicht (bis zur nächsten Version).
+        haus = yaml.safe_load((WURZEL / 'pakete' / 'haus' / 'manifest.yaml').read_text(encoding='utf-8'))
+        self.assertFalse(pruefen.neue_version(WURZEL / 'pakete' / 'haus', haus, 'HEAD'))
+
+    def test_lange_schluessel_brauchen_0229(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            o = Path(tmp)
+            (o / 'typen.yaml').write_text(yaml.safe_dump([{'schluessel': 's' * 41, 'felder': [{'key': 'k' * 45}]}]), encoding='utf-8')
+            m = {'id': 'probe', 'dms': '>=0.228.0', 'inhalt': {'mappentypen': 'typen.yaml'}}
+            self.assertEqual(len(pruefen.lange_schluessel(o, m)), 2)
+            self.assertTrue(pruefen.kennungen_pruefung(o, m, None, None, False))
+            self.assertEqual(pruefen.kennungen_pruefung(o, {**m, 'dms': '>=0.229.0'}, None, None, False), [])
+
+    def test_umzug_in_der_id_pruefung(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            w = Path(tmp)
+            for pid, m in (('texterkennung', {'id': 'texterkennung'}), ('texterkennung.fra', {'id': 'texterkennung.fra', 'ersetzt': 'texterkennung_fra'})):
+                (w / pid).mkdir()
+                (w / pid / 'manifest.yaml').write_text(yaml.safe_dump(m), encoding='utf-8')
+            ids = 'texterkennung\ntexterkennung_fra\ntexterkennung.fra\n'
+            self.assertEqual(pruefen.id_pruefung([w / 'texterkennung.fra'], None, ids), [])
+            self.assertTrue(any('gab es nie' in x for x in pruefen.id_pruefung([w / 'texterkennung.fra'], None, 'texterkennung\ntexterkennung.fra\n')))
+            (w / 'texterkennung_fra').mkdir()
+            self.assertTrue(any('gibt es aber noch' in x for x in pruefen.id_pruefung([w / 'texterkennung.fra'], None, ids)))
+            (w / 'texterkennung_fra').rmdir()
+            shutil.rmtree(w / 'texterkennung')
+            self.assertTrue(any('Hauptpaket' in x for x in pruefen.id_pruefung([w / 'texterkennung.fra'], None, ids)))

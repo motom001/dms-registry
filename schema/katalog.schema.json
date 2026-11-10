@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["format", "erstellt", "quelle", "pakete"],
   "$defs": {
-    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?$" },
     "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
     "bereich": { "type": "string", "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$" },
     "benannt": {
@@ -31,7 +31,7 @@
         },
         "code": { "type": "boolean" },
         "archiv": { "type": "string", "description": "Adresse des Archivs – absolut (Release-Datei, #156) oder, in älteren Katalogen, relativ zu katalog.json; Ablago löst sie relativ zur Katalog-Adresse auf" },
-        "spiegel": { "type": "string", "pattern": "^archive/[a-z][a-z0-9_]{1,19}-\\d+\\.\\d+\\.\\d+\\.zip$", "description": "Optional (#133): Kopie des Archivs auf GitHub Pages, relativ zu katalog.json – nur für die letzten Versionen je Paket; daraus stellt die Webseite die Sammeldatei zusammen. Ablago liest das Feld nicht." },
+        "spiegel": { "type": "string", "pattern": "^archive/[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?-\\d+\\.\\d+\\.\\d+\\.zip$", "description": "Optional (#133): Kopie des Archivs auf GitHub Pages, relativ zu katalog.json – nur für die letzten Versionen je Paket; daraus stellt die Webseite die Sammeldatei zusammen. Ablago liest das Feld nicht." },
         "downloads": { "type": "integer", "minimum": 0, "description": "Optional (#156): Downloads dieser Version laut GitHub (Release-Datei), inklusive Updates und Tests. Ablago liest das Feld nicht." },
         "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
         "groesse": { "type": "integer", "minimum": 1 },
@@ -68,10 +68,12 @@
           "properties": { "name": { "type": "string" }, "github": { "type": "string" } }
         },
         "lizenz": { "type": "string" },
+        "herausgeber": { "type": "string", "const": "app.ablago", "description": "#173, motom001/dms#1084 (ab Ablago 0.229.0): Herausgeber – im offiziellen Katalog immer app.ablago. Ältere Ablago-Versionen lesen das Feld nicht." },
+        "ersetzt": { "type": "array", "minItems": 1, "maxItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/id" }, "description": "#173, motom001/dms#1084: frühere Ids dieses Pakets (Umzug, z. B. texterkennung_fra → texterkennung.fra). Ablago ab 0.229.0 findet darüber das Update einer Installation unter der alten Id; die alte Id steht nicht mehr im Katalog." },
         "downloads": { "type": "integer", "minimum": 0, "description": "Optional (#156): Downloads aller Versionen zusammen laut GitHub (Release-Dateien) – Downloads, nicht Installationen; Updates und Tests zählen mit. Ändert sich täglich." },
         "aktuell": { "$ref": "#/$defs/version" },
         "versionen": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/paketversion" }, "description": "neueste zuerst" },
-        "kategorien": { "type": "array", "maxItems": 2, "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" }, "description": "Kategorien aus dem Manifest oder werkzeuge/kategorien.yaml (#84); ältere DMS-Versionen ignorieren das Feld" },
+        "kategorien": { "type": "array", "maxItems": 2, "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?$" }, "description": "Kategorien aus dem Manifest oder werkzeuge/kategorien.yaml (#84); ältere DMS-Versionen ignorieren das Feld" },
         "symbol": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Lucide-Symbol aus dem Manifest oder werkzeuge/kategorien.yaml (#98), SVG in werkzeuge/symbole/; fehlt es, zeigt die Webseite den Anfangsbuchstaben. Das DMS ignoriert das Feld" },
         "kuerzel": { "type": "string", "maxLength": 3, "pattern": "^[A-Z]{2,3}$", "description": "Kurzzeichen am Symbol, höchstens 3 Großbuchstaben, bei Sprachen der ISO-639-Code der Sprache, z. B. FR (#98); nur mit symbol" }
       }

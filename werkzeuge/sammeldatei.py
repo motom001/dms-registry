@@ -40,7 +40,7 @@ KATALOG_URL = 'https://catalog.ablago.app/katalog.json'
 PAKET_MAX = 128 * 1024 * 1024
 PAKETE_MAX, ARCHIV_MAX, DATEI_MAX = 50, PAKET_MAX, 2 * PAKET_MAX
 BEREICH = re.compile(r'^(>=|>|=|\^|~)?(\d+\.\d+\.\d+)( <(\d+\.\d+\.\d+))?$')
-ARCHIVNAME = re.compile(r'^pakete/([a-z][a-z0-9_]{1,19})-(\d+\.\d+\.\d+)\.zip$')
+ARCHIVNAME = re.compile(r'^pakete/([a-z][a-z0-9_]{1,39}(?:\.[a-z][a-z0-9_]{0,19})?)-(\d+\.\d+\.\d+)\.zip$')
 
 LIESMICH_TEXT = '''Sammeldatei für Ablago
 =======================
