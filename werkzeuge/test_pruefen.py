@@ -551,7 +551,7 @@ class Ergaenzt(unittest.TestCase):
         self.assertEqual(katalog.ergaenzt_von({'ergaenzt': {'paket': 'texterkennung', 'gruppe': 'Weitere Sprachen'}}), {'paket': 'texterkennung', 'gruppe': 'Weitere Sprachen'})
 
     def test_zusatzsprachen_der_registry(self):
-        for ordner in sorted((WURZEL / 'pakete').glob('texterkennung_*')):
+        for ordner in sorted((WURZEL / 'pakete').glob('texterkennung.*')):
             m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
             self.assertEqual(m.get('ergaenzt'), {'paket': 'texterkennung', 'gruppe': 'Weitere Sprachen'}, ordner.name)
 

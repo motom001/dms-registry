@@ -56,7 +56,7 @@ class Liste(unittest.TestCase):
         for p in vorlagen.pakete():
             s, k = vorlagen.symbol_von(p['id'], daten, p['manifest'])
             self.assertIn(s, vorlagen.symbolnamen(), p['id'])
-            if p['id'].startswith('texterkennung_'):
+            if p['id'].startswith('texterkennung.'):
                 self.assertEqual(s, 'languages')
                 self.assertRegex(k, r'^[A-Z]{2}$')
 
@@ -69,8 +69,8 @@ class Liste(unittest.TestCase):
             self.assertEqual(vorlagen.symbol_von(pid, daten)[0], s, pid)
         # Zusatzsprachen: im Manifest, Kürzel = ISO-639-1-Code der Sprache (UK = Ukrainisch, nicht das Land).
         manifeste = {p['id']: p['manifest'] for p in vorlagen.pakete()}
-        self.assertEqual(vorlagen.symbol_von('texterkennung_fra', daten, manifeste['texterkennung_fra']), ('languages', 'FR'))
-        self.assertEqual(vorlagen.symbol_von('texterkennung_ukr', daten, manifeste['texterkennung_ukr']), ('languages', 'UK'))
+        self.assertEqual(vorlagen.symbol_von('texterkennung.fra', daten, manifeste['texterkennung.fra']), ('languages', 'FR'))
+        self.assertEqual(vorlagen.symbol_von('texterkennung.ukr', daten, manifeste['texterkennung.ukr']), ('languages', 'UK'))
 
 
 class ManifestGewinnt(unittest.TestCase):
@@ -161,7 +161,7 @@ class Katalog(unittest.TestCase):
         pakete = {p['id']: p for p in k['pakete']}
         self.assertEqual(pakete['bildformate']['symbol'], 'image')
         self.assertNotIn('kuerzel', pakete['bildformate'])
-        self.assertEqual((pakete['texterkennung_spa']['symbol'], pakete['texterkennung_spa']['kuerzel']), ('languages', 'ES'))
+        self.assertEqual((pakete['texterkennung.spa']['symbol'], pakete['texterkennung.spa']['kuerzel']), ('languages', 'ES'))
 
 
 class Webseite(unittest.TestCase):

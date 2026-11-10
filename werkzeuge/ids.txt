@@ -33,3 +33,13 @@ texterkennung_tur
 texterkennung_ukr
 trennblatt
 vermietung
+texterkennung.fra
+texterkennung.spa
+texterkennung.ita
+texterkennung.nld
+texterkennung.por
+texterkennung.pol
+texterkennung.tur
+texterkennung.rus
+texterkennung.ukr
+texterkennung.ara
