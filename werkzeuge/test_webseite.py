@@ -242,6 +242,30 @@ class Zusammenhaenge(unittest.TestCase):
         h = w.zusammenhangseite(WasMitkommt.pakete)
         self.assertIn('<h1>Wie alles zusammenhängt</h1>', h)
         self.assertIn('<svg class="zusammenhang"', h)
-        self.assertIn('verweisen außerdem', h)  # Ablageort getrennt genannt
+        self.assertIn('Nicht gezeichnet, damit das Bild lesbar bleibt: ', h)  # Ablageort, Organisation, Person als Zahl
         self.assertIn('href="../paket/vermietung/#typ-mietobjekt"', h)  # Textfassung
         self.assertIn('Zusammenhänge als Bild', w.detail(WasMitkommt.nach_id['vermietung'], WasMitkommt.pakete))
+
+
+class KeinPfeilDurchFremdeKaestchen(unittest.TestCase):
+    """Qualität (PR #181): Lange Pfeile laufen durch Platzhalter, nie durch Kästchen, die weder Anfang noch Ziel sind."""
+
+    def test_echte_pakete_und_gesamtseite(self):
+        import html as h
+        from zusammenhang_pruefen import schnitte
+        WasMitkommt.setUpClass()
+        pakete = WasMitkommt.pakete
+        index = w.alle_typen(pakete)
+        for p in pakete:
+            seite = h.unescape(w.bild_html(p, [t for t in index.values() if t['paket'] == p['id']], index))
+            self.assertEqual(schnitte(seite), [], p['id'])
+        gesamt = w.zusammenhangseite(pakete)
+        self.assertEqual(schnitte(h.unescape(gesamt)), [])
+        self.assertIn('tabindex="0" role="region" aria-label="Wie alles zusammenhängt"', gesamt)
+        self.assertIn('Nicht gezeichnet', gesamt)
+
+    def test_pruefung_findet_einen_schnitt(self):
+        from zusammenhang_pruefen import schnitte
+        svg = ('<rect x="0" y="40" width="100" height="44" rx="8"/><text x="50" y="57" class="name">Mitte</text>'
+               '<path class="kante bezug" d="M50 200L50 0"><title>Unten → Oben (Bezug)</title></path>')
+        self.assertEqual(schnitte(svg), [('Unten → Oben (Bezug)', 'Mitte')])

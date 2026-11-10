@@ -891,24 +891,40 @@ def bild_html(p: dict, typen: list, index: dict) -> str:
     knoten, kanten = zusammenhang.netz(index, eigene)
     if not kanten:
         return ''
+    # Qualität (PR #181): Kästchen ohne Pfeil (z. B. Ablageort in Basis) weglassen – die Lesehilfe nennt sie.
+    mit = {k for kante in kanten for k in kante}
+    knoten = [k for k in knoten if k in mit]
     svg = zusammenhang.zeichne(knoten, kanten, index, f'Zusammenhänge der Mappentypen von {p["name"]}', fokus=p['id'],
                                kennung=f'bild-{p["id"]}', beschreibung='Dieselben Angaben als Text: unter „Mappentypen“, je Mappentyp „Verweist auf“ und „Wird verwendet von“.')
     ablage = sum(1 for k in eigene if zusammenhang.ABLAGEORT in verweise(index[k], p['id']))
     return ('<details class="bild"><summary>Zusammenhänge als Bild</summary>'
-            f'<div class="bildrahmen">{svg}</div>{zusammenhang.LESEHILFE} Blass: aus einem anderen Paket.'
+            f'{rahmen(svg, "Zusammenhänge als Bild")}{zusammenhang.LESEHILFE} Blass: aus einem anderen Paket.'
             + (f' Verweise auf den Ablageort ({mehrzahl(ablage, "Mappentyp", "Mappentypen")}) sind nicht gezeichnet.' if ablage else '')
             + ' <a href="../../zusammenhaenge/">Wie alles zusammenhängt ›</a></p></details>')
+
+
+def rahmen(svg: str, name: str, klasse: str = '') -> str:
+    """Waagerecht scrollbarer Rahmen ums Bild: mit der Tastatur erreichbar (axe scrollable-region-focusable), am
+    schmalen Bildschirm mit dem Hinweis, dass es seitlich weitergeht (Qualität, PR #181)."""
+    return (f'<div class="{" ".join(["bildrahmen"] + ([klasse] if klasse else []))}" tabindex="0" role="region" aria-label="{e(name)}">{svg}</div>'
+            '<p class="leise klein seitlich">Das Bild ist breiter als der Bildschirm – seitlich verschieben.</p>')
 
 
 def zusammenhangseite(pakete: list) -> str:
     """„Wie alles zusammenhängt“ (#115 Punkt 4): alle Mappentypen aller Pakete; Ablageort getrennt genannt."""
     index = alle_typen(pakete)
     knoten = sorted(index, key=lambda k: (index[k]['paketname'].lower(), index[k]['name'].lower()))
-    kanten = zusammenhang.kanten_aller(index)
-    svg = zusammenhang.zeichne([k for k in knoten if k != zusammenhang.ABLAGEORT], kanten, index,
+    # Qualität (PR #181): Auf Organisation und Person verweisen fast alle – als Zahl nennen statt Kabelsalat zeichnen.
+    nabe = [k for k in ('basis:organisation', 'basis:person', zusammenhang.ABLAGEORT) if k in index]
+    kanten = zusammenhang.kanten_aller(index, set(nabe))
+    mit = {k for kante in kanten for k in kante}
+    svg = zusammenhang.zeichne([k for k in knoten if k in mit], kanten, index,
                                'Wie die Mappentypen aller Pakete zusammenhängen', kennung='gesamt',
                                beschreibung='Dieselben Angaben als Text stehen auf den Paketseiten unter „Was mitkommt“, je Mappentyp „Verweist auf“ und „Wird verwendet von“.')
-    ablage = [k for k in knoten if zusammenhang.ABLAGEORT in verweise(index[k], index[k]['paket'])]
+    zahl = {n: sum(1 for k in knoten if n in verweise(index[k], index[k]['paket'])) for n in nabe}
+    teile_ = [(zahl[n], index[n]['name']) for n in nabe if zahl[n]]
+    nicht = ', '.join((f'{mehrzahl(z, "Mappentyp", "Mappentypen")} verweisen auf ' if i == 0 else f'{z} auf ') + f'<strong>{e(nm)}</strong>'
+                      for i, (z, nm) in enumerate(teile_))
     je_paket: dict = {}
     for k in knoten:
         je_paket.setdefault(index[k]['paket'], (index[k]['paketname'], []))[1].append(k)
@@ -918,9 +934,8 @@ def zusammenhangseite(pakete: list) -> str:
               f'    <h1>Wie alles zusammenhängt</h1>\n'
               f'    <p class="kurztext">Die Mappentypen aller Pakete und wie sie aufeinander verweisen – z. B. ein Vertrag auf die Organisation, '
               f'mit der du ihn hast. Was ein Paket braucht, installiert Ablago mit.</p>\n'
-              f'    <div class="bildrahmen gross">{svg}</div>\n    {zusammenhang.LESEHILFE}'
-              + (f' Auf den <strong>Ablageort</strong> (Basis, wo ein Original auf Papier liegt) verweisen außerdem {mehrzahl(len(ablage), "Mappentyp", "Mappentypen")} – '
-                 'nicht gezeichnet, damit das Bild lesbar bleibt.' if ablage else '') + '</p>\n'
+              f'    {rahmen(svg, "Wie alles zusammenhängt", "gross")}\n    {zusammenhang.LESEHILFE}'
+              + (f' Nicht gezeichnet, damit das Bild lesbar bleibt: {nicht} (alle aus Basis).' if nicht else '') + '</p>\n'
               f'    <section><h2>Als Text</h2><p class="leise klein">Ein Klick auf einen Mappentyp zeigt seine Felder und Zusammenhänge.</p><ul class="pakettypen">{text}</ul></section>\n')
     return seite('Wie alles zusammenhängt – Ablago-Pakete', inhalt, 1, 'Die Mappentypen aller Ablago-Pakete und wie sie zusammenhängen')
 
@@ -1210,7 +1225,13 @@ section.anleitung ol { margin: 0; padding-left: 1.4em; }
 section.anleitung li { margin: 2px 0; }
 /* Zusammenhänge als Bild (#115 Punkt 4): Farben aus der Seite, waagerecht scrollbar */
 details.bild { margin: 10px 0; }
-details.bild > summary { cursor: pointer; font-weight: 600; }
+details.bild > summary { cursor: pointer; font-weight: 600; list-style: none; }
+details.bild > summary::-webkit-details-marker { display: none; }
+details.bild > summary::before { content: "›"; display: inline-block; width: 1.1em; color: var(--leise); font-weight: 700; transition: transform .15s; text-align: center; transform-origin: 50% 55%; }
+details.bild[open] > summary::before { transform: rotate(90deg); }
+.bildrahmen:focus-visible { outline: 2px solid var(--a); outline-offset: 2px; }
+p.seitlich { display: none; }
+@media (max-width: 1000px) { p.seitlich { display: block; } }
 .bildrahmen { overflow-x: auto; margin: 8px 0 4px; }
 .bildrahmen.gross { background: var(--flaeche); border: 1px solid var(--linie); border-radius: 12px; padding: 8px; }
 svg.zusammenhang { display: block; margin: 0 auto; max-width: none; }
