@@ -1309,12 +1309,30 @@ def pruefe_vorlagen(ordner: Path, typen: list) -> list[str]:
 
 # Vorläufig – die Version nennt Entwicklung, sobald die Kern-Teile gemergt sind (wie bei #946).
 DMS_ETAPPE15_AB = (0, 230, 0)
+# Schon in Ablago (Etappe 15 läuft): Feldarten Zeitraum/Prozent, Betrag negativ (DMS #1035, FELDARTEN_AB in
+# server/src/paketerstellung.ts) und „Anzeigen, wenn …“ mit Merkmal „beruflich genutzt“ (DMS #1032/#1033).
+DMS_FELDARTEN_AB = (0, 227, 0)
+DMS_ANZEIGEN_AB = (0, 228, 0)
 ETAPPE15_FELDARTEN = {'zeitraum', 'prozent', 'tabelle', 'zusammengesetzt'}
+FELDARTEN_FERTIG = {'zeitraum', 'prozent'}
+# Operatoren je Feldart in Bedingungen – wie OPERATOREN_JE_ART in shared/src/sichten.ts.
+OPERATOREN_JE_ART = {
+    'text': {'gleich', 'enthaelt', 'leer', 'nichtLeer'}, 'langtext': {'enthaelt', 'leer', 'nichtLeer'},
+    'formatiert': {'enthaelt', 'leer', 'nichtLeer'},
+    **{a: {'gleich', 'kleiner', 'groesser', 'zwischen', 'ausserhalb', 'leer', 'nichtLeer'} for a in ('zahl', 'betrag', 'prozent', 'zeitraum')},
+    'datum': {'gleich', 'kleiner', 'groesser', 'zwischen', 'ausserhalb', 'imZeitraum', 'leer', 'nichtLeer'},
+    'zeit': {'gleich', 'kleiner', 'groesser', 'zwischen', 'ausserhalb', 'imZeitraum'},
+    'janein': {'ja', 'nein'}, 'auswahl': {'einerVon', 'leer', 'nichtLeer'},
+    'referenz': {'zeigtAuf', 'leer', 'nichtLeer'}, 'person': {'zeigtAuf', 'leer'},
+}
 ZEITRAUM_EINHEITEN = {'tage', 'wochen', 'monate', 'jahre'}
 PLATZHALTER_VORLAGE = re.compile(r'\{([a-z_][a-z0-9_]*)')
 
 
 def ist_zeitraum(w) -> bool:
+    """{ anzahl, einheit } oder kurz nach ISO 8601 wie „P3M“ (beides nimmt Ablago an, DMS #1035)."""
+    if isinstance(w, str):
+        return re.fullmatch(r'P\d{1,4}[DWMY]', w) is not None
     return (isinstance(w, dict) and set(w) == {'anzahl', 'einheit'} and isinstance(w['anzahl'], int)
             and not isinstance(w['anzahl'], bool) and w['anzahl'] >= 0 and w['einheit'] in ZEITRAUM_EINHEITEN)
 
@@ -1330,7 +1348,13 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
     rechte = code.get('rechte') if isinstance(code.get('rechte'), dict) else {}
     schreiben = set(rechte.get('schreiben') or [])
     eigene_vorgaben = {v.get('kennung'): v for v in vorgaben if isinstance(v, dict) and v.get('kennung')}
-    benutzt = bool(vorgaben)
+    # Welche Ablago-Version das Paket braucht: je Baustein die kleinste, die ihn kennt.
+    brauche: dict[tuple, set[str]] = {}
+
+    def braucht(ab: tuple, was: str):
+        brauche.setdefault(ab, set()).add(was)
+    if vorgaben:
+        braucht(DMS_ETAPPE15_AB, 'Vorgaben')
 
     def lokal(v: str) -> str | None:
         """Schlüssel eines eigenen Typs (ohne oder mit eigenem Präfix), sonst None."""
@@ -1349,20 +1373,40 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
         elif v not in eigene_vorgaben:
             fehler.append(f'{wo}: Vorgabe „{v}“ gibt es in diesem Paket nicht (inhalt.vorgaben)')
 
-    def bedingungen(liste, felder: dict, wo: str):
-        nonlocal benutzt
-        if liste is None:
+    def bedingungen(regel, felder: dict, wo: str):
+        """anzeigen: { modus, bedingungen } wie im Kern (shared/src/anzeige.ts)."""
+        if regel is None:
             return
-        benutzt = True
-        for b in liste if isinstance(liste, list) else []:
-            if not isinstance(b, dict) or 'feld' not in b:
+        if isinstance(regel, list):
+            fehler.append(f'{wo}: anzeigen ist ein Objekt {{ modus, bedingungen }} (Ablago 0.228.0), keine Liste – bitte umstellen')
+            return
+        for b in (regel.get('bedingungen') or []) if isinstance(regel, dict) else []:
+            if not isinstance(b, dict):
                 continue
-            f = felder.get(b['feld'])
+            art = b.get('art')
+            if art in ('vorgabe', 'eigeneOrganisation'):
+                braucht(DMS_ETAPPE15_AB, f'Bedingung {art}')
+            else:
+                braucht(DMS_ANZEIGEN_AB, 'Anzeigen, wenn …')
+            if art == 'merkmal':
+                continue
+            k = (b.get('bedingung') or {}).get('feld') if art == 'feld' else b.get('feld')
+            f = felder.get(k)
             if f is None:
-                fehler.append(f'{wo}: anzeigenWenn nennt „{b["feld"]}“ – das Feld gibt es in diesem Mappentyp nicht')
+                fehler.append(f'{wo}: anzeigen nennt „{k}“ – das Feld gibt es in diesem Mappentyp nicht')
                 continue
-            if ('vorgabe' in b or 'eigeneOrganisation' in b or 'typ' in b) and f.get('typ') != 'referenz':
-                fehler.append(f'{wo}: anzeigenWenn „{b["feld"]}“ – vorgabe, eigeneOrganisation und typ gehen nur bei Verweisfeldern')
+            if art == 'feld':
+                op = b['bedingung'].get('op')
+                erlaubt = OPERATOREN_JE_ART.get(f.get('typ', 'text'))
+                if erlaubt is not None and op not in erlaubt:
+                    fehler.append(f'{wo}: anzeigen „{k}“ ({f.get("typ", "text")}) – Operator „{op}“ gibt es dafür nicht, möglich: {", ".join(sorted(erlaubt))}')
+            elif f.get('typ') != 'referenz':
+                fehler.append(f'{wo}: anzeigen „{k}“ – {art} geht nur bei Verweisfeldern')
+            if art == 'verweistyp':
+                ziele = (f.get('ziel') if isinstance(f.get('ziel'), list) else [f.get('ziel')]) + list(f.get('zielOptional') or [])
+                norm = lambda z: lokal(z) or z  # noqa: E731 – eigener Typ mit oder ohne Präfix gleich
+                if norm(str(b.get('typ'))) not in {norm(str(z)) for z in ziele if z}:
+                    fehler.append(f'{wo}: anzeigen „{k}“ – Typ „{b.get("typ")}“ ist kein Ziel dieses Verweisfelds')
             for v in b.get('vorgabe') or []:
                 vorgabe_ok(v, wo)
 
@@ -1372,8 +1416,15 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
         for k, f in felder.items():
             wo = f'mappentypen/{s}/{k}'
             art = f.get('typ')
-            if art in ETAPPE15_FELDARTEN or isinstance(f.get('ziel'), list) or any(x in f for x in ('negativ', 'berechnet', 'schreibschutz', 'merkmal', 'vorbelegen', 'gleicherTyp', 'zielOptional')):
-                benutzt = True
+            if art in FELDARTEN_FERTIG or 'negativ' in f:
+                braucht(DMS_FELDARTEN_AB, 'Zeitraum, Prozent, negative Beträge')
+            if art in ETAPPE15_FELDARTEN - FELDARTEN_FERTIG:
+                braucht(DMS_ETAPPE15_AB, f'Feldart {art}')
+            for x in ('berechnet', 'schreibschutz', 'merkmal', 'vorbelegen', 'gleicherTyp', 'zielOptional'):
+                if x in f:
+                    braucht(DMS_ETAPPE15_AB, x)
+            if isinstance(f.get('ziel'), list):
+                braucht(DMS_ETAPPE15_AB, 'mehrere Ziele')
             for z in f.get('zielOptional') or []:
                 if isinstance(z, str) and (':' not in z or z.split(':', 1)[0] in (pid, 'dms')):
                     fehler.append(f'{wo}: zielOptional „{z}“ – nur Typen anderer Pakete (paket:typ); eigene und abhängige gehören in ziel')
@@ -1416,8 +1467,10 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
                         if zs in eigene and v.get('von') not in felder_je[zs]:
                             fehler.append(f'{wo}: vorbelegen von „{v.get("von")}“ – das Feld gibt es in „{zs}“ nicht')
             if art == 'zeitraum' and 'standard' in f and not ist_zeitraum(f['standard']):
-                fehler.append(f'{wo}: standard eines Zeitraums ist {{ anzahl, einheit }} mit Einheit tage, wochen, monate oder jahre')
-            bedingungen(f.get('anzeigenWenn'), felder, wo)
+                fehler.append(f'{wo}: standard eines Zeitraums ist {{ anzahl, einheit }} (tage, wochen, monate, jahre) oder kurz wie „P3M“')
+            bedingungen(f.get('anzeigen'), felder, wo)
+            if 'anzeigenWenn' in f:
+                fehler.append(f'{wo}: anzeigenWenn heißt in Ablago anzeigen: {{ modus, bedingungen }} (0.228.0) – bitte umstellen')
         if merkmale > 1:
             fehler.append(f'mappentypen/{s}: höchstens ein Feld mit merkmal')
         for reg in t.get('register') or []:
@@ -1427,10 +1480,12 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
                     if isinstance(a, dict):
                         if a.get('vor') not in ks:
                             fehler.append(f'mappentypen/{s}/register/{reg.get("key")}: Abschnitt vor „{a.get("vor")}“ – das Feld liegt nicht auf diesem Register')
-                        bedingungen(a.get('anzeigenWenn'), felder, f'mappentypen/{s}/register/{reg.get("key")}')
+                        bedingungen(a.get('anzeigen'), felder, f'mappentypen/{s}/register/{reg.get("key")}')
+                        if 'anzeigenWenn' in a:
+                            fehler.append(f'mappentypen/{s}/register/{reg.get("key")}: anzeigenWenn heißt in Ablago anzeigen: {{ modus, bedingungen }} – bitte umstellen')
         gz = t.get('gehoertZu')
         if gz is not None:
-            benutzt = True
+            braucht(DMS_ETAPPE15_AB, 'gehoertZu')
             g = felder.get(gz)
             if g is None or g.get('typ') != 'referenz' or g.get('mehrfach') or not g.get('pflicht'):
                 fehler.append(f'mappentypen/{s}: gehoertZu „{gz}“ muss ein Verweisfeld auf genau eine Mappe mit pflicht: true sein')
@@ -1480,19 +1535,21 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
     for b in beispiele:
         for k, w in ((b.get('werte') or {}).items() if isinstance(b, dict) else []):
             if isinstance(w, dict) and 'vorgabe' in w:
-                benutzt = True
+                braucht(DMS_ETAPPE15_AB, 'Vorgaben')
                 vorgabe_ok(str(w['vorgabe']), f'beispiele ({b.get("typ")}.{k})')
 
     if code:
         if 'dms:hinweise' in ((rechte.get('schnittstellen') or [])):
-            benutzt = True
+            braucht(DMS_ETAPPE15_AB, 'dms:hinweise')
         if 'zeitplan.ausgefuehrt' in (code.get('ereignisse') or []):
-            benutzt = True
-    if benutzt:
-        ab = dms_untergrenze(str(m.get('dms', '')))
-        if ab is None or ab < DMS_ETAPPE15_AB:
-            fehler.append('Bausteine aus Etappe 15 (Feldarten, Bedingungen, berechnete Felder, Vorgaben …) kennt Ablago erst ab '
-                          f'{".".join(map(str, DMS_ETAPPE15_AB))} (vorläufig) – bitte dms: ">={".".join(map(str, DMS_ETAPPE15_AB))}" angeben')
+            braucht(DMS_ETAPPE15_AB, 'zeitplan.ausgefuehrt')
+    if brauche:
+        ab_paket = dms_untergrenze(str(m.get('dms', '')))
+        noetig = max(brauche)
+        if ab_paket is None or ab_paket < noetig:
+            v = '.'.join(map(str, noetig))
+            vorl = ' (vorläufig)' if noetig == DMS_ETAPPE15_AB else ''
+            fehler.append(f'{", ".join(sorted(brauche[noetig]))} kennt Ablago erst ab {v}{vorl} – bitte dms: ">={v}" angeben')
     return fehler
 
 

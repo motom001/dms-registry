@@ -80,7 +80,7 @@
         "berechnet": { "type": "boolean", "description": "DMS #1034: Nur der Code dieses Pakets schreibt den Wert, in der Oberfläche nur lesbar („berechnet von …“). Braucht code.rechte.schreiben auf den eigenen Mappentyp." },
         "schreibschutz": { "enum": ["verwaltung"], "description": "DMS #995: Nur mit Verwaltungsrecht änderbar, z. B. das Merkmal „eigene Organisation“" },
         "merkmal": { "enum": ["eigeneOrganisation"], "description": "DMS #995: Dieses Ja/Nein-Feld ist das Merkmal „eigene Organisation“; der Kern liest es" },
-        "anzeigenWenn": { "$ref": "#/$defs/anzeigebedingungen" },
+        "anzeigen": { "$ref": "#/$defs/anzeigeregel" },
         "vorbelegen": {
           "description": "Nur bei typ referenz (DMS #1037): beim Auswählen Werte aus der verwiesenen Mappe in leere Felder dieser Mappe vorschlagen",
           "type": "array", "minItems": 1, "maxItems": 30,
@@ -114,31 +114,46 @@
         "volltext": { "type": "boolean" },
         "beschriftungen": { "$ref": "#/$defs/beschriftungen_register" },
         "abschnitte": {
-          "description": "Feldregister (DMS #890): Abschnitte zwischen den Feldern; anzeigenWenn (DMS #1033) blendet den Abschnitt mit allen Feldern bis zum nächsten aus",
+          "description": "Feldregister (DMS #890): Abschnitte zwischen den Feldern; anzeigen (DMS #1033) blendet den Abschnitt mit allen Feldern bis zum nächsten aus",
           "type": "array", "maxItems": 50,
           "items": {
             "type": "object", "required": ["vor"], "additionalProperties": false,
             "properties": {
               "vor": { "$ref": "#/$defs/schluessel" }, "titel": { "type": "string", "minLength": 1, "maxLength": 80 }, "eingeklappt": { "type": "boolean" },
               "beschriftungen": { "type": "object", "propertyNames": { "$ref": "#/$defs/sprachkennung" }, "additionalProperties": { "type": "object", "additionalProperties": false, "properties": { "titel": { "$ref": "#/$defs/beschriftung" } } } },
-              "anzeigenWenn": { "$ref": "#/$defs/anzeigebedingungen" }
+              "anzeigen": { "$ref": "#/$defs/anzeigeregel" }
             }
           }
         }
       }
     },
-    "anzeigebedingungen": {
-      "description": "DMS #1033: Anzeigen, wenn alle Bedingungen gelten. Ordnung, kein Schutz – Werte bleiben gespeichert und über API und Export sichtbar.",
-      "type": "array", "minItems": 1, "maxItems": 10,
-      "items": {
-        "oneOf": [
-          { "type": "object", "required": ["merkmal"], "additionalProperties": false, "properties": { "merkmal": { "enum": ["beruflich"] }, "nicht": { "type": "boolean" } }, "description": "Merkmal der Ablage „beruflich genutzt“ (DMS #1032)" },
-          { "type": "object", "required": ["feld", "op"], "additionalProperties": false, "properties": { "feld": { "$ref": "#/$defs/schluessel" }, "op": { "enum": ["gleich", "ungleich", "leer", "nichtLeer"] }, "wert": {} }, "description": "Feldwert dieser Mappe" },
-          { "type": "object", "required": ["feld", "vorgabe"], "additionalProperties": false, "properties": { "feld": { "$ref": "#/$defs/schluessel" }, "vorgabe": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/vorgabeverweis" } } }, "description": "Verweisfeld zeigt auf eine dieser Vorgabe-Mappen (DMS #1038)" },
-          { "type": "object", "required": ["feld", "eigeneOrganisation"], "additionalProperties": false, "properties": { "feld": { "$ref": "#/$defs/schluessel" }, "eigeneOrganisation": { "type": "boolean" } }, "description": "Verweisfeld zeigt (nicht) auf eine eigene Organisation (DMS #995)" },
-          { "type": "object", "required": ["feld", "typ"], "additionalProperties": false, "properties": { "feld": { "$ref": "#/$defs/schluessel" }, "typ": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/typverweis" } } }, "description": "Verweisfeld mit mehreren Zielen zeigt auf eine Mappe eines dieser Typen (DMS #1036)" }
-        ]
+    "anzeigeregel": {
+      "description": "DMS #1032/#1033 (ab Ablago 0.228.0): Anzeigen, wenn … – modus alle (jede Bedingung) oder eine (mindestens eine). Ordnung, kein Schutz: Werte bleiben gespeichert und über API und Export sichtbar. Wie im Kern (shared/src/anzeige.ts); vorgabe und eigeneOrganisation sind Entwürfe bis DMS #1038/#995.",
+      "type": "object", "required": ["bedingungen"], "additionalProperties": false,
+      "properties": {
+        "modus": { "enum": ["alle", "eine"] },
+        "bedingungen": {
+          "type": "array", "minItems": 1, "maxItems": 10,
+          "items": {
+            "oneOf": [
+              { "type": "object", "required": ["art", "merkmal"], "additionalProperties": false, "properties": { "art": { "const": "merkmal" }, "merkmal": { "enum": ["beruflich"] }, "nicht": { "type": "boolean" } }, "description": "Merkmal der Ablage „beruflich genutzt“ (DMS #1032)" },
+              { "type": "object", "required": ["art", "bedingung"], "additionalProperties": false, "properties": { "art": { "const": "feld" }, "nicht": { "type": "boolean" },
+                "bedingung": { "type": "object", "required": ["feld", "op"], "additionalProperties": false, "properties": {
+                  "art": { "const": "feld" }, "feld": { "$ref": "#/$defs/schluessel" },
+                  "op": { "enum": ["gleich", "enthaelt", "leer", "nichtLeer", "kleiner", "groesser", "zwischen", "ausserhalb", "imZeitraum", "ja", "nein", "einerVon", "zeigtAuf"] },
+                  "wert": { "$ref": "#/$defs/wertangabe" }, "bis": { "$ref": "#/$defs/wertangabe" } } } }, "description": "Feldwert dieser Mappe, Operatoren je Feldart wie in Ansichten" },
+              { "type": "object", "required": ["art", "feld", "typ"], "additionalProperties": false, "properties": { "art": { "const": "verweistyp" }, "feld": { "$ref": "#/$defs/schluessel" }, "typ": { "$ref": "#/$defs/typverweis" }, "nicht": { "type": "boolean" } }, "description": "Verweisfeld zeigt auf eine Mappe dieses Typs (DMS #1036)" },
+              { "type": "object", "required": ["art", "feld", "vorgabe"], "additionalProperties": false, "properties": { "art": { "const": "vorgabe" }, "feld": { "$ref": "#/$defs/schluessel" }, "vorgabe": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/vorgabeverweis" } }, "nicht": { "type": "boolean" } }, "description": "Entwurf bis DMS #1038: Verweisfeld zeigt auf eine dieser Vorgabe-Mappen" },
+              { "type": "object", "required": ["art", "feld"], "additionalProperties": false, "properties": { "art": { "const": "eigeneOrganisation" }, "feld": { "$ref": "#/$defs/schluessel" }, "nicht": { "type": "boolean" } }, "description": "Entwurf bis DMS #995: Verweisfeld zeigt auf eine eigene Organisation" }
+            ]
+          }
+        }
       }
+    },
+    "wertangabe": {
+      "description": "Vergleichswert wie in Ansichten: fest, heute (mit Versatz), jahr, monat, ich",
+      "type": "object", "required": ["art"],
+      "properties": { "art": { "enum": ["fest", "heute", "jahr", "monat", "ich"] }, "wert": {}, "versatz": { "type": "integer" }, "einheit": { "enum": ["tage", "wochen", "monate", "jahre"] } }
     },
     "vorgabeverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$", "description": "Kennung einer Vorgabe-Mappe, mit paket: davor aus einem anderen Paket" },
     "mappentyp": {
