@@ -2,7 +2,8 @@
 schema: 1
 id: basis
 name: Basis
-version: 1.6.1
+herausgeber: app.ablago
+version: 1.7.0
 beschreibung: Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.
 autor:
   name: Thomas Meissner
@@ -13,7 +14,21 @@ lizenz: Apache-2.0
 # 0.121.0: Feldformate und Datumsgrenzen (format, landFeld, min/max bei Datum, DMS #535)
 # 0.127.0: Wortlisten für die Suche (inhalt.wortlisten, DMS #356)
 # 0.212.0: Ablageort kommt aus Basis; der frühere des DMS wird übernommen (DMS #883)
-dms: ">=0.212.0"
+# 0.238.0: eigene Organisation (merkmal, schreibschutz, DMS #995); dazu Anzeige-Bedingung am Abschnitt (0.228.0, #1033)
+# und mehrere Ziele (0.230.0, #1036)
+dms: ">=0.238.0"
+# „So nutzt du es“ (dms-registry #164): oben auf der Paketseite im Katalog und nach der Installation in Ablago.
+kurzanleitung:
+  de:
+    - Lege die Firmen, Ämter und Praxen, mit denen du zu tun hast, als Organisation an – Filialen als Niederlassung darunter.
+    - Lege die Menschen dazu als Person an und ordne sie ihrer Organisation zu.
+    - Hake bei deiner eigenen Firma „Eigene Organisation“ an und trage unter Datenschutz den Verantwortlichen ein.
+    - Unter Ablageort hältst du fest, wo deine Papiere liegen – Ordner, Schrank, Keller.
+  en:
+    - Create the companies, authorities and practices you deal with as organisations – branches below them.
+    - Create the people as persons and assign them to their organisation.
+    - Tick “Own organisation” for your own company and enter the controller under data protection.
+    - Under storage location, note where your papers are – binder, cupboard, basement.
 abhaengigkeiten: {}
 inhalt:
   mappentypen: inhalt/mappentypen.yaml

@@ -15,13 +15,15 @@ Das Basis-Paket bringt die Mappentypen **Organisation**, **Niederlassung**, **Pe
 
 | Register | Felder |
 | --- | --- |
-| Stammdaten | **Name** (Pflicht, eindeutig), Kürzel, **Art** (Mehrfachauswahl: Lieferant, Kunde, Bank, Versicherung, Behörde, Arbeitgeber, Arzt/Praxis, Handwerker, Vermieter, Verein, Versorger, Sonstige), **Kundennummer**, Beschreibung |
+| Stammdaten | **Name** (Pflicht, eindeutig), Kürzel, **Art** (Mehrfachauswahl: Lieferant, Kunde, Bank, Versicherung, Behörde, Arbeitgeber, Arzt/Praxis, Handwerker, Vermieter, Verein, Versorger, Sonstige), **Eigene Organisation** (ab 1.7.0), **Kundennummer**, Beschreibung; Abschnitt **Datenschutz** nur bei einer eigenen Organisation: Verantwortlicher, Datenschutzbeauftragter |
 | Kontakt | Telefon, Fax, E-Mail (wird auf die Form geprüft), Internetseite |
 | Anschrift | Straße, Hausnummer, PLZ, Ort, Land (Vorgabe: Deutschland) |
 | Niederlassungen | alle Niederlassungen dieser Organisation (ab 1.1.0) |
 | Ansprechpartner | alle Personen, die hier arbeiten bzw. Ansprechpartner sind (ab 1.1.0) |
 
 Dazu *Dokumente* und *Historie*. Die **Kundennummer** ist *deine* Nummer bei der Organisation – Kunden-, Mitglieds-, Versicherten- oder Patientennummer. Sie steht so auf Briefen und Rechnungen und hilft beim Zuordnen.
+
+**Eigene Organisation** (ab 1.7.0): Kennzeichne deine eigene Firma oder dein Gewerbe so. Ablago nimmt Name, Anschrift und Kontakt von dort für Datenschutz-Auskünfte und den Briefkopf von Vorlagen und liest die eigene Organisation nie als Absender eingehender Post. Den Haken setzt nur, wer Ablago verwaltet; mehrere eigene Organisationen sind möglich. Im Abschnitt **Datenschutz** stehen dann Verantwortlicher und – falls es einen gibt – Datenschutzbeauftragter (keine Rechtsberatung). AGB und Preislisten legst du unter *Dokumente* mit ihrem Stand im Namen ab, z. B. „AGB Stand 2026-01“.
 
 ### Niederlassung
 
@@ -45,7 +47,7 @@ Andere Pakete (Haushalt, Haus, Vermietung, Fahrzeuge) verweisen im Feld *Verblei
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.212 (Ablageort aus Basis; 1.5 lief ab 0.127 mit Wortlisten für die Suche, Version 1.0.0 ab 0.63)
+- Ablago ab Version 0.230 (vorläufig; eigene Organisation und Datenschutz, Etappe 15). 1.6 lief ab 0.212 (Ablageort aus Basis), 1.5 ab 0.127, 1.0.0 ab 0.63.
 - keine weiteren Pakete
 
 ## Rechte und Netz
