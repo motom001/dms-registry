@@ -162,7 +162,7 @@
         - vor: verantwortlicher
           titel: Datenschutz
           beschriftungen: { en: { titel: "Data protection" } }
-          anzeigenWenn: [{ feld: eigene_organisation, op: gleich, wert: true }]
+          anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: eigene_organisation, op: ja } }] }
     - key: kontakt
       name: Kontakt
       beschriftungen: { en: { name: "Contact" } }
