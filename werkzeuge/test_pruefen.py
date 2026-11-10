@@ -1159,3 +1159,37 @@ class Paketsprache(unittest.TestCase):
             self.assertEqual(len(h), 1)
             self.assertIn('eins:vertrag', h[0])
         self.assertEqual(pruefen.doppelte_typen(sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir())), [])
+
+
+class Kennungen(unittest.TestCase):
+    """Registry #173: gleiche zusammengesetzte Kennung <paket>_<schluessel> aus zwei Paketen."""
+
+    def paket(self, wurzel: Path, pid: str, typen: list[str], ergaenzt: str | None = None) -> Path:
+        o = wurzel / pid
+        (o / 'inhalt').mkdir(parents=True)
+        m = {'id': pid, 'inhalt': {'mappentypen': 'inhalt/mappentypen.yaml'}}
+        if ergaenzt:
+            m['ergaenzt'] = ergaenzt
+        (o / 'manifest.yaml').write_text(yaml.safe_dump(m), encoding='utf-8')
+        (o / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump([{'schluessel': s, 'name': s} for s in typen]), encoding='utf-8')
+        return o
+
+    def test_kollision(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            a = self.paket(Path(tmp), 'haus', ['garten_pflanze'])
+            b = self.paket(Path(tmp), 'haus_garten', ['pflanze'])
+            f, h = pruefen.kennungs_kollisionen([a, b])
+            self.assertEqual(len(f), 1, f)
+            self.assertIn('haus_garten_pflanze', f[0])
+            self.assertTrue(any('haus_garten' in x for x in h), h)
+
+    def test_ergaenzung_ohne_hinweis(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            a = self.paket(Path(tmp), 'texterkennung', [])
+            b = self.paket(Path(tmp), 'texterkennung_fra', [], ergaenzt='texterkennung')
+            self.assertEqual(pruefen.kennungs_kollisionen([a, b]), ([], []))
+
+    def test_registry_ohne_kollision(self):
+        f, h = pruefen.kennungs_kollisionen(sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir()))
+        self.assertEqual(f, [])
+        self.assertEqual(h, [])
