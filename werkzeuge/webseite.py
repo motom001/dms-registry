@@ -9,6 +9,7 @@ Im Ausgabeordner entstehen:
     index.html                   Übersicht: Kacheln je Paket, Suche, Filter (Konfiguration / mit Code)
     en/index.html                dieselbe Übersicht auf Englisch (Umschalter „Deutsch · English“ oben)
     paket/<id>/index.html        Detailseite: README, was angelegt wird, Rechte, Changelog, Versionen
+    zusammenhaenge/index.html    „Wie alles zusammenhängt“: alle Mappentypen aller Pakete als Zeichnung (#115)
     sammeldatei.html             mehrere Pakete als eine Sammeldatei für Ablago ohne Internet (motom001/dms#461)
     stil.css, dms.js             Aussehen wie die Handbücher; „In meinem Ablago installieren“
     sammeldatei.js               stellt die Sammeldatei im Browser zusammen (aus katalog.json und den Spiegeln unter archive/)
@@ -36,6 +37,7 @@ from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vorlagen import lies_kategorien, option as vorlagen_option, symbol_svg  # noqa: E402
+import zusammenhang  # noqa: E402
 
 KATEGORIEN = {k['kennung']: k for k in lies_kategorien()['kategorien']}
 HANDBUCH_AKTUALISIEREN = 'https://help.ablago.app/admin/aktuell/aktualisieren/'
@@ -97,6 +99,7 @@ TEXTE = {
         'regeln': 'Regeln für Pakete',
         'regeln_url': f'{REGISTRY}/blob/main/REGELN.md',
         'symbole': 'Symbole: Lucide (ISC-Lizenz)',
+        'zusammenhaenge': 'Wie alles zusammenhängt',
         'titel': 'Pakete für Ablago',
         'einleitung_html': 'Fertige Mappentypen und Sichten für dein <a href="https://github.com/motom001/dms">Ablago</a> – Open Source und vom Ablago-Projekt freigegeben. Installieren unter <strong>Werkbank → Pakete</strong> oder direkt von hier.',
         'hinweis_html': '',
@@ -148,6 +151,7 @@ TEXTE = {
         'regeln': 'Rules for packages',
         'regeln_url': f'{REGISTRY}/blob/main/REGELN.en.md',
         'symbole': 'Icons: Lucide (ISC licence)',
+        'zusammenhaenge': 'How it all fits together (German)',
         'titel': 'Packages for Ablago',
         'einleitung_html': 'Ready-made Mappe types and views for your <a href="https://github.com/motom001/dms">Ablago</a> – open source and approved by the Ablago project. Install them in Ablago under <strong>Werkbank → Pakete</strong> (Workbench → Packages) or right from here.',
         'hinweis_html': '<strong>Note:</strong> Package names and descriptions come from the packages themselves and are in German for now, as are the package pages (multilingual package content will follow). Where the German and English wording differ, the German one applies.',
@@ -232,7 +236,7 @@ def seite(titel: str, inhalt: str, tiefe: int, beschreibung: str = '', sprache: 
       <div class="knoepfe"><button value="ok" class="knopf primaer">{e(t['speichern'])}</button><button value="abbruch" class="textknopf" formnovalidate>{e(t['abbrechen'])}</button></div>
     </form>
   </dialog>
-  <footer><a href="{t['regeln_url']}">{e(t['regeln'])}</a> · <a href="{vor}katalog.json">katalog.json</a> · <a href="{REGISTRY}/blob/main/werkzeuge/symbole/LICENSE">{e(t['symbole'])}</a></footer>
+  <footer><a href="{t['regeln_url']}">{e(t['regeln'])}</a> · <a href="{vor}zusammenhaenge/">{e(t['zusammenhaenge'])}</a> · <a href="{vor}katalog.json">katalog.json</a> · <a href="{REGISTRY}/blob/main/werkzeuge/symbole/LICENSE">{e(t['symbole'])}</a></footer>
 </body>
 </html>
 '''
@@ -881,6 +885,46 @@ def einstellungen_block(code: dict, name: str) -> str:
             + (' Adresse und Zugangsdaten trägst du selbst ein.' if selbst else '') + '</p>' + ''.join(teile))
 
 
+def bild_html(p: dict, typen: list, index: dict) -> str:
+    """„Zusammenhänge als Bild“ je Paket (#115 Punkt 4), eingeklappt; Mappentypen anderer Pakete blass."""
+    eigene = [f'{p["id"]}:{t["schluessel"]}' for t in typen if isinstance(t, dict) and f'{p["id"]}:{t.get("schluessel")}' in index]
+    knoten, kanten = zusammenhang.netz(index, eigene)
+    if not kanten:
+        return ''
+    svg = zusammenhang.zeichne(knoten, kanten, index, f'Zusammenhänge der Mappentypen von {p["name"]}', fokus=p['id'],
+                               kennung=f'bild-{p["id"]}', beschreibung='Dieselben Angaben als Text: unter „Mappentypen“, je Mappentyp „Verweist auf“ und „Wird verwendet von“.')
+    ablage = sum(1 for k in eigene if zusammenhang.ABLAGEORT in verweise(index[k], p['id']))
+    return ('<details class="bild"><summary>Zusammenhänge als Bild</summary>'
+            f'<div class="bildrahmen">{svg}</div>{zusammenhang.LESEHILFE} Blass: aus einem anderen Paket.'
+            + (f' Verweise auf den Ablageort ({mehrzahl(ablage, "Mappentyp", "Mappentypen")}) sind nicht gezeichnet.' if ablage else '')
+            + ' <a href="../../zusammenhaenge/">Wie alles zusammenhängt ›</a></p></details>')
+
+
+def zusammenhangseite(pakete: list) -> str:
+    """„Wie alles zusammenhängt“ (#115 Punkt 4): alle Mappentypen aller Pakete; Ablageort getrennt genannt."""
+    index = alle_typen(pakete)
+    knoten = sorted(index, key=lambda k: (index[k]['paketname'].lower(), index[k]['name'].lower()))
+    kanten = zusammenhang.kanten_aller(index)
+    svg = zusammenhang.zeichne([k for k in knoten if k != zusammenhang.ABLAGEORT], kanten, index,
+                               'Wie die Mappentypen aller Pakete zusammenhängen', kennung='gesamt',
+                               beschreibung='Dieselben Angaben als Text stehen auf den Paketseiten unter „Was mitkommt“, je Mappentyp „Verweist auf“ und „Wird verwendet von“.')
+    ablage = [k for k in knoten if zusammenhang.ABLAGEORT in verweise(index[k], index[k]['paket'])]
+    je_paket: dict = {}
+    for k in knoten:
+        je_paket.setdefault(index[k]['paket'], (index[k]['paketname'], []))[1].append(k)
+    text = ''.join(f'<li><a href="../paket/{e(pid)}/">{e(name)}</a>: ' + ' · '.join(f'<a href="../paket/{e(pid)}/#typ-{e(k.split(":", 1)[1])}">{e(index[k]["name"])}</a>' for k in liste) + '</li>'
+                   for pid, (name, liste) in sorted(je_paket.items(), key=lambda x: x[1][0].lower()))
+    inhalt = (f'    <p class="zurueck"><a href="../index.html">← Alle Pakete</a></p>\n'
+              f'    <h1>Wie alles zusammenhängt</h1>\n'
+              f'    <p class="kurztext">Die Mappentypen aller Pakete und wie sie aufeinander verweisen – z. B. ein Vertrag auf die Organisation, '
+              f'mit der du ihn hast. Was ein Paket braucht, installiert Ablago mit.</p>\n'
+              f'    <div class="bildrahmen gross">{svg}</div>\n    {zusammenhang.LESEHILFE}'
+              + (f' Auf den <strong>Ablageort</strong> (Basis, wo ein Original auf Papier liegt) verweisen außerdem {mehrzahl(len(ablage), "Mappentyp", "Mappentypen")} – '
+                 'nicht gezeichnet, damit das Bild lesbar bleibt.' if ablage else '') + '</p>\n'
+              f'    <section><h2>Als Text</h2><p class="leise klein">Ein Klick auf einen Mappentyp zeigt seine Felder und Zusammenhänge.</p><ul class="pakettypen">{text}</ul></section>\n')
+    return seite('Wie alles zusammenhängt – Ablago-Pakete', inhalt, 1, 'Die Mappentypen aller Ablago-Pakete und wie sie zusammenhängen')
+
+
 def kurzanleitung(m: dict) -> list[str]:
     """„So nutzt du es“ (#164): 3–5 kurze Schritte aus dem Manifest (deutsch; englisch folgt mit #54)."""
     k = m.get('kurzanleitung')
@@ -953,7 +997,7 @@ def detail(p: dict, pakete: list) -> str:
         # Reihenfolge wie #164: Mappentypen · Ansichten · Vorgaben · Beispiele · Wortlisten · Automatisierungen · Einstellungen.
         spalten = (f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>'
                    if n_typen or n_sichten else '')
-        mitkommt = f'{spalten}{vorgabe_html}{bsp}{wort_html}{auto_html}{einst_html}'
+        mitkommt = f'{spalten}{bild_html(p, typen, index)}{vorgabe_html}{bsp}{wort_html}{auto_html}{einst_html}'
         leer = not (n_typen or n_sichten or n_bsp or vorgabe_html)
         if leer:
             mitkommt = ('<p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, '
@@ -1164,6 +1208,23 @@ section.anleitung { margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; b
 section.anleitung h2 { font-size: 1.05rem; border: 0; padding: 0; margin: 0 0 4px; }
 section.anleitung ol { margin: 0; padding-left: 1.4em; }
 section.anleitung li { margin: 2px 0; }
+/* Zusammenhänge als Bild (#115 Punkt 4): Farben aus der Seite, waagerecht scrollbar */
+details.bild { margin: 10px 0; }
+details.bild > summary { cursor: pointer; font-weight: 600; }
+.bildrahmen { overflow-x: auto; margin: 8px 0 4px; }
+.bildrahmen.gross { background: var(--flaeche); border: 1px solid var(--linie); border-radius: 12px; padding: 8px; }
+svg.zusammenhang { display: block; margin: 0 auto; max-width: none; }
+svg.zusammenhang .knoten rect { fill: var(--flaeche); stroke: var(--a); stroke-width: 1.5; }
+svg.zusammenhang .knoten.fremd rect { fill: var(--grund); stroke: var(--linie); }
+svg.zusammenhang text { fill: var(--tinte); text-anchor: middle; font: 600 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+svg.zusammenhang text.paket, svg.zusammenhang .fremd text { fill: var(--leise); font-weight: 400; }
+svg.zusammenhang text.paket { font-size: 11px; }
+svg.zusammenhang .kante { fill: none; stroke: var(--leise); stroke-width: 1.3; }
+svg.zusammenhang .kante.bezug { stroke-dasharray: 5 4; }
+svg.zusammenhang .spitze { fill: var(--leise); }
+.lesehilfe .linie { display: inline-block; width: 26px; vertical-align: middle; border-top: 2px solid var(--leise); }
+.lesehilfe .linie.bezug { border-top-style: dashed; }
+ul.pakettypen li { margin: 4px 0; }
 .passt h3 { font-size: 1rem; margin: 16px 0 8px; }
 .passt h3 a.weiter { color: inherit; text-decoration: none; }
 .passt h3 a.weiter span { color: var(--leise); font-weight: 700; margin-left: 2px; }
@@ -1667,6 +1728,8 @@ def main():
     # Logo und Favicon von Ablago (Quelle: motom001/dms-website, Ordner marke/; Name und Logo nicht unter Apache-2.0)
     for d in (Path(__file__).parent / 'marke').iterdir():
         (ausgabe / d.name).write_bytes(d.read_bytes())
+    (ausgabe / 'zusammenhaenge').mkdir(exist_ok=True)
+    (ausgabe / 'zusammenhaenge' / 'index.html').write_text(zusammenhangseite(pakete), encoding='utf-8')
     (ausgabe / 'stil.css').write_text((STIL + SAMMEL_STIL).lstrip(), encoding='utf-8')
     (ausgabe / 'dms.js').write_text(SKRIPT.lstrip(), encoding='utf-8')
     (ausgabe / 'sammeldatei.html').write_text(sammelseite(), encoding='utf-8')

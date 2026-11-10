@@ -197,3 +197,51 @@ class WasMitkommt(unittest.TestCase):
         self.assertEqual(pruefen.kurzanleitung_hinweise({'sprache': {'kennung': 'fr'}}), [])
         self.assertTrue(pruefen.kurzanleitung_hinweise({'kurzanleitung': {'de': ['a', 'b', 'c'], 'en': ['a', 'b']}}))
         self.assertEqual(pruefen.kurzanleitung_hinweise({'kurzanleitung': {'de': ['a', 'b', 'c']}}), [])
+
+
+class Zusammenhaenge(unittest.TestCase):
+    """Diagramm als Inline-SVG (#115 Punkt 4): beim Bauen erzeugt, nichts von Dritten, Farben aus der Seite."""
+
+    def index(self):
+        t = lambda pid, s, name, felder=(): {'schluessel': s, 'name': name, 'paket': pid, 'paketname': pid.title(), 'felder': list(felder)}
+        return {
+            'basis:organisation': t('basis', 'organisation', 'Organisation'),
+            'basis:ablageort': t('basis', 'ablageort', 'Ablageort'),
+            'x:vertrag': t('x', 'vertrag', 'Vertrag', [{'key': 'o', 'typ': 'referenz', 'ziel': 'basis:organisation', 'verweisart': 'bezug'},
+                                                      {'key': 'a', 'typ': 'referenz', 'ziel': 'basis:ablageort'}]),
+            'x:zahlung': t('x', 'zahlung', 'Zahlung', [{'key': 'v', 'typ': 'referenz', 'ziel': 'vertrag', 'verweisart': 'zugehoerigkeit'},
+                                                      {'key': 's', 'typ': 'referenz', 'ziel': 'zahlung'}]),
+        }
+
+    def test_kanten_und_reihen(self):
+        import zusammenhang as z
+        i = self.index()
+        k = z.kanten_aller(i)
+        self.assertEqual(k, {('x:vertrag', 'basis:organisation'): False, ('x:zahlung', 'x:vertrag'): True})  # ohne Ablageort, ohne sich selbst
+        knoten, kanten = z.netz(i, ['x:vertrag', 'x:zahlung'])
+        self.assertEqual(knoten, ['x:vertrag', 'x:zahlung', 'basis:organisation'])
+        self.assertEqual(z.anordnung(knoten, kanten), {'basis:organisation': 0, 'x:vertrag': 1, 'x:zahlung': 2})
+
+    def test_svg(self):
+        import zusammenhang as z
+        i = self.index()
+        knoten, kanten = z.netz(i, ['x:vertrag', 'x:zahlung'])
+        svg = z.zeichne(knoten, kanten, i, 'Titel', fokus='x', kennung='t')
+        self.assertIn('<title id="t-titel">Titel</title>', svg)
+        self.assertIn('class="kante gehoert"', svg)
+        self.assertIn('class="kante bezug"', svg)
+        self.assertIn('<g class="knoten fremd">', svg)
+        self.assertNotIn('href', svg)          # nichts nachladen, keine Links im Bild
+        self.assertNotIn('fill="#', svg)       # Farben nur über die Seite (hell/dunkel)
+        self.assertNotIn('<script', svg)
+        # Kreise brechen ab statt endlos zu laufen
+        self.assertEqual(set(z.anordnung(['a', 'b'], {('a', 'b'): True, ('b', 'a'): False})), {'a', 'b'})
+
+    def test_gesamtseite_mit_echten_paketen(self):
+        WasMitkommt.setUpClass()
+        h = w.zusammenhangseite(WasMitkommt.pakete)
+        self.assertIn('<h1>Wie alles zusammenhängt</h1>', h)
+        self.assertIn('<svg class="zusammenhang"', h)
+        self.assertIn('verweisen außerdem', h)  # Ablageort getrennt genannt
+        self.assertIn('href="../paket/vermietung/#typ-mietobjekt"', h)  # Textfassung
+        self.assertIn('Zusammenhänge als Bild', w.detail(WasMitkommt.nach_id['vermietung'], WasMitkommt.pakete))
