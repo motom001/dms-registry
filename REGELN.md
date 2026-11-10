@@ -96,6 +96,7 @@ kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unte
 | `car` | Fahrzeuge |
 | `cloud-upload` | Sicherung, Hochladen |
 | `contact` | Personen, Kontakte, Grundausstattung |
+| `file-signature` | Verträge |
 | `file-text` | Dokumente, Office |
 | `files` | mehrere Dokumente, Ähnlichkeit |
 | `house` | Haus, Wohnung |

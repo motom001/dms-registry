@@ -95,6 +95,7 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 | `car` | vehicles |
 | `cloud-upload` | backup, upload |
 | `contact` | people, contacts, basics |
+| `file-signature` | contracts |
 | `file-text` | documents, office |
 | `files` | several documents, similarity |
 | `house` | house, flat |

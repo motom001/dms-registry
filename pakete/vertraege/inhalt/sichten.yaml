@@ -1,0 +1,30 @@
+# Ansichten des Pakets Verträge. Schema: schema/inhalt.schema.json
+- schluessel: vertraege
+  name: Verträge
+  beschreibung: Alle Verträge
+  symbol: file-signature
+  beschriftungen: { en: { name: "Contracts", beschreibung: "All contracts" } }
+  typen: [vertrag]
+- schluessel: kuendigen_bald
+  name: Kündigen bald
+  beschreibung: Verträge, die du in den nächsten drei Monaten kündigen müsstest, damit sie frühestmöglich enden
+  beschriftungen: { en: { name: "Cancel soon", beschreibung: "Contracts you would have to cancel within the next three months to end them at the earliest date" } }
+  eltern: vertraege
+  typen: [vertrag]
+  bedingungen:
+    - { feld: kuendigen_bis, operator: zwischen, wert: [{ art: heute }, { art: heute, versatz: 3, einheit: monate }] }
+- schluessel: gekuendigt
+  name: Gekündigt
+  beschreibung: Verträge mit Kündigung, die noch nicht beendet sind
+  beschriftungen: { en: { name: "Cancelled", beschreibung: "Cancelled contracts that have not ended yet" } }
+  eltern: vertraege
+  typen: [vertrag]
+  bedingungen:
+    - { feld: gekuendigt_am, operator: nichtLeer }
+    - { feld: ende, operator: groesser, wert: { art: heute, versatz: -1, einheit: tage } }
+- schluessel: vertragsarten
+  name: Vertragsarten
+  beschreibung: Arten von Verträgen mit üblichen Fristen und Vorlagen
+  beschriftungen: { en: { name: "Contract types", beschreibung: "Types of contracts with usual periods and templates" } }
+  eltern: vertraege
+  typen: [vertragsart]

@@ -1,0 +1,6 @@
+# Was nach der Installation in Ablago vorhanden sein muss.
+mappentypen: [vertrag, vertragsart]
+sichten: [vertraege, kuendigen_bald, gekuendigt, vertragsarten]
+beispiele: 3
+automatisierungen: 1
+vorgaben: 11
