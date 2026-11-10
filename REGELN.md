@@ -515,6 +515,10 @@ code:
 - Ereignisse kommen **mindestens einmal**; `daten.ereignis` ist die Id im Ereigniskatalog – eine Wiederholung erkennt das Paket daran. `mappe.geaendert` fasst schnelle Folgen zusammen.
 - Die Vorschau zeigt die Ereignisse mit „– zu: *Typen*“. Ablauf und Felder beschreibt das Entwicklerhandbuch von Ablago unter [Pakete mit Code](https://help.ablago.app/entwickler/aktuell/pakete-code/#ereignisse) und [Ereigniskatalog](https://help.ablago.app/entwickler/aktuell/aufbau/#ereigniskatalog).
 
+## Version zurückziehen
+
+Hat eine veröffentlichte Version einen schweren Fehler, wird sie zurückgezogen. Das ist mehr als eine neue Version mit Korrektur, die meist reicht. Dafür zieht das Ablago-Projekt die Version aus dem Katalog, trägt ihren Tag in `werkzeuge/zurueckgezogen.yaml` ein und **löscht das Release von Hand**. Sonst bleibt die Datei öffentlich ladbar (Registry #156). Releases sind unveränderlich: Den Tag `<id>-v<version>` gibt es danach nie wieder, die Korrektur bekommt eine neue Version.
+
 ## Verwaiste Pakete
 
 Antwortet der Pfleger auf Fehler oder nötige Anpassungen drei Monate lang nicht, wird das Paket als *verwaist* markiert und kann von jemand anderem übernommen werden.

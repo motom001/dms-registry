@@ -474,6 +474,10 @@ code:
 - Events arrive **at least once**; `daten.ereignis` is the id in the event catalogue – the package recognises a repeat by it. `mappe.geaendert` combines quick successions.
 - The preview shows the events with „– zu: *types*“. Flow and fields: Ablago developer handbook, [Pakete mit Code](https://help.ablago.app/entwickler/aktuell/pakete-code/#ereignisse) and [Ereigniskatalog](https://help.ablago.app/entwickler/aktuell/aufbau/#ereigniskatalog).
 
+## Withdrawing a version
+
+If a published version has a serious bug, it is withdrawn. That is more than a new version with a fix, which is usually enough. The Ablago project removes the version from the catalogue, adds its tag to `werkzeuge/zurueckgezogen.yaml` and **deletes the release by hand** – otherwise the file stays downloadable (registry #156). Releases are immutable: the tag `<id>-v<version>` never comes back, the fix gets a new version.
+
 ## Orphaned packages
 
 If the maintainer of a package does not respond to bugs or necessary adjustments for three months, the package is marked as *orphaned* and can be taken over by someone else.
