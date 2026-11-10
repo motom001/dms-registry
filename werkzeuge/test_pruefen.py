@@ -1377,6 +1377,15 @@ class Etappe15(unittest.TestCase):
                           'vorbelegen von „gibtsnicht“', 'vorbelegen nach „vertragsart“', 'gehoertZu'):
             self.assertIn(teil_text, f)
 
+    def test_ziel_optional(self):
+        import copy
+        v = copy.deepcopy(self.VERTRAG)
+        v['felder'].append({'key': 'betrifft2', 'label': 'B', 'typ': 'referenz', 'zielOptional': ['fahrzeuge:fahrzeug'], 'mehrfach': True, 'gleicherTyp': True})
+        self.assertEqual(self.lauf(typen=[v, self.ART, self.TEIL]), [])
+        self.assertEqual(list(pruefen.inhalt_validator('mappentypen').iter_errors([v])), [])
+        v['felder'][-1]['zielOptional'] = ['vertrag']
+        self.assertTrue(any('zielOptional' in x for x in self.lauf(typen=[v, self.ART, self.TEIL])))
+
     def test_vorgaben(self):
         f = '\n'.join(self.lauf(vorgaben=[
             {'kennung': 'a', 'typ': 'vertragsart', 'werte': {'mindestlaufzeit': 24, 'gibtsnicht': 1}, 'dokumente': [{'datei': 'vorlagen/fehlt.md', 'register': 'allgemein'}]},

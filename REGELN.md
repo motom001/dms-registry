@@ -227,7 +227,7 @@ Pakete können **Vorlagen als Text** mitbringen – etwa ein Kündigungsschreibe
 | **Zeitraum** | `typ: zeitraum`, Wert `{ anzahl: 3, einheit: monate }` (tage, wochen, monate, jahre) | #1035 |
 | **Prozent** | `typ: prozent`, `nachkomma: 1` | #1035 |
 | **Negativer Betrag** | `typ: betrag`, `negativ: true` (Gutschrift, Erstattung) | #1035 |
-| **Mehrere Ziele** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; mit `mehrfach: true` optional `gleicherTyp: true` | #1036 |
+| **Mehrere Ziele** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; mit `mehrfach: true` optional `gleicherTyp: true`. Ziele aus Paketen, von denen das Paket **nicht** abhängt, stehen in `zielOptional` – Ablago nimmt sie dazu, sobald es den Typ gibt (z. B. „betrifft“ einer Rechnung: Fahrzeug, Wohnung, Anschaffung) | #1036 |
 | **Anzeigen, wenn …** | `anzeigenWenn:` an Feldern und Abschnitten (`register.abschnitte`), alle Bedingungen müssen gelten: `{ merkmal: beruflich }` (mit `nicht: true` umgekehrt), `{ feld, op: gleich/ungleich/leer/nichtLeer, wert }`, `{ feld, vorgabe: [miete] }`, `{ feld, eigeneOrganisation: true }`, `{ feld, typ: [fahrzeuge:fahrzeug] }`. Ein ausgeblendeter Abschnitt blendet alle Felder bis zum nächsten aus. **Ordnung, kein Schutz** – Werte bleiben gespeichert und über API und Export sichtbar. | #1032, #1033 |
 | **Berechnet** | `berechnet: true` – nur der Code dieses Pakets schreibt das Feld, in der Oberfläche nur lesbar; braucht `code.rechte.schreiben` auf den eigenen Typ, nie `pflicht` | #1034 |
 | **Hinweis an der Mappe** | `code.rechte.schnittstellen: [dms:hinweise]` – Hinweis setzen und entfernen, Speichern hindert er nie | #1034 |
