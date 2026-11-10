@@ -101,3 +101,87 @@ class Uebersicht(unittest.TestCase):
         self.assertIn('<option value="sprachen">Sprachen (1)</option>', h)
         self.assertNotIn('value="code"', h)
         self.assertIn('data-ansicht="liste"', h)
+
+
+class WasMitkommt(unittest.TestCase):
+    """„Was mitkommt“ (#115, #164) mit den echten Paketen Vermietung, Haushalt, Basis und Trennblatt."""
+
+    @classmethod
+    def setUpClass(cls):
+        import yaml
+        cls.pakete = []
+        for pid in ('basis', 'haushalt', 'haus', 'vermietung', 'trennblatt', 'benachrichtigungen'):
+            m = yaml.safe_load((w.WURZEL / 'pakete' / pid / 'manifest.yaml').read_text(encoding='utf-8'))
+            v = {'version': m['version'], 'dms': m['dms'], 'abhaengigkeiten': m.get('abhaengigkeiten') or {}, 'code': bool(m.get('code')),
+                 'inhalt': {'mappentypen': [], 'sichten': [], 'beispiele': 0}, 'archiv': 'archive/x.zip', 'sha256': '0' * 64, 'groesse': 1,
+                 'veroeffentlicht': '2026-11-10T00:00:00Z', 'quelle': '', 'readme': '', 'changelog': ''}
+            cls.pakete.append({'id': pid, 'name': m['name'], 'beschreibung': m['beschreibung'], 'lizenz': 'MIT',
+                               'autor': {'name': 'Lena', 'github': 'lena'}, 'aktuell': m['version'], 'versionen': [v]})
+        cls.nach_id = {p['id']: p for p in cls.pakete}
+
+    def seite(self, pid):
+        return w.detail(self.nach_id[pid], self.pakete)
+
+    def test_feldzeile_im_neuen_stil(self):
+        index = w.alle_typen(self.pakete)
+        z = w.feldzeile({'key': 'v', 'label': 'Hausverwaltung', 'typ': 'referenz', 'ziel': 'basis:organisation', 'verweisart': 'bezug', 'pflicht': True},
+                        'vermietung', index)
+        self.assertIn('<strong>Hausverwaltung</strong><span class="art">Verweis</span><span class="pflicht">Pflicht</span>', z)
+        self.assertIn('<a href="../basis/#typ-organisation">Organisation</a> <span class="leise">(Basis)</span> · Bezug', z)
+        self.assertNotIn('(Verweis', z)  # keine Klammern um die Art wie früher
+
+    def test_zusammenhaenge_paketuebergreifend(self):
+        h = self.seite('basis')
+        organisation = h[h.index('id="typ-organisation"'):]
+        organisation = organisation[:organisation.index('</details>')]
+        self.assertIn('Wird verwendet von:', organisation)
+        self.assertIn('href="../vermietung/#typ-mietobjekt"', organisation)
+        h = self.seite('vermietung')
+        self.assertIn('Verweist auf:', h)
+        self.assertIn('href="#typ-mietobjekt"', h)  # eigener Typ als Sprungmarke
+
+    def test_mappentyp_erst_mit_beschreibung(self):
+        h = self.seite('vermietung')
+        self.assertRegex(h, r'<details class="typ" id="typ-mietobjekt"><summary><strong>Mietobjekt</strong> <span class="leise klein">\d+ Felder</span>'
+                            r'<span class="typtext leise">Ein vermietetes Haus')
+
+    def test_automatisierung_in_klartext(self):
+        index = w.alle_typen(self.pakete)
+        a = {'name': 'X', 'wenn': {'art': 'datum', 'typ': 'mietvertrag', 'feld': 'ende', 'vorlauf': 60, 'einheit': 'tage', 'uhrzeit': '07:00'},
+             'dann': [{'art': 'aufgabe', 'als': 'aufgabe', 'empfaenger': [{'art': 'ersteller'}], 'text': 't'}]}
+        wenn, dann, ablauf = w.auto_zeilen(a, 'vermietung', index)
+        self.assertIn('Mietvertrag ist erreicht – 60 Tage vorher, geprüft um 07:00', wenn)
+        self.assertEqual(dann, 'Aufgabe an wer die Mappe angelegt hat')
+        self.assertEqual(ablauf, 'einmal je Termin')
+        a['wenn']['wiederholung'] = 12
+        self.assertTrue(w.auto_zeilen(a, 'vermietung', index)[2].startswith('wiederkehrend (jährlich)'))
+        z = {'name': 'Z', 'wenn': {'art': 'zeitplan', 'uhrzeit': '00:00', 'tage': [1, 2, 3, 4, 5, 6, 7]}, 'dann': [{'art': 'anmeldeschutz', 'was': 'sammel'}]}
+        self.assertEqual(w.auto_zeilen(z, 'benachrichtigungen', index), ('täglich um 00:00', 'Sammelmeldung Anmeldeschutz senden', 'wiederkehrend nach Zeitplan'))
+
+    def test_nur_automatisierungen_ohne_leere_spalten(self):
+        h = self.seite('benachrichtigungen')
+        self.assertNotIn('<h3>Mappentypen</h3>', h)
+        self.assertIn('<h3>Automatisierungen</h3>', h)
+
+    def test_einstellungen_bei_code(self):
+        h = self.seite('trennblatt')
+        self.assertIn('<h3>Einstellungen</h3>', h)
+        self.assertIn('<strong>Barcode auf dem Trennblatt</strong><span class="art">Text</span>', h)
+        self.assertIn('legt nichts in der Ablage an · ', h)
+
+    def test_vorgaben(self):
+        index = w.alle_typen(self.pakete)
+        h = w.vorgaben_block([{'kennung': 'strom', 'typ': 'vertrag', 'werte': {'name': 'Strom'}},
+                              {'an': {'paket': 'x', 'kennung': 'y'}, 'dokumente': [{'datei': 'vorlagen/a.md'}]}], 'haushalt', index)
+        self.assertIn('href="#typ-vertrag">Vertrag</a>: Strom', h)
+        self.assertIn('1 Text-Vorlage zum Ausfüllen', h)
+
+    def test_kurzanleitung(self):
+        self.assertEqual(w.kurzanleitung({'kurzanleitung': {'de': ['a', 'b', 'c']}}), ['a', 'b', 'c'])
+        self.assertEqual(w.kurzanleitung({}), [])
+        import pruefen
+        self.assertTrue(pruefen.kurzanleitung_hinweise({'code': {'netz': []}}))
+        self.assertEqual(pruefen.kurzanleitung_hinweise({'code': {'netz': []}, 'ergaenzt': {'paket': 'x'}}), [])
+        self.assertEqual(pruefen.kurzanleitung_hinweise({'sprache': {'kennung': 'fr'}}), [])
+        self.assertTrue(pruefen.kurzanleitung_hinweise({'kurzanleitung': {'de': ['a', 'b', 'c'], 'en': ['a', 'b']}}))
+        self.assertEqual(pruefen.kurzanleitung_hinweise({'kurzanleitung': {'de': ['a', 'b', 'c']}}), [])

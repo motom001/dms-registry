@@ -638,23 +638,251 @@ def sicht_baum(sichten: list, typnamen: dict, feldnamen: dict) -> str:
         kinder.setdefault(s.get('eltern'), []).append(s)
 
     def eintrag(s: dict) -> str:
-        teile = []
-        if s.get('beschreibung'):
-            teile.append(f'<p>{e(s["beschreibung"])}</p>')
+        # #115 Punkt 5: Name, eine Zeile und welche Mappentypen sie zeigt; die Bedingungen erst auf Klick.
         typen = [typnamen.get(t, t) for t in s.get('typen', [])]
-        teile.append(f'<p><span class="leise">Zeigt:</span> {e(", ".join(typen)) if typen else "alle Mappentypen"}</p>')
+        kopf = (f'<strong>{e(s["name"])}</strong>' + (f'<span class="typtext leise">{e(s["beschreibung"])}</span>' if s.get('beschreibung') else '')
+                + f'<span class="typtext leise klein">Zeigt: {e(" · ".join(typen)) if typen else "alle Mappentypen"}</span>')
         bed = s.get('bedingungen') or []
         if bed:
-            teile.append('<p class="leise">Nur Mappen, bei denen:</p><ul>' + ''.join(f'<li>{e(bedingung_text(b, feldnamen))}</li>' for b in bed) + '</ul>')
+            filter_ = '<p class="leise">Nur Mappen, bei denen:</p><ul>' + ''.join(f'<li>{e(bedingung_text(b, feldnamen))}</li>' for b in bed) + '</ul>'
         else:
-            teile.append('<p class="leise">Keine weiteren Filter.</p>')
+            filter_ = '<p class="leise">Keine weiteren Filter.</p>'
         unter = kinder.get(s['schluessel'])
         rest = ('<ul class="baum">' + ''.join(eintrag(k) for k in unter) + '</ul>') if unter else ''
-        return f'<li><details class="sicht"><summary>{e(s["name"])}</summary><div class="filter">{"".join(teile)}</div></details>{rest}</li>'
+        return f'<li><details class="sicht"><summary>{kopf}</summary><div class="filter">{filter_}</div></details>{rest}</li>'
 
     oben = [s for s in sichten if not s.get('eltern') or s['eltern'] not in {x['schluessel'] for x in sichten}]
     return ('<p class="leise klein">So erscheinen sie später in der Ablage. Antippen zeigt, was eine Ansicht filtert.</p>'
             '<ul class="baum wurzel">' + ''.join(eintrag(s) for s in oben) + '</ul>')
+
+
+# ---------- „Was mitkommt“ (#115, #164) ----------
+# Alles aus den Paketordnern erzeugt, nichts von Hand gepflegt. Die Wortwahl folgt Ablago (shared/src/automatisierung.ts
+# kurzform/zeitplanText, sprachen/de/ereignisse.json), damit Katalog und Werkbank (motom001/dms#1047) gleich klingen.
+
+DMS_TYPEN_ALLE = {**DMS_TYPEN, 'dms:benutzer': 'Benutzer'}
+VERWEISART = {'zugehoerigkeit': 'gehört zu', 'bezug': 'Bezug'}
+_TYPEN: dict = {}
+
+
+def voll(ziel: str, pid: str) -> str:
+    """Typverweis ohne Paket (z. B. „mietobjekt“) gehört zum eigenen Paket."""
+    return ziel if ':' in ziel else f'{pid}:{ziel}'
+
+
+def alle_typen(pakete: list) -> dict:
+    """„paket:schluessel“ → Mappentyp mit Paket – über alle Pakete des Katalogs, je Lauf einmal gelesen."""
+    schluessel = tuple(x['id'] for x in pakete)
+    if schluessel not in _TYPEN:
+        index = {}
+        for x in pakete:
+            ordner = WURZEL / 'pakete' / x['id']
+            if not (ordner / 'manifest.yaml').exists():
+                continue
+            for t in lies_yaml(ordner, (manifest(x['id']).get('inhalt') or {}).get('mappentypen')) or []:
+                if isinstance(t, dict) and t.get('schluessel'):
+                    index[f'{x["id"]}:{t["schluessel"]}'] = {**t, 'paket': x['id'], 'paketname': x['name']}
+        _TYPEN.clear()
+        _TYPEN[schluessel] = index
+    return _TYPEN[schluessel]
+
+
+def verweise(t: dict, pid: str) -> list[str]:
+    """Ziele der Verweisfelder eines Mappentyps (vollständige Kennungen, ohne sich selbst, in Feldreihenfolge)."""
+    selbst = f'{pid}:{t["schluessel"]}'
+    ziele = [voll(str(f['ziel']), pid) for f in t.get('felder') or [] if f.get('typ') == 'referenz' and f.get('ziel')]
+    return [z for z in dict.fromkeys(ziele) if z != selbst]
+
+
+def typ_link(kennung: str, pid: str, index: dict) -> str:
+    """Name eines Mappentyps als Link auf seine Zeile – im eigenen Paket als Sprungmarke, sonst auf dessen Seite."""
+    if kennung in DMS_TYPEN_ALLE:
+        return e(DMS_TYPEN_ALLE[kennung])
+    t = index.get(kennung)
+    paket, schl = kennung.split(':', 1)
+    if not t:
+        return f'<code>{e(kennung)}</code>'
+    ziel = f'#typ-{e(schl)}' if paket == pid else f'../{e(paket)}/#typ-{e(schl)}'
+    fremd = f' <span class="leise">({e(t["paketname"])})</span>' if paket != pid else ''
+    return f'<a href="{ziel}">{e(t["name"])}</a>{fremd}'
+
+
+def feldzeile(f: dict, pid: str, index: dict) -> str:
+    """Ein Feld je Zeile (#115): Name fett, Art als Kästchen, Pflicht farbig, bei Verweisen das Ziel."""
+    teile = [f'<strong>{e(str(f.get("label", f.get("key", ""))))}</strong>',
+             f'<span class="art">{e(FELDTYPEN.get(f.get("typ"), str(f.get("typ"))))}</span>']
+    if f.get('pflicht'):
+        teile.append('<span class="pflicht">Pflicht</span>')
+    mehr = []
+    if f.get('typ') == 'referenz' and f.get('ziel'):
+        mehr.append('→ ' + typ_link(voll(str(f['ziel']), pid), pid, index))
+        if f.get('verweisart') in VERWEISART:
+            mehr.append(VERWEISART[f['verweisart']])
+    if f.get('mehrfach'):
+        mehr.append('mehrere')
+    if f.get('typ') == 'auswahl' and f.get('optionen'):
+        o = [str(x) for x in f['optionen']]
+        mehr.append(' · '.join(e(x) for x in o[:6]) + (' · …' if len(o) > 6 else ''))
+    fr = f.get('frist')
+    if isinstance(fr, dict) and fr.get('vorlauf') is not None:
+        eins, viele = EINHEIT_TEXT.get(fr.get('einheit', 'tage'), ('Tag', 'Tage'))
+        n = int(fr['vorlauf'])
+        mehr.append(f'erinnert {n} {eins if n == 1 else viele} vorher')
+    if mehr:
+        teile.append(f'<span class="leise mehr">{" · ".join(mehr)}</span>')
+    return f'<li>{"".join(teile)}</li>'
+
+
+def typ_block(t: dict, pid: str, index: dict) -> str:
+    """Mappentyp (#115): Name und eine Zeile Beschreibung; Felder und Zusammenhänge auf Klick."""
+    felder = t.get('felder') or []
+    kennung = f'{pid}:{t["schluessel"]}'
+    auf = verweise(t, pid)
+    von = [k for k, x in index.items() if k != kennung and kennung in verweise(x, x['paket'])]
+    bezug = ''
+    if auf:
+        bezug += '<p class="bezug"><span class="leise">Verweist auf:</span> ' + ' · '.join(typ_link(k, pid, index) for k in auf) + '</p>'
+    if von:
+        bezug += '<p class="bezug"><span class="leise">Wird verwendet von:</span> ' + ' · '.join(typ_link(k, pid, index) for k in von) + '</p>'
+    text = f'<span class="typtext leise">{e(t["beschreibung"])}</span>' if t.get('beschreibung') else ''
+    return (f'<details class="typ" id="typ-{e(t["schluessel"])}"><summary><strong>{e(t["name"])}</strong> '
+            f'<span class="leise klein">{mehrzahl(len(felder), "Feld", "Felder")}</span>{text}</summary>'
+            f'<ul class="felder">{"".join(feldzeile(f, pid, index) for f in felder)}</ul>{bezug}</details>')
+
+
+EREIGNIS_NAMEN = {  # Ablago shared/src/sprachen/de/ereignisse.json, „name.*“
+    'mappe.angelegt': 'Mappe angelegt', 'mappe.geaendert': 'Mappe gespeichert', 'mappe.verknuepft': 'Zu dieser Mappe hin verknüpft',
+    'dokument.hochgeladen': 'Dokument hochgeladen', 'mappe.notiz': 'Notiz hinzugefügt', 'mappe.geloescht': 'Mappe gelöscht',
+    'mappe.wiederhergestellt': 'Mappe wiederhergestellt', 'frist.erreicht': 'Frist erreicht', 'post.angelegt': 'Neue Post',
+    'favorit.neu': 'Neuer Favorit', 'favorit.geaendert': 'Favorit geändert', 'benutzer.abwesenheit_gesetzt': 'Abwesenheit gesetzt',
+    'benutzer.abwesenheit_beendet': 'Abwesenheit beendet', 'benutzer.vertretung_zurueckgezogen': 'Vertretung zurückgezogen',
+    'benutzer.gesperrt': 'Benutzerkonto gesperrt', 'benutzer.deaktiviert': 'Benutzer deaktiviert', 'benutzer.aktiviert': 'Benutzer wieder aktiviert',
+}
+EREIGNIS_PERSON = {'vertreter': 'Vertreter', 'benutzer': 'Benutzer'}
+WIEDERHOLUNGEN = {1: 'monatlich', 3: 'vierteljährlich', 6: 'halbjährlich', 12: 'jährlich'}
+TAG_KURZ = ['', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
+VORLAUF_EINHEIT = {'tage': ('Tag', 'Tage'), 'wochen': ('Woche', 'Wochen'), 'monate': ('Monat', 'Monate')}
+
+
+def zeitplan_text(w: dict) -> str:
+    """Wie zeitplanText in Ablago: „werktags um 07:00“, „täglich um 00:00 (nicht an Feiertagen)“."""
+    if w.get('jeBenutzer') and w.get('profilzeit'):
+        return 'zur Uhrzeit im Profil'
+    tage = ''.join(str(x) for x in w.get('tage') or [])
+    wann = 'täglich' if tage == '1234567' else 'werktags' if tage == '12345' else ', '.join(TAG_KURZ[int(x)] for x in w.get('tage') or [])
+    return f'{wann} um {w.get("uhrzeit", "?")}' + (' (nicht an Feiertagen)' if w.get('feiertage') else '')
+
+
+def auto_zeilen(a: dict, pid: str, index: dict) -> tuple[str, str, str]:
+    """(Wenn, Dann, einmalig/wiederkehrend) einer mitgelieferten Automatisierung in Klartext (#164)."""
+    w = a.get('wenn') or {}
+    typ = index.get(voll(str(w['typ']), pid)) if w.get('typ') else None
+    feldname = {f.get('key'): f.get('label') for f in (typ or {}).get('felder') or []}
+    art = w.get('art')
+    if art == 'datum':
+        n, (eins, viele) = int(w.get('vorlauf') or 0), VORLAUF_EINHEIT.get(w.get('einheit', 'tage'), ('Tag', 'Tage'))
+        wann = 'am Tag selbst' if not n else f'{abs(n)} {eins if abs(n) == 1 else viele} {"vorher" if n > 0 else "danach"}'
+        wenn = f'„{feldname.get(w.get("feld"), w.get("feld"))}“ einer Mappe {typ["name"] if typ else w.get("typ")} ist erreicht – {wann}, geprüft um {w.get("uhrzeit", "?")}'
+        wdh = int(w.get('wiederholung') or 0)
+        ablauf = (f'wiederkehrend ({WIEDERHOLUNGEN.get(wdh) or (f"alle {wdh // 12} Jahre" if wdh % 12 == 0 else f"alle {wdh} Monate")}): '
+                  'nach dem Erledigen schlägt Ablago den Folgetermin vor') if wdh else 'einmal je Termin'
+    elif art == 'zeitplan':
+        wenn = zeitplan_text(w) + (' für jeden Benutzer' if w.get('jeBenutzer') else '')
+        ablauf = 'wiederkehrend nach Zeitplan'
+    else:
+        wenn = (f'{typ["name"]}: ' if typ else '') + EREIGNIS_NAMEN.get(art, str(art))
+        ablauf = 'bei jedem Ereignis'
+
+    def wer(x: dict) -> str:
+        if x.get('art') == 'ersteller':
+            return 'wer die Mappe angelegt hat'
+        if x.get('art') == 'ereignis':
+            return EREIGNIS_PERSON.get(x.get('feld'), str(x.get('feld')))
+        if x.get('art') == 'feld':
+            return f'„{feldname.get(x.get("feld"), x.get("feld"))}“' + (' (sonst wer die Mappe angelegt hat)' if x.get('sonst') == 'ersteller' else '')
+        return str(x.get('art'))
+
+    dann = []
+    for d in a.get('dann') or []:
+        da = d.get('art')
+        if da == 'aufgabe':
+            dann.append(f'{"Benachrichtigung" if d.get("als") == "benachrichtigung" else "Aufgabe"} an {", ".join(wer(x) for x in d.get("empfaenger") or []) or "?"}')
+        elif da == 'zusammenfassung':
+            dann.append('Tägliche Zusammenfassung senden')
+        elif da == 'favoriten':
+            dann.append('Favoriten-Änderungen melden')
+        elif da == 'anmeldeschutz':
+            dann.append('Sammelmeldung Anmeldeschutz senden' if d.get('was') == 'sammel' else 'Kontosperre an Administratoren melden')
+        elif da == 'feld':
+            dann.append(', '.join(f'„{feldname.get(k, k)}“' for k in (d.get('werte') or {})) + ' setzen')
+        elif da == 'stopp':
+            dann.append('danach keine weiteren')
+    return wenn, ', '.join(dann) or '…', ablauf
+
+
+def auto_block(autos: list, pid: str, index: dict) -> str:
+    zeilen = []
+    for a in autos:
+        wenn, dann, ablauf = auto_zeilen(a, pid, index)
+        text = f'<p>{e(a["beschreibung"])}</p>' if a.get('beschreibung') else ''
+        zeilen.append(f'<li><strong>{e(str(a.get("name", "")))}</strong>{text}<p class="ablauf"><span class="leise">Wenn</span> {e(wenn)} '
+                      f'<span aria-hidden="true">→</span><span class="unsichtbar">, dann:</span> {e(dann)}</p>'
+                      f'<p class="leise klein">{e(ablauf[:1].upper() + ablauf[1:])}</p></li>')
+    return ('<h3>Automatisierungen</h3><p class="leise klein">Nach der Installation aus – beim Installieren fragt Ablago, welche gleich '
+            'eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellst du selbst ein.</p><ul class="autos">' + ''.join(zeilen) + '</ul>')
+
+
+def vorgaben_block(vorgaben: list, pid: str, index: dict) -> str:
+    """Mitgelieferte Mappen (Vorgaben, DMS #1038 – erscheint, sobald das Schema sie kennt)."""
+    je_typ: dict = {}
+    vorlagen = 0
+    for v in vorgaben:
+        if not isinstance(v, dict):
+            continue
+        if v.get('an'):
+            vorlagen += len(v.get('dokumente') or [])
+            continue
+        werte = v.get('werte') or {}
+        name = next((str(x) for x in werte.values() if isinstance(x, str)), v.get('kennung', ''))
+        je_typ.setdefault(voll(str(v.get('typ', '')), pid), []).append(name)
+        vorlagen += len(v.get('dokumente') or [])
+    teile = [f'<li>{typ_link(k, pid, index)}: {" · ".join(e(n) for n in namen)}</li>' for k, namen in je_typ.items()]
+    if vorlagen:
+        teile.append(f'<li>{mehrzahl(vorlagen, "Text-Vorlage", "Text-Vorlagen")} zum Ausfüllen</li>')
+    return ('<h3>Mitgelieferte Mappen</h3><p class="leise klein">Bleiben nach der Installation; Updates ergänzen neue, '
+            'überschreiben aber nichts, was du geändert hast.</p><ul>' + ''.join(teile) + '</ul>') if teile else ''
+
+
+EINSTELLUNG_ARTEN = {'text': 'Text', 'langtext': 'Langtext', 'zahl': 'Zahl', 'janein': 'Ja/Nein', 'auswahl': 'Auswahl',
+                     'mehrfachauswahl': 'Mehrfachauswahl', 'passwort': 'Passwort', 'adresse': 'Adresse', 'mappentyp': 'Mappentyp',
+                     'ablageort': 'Ablageort', 'datum': 'Datum'}
+
+
+def einstellungen_block(code: dict) -> str:
+    """Einstellungen eines Pakets mit Code (#164): Abschnitte und Felder kurz, Hilfetexte auf Klick."""
+    abschnitte = [b for b in code.get('einstellungen') or [] if isinstance(b, dict)]
+    if not abschnitte:
+        return ''
+    teile = []
+    for b in abschnitte:
+        felder = b.get('felder') or []
+        zeilen = ''.join(f'<li><strong>{e(str(f.get("name") or f.get("schluessel")))}</strong>'
+                         f'<span class="art">{e(EINSTELLUNG_ARTEN.get(f.get("typ"), str(f.get("typ"))))}</span>'
+                         + (f'<span class="leise mehr">{e(str(f["hilfe"]))}</span>' if f.get('hilfe') else '') + '</li>'
+                         for f in felder if isinstance(f, dict))
+        titel = str(b.get('abschnitt') or b.get('name') or 'Einstellungen')
+        wie = ' (Liste, mehrere Einträge)' if 'liste' in b else ''
+        teile.append(f'<details class="typ"><summary><strong>{e(titel)}</strong>{e(wie)} <span class="leise klein">'
+                     f'{mehrzahl(len(felder), "Einstellung", "Einstellungen")}</span></summary><ul class="felder">{zeilen}</ul></details>')
+    return ('<h3>Einstellungen</h3><p class="leise klein">Unter Werkbank → Pakete → Einstellungen; das Paket bringt sinnvolle Vorgaben mit.</p>'
+            + ''.join(teile))
+
+
+def kurzanleitung(m: dict) -> list[str]:
+    """„So nutzt du es“ (#164): 3–5 kurze Schritte aus dem Manifest (deutsch; englisch folgt mit #54)."""
+    k = m.get('kurzanleitung')
+    schritte = k.get('de') if isinstance(k, dict) else None
+    return [str(x) for x in schritte] if isinstance(schritte, list) else []
 
 
 def detail(p: dict, pakete: list) -> str:
@@ -666,21 +894,17 @@ def detail(p: dict, pakete: list) -> str:
     changelog = md((ordner / 'CHANGELOG.md').read_text(encoding='utf-8')) if (ordner / 'CHANGELOG.md').exists() else ''
     typen = lies_yaml(ordner, (m.get('inhalt') or {}).get('mappentypen')) if vorhanden else []
     sichten = lies_yaml(ordner, (m.get('inhalt') or {}).get('sichten')) if vorhanden else []
+    index = alle_typen(pakete)
     if typen:
-        typ_html = ''.join(
-            f'<details><summary><strong>{e(t["name"])}</strong> – {len(t.get("felder", []))} Felder</summary><ul>'
-            + ''.join(f'<li>{e(f["label"])} <span class="leise">({FELDTYPEN.get(f["typ"], f["typ"])}{", Pflicht" if f.get("pflicht") else ""})</span></li>' for f in t.get('felder', []))
-            + '</ul></details>' for t in typen)
+        typ_html = ''.join(typ_block(t, p['id'], index) for t in typen if isinstance(t, dict) and t.get('schluessel'))
         n_typen = len(typen)
     else:
         n_typen = len(v['inhalt']['mappentypen'])
         typ_html = ('<ul>' + ''.join(f'<li>{e(t["name"])}</li>' for t in v['inhalt']['mappentypen']) + '</ul>') if n_typen else '<p class="leise">keine</p>'
     namen = {s['schluessel']: s['name'] for s in sichten}
     if sichten:
-        typnamen, feldnamen = {}, {}
-        for x in pakete:  # Mappentypen anderer Pakete (z. B. basis:person) mit Namen zeigen
-            for t in lies_yaml(WURZEL / 'pakete' / x['id'], (manifest(x['id']).get('inhalt') or {}).get('mappentypen')) if (WURZEL / 'pakete' / x['id'] / 'manifest.yaml').exists() else []:
-                typnamen[f'{x["id"]}:{t["schluessel"]}'] = t['name']
+        typnamen = {k: x['name'] for k, x in index.items()}  # Mappentypen anderer Pakete (z. B. basis:person) mit Namen
+        feldnamen = {}
         for t in typen:
             typnamen[t['schluessel']] = t['name']
             for f in t.get('felder', []):
@@ -701,9 +925,12 @@ def detail(p: dict, pakete: list) -> str:
     # Mitgelieferte Automatisierungen (DMS #712, Registry #108): in Klartext, nach der Installation aus.
     autos = lies_yaml(ordner, (m.get('inhalt') or {}).get('automatisierungen')) if vorhanden else []
     n_auto = len(autos)
-    auto_html = ('<h3>Vorgefertigte Automatisierungen</h3><p class="leise klein">Nach der Installation aus – beim Installieren fragt Ablago, '
-                 'welche gleich eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellst du selbst ein.</p><ul>'
-                 + ''.join(f'<li><strong>{e(a.get("name", ""))}</strong>{" – " + e(a["beschreibung"]) if a.get("beschreibung") else ""}</li>' for a in autos) + '</ul>') if n_auto else ''
+    auto_html = auto_block(autos, p['id'], index) if n_auto else ''
+    # Vorgaben (DMS #1038) und Einstellungen (#164): erscheinen, sobald ein Paket sie mitbringt.
+    vorgaben = lies_yaml(ordner, (m.get('inhalt') or {}).get('vorgaben')) if vorhanden else []
+    vorgabe_html = vorgaben_block(vorgaben, p['id'], index) if vorgaben else ''
+    einst_html = einstellungen_block(m.get('code') or {}) if vorhanden and isinstance(m.get('code'), dict) else ''
+    n_einst = sum(len(b.get('felder') or []) for b in ((m.get('code') or {}).get('einstellungen') or []) if isinstance(b, dict)) if einst_html else 0
     sp = m.get('sprache') if vorhanden and isinstance(m.get('sprache'), dict) else None
     if sp:
         # Sprachpaket (Ablago #731): nur Texte; dazu die Pakete, für die es Beschriftungen mitbringt.
@@ -716,16 +943,27 @@ def detail(p: dict, pakete: list) -> str:
                        'Auswahlwerte und Ansichten in dieser Sprache.</p>' if fuer else '')
                     + '<p class="leise klein">Nach der Installation erlaubst du die Sprache unter Werkbank → Sprachen; jede Person wählt sie dann in Mein Konto.</p>')
         kurz_mit = 'Sprachpaket, nur Texte'
-    elif n_typen or n_sichten or n_bsp or n_wort or n_auto:
+    elif n_typen or n_sichten or n_bsp or n_wort or n_auto or vorgabe_html or einst_html:
         mit_dok = f' und {mehrzahl(n_dok, "Beispiel-Dokument", "Beispiel-Dokumenten")}' if n_dok else ''
-        bsp = (f'<p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")}{mit_dok} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
-               if n_bsp else '<p class="leise">keine Beispielmappen</p>')
-        mitkommt = f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>{wort_html}{auto_html}{bsp}'
+        bsp = (f'<h3>Beispiele</h3><p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")}{mit_dok} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
+               if n_bsp else '')
+        # Reihenfolge wie #164: Mappentypen · Ansichten · Vorgaben · Beispiele · Wortlisten · Automatisierungen · Einstellungen.
+        spalten = (f'<div class="spalten"><div><h3>Mappentypen</h3>{typ_html}</div><div><h3>Ansichten</h3>{sicht_html}</div></div>'
+                   if n_typen or n_sichten else '')
+        mitkommt = f'{spalten}{vorgabe_html}{bsp}{wort_html}{auto_html}{einst_html}'
+        leer = not (n_typen or n_sichten or n_bsp or vorgabe_html)
+        if leer:
+            mitkommt = ('<p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, '
+                        'keine Beispielmappen.' + (' Es bringt eine Funktion mit (siehe „Was das Paket darf“).' if m.get('code') else '') + '</p>' + mitkommt)
         kurz_mit = ' · '.join(t for t in [mehrzahl(n_typen, 'Mappentyp', 'Mappentypen') if n_typen else '',
                                           mehrzahl(n_sichten, 'Ansicht', 'Ansichten') if n_sichten else '',
+                                          mehrzahl(len(vorgaben), 'mitgelieferte Mappe', 'mitgelieferte Mappen') if vorgabe_html else '',
                                           (mehrzahl(n_bsp, 'Beispielmappe', 'Beispielmappen') + (f' ({mehrzahl(n_dok, "Dokument", "Dokumente")})' if n_dok else '')) if n_bsp else '',
                                           mehrzahl(n_wort, 'Wortgruppe', 'Wortgruppen') + ' für die Suche' if n_wort else '',
-                                          mehrzahl(n_auto, 'Automatisierung', 'Automatisierungen') if n_auto else ''] if t)
+                                          mehrzahl(n_auto, 'Automatisierung', 'Automatisierungen') if n_auto else '',
+                                          mehrzahl(n_einst, 'Einstellung', 'Einstellungen') if n_einst else ''] if t)
+        if leer and m.get('code'):
+            kurz_mit = 'legt nichts in der Ablage an · ' + kurz_mit
     else:
         mitkommt = ('<p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, '
                     'keine Beispielmappen. Es bringt nur eine Funktion mit (siehe „Was das Paket darf“).</p>')
@@ -758,6 +996,9 @@ def detail(p: dict, pakete: list) -> str:
     technik += (f'<p><a href="{e(melden)}">Fehler oder Wunsch zu diesem Paket melden</a> '
                 f'<span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p>')
     kats = ''.join(f'<a class="chip" href="../../?kategorie={quote(k)}">{e(KATEGORIEN[k]["de"])}</a>' for k in (p.get('kategorien') or []) if k in KATEGORIEN)
+    schritte = kurzanleitung(m) if vorhanden else []
+    anleitung = ('<section class="anleitung"><h2>So nutzt du es</h2><ol>' + ''.join(f'<li>{e(s)}</li>' for s in schritte) + '</ol></section>\n    '
+                 if schritte else '')
     teile = [bereich('Was mitkommt', mitkommt, kurz_mit),
              bereich('Was das Paket darf', rechte, kurz_recht),
              bereich('Beschreibung', readme, 'ausführlich', 'readme')]
@@ -776,7 +1017,7 @@ def detail(p: dict, pakete: list) -> str:
               + '</p>\n'
               f'        <p class="chips">{kats}</p></div>\n'
               f'    </div>\n'
-              f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + (sprach_hinweis(p) + '\n    ' if sprach_hinweis(p) else '') + '\n    '.join(teile) + passt_html + '\n')
+              f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + (sprach_hinweis(p) + '\n    ' if sprach_hinweis(p) else '') + anleitung + '\n    '.join(teile) + passt_html + '\n')
     return seite(f'{p["name"]} – Ablago-Pakete', inhalt, 2, p['beschreibung'])
 
 
@@ -802,8 +1043,8 @@ def autorseite(name: str, github: str, liste: list) -> str:
 
 
 STIL = '''
-:root { --grund: #f6f7f8; --flaeche: #fff; --tinte: #1c2328; --leise: #5b6670; --linie: #dde2e6; --a: #1F4E79; --auf-a: #fff; --warn: #b26a00; }
-@media (prefers-color-scheme: dark) { :root { --grund: #14181b; --flaeche: #1d2226; --tinte: #e8ecef; --leise: #9aa5ae; --linie: #2e353a; --a: #8DB8E0; --auf-a: #141A22; --warn: #ffb74d; } }
+:root { --grund: #f6f7f8; --flaeche: #fff; --tinte: #1c2328; --leise: #5b6670; --linie: #dde2e6; --a: #1F4E79; --auf-a: #fff; --warn: #b26a00; --pflicht: #9a4a00; }
+@media (prefers-color-scheme: dark) { :root { --grund: #14181b; --flaeche: #1d2226; --tinte: #e8ecef; --leise: #9aa5ae; --linie: #2e353a; --a: #8DB8E0; --auf-a: #141A22; --warn: #ffb74d; --pflicht: #ffb74d; } }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--grund); color: var(--tinte); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 a { color: var(--a); }
@@ -892,6 +1133,32 @@ details.sicht > .filter p { margin: 2px 0; }
 details.sicht > .filter ul { margin: 2px 0 2px 1.1em; padding: 0; }
 details.bereich.klein > summary h2 { font-size: 1rem; color: var(--leise); }
 .spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+/* Was mitkommt (#115, #164): Mappentyp mit einer Zeile, Felder je Zeile mit Art als Kästchen, Pflicht farbig */
+details.typ { padding: 6px 10px; }
+details.typ > summary { cursor: pointer; list-style: none; }
+details.typ > summary::-webkit-details-marker { display: none; }
+details.typ > summary::before { content: "›"; display: inline-block; width: 1.1em; color: var(--leise); font-weight: 700; transition: transform .15s; }
+details.typ[open] > summary::before { transform: rotate(90deg); }
+details.typ:target { border-color: var(--a); }
+.typtext { display: block; font-size: .9rem; line-height: 1.4; margin: 1px 0 0 1.1em; }
+details.sicht .typtext { margin-left: .9em; }
+ul.felder { list-style: none; margin: 6px 0 4px; padding: 0; }
+ul.felder li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 5px 0; border-top: 1px solid var(--linie); font-size: .92rem; }
+ul.felder li:first-child { border-top: 0; }
+ul.felder .art { font-size: .74rem; padding: 0 6px; border: 1px solid var(--linie); border-radius: 5px; background: var(--grund); color: var(--leise); white-space: nowrap; }
+ul.felder .pflicht { font-size: .74rem; font-weight: 650; color: var(--pflicht); }
+ul.felder .mehr { flex-basis: 100%; font-size: .86rem; }
+p.bezug { margin: 6px 0 2px; font-size: .9rem; }
+ul.autos { list-style: none; padding: 0; margin: 4px 0; }
+ul.autos > li { padding: 8px 0; border-top: 1px solid var(--linie); }
+ul.autos > li:first-child { border-top: 0; }
+ul.autos p { margin: 2px 0; }
+p.ablauf { font-size: .92rem; }
+.unsichtbar { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+section.anleitung { margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--linie); background: var(--flaeche); }
+section.anleitung h2 { font-size: 1.05rem; border: 0; padding: 0; margin: 0 0 4px; }
+section.anleitung ol { margin: 0; padding-left: 1.4em; }
+section.anleitung li { margin: 2px 0; }
 .passt h3 { font-size: 1rem; margin: 16px 0 8px; }
 .passt h3 a.weiter { color: inherit; text-decoration: none; }
 .passt h3 a.weiter span { color: var(--leise); font-weight: 700; margin-left: 2px; }
@@ -955,6 +1222,18 @@ footer { max-width: 980px; margin: 0 auto; padding: 16px; color: var(--leise); f
 SKRIPT = '''
 // Katalog-Webseite der DMS-Registry: Suche/Filter und „In meinem DMS installieren“.
 // Die Adresse des eigenen DMS bleibt nur in diesem Browser (localStorage).
+// Sprung auf einen Mappentyp (#typ-…, #115): Bereich und Zeile aufklappen, damit man ihn sieht.
+(function () {
+  function oeffne() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (id.indexOf('typ-') !== 0) return;
+    var z = document.getElementById(id);
+    for (var x = z; x; x = x.parentElement) if (x.tagName === 'DETAILS') x.open = true;
+    if (z) z.scrollIntoView();
+  }
+  window.addEventListener('hashchange', oeffne);
+  document.addEventListener('DOMContentLoaded', oeffne);
+})();
 (function () {
   var SCHLUESSEL = 'dms-adresse';
   function lies() { try { return localStorage.getItem(SCHLUESSEL) || ''; } catch (e) { return ''; } }

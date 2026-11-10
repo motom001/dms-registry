@@ -136,15 +136,16 @@ class Pruefen(unittest.TestCase):
 
     def test_hinweis_ohne_symbol(self):
         with tempfile.TemporaryDirectory() as tmp:
-            h = pruefen.hinweise(probe(tmp))
+            h = [x for x in pruefen.hinweise(probe(tmp)) if not x.startswith('kurzanleitung:')]
             self.assertEqual(len(h), 1)
             self.assertIn('kein Symbol', h[0])
         with tempfile.TemporaryDirectory() as tmp:
-            self.assertEqual(pruefen.hinweise(probe(tmp, symbol='car')), [])
+            self.assertEqual([x for x in pruefen.hinweise(probe(tmp, symbol='car')) if not x.startswith('kurzanleitung:')], [])
 
     def test_keine_hinweise_fuer_pakete_der_registry(self):
+        # Ausnahme bis #80 Stufe 2: Die Kurzanleitung (#164) kommt mit den überarbeiteten Beschreibungen in die Pakete.
         for ordner in sorted(p for p in (WURZEL / 'pakete').iterdir() if (p / 'manifest.yaml').exists()):
-            self.assertEqual(pruefen.hinweise(ordner), [], ordner.name)
+            self.assertEqual([x for x in pruefen.hinweise(ordner) if not x.startswith('kurzanleitung:')], [], ordner.name)
 
 
 class Katalog(unittest.TestCase):
