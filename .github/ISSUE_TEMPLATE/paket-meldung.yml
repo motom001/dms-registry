@@ -30,6 +30,7 @@ body:
         - Office und E-Mail (office_email)
         - PDF/A (pdfa)
         - QR-Code lesen (qrcode)
+        - Rechnungen (rechnungen)
         - Sicherungsziel WebDAV (sicherung_webdav)
         - 'Sprache: Französisch (Français) (sprache_fr)'
         - 'Sprache: Italienisch (Italiano) (sprache_it)'

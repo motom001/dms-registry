@@ -1,0 +1,13 @@
+# Optional: mitgelieferte Automatisierungen (Ablago ab 0.177.0, REGELN.md „Automatisierungen“). Zum Benutzen im
+# Manifest unter inhalt einkommentieren, dms: ">=0.177.0" angeben und in tests/erwartung.yaml die Zahl nennen
+# (automatisierungen: 1). Nach der Installation sind sie aus; beim Installieren fragt Ablago, welche gleich an sein sollen.
+#
+# Beispiel (Ablago #883, früher eine Beispiel-Automatisierung von Ablago selbst): neue Dokumente melden. Feste Personen
+# oder Rollen (etwa „Verwaltung“) gibt es in Paketen nicht – Empfänger ist, wer die Mappe angelegt hat, oder ein Feld
+# der Mappe mit Verweis auf Benutzer (ziel: dms:benutzer). Eine Rolle trägt man in Ablago selbst ein.
+- schluessel: dokument_gemeldet
+  name: Neue Dokumente melden
+  beschreibung: Kommt an einer Mappe ein Dokument hinzu, bekommt, wer die Mappe angelegt hat, eine gebündelte Benachrichtigung.
+  wenn: { art: dokument.hochgeladen, typ: beispiel }
+  dann:
+    - { art: aufgabe, als: benachrichtigung, empfaenger: [{ art: ersteller }], text: "Neues Dokument an {titel}." }

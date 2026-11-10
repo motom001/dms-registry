@@ -1,0 +1,19 @@
+# Ansichten des Pakets Rechnungen. Schema: schema/inhalt.schema.json
+- { schluessel: rechnungen, name: Rechnungen, beschreibung: Alle Rechnungen, Quittungen und Gutschriften, symbol: receipt, typen: [rechnung], beschriftungen: { en: { name: "Invoices", beschreibung: "All invoices, receipts and credit notes" } } }
+- schluessel: offen
+  name: Offen
+  beschreibung: Noch nicht bezahlt
+  beschriftungen: { en: { name: "Open", beschreibung: "Not paid yet" } }
+  eltern: rechnungen
+  typen: [rechnung]
+  bedingungen:
+    - { feld: bezahlt_am, operator: leer }
+    - { feld: zahlungseingang_am, operator: leer }
+- schluessel: dieses_jahr
+  name: Dieses Jahr
+  beschriftungen: { en: { name: "This year" } }
+  eltern: rechnungen
+  typen: [rechnung]
+  bedingungen:
+    - { feld: datum, operator: imZeitraum, wert: { art: jahr } }
+- { schluessel: lieferscheine, name: Lieferscheine, eltern: rechnungen, typen: [lieferschein], beschriftungen: { en: { name: "Delivery notes" } } }
