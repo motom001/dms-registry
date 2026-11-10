@@ -27,7 +27,7 @@
       "properties": {
         "schluessel": {
           "type": "string",
-          "pattern": "^[a-z][a-z0-9_]{0,39}$"
+          "pattern": "^[a-z][a-z0-9_]{0,59}$"
         },
         "name": {
           "type": "string",
@@ -73,7 +73,7 @@
         },
         "mappentyp": {
           "type": "string",
-          "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$",
+          "pattern": "^([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59}$",
           "description": "bei typ feld: Mappentyp, aus dem ein Feld gewählt wird"
         },
         "mehrfach": {
@@ -82,7 +82,7 @@
         },
         "schliesst_aus": {
           "type": "string",
-          "pattern": "^[a-z][a-z0-9_]{0,39}$",
+          "pattern": "^[a-z][a-z0-9_]{0,59}$",
           "description": "DMS #658, ab 0.179.0: anderes Feld desselben Verweistyps im Abschnitt; dieselbe Id nicht in beiden"
         },
         "beispiel": {
@@ -127,7 +127,7 @@
       "properties": {
         "liste": {
           "type": "string",
-          "pattern": "^[a-z][a-z0-9_]{0,39}$"
+          "pattern": "^[a-z][a-z0-9_]{0,59}$"
         },
         "name": {
           "type": "string",
@@ -159,12 +159,23 @@
     },
     "id": {
       "type": "string",
-      "pattern": "^[a-z][a-z0-9_]{1,19}$"
+      "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?$"
     },
     "name": {
       "type": "string",
       "minLength": 2,
       "maxLength": 60
+    },
+    "herausgeber": {
+      "description": "#173, motom001/dms#1084: Wer das Paket herausgibt, als umgedrehte Domain. In dieser Registry immer app.ablago (offizielle Pakete); Pflicht für jede neue Version (pruefen.py, katalog.py). Ablago ab 0.229.0 zeigt ihn neben dem Namen und nimmt app.ablago nur aus dem offiziellen Katalog; ältere Versionen übergehen das Feld.",
+      "const": "app.ablago"
+    },
+    "ersetzt": {
+      "description": "#173, motom001/dms#1084 (ab Ablago 0.229.0, dms: \">=0.229.0\"): frühere Id(s) dieses Pakets – ein Update zieht die Installation unter der alten Id um, statt ein zweites Paket anzulegen. Die alte Id muss in werkzeuge/ids.txt stehen und darf keinen Paketordner mehr haben; sie fällt aus dem Katalog und wird nie wieder vergeben.",
+      "oneOf": [
+        { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?$" },
+        { "type": "array", "minItems": 1, "maxItems": 5, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?$" } }
+      ]
     },
     "version": {
       "type": "string",
@@ -257,13 +268,13 @@
     "ergaenzt": {
       "description": "Optional (motom001/dms#405): Dieses Paket ergänzt ein anderes, z. B. eine Zusatzsprache die Texterkennung. Das ergänzte Paket muss auch unter abhaengigkeiten stehen. Das DMS ab 0.151.0 zeigt Ergänzungen bei der Installation als Häkchen unter dem ergänzten Paket, gruppiert nach gruppe (eine kurze Frage ohne Fragezeichen, z. B. „Weitere Sprachen“); ältere DMS ignorieren das Feld. Kurzform: nur die Id.",
       "oneOf": [
-        { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" },
+        { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?$" },
         {
           "type": "object",
           "additionalProperties": false,
           "required": ["paket"],
           "properties": {
-            "paket": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" },
+            "paket": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?$" },
             "gruppe": { "type": "string", "minLength": 1, "maxLength": 40 }
           }
         }
@@ -272,7 +283,7 @@
     "abhaengigkeiten": {
       "type": "object",
       "propertyNames": {
-        "pattern": "^[a-z][a-z0-9_]{1,19}$"
+        "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?$"
       },
       "additionalProperties": {
         "type": "string",
@@ -369,14 +380,14 @@
               "type": "array",
               "items": {
                 "type": "string",
-                "pattern": "^(\\*|([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39})$"
+                "pattern": "^(\\*|([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59})$"
               }
             },
             "schreiben": {
               "type": "array",
               "items": {
                 "type": "string",
-                "pattern": "^(\\*|([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39})$"
+                "pattern": "^(\\*|([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59})$"
               }
             },
             "dokumente": {
@@ -455,7 +466,7 @@
           "description": "Mappentypen für Ereignisse (DMS #670, ab 0.153.0): Pflicht mit den Mappen-Ereignissen mappe.angelegt, mappe.geaendert, mappe.geloescht, mappe.wiederhergestellt und frist.erreicht – und nur mit ihnen. Schlüssel eigener Mappentypen ohne Präfix; ab DMS 0.166.0 (#686) auch fremde wie paket:typ oder dms:post und * (alle, die das Paket lesen darf). Das Paket muss sie lesen dürfen.",
           "items": {
             "type": "string",
-            "pattern": "^(\\*|([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39})$"
+            "pattern": "^(\\*|([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59})$"
           },
           "minItems": 1,
           "uniqueItems": true
@@ -483,10 +494,10 @@
               "additionalProperties": false,
               "minProperties": 1,
               "properties": {
-                "pdf_text": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
-                "pdf_scan": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
-                "bilder": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
-                "emails": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" }
+                "pdf_text": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,59}$" },
+                "pdf_scan": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,59}$" },
+                "bilder": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,59}$" },
+                "emails": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,59}$" }
               }
             }
           }
@@ -517,7 +528,7 @@
             "properties": {
               "schluessel": {
                 "type": "string",
-                "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                "pattern": "^[a-z][a-z0-9_]{0,59}$"
               },
               "name": {
                 "type": "string",

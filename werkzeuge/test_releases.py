@@ -139,6 +139,24 @@ class Releases(unittest.TestCase):
             self.assertEqual(p['downloads'], 127)
             self.assertEqual(sorted(v['downloads'] for v in p['versionen']), [7, 120])
 
+    def test_umzug_auf_neue_id(self):
+        # Registry #173: Releases der früheren Id bleiben, ihre Downloads zählen beim neuen Paket mit.
+        with tempfile.TemporaryDirectory() as t:
+            gh = FalschesGitHub()
+            releases.anlegen(stand(Path(t)), gh)
+            for r, n in zip(gh.liste, (7, 120)):
+                r['assets'][0]['download_count'] = n
+            k = json.loads((Path(t) / 'katalog.json').read_text())
+            neu = k['pakete'][0]
+            neu.update({'id': 'probe.neu', 'ersetzt': ['probe']})
+            neu['versionen'] = neu['versionen'][:0] + [dict(neu['versionen'][0], version='2.0.0')]
+            (Path(t) / 'katalog.json').write_text(json.dumps(k))
+            self.assertEqual(releases.zaehlen(Path(t), gh), [])
+            self.assertEqual(json.loads((Path(t) / 'katalog.json').read_text())['pakete'][0]['downloads'], 127)
+            neu.pop('ersetzt')
+            (Path(t) / 'katalog.json').write_text(json.dumps(k))
+            self.assertTrue(releases.zaehlen(Path(t), gh))  # ohne ersetzt: Versionen verloren
+
     def test_ausduennen(self):
         with tempfile.TemporaryDirectory() as t:
             ordner = stand(Path(t), ('1.0.0', '1.1.0', '1.2.0'))
@@ -204,6 +222,21 @@ class KatalogAdressen(unittest.TestCase):
             with mock.patch.object(katalog, 'hole', lambda url: b'anders'):
                 f = katalog.baue(Path(tmp), False)
             self.assertTrue(any('Prüfsumme' in x for x in f), f)
+
+
+class Umzug(unittest.TestCase):
+    """Registry #173: herausgeber an jedem Paket, die ersetzte Id fällt aus dem Katalog."""
+
+    def test_herausgeber_und_ersetzt(self):
+        pakete = {'texterkennung_fra': {'id': 'texterkennung_fra', 'versionen': []},
+                  'texterkennung.fra': {'id': 'texterkennung.fra', 'versionen': []}, 'haus': {'id': 'haus', 'versionen': []}}
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(katalog, 'WURZEL', Path(tmp)):
+            f = katalog.herausgeber_und_umzug(pakete, {'texterkennung.fra': {'ersetzt': 'texterkennung_fra'}, 'haus': {}})
+        self.assertEqual(f, [])
+        self.assertEqual(sorted(pakete), ['haus', 'texterkennung.fra'])
+        self.assertEqual(pakete['texterkennung.fra']['ersetzt'], ['texterkennung_fra'])
+        self.assertNotIn('ersetzt', pakete['haus'])
+        self.assertEqual({p['herausgeber'] for p in pakete.values()}, {'app.ablago'})
 
 
 class SammeldateiSpiegel(unittest.TestCase):

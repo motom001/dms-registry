@@ -58,7 +58,9 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://help.
 ## Pflicht
 
 - `manifest.yaml`, `README.md`, `LICENSE`, `CHANGELOG.md`, `inhalt/` (ggf. leer), `tests/`
-- Paket-Id = Ordnername: Kleinbuchstaben, Ziffern, `_`, beginnt mit einem Buchstaben, höchstens 20 Zeichen
+- Paket-Id = Ordnername: Kleinbuchstaben, Ziffern, `_`, beginnt mit einem Buchstaben, höchstens 40 Zeichen (über 20 erst ab Ablago 0.229.0, `dms: ">=0.229.0"`). Dazu darf **ein** Punkt mit einem Zusatz bis 20 Zeichen stehen – nur für Ergänzungen (siehe [Ergänzungen](#ergänzungen)).
+- **Herausgeber** (Registry #173, motom001/dms#1084): `herausgeber: app.ablago` – Pflicht für jede neue Version; alle Pakete dieser Registry gibt das Ablago-Projekt heraus. Ablago ab 0.229.0 zeigt ihn neben dem Namen („Verträge · app.ablago“) und nimmt `app.ablago` nur aus dem offiziellen Katalog. Ältere Versionen ohne das Feld gelten im Katalog ebenfalls als `app.ablago`; ältere Ablago-Versionen übergehen es.
+- **Schlüssel** (Mappentypen, Felder, Register, Ansichten, Beispiele, Automatisierungen) bis 60 Zeichen; über 40 erst ab Ablago 0.229.0.
 - **Eine Id nur einmal** (Registry #173): Ein neues Paket trägt seine Id im selben Pull Request in `werkzeuge/ids.txt` ein. Dort steht jede Id, die es im Katalog je gab, für immer, auch wenn das Paket zurückgezogen wird. `pruefen.py` lehnt eine früher vergebene Id für ein neues Paket ab, ebenso das Streichen einer Zeile.
 - Bei jeder Änderung eine höhere Version (SemVer) und ein Eintrag im `CHANGELOG.md`
 - Deutsche Texte in Feldern und Sichten; das README auf Deutsch, gern zusätzlich auf Englisch. Englische Beschriftungen (`beschriftungen.en`) sind erwünscht – die mitgelieferten Pakete mit Mappentypen haben sie.
@@ -112,7 +114,7 @@ kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unte
 
 ## Namen
 
-Schlüssel von Mappentypen, Feldern und Registern sind **im Paket lokal**, z. B. `versicherung`. Ablago legt sie mit der Paket-Id davor an (`haushalt_versicherung`), damit sich zwei Pakete nicht in die Quere kommen. Angezeigt wird nur der Name („Versicherung“). Verweise auf Typen anderer Pakete schreibst du als `<paket>:<schluessel>`, z. B. `basis:organisation`. Das andere Paket muss dann unter `abhaengigkeiten` stehen. Auf Mappentypen, die Ablago selbst mitbringt, verweist du mit `dms:` – ohne Abhängigkeit: `dms:benutzer` und `dms:rolle`. Dafür muss im Manifest `dms: ">=0.75.0"` stehen. Den **Ablageort** (wo ein Original liegt) bringt seit Ablago 0.212.0 das Paket Basis mit: `basis:ablageort` mit `basis: ">=1.6.0"` unter `abhaengigkeiten` (Ablago #883, Registry #138). Das frühere `dms:ablageort` versteht Ablago bis 1.0 noch als Alias; `pruefen.py` warnt davor. Die Paket-Id `dms` ist deshalb vergeben.
+Schlüssel von Mappentypen, Feldern und Registern sind **im Paket lokal**, z. B. `versicherung`. Ablago legt sie mit der Paket-Id davor an – ab 0.229.0 als `haushalt:versicherung` (Paket und Schlüssel getrennt, motom001/dms#1084), bis 0.228 als `haushalt_versicherung` –, damit sich zwei Pakete nicht in die Quere kommen. Angezeigt wird nur der Name („Versicherung“). Verweise auf Typen anderer Pakete schreibst du als `<paket>:<schluessel>`, z. B. `basis:organisation`. Das andere Paket muss dann unter `abhaengigkeiten` stehen. Auf Mappentypen, die Ablago selbst mitbringt, verweist du mit `dms:` – ohne Abhängigkeit: `dms:benutzer` und `dms:rolle`. Dafür muss im Manifest `dms: ">=0.75.0"` stehen. Den **Ablageort** (wo ein Original liegt) bringt seit Ablago 0.212.0 das Paket Basis mit: `basis:ablageort` mit `basis: ">=1.6.0"` unter `abhaengigkeiten` (Ablago #883, Registry #138). Das frühere `dms:ablageort` versteht Ablago bis 1.0 noch als Alias; `pruefen.py` warnt davor. Die Paket-Id `dms` ist deshalb vergeben.
 
 Beispiel-Mappen dürfen aufeinander verweisen (ab Ablago 0.79.0): Ein Beispiel bekommt einen `schluessel`, ein Verweisfeld eines anderen Beispiels den Wert `{ beispiel: strom }` – oder `{ beispiel: "basis:stadtwerke" }` für ein Beispiel einer Abhängigkeit. Dann muss im Manifest `dms: ">=0.79.0"` stehen.
 
@@ -208,9 +210,27 @@ abhaengigkeiten:
 ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }   # oder kurz: ergaenzt: texterkennung
 ```
 
+**Id mit Punkt** (ab Ablago 0.229.0, motom001/dms#1084): Eine Ergänzung darf `<hauptpaket>.<zusatz>` heißen, z. B. `texterkennung.fra`. Der Punkt heißt immer „ergänzt das Paket vor dem Punkt“ – das Paket muss dann `ergaenzt: <hauptpaket>` angeben, das Hauptpaket gibt es in der Registry, und `dms` ist mindestens `">=0.229.0"`. Neue Ergänzungen nehmen diese Form.
+
 Ablago ab 0.151.0 zeigt Ergänzungen beim Installieren als Häkchen unter dem ergänzten Paket, gruppiert nach `gruppe` (kurze Frage ohne Fragezeichen, höchstens 40 Zeichen; ohne Gruppe: „Ergänzungen“) – auch nachträglich, im Einrichtungsassistenten und in der Sammeldatei. Jede Ergänzung bleibt ein eigenes Paket mit eigener Version. Ältere Ablago-Versionen ignorieren das Feld, deshalb braucht es kein höheres `dms`. Im Katalog steht es je Version als `ergaenzt: { paket, gruppe }`, auf der Katalog-Webseite als eigene Gruppe unter „Passt dazu“.
 
 **Was eine Ergänzung darf:** Sie fügt dem ergänzten Paket etwas hinzu – Daten (z. B. ein Sprachmodell) oder Dokumente an dessen Vorgaben (z. B. eine Vorlage an eine vorhandene Vertragsart). Sie **ändert keine Mappentypen und keine Rechte** des ergänzten Pakets, bringt keine eigenen Mappentypen mit und ändert keine fremden Vorlagen. Entfernt man sie, nimmt sie nur mit, was sie selbst hinzugefügt hat.
+
+## Neue Id (Umzug)
+
+Bekommt ein Paket eine neue Id (motom001/dms#1084, z. B. `texterkennung_fra` → `texterkennung.fra`), zieht der **Ordner** um, und das Manifest nennt die alte Id unter `ersetzt` (Text oder Liste, höchstens 5):
+
+```yaml
+id: texterkennung.fra
+version: 1.1.0          # höher als die letzte Version unter der alten Id
+dms: ">=0.229.0"
+ersetzt: texterkennung_fra
+```
+
+- Ablago ab 0.229.0 nimmt die neue Id als **Update** der Installation unter der alten – mit allen Mappentypen, Mappen, Einstellungen und Daten; ein zweites Paket entsteht nicht. Das geht nur aus derselben Quelle und vom selben Herausgeber.
+- Die alte Id **fällt aus dem Katalog**; `katalog.json` nennt sie am neuen Paket unter `ersetzt`. Ihre Releases bleiben stehen, ihre Downloads zählen beim neuen Paket mit. Ältere Ablago-Versionen behalten das Paket unter der alten Id, bis sie aktualisiert sind.
+- Die alte Id steht weiter in `werkzeuge/ids.txt` und wird nie wieder vergeben; die neue kommt dazu. `pruefen.py` prüft, dass es die alte Id gab und ihr Ordner weg ist.
+- Kein Alias: Wer das Paket irgendwo mit der alten Id nennt (Abhängigkeiten, Verweise), zieht im selben Pull Request mit.
 
 ## Beschriftungen je Sprache
 

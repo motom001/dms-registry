@@ -20,7 +20,8 @@ ist.
 
 `zaehlen` meldet außerdem einen Fehler, wenn es ein veröffentlichtes Release gibt, dessen Version im Katalog fehlt
 (Schutz vor einem Lauf, der Versionen verliert – gh-pages hat keine Historie). Bewusst zurückgezogene Versionen stehen
-in werkzeuge/zurueckgezogen.yaml; ihr Release wird von Hand gelöscht.
+in werkzeuge/zurueckgezogen.yaml; ihr Release wird von Hand gelöscht. Releases einer früheren Id, die ein Paket unter
+`ersetzt` nennt (Umzug, #173), bleiben stehen; ihre Downloads zählen beim neuen Paket mit.
 
 Braucht GITHUB_TOKEN (contents: write) und GITHUB_REPOSITORY; ohne Token: nur `groesse`.
 """
@@ -168,7 +169,14 @@ def zaehlen(ausgabe: Path, gh) -> list[str]:
     # Sicherheit (PR #177): Ein veröffentlichtes Release, dessen Version im Katalog fehlt, heißt meist, dass ein Lauf
     # Versionen verloren hat – gh-pages hat keine Historie, aus der man sie zurückholen könnte.
     im_katalog = {t for _, _, _, t in versionen(katalog)}
-    weg = sorted(r['tag_name'] for r in alle if not r.get('draft') and r['tag_name'] not in im_katalog and r['tag_name'] not in zurueckgezogen())
+    # Umzug (Registry #173, motom001/dms#1084): Releases einer Id, die ein Paket unter `ersetzt` nennt, bleiben – die
+    # alte Id steht nicht mehr im Katalog; ihre Downloads zählen beim neuen Paket mit.
+    frueher = {alt: p for p in katalog['pakete'] for alt in p.get('ersetzt') or []}
+
+    def umgezogen(tag_name: str) -> bool:
+        return any(tag_name.startswith(f'{alt}-v') for alt in frueher)
+    weg = sorted(r['tag_name'] for r in alle if not r.get('draft') and r['tag_name'] not in im_katalog
+                 and r['tag_name'] not in zurueckgezogen() and not umgezogen(r['tag_name']))
     if weg:
         return [f'Releases ohne Version im Katalog: {", ".join(weg)} – Version verloren? Bewusst zurückgezogen: in werkzeuge/zurueckgezogen.yaml eintragen']
     for p in katalog['pakete']:
@@ -180,6 +188,8 @@ def zaehlen(ausgabe: Path, gh) -> list[str]:
             else:
                 v['downloads'] = n
                 summe += n
+        for alt in p.get('ersetzt') or []:
+            summe += sum(n for name, n in zahl.items() if name.startswith(f'{alt}-') and name.endswith('.zip'))
         p['downloads'] = summe
     schreib_katalog(ausgabe, katalog)
     print(f'Downloads: {sum(p["downloads"] for p in katalog["pakete"])} zusammen')

@@ -1,9 +1,12 @@
 # Beschreibung des Pakets. Schema: schema/manifest.schema.json
 schema: 1
 
-# Id = Ordnername unter pakete/: Kleinbuchstaben, Ziffern, _; beginnt mit einem Buchstaben; max. 20 Zeichen.
+# Id = Ordnername unter pakete/: Kleinbuchstaben, Ziffern, _; beginnt mit einem Buchstaben; max. 40 Zeichen
+# (über 20 erst ab Ablago 0.229.0). Eine Id nur einmal: werkzeuge/ids.txt (REGELN.md, „Eine Id nur einmal“).
 id: vorlage
 name: Vorlage
+# Herausgeber (#173): Alle Pakete dieser Registry gibt das Ablago-Projekt heraus – Pflicht für jede neue Version.
+herausgeber: app.ablago
 version: 1.0.0                      # SemVer; bei jeder Änderung erhöhen und CHANGELOG.md ergänzen
 beschreibung: Kurz in einem Satz, was das Paket bringt.
 

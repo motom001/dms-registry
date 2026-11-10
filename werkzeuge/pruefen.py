@@ -154,7 +154,12 @@ DMS_MAPPEN_EREIGNISSE_AB = (0, 153, 0)
 # Fremde Mappentypen (paket:typ, dms:post) und „*“ in code.mappentypen (DMS #686): Zustellung nach den Rechten des
 # Paket-Benutzers, ab DMS 0.166.0.
 DMS_FREMDE_MAPPENTYPEN_AB = (0, 166, 0)
-TYPVERWEIS = re.compile(r'^(\*|([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39})$')
+# Wie shared/src/kennungen.ts in Ablago (#1084): Paket-Id bis 40 Zeichen plus ein Punkt-Zusatz bis 20, Schlüssel bis 60.
+PAKET_ID_TEIL = r'[a-z][a-z0-9_]{1,39}(?:\.[a-z][a-z0-9_]{0,19})?'
+TYPVERWEIS = re.compile(rf'^(\*|({PAKET_ID_TEIL}:)?[a-z][a-z0-9_]{{0,59}})$')
+# Kennungen nach #1084 (Registry #173): Ids mit Punkt, über 20 Zeichen, Schlüssel über 40 Zeichen, ersetzt – ab 0.229.0.
+DMS_KENNUNGEN_AB = (0, 229, 0)
+HERAUSGEBER = 'app.ablago'
 
 
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
@@ -1031,7 +1036,7 @@ DMS_SPRACHPAKETE_AB = (0, 203, 0)
 SPRACHTEXT_MAX = 4000
 SPRACHTEXTE_MAX = 4 * 1024 * 1024
 SPRACHPAKET_DATEI = re.compile(r'^(manifest\.yaml|README(\.[a-z]{2})?\.md|LICENSE(\.[A-Za-z]{1,10})?|NOTICE|CHANGELOG\.md|'
-                               r'tests/[A-Za-z0-9._-]{1,80}\.(ya?ml|json|md)|texte/[a-z][a-z0-9-]{0,40}\.json|beschriftungen/[a-z][a-z0-9_]{1,19}\.yaml)$')
+                               r'tests/[A-Za-z0-9._-]{1,80}\.(ya?ml|json|md)|texte/[a-z][a-z0-9-]{0,40}\.json|beschriftungen/[a-z][a-z0-9_]{1,39}(\.[a-z][a-z0-9_]{0,19})?\.yaml)$')
 STEUERZEICHEN = re.compile('[\x00-\x08\x0b-\x1f\x7f\u2028\u2029]')
 # HTML erkennen ohne die Texte von Ablago: Tags bekannter Elemente, Ereignis-Attribute, javascript:. Den genauen Abgleich
 # („spitze Klammern nur, wo das Deutsche sie hat“) macht Ablago beim Installieren und werkzeuge/sprachen.py.
@@ -1334,6 +1339,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         fehler.append(f'manifest.yaml: ergaenzt „{erg_paket}“ muss auch unter abhaengigkeiten stehen')
     if erg_paket and erg_paket == m.get('id'):
         fehler.append('manifest.yaml: ein Paket ergänzt nicht sich selbst')
+    fehler += kennungen_pruefung(ordner, m, erg_paket, basis, vorlage)
 
     # Lizenztext passt grob zur Kennung.
     lizenz = (ordner / 'LICENSE').read_text(encoding='utf-8', errors='replace') if (ordner / 'LICENSE').exists() else ''
@@ -1389,8 +1395,10 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         if s in gesehen:
             fehler.append(f'mappentypen: Schlüssel „{s}“ doppelt')
         gesehen.add(s)
-        if len(f"{m.get('id')}_{s}") > 40:
-            fehler.append(f'mappentypen: „{m.get("id")}_{s}“ ist länger als 40 Zeichen')
+        # Bis Ablago 0.228 hießen Mappentypen <paket>_<schluessel> mit höchstens 40 Zeichen; ab 0.229.0 (#1084) gilt
+        # nur noch der Schlüssel (bis 60, prüft das Schema).
+        if len(f"{m.get('id')}_{s}") > 40 and not kennungen_neu(m):
+            fehler.append(f'mappentypen: „{m.get("id")}_{s}“ ist länger als 40 Zeichen – erst ab Ablago 0.229.0 erlaubt (dms: ">=0.229.0")')
         felder = {f.get('key') for f in t.get('felder', []) if isinstance(f, dict)}
         for f in t.get('felder', []):
             if isinstance(f, dict) and f.get('ziel'):
@@ -1583,8 +1591,79 @@ def doppelte_typen(ordner: list[Path]) -> list[str]:
             'darauf (REGELN.md, „Paketarten“)' for n, w in sorted(namen.items()) if len(w) > 1]
 
 
+def kennungen_neu(m: dict) -> bool:
+    """Verlangt das Paket Ablago ab 0.229.0 (Kennungen paket:schluessel, #1084)?"""
+    ab = dms_untergrenze(str(m.get('dms', '')))
+    return ab is not None and ab >= DMS_KENNUNGEN_AB
+
+
+def ersetzte_ids(m: dict) -> list[str]:
+    e = m.get('ersetzt')
+    return [str(x) for x in ([e] if isinstance(e, str) else e if isinstance(e, list) else [])]
+
+
+def lange_schluessel(ordner: Path, m: dict) -> list[str]:
+    """Schlüssel über 40 Zeichen (bis Ablago 0.228 die Grenze) in Mappentypen, Feldern, Registern, Ansichten, Beispielen
+    und Automatisierungen."""
+    lang = []
+    for art in ('mappentypen', 'sichten', 'beispiele', 'automatisierungen'):
+        rel = (m.get('inhalt') or {}).get(art)
+        try:
+            liste = yaml.safe_load((ordner / str(rel)).read_text(encoding='utf-8')) or [] if rel else []
+        except Exception:  # noqa: BLE001 – meldet schon pruefe()
+            continue
+        for x in liste if isinstance(liste, list) else []:
+            if not isinstance(x, dict):
+                continue
+            werte = [x.get('schluessel')] + [f.get('key') for f in x.get('felder') or [] if isinstance(f, dict)] \
+                + [r.get('key') for r in x.get('register') or [] if isinstance(r, dict)]
+            lang += [f'{art}: „{w}“' for w in werte if isinstance(w, str) and len(w) > 40]
+    return lang
+
+
+def kennungen_pruefung(ordner: Path, m: dict, erg_paket: str | None, basis: str | None, vorlage: bool) -> list[str]:
+    """Registry #173 nach motom001/dms#1084: Id mit Punkt nur als Ergänzung des Pakets vor dem Punkt, ersetzt, längere
+    Ids und Schlüssel erst ab Ablago 0.229.0, Herausgeber app.ablago für jede neue Version."""
+    fehler: list[str] = []
+    pid = str(m.get('id', ''))
+    neu = kennungen_neu(m)
+    if '.' in pid:
+        haupt = pid.split('.', 1)[0]
+        if erg_paket != haupt:
+            fehler.append(f'manifest.yaml: Eine Id mit Punkt ergänzt das Paket vor dem Punkt – bitte ergaenzt: {haupt} (und {haupt} unter abhaengigkeiten)')
+        if not neu:
+            fehler.append('manifest.yaml: Ids mit Punkt kennt Ablago erst ab 0.229.0 – bitte dms: ">=0.229.0" angeben')
+    elif len(pid) > 20 and not neu:
+        fehler.append('manifest.yaml: Ids über 20 Zeichen kennt Ablago erst ab 0.229.0 – bitte dms: ">=0.229.0" angeben')
+    ersetzt = ersetzte_ids(m)
+    if ersetzt:
+        if pid in ersetzt or 'dms' in ersetzt:
+            fehler.append('manifest.yaml: ersetzt nennt frühere Ids – nicht die eigene und nicht „dms“')
+        if not neu:
+            fehler.append('manifest.yaml: ersetzt (Umzug auf eine neue Id) kennt Ablago erst ab 0.229.0 – bitte dms: ">=0.229.0" angeben')
+    if not neu:
+        fehler += [f'{x} ist länger als 40 Zeichen – erst ab Ablago 0.229.0 erlaubt (dms: ">=0.229.0")' for x in lange_schluessel(ordner, m)]
+    # Herausgeber (Sicherheit, #1084): Pflicht für jede neue Version; ältere Versionen gelten im offiziellen Katalog
+    # ohnehin als app.ablago. Die Form (genau app.ablago) prüft das Schema.
+    if not vorlage and 'herausgeber' not in m and basis and neue_version(ordner, m, basis):
+        fehler.append(f'manifest.yaml: herausgeber: {HERAUSGEBER} fehlt – Pflicht für jede neue Version (Registry #173)')
+    return fehler
+
+
+def neue_version(ordner: Path, m: dict, basis: str) -> bool:
+    """Ist die Version im Ordner gegenüber der Basis neu (neues Paket oder andere Version)?"""
+    r = subprocess.run(['git', 'show', f'{basis}:pakete/{ordner.name}/manifest.yaml'], cwd=WURZEL, capture_output=True, text=True)
+    if r.returncode != 0:
+        return True
+    try:
+        alt = yaml.safe_load(r.stdout) or {}
+    except Exception:  # noqa: BLE001
+        return True
+    return str(alt.get('version')) != str(m.get('version'))
+
+
 def kennungs_kollisionen(ordner: list[Path]) -> tuple[list[str], list[str]]:
-    """Kennungen in Ablago (Registry #173): Ablago legt Mappentypen und Ansichten als <paket>_<schluessel> an. Weil beide
+    """Kennungen in Ablago bis 0.228 (Registry #173; ab 0.229.0 paket:schluessel, #1084): Mappentypen und Ansichten hießen <paket>_<schluessel>. Weil beide
     „_“ enthalten dürfen, können zwei Pakete dieselbe Kennung erzeugen (haus + garten_pflanze, haus_garten + pflanze).
     Liefert (Fehler, Hinweise): Fehler bei gleicher Kennung, Hinweis bei einer Id, die wie <andere id>_… aussieht."""
     gesehen: dict[str, str] = {}
@@ -1662,6 +1741,19 @@ def id_pruefung(ordner: list[Path], basis: str | None, ids_text: str | None = No
             fehler.append(f'{pid}: neue Paket-Id – bitte im selben Pull Request in werkzeuge/ids.txt eintragen (Registry #173)')
         elif pid in alt and not gab_es(pid):
             fehler.append(f'{pid}: diese Id war schon vergeben (werkzeuge/ids.txt) – ein neues Paket braucht eine eigene, auch wenn das alte zurückgezogen ist')
+        # Umzug (#1084): Die alte Id gab es (ids.txt) und hat keinen Paketordner mehr; das Hauptpaket einer Id mit Punkt
+        # gibt es in der Registry (gleicher Herausgeber: hier immer app.ablago).
+        try:
+            m = yaml.safe_load((o / 'manifest.yaml').read_text(encoding='utf-8')) or {}
+        except Exception:  # noqa: BLE001
+            m = {}
+        for x in ersetzte_ids(m) if isinstance(m, dict) else []:
+            if x not in ids:
+                fehler.append(f'{pid}: ersetzt „{x}“ – diese Id gab es nie (werkzeuge/ids.txt)')
+            if (o.parent / x).is_dir():
+                fehler.append(f'{pid}: ersetzt „{x}“, den Ordner pakete/{x} gibt es aber noch – beim Umzug zieht der Ordner mit')
+        if '.' in pid and not (o.parent / pid.split('.', 1)[0] / 'manifest.yaml').exists():
+            fehler.append(f'{pid}: das Hauptpaket „{pid.split(".", 1)[0]}“ gibt es in der Registry nicht')
     return fehler
 
 
