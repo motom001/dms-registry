@@ -1302,3 +1302,86 @@ class KennungenNach1084(unittest.TestCase):
             (w / 'texterkennung_fra').rmdir()
             shutil.rmtree(w / 'texterkennung')
             self.assertTrue(any('Hauptpaket' in x for x in pruefen.id_pruefung([w / 'texterkennung.fra'], None, ids)))
+
+
+class Etappe15(unittest.TestCase):
+    """Paketformat Etappe 15/16 (Registry #159, Entwurf): neue Bausteine und ihre Prüfungen."""
+
+    VERTRAG = {'schluessel': 'vertrag', 'name': 'Vertrag', 'beschreibung': 'x', 'felder': [
+        {'key': 'bezeichnung', 'label': 'Bezeichnung', 'typ': 'text'},
+        {'key': 'vertragsart', 'label': 'Vertragsart', 'typ': 'referenz', 'ziel': 'vertragsart',
+         'vorbelegen': [{'von': 'mindestlaufzeit', 'nach': 'mindestlaufzeit'}]},
+        {'key': 'betrifft', 'label': 'Betrifft', 'typ': 'referenz', 'ziel': ['basis:person', 'basis:organisation'], 'mehrfach': True, 'gleicherTyp': True},
+        {'key': 'mindestlaufzeit', 'label': 'Mindestlaufzeit', 'typ': 'zeitraum'},
+        {'key': 'betrag', 'label': 'Betrag', 'typ': 'betrag', 'negativ': True},
+        {'key': 'status', 'label': 'Status', 'typ': 'text', 'berechnet': True},
+        {'key': 'kaltmiete', 'label': 'Kaltmiete', 'typ': 'betrag', 'anzeigenWenn': [{'feld': 'vertragsart', 'vorgabe': ['miete']}]},
+        {'key': 'nummer', 'label': 'Nummer', 'typ': 'zusammengesetzt', 'vorlage': '{bezeichnung} · {betrag}'},
+        {'key': 'positionen', 'label': 'Positionen', 'typ': 'tabelle', 'quelle': {'typ': 'teil', 'feld': 'vertrag'}},
+    ], 'register': [{'key': 'allgemein', 'name': 'Allgemein', 'art': 'felder',
+                     'felder': ['bezeichnung', 'vertragsart', 'betrifft', 'mindestlaufzeit', 'betrag', 'status', 'kaltmiete', 'nummer', 'positionen'],
+                     'abschnitte': [{'vor': 'kaltmiete', 'titel': 'Miete', 'anzeigenWenn': [{'merkmal': 'beruflich'}]}]},
+                    {'key': 'vorlagen', 'name': 'Vorlagen', 'art': 'dokumente'}]}
+    ART = {'schluessel': 'vertragsart', 'name': 'Vertragsart', 'beschreibung': 'x', 'felder': [
+        {'key': 'name', 'label': 'Name', 'typ': 'text'}, {'key': 'mindestlaufzeit', 'label': 'Mindestlaufzeit', 'typ': 'zeitraum'}],
+        'register': [{'key': 'allgemein', 'name': 'Allgemein', 'art': 'felder', 'felder': ['name', 'mindestlaufzeit']},
+                     {'key': 'vorlagen', 'name': 'Vorlagen', 'art': 'dokumente'}]}
+    TEIL = {'schluessel': 'teil', 'name': 'Teil', 'beschreibung': 'x', 'gehoertZu': 'vertrag', 'felder': [
+        {'key': 'vertrag', 'label': 'Vertrag', 'typ': 'referenz', 'ziel': 'vertrag', 'pflicht': True}],
+        'register': [{'key': 'allgemein', 'name': 'Allgemein', 'art': 'felder', 'felder': ['vertrag']}]}
+    VORGABEN = [{'kennung': 'miete', 'typ': 'vertragsart', 'werte': {'name': 'Miete', 'mindestlaufzeit': {'anzahl': 0, 'einheit': 'monate'}},
+                 'dokumente': [{'datei': 'vorlagen/kuendigung.md', 'register': 'vorlagen', 'titel': 'Kündigung'}]}]
+    MANIFEST = {'id': 'probe', 'dms': '>=0.230.0', 'code': {'rechte': {'schreiben': ['vertrag']}}}
+
+    def lauf(self, typen=None, vorgaben=None, manifest=None, mit_datei=True):
+        import copy
+        with tempfile.TemporaryDirectory() as tmp:
+            o = Path(tmp)
+            if mit_datei:
+                (o / 'inhalt' / 'vorlagen').mkdir(parents=True)
+                (o / 'inhalt' / 'vorlagen' / 'kuendigung.md').write_text('Kündigung\n', encoding='utf-8')
+            return pruefen.pruefe_etappe15(o, copy.deepcopy(manifest or self.MANIFEST), copy.deepcopy(typen or [self.VERTRAG, self.ART, self.TEIL]),
+                                           copy.deepcopy(self.VORGABEN if vorgaben is None else vorgaben), [], {'basis'})
+
+    def test_gueltig(self):
+        self.assertEqual(self.lauf(), [])
+
+    def test_schema(self):
+        v = pruefen.inhalt_validator('mappentypen')
+        self.assertEqual(list(v.iter_errors([self.VERTRAG, self.ART, self.TEIL])), [])
+        self.assertEqual(list(pruefen.inhalt_validator('vorgaben').iter_errors(self.VORGABEN)), [])
+        self.assertTrue(list(pruefen.inhalt_validator('vorgaben').iter_errors([{'an': 'fahrzeuge:pkw', 'kennung': 'x', 'dokumente': []}])))
+
+    def test_braucht_version(self):
+        f = self.lauf(manifest={**self.MANIFEST, 'dms': '>=0.226.0'})
+        self.assertTrue(any('Etappe 15' in x for x in f), f)
+
+    def test_berechnet_braucht_schreibrecht(self):
+        f = self.lauf(manifest={'id': 'probe', 'dms': '>=0.230.0', 'code': {'rechte': {'lesen': ['vertrag']}}})
+        self.assertTrue(any('code.rechte.schreiben' in x for x in f), f)
+        f = self.lauf(manifest={'id': 'probe', 'dms': '>=0.230.0'})
+        self.assertTrue(any('nur ein Paket mit Code' in x for x in f), f)
+
+    def test_fehler(self):
+        import copy
+        v = copy.deepcopy(self.VERTRAG)
+        felder = {f['key']: f for f in v['felder']}
+        felder['kaltmiete']['anzeigenWenn'] = [{'feld': 'gibtsnicht', 'op': 'leer'}, {'feld': 'vertragsart', 'vorgabe': ['unbekannt']}]
+        felder['nummer']['vorlage'] = '{nummer} {kennwort}'
+        felder['positionen']['quelle'] = {'typ': 'teil', 'feld': 'falsch'}
+        felder['vertragsart']['vorbelegen'] = [{'von': 'gibtsnicht', 'nach': 'vertragsart'}]
+        teil = copy.deepcopy(self.TEIL)
+        teil['felder'][0]['pflicht'] = False
+        f = '\n'.join(self.lauf(typen=[v, self.ART, teil]))
+        for teil_text in ('gibtsnicht“ – das Feld gibt es', 'Vorgabe „unbekannt“', 'vorlage nennt „nummer“', 'quelle.feld „falsch“',
+                          'vorbelegen von „gibtsnicht“', 'vorbelegen nach „vertragsart“', 'gehoertZu'):
+            self.assertIn(teil_text, f)
+
+    def test_vorgaben(self):
+        f = '\n'.join(self.lauf(vorgaben=[
+            {'kennung': 'a', 'typ': 'vertragsart', 'werte': {'mindestlaufzeit': 24, 'gibtsnicht': 1}, 'dokumente': [{'datei': 'vorlagen/fehlt.md', 'register': 'allgemein'}]},
+            {'kennung': 'a', 'typ': 'fremd:typ', 'werte': {}},
+            {'an': 'probe:a', 'dokumente': [{'datei': 'vorlagen/kuendigung.md'}]}]))
+        for teil_text in ('ist ein Zeitraum', '„gibtsnicht“ gibt es', 'fehlt.md fehlt', 'kein Dokumentenregister', 'Kennung doppelt',
+                          '„fremd“ muss unter abhaengigkeiten', 'Vorgabe eines anderen Pakets', 'Vorgabe „unbekannt“' if False else 'Vorgabe „miete“'):
+            self.assertIn(teil_text, f)

@@ -1294,6 +1294,194 @@ def pruefe_vorlagen(ordner: Path, typen: list) -> list[str]:
     return fehler
 
 
+# ---------- Paketformat Etappe 15/16 (Registry #159, Entwurf): Bausteine aus DMS #995, #1030–#1038, #1050 ----------
+
+# Vorläufig – die Version nennt Entwicklung, sobald die Kern-Teile gemergt sind (wie bei #946).
+DMS_ETAPPE15_AB = (0, 230, 0)
+ETAPPE15_FELDARTEN = {'zeitraum', 'prozent', 'tabelle', 'zusammengesetzt'}
+ZEITRAUM_EINHEITEN = {'tage', 'wochen', 'monate', 'jahre'}
+PLATZHALTER_VORLAGE = re.compile(r'\{([a-z_][a-z0-9_]*)')
+
+
+def ist_zeitraum(w) -> bool:
+    return (isinstance(w, dict) and set(w) == {'anzahl', 'einheit'} and isinstance(w['anzahl'], int)
+            and not isinstance(w['anzahl'], bool) and w['anzahl'] >= 0 and w['einheit'] in ZEITRAUM_EINHEITEN)
+
+
+def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiele: list, abh: set) -> list[str]:
+    """Neue Bausteine im Paketformat: Feldarten, mehrere Ziele, Anzeige-Bedingungen, berechnete Felder, Vorbelegen,
+    Tabelle, gehoertZu, Merkmal „eigene Organisation“ und Vorgaben. Prüft, was im Paket selbst nachprüfbar ist."""
+    fehler: list[str] = []
+    pid = str(m.get('id'))
+    eigene = {t.get('schluessel'): t for t in typen if isinstance(t, dict)}
+    felder_je = {s: {f.get('key'): f for f in t.get('felder') or [] if isinstance(f, dict)} for s, t in eigene.items()}
+    code = m.get('code') if isinstance(m.get('code'), dict) else {}
+    rechte = code.get('rechte') if isinstance(code.get('rechte'), dict) else {}
+    schreiben = set(rechte.get('schreiben') or [])
+    eigene_vorgaben = {v.get('kennung'): v for v in vorgaben if isinstance(v, dict) and v.get('kennung')}
+    benutzt = bool(vorgaben)
+
+    def lokal(v: str) -> str | None:
+        """Schlüssel eines eigenen Typs (ohne oder mit eigenem Präfix), sonst None."""
+        if ':' not in v:
+            return v
+        p, k = v.split(':', 1)
+        return k if p == pid else None
+
+    def vorgabe_ok(v: str, wo: str):
+        if ':' in v:
+            p = v.split(':', 1)[0]
+            if p != pid and p not in abh:
+                fehler.append(f'{wo}: Vorgabe „{v}“ – das Paket „{p}“ muss unter abhaengigkeiten stehen')
+            elif p == pid and v.split(':', 1)[1] not in eigene_vorgaben:
+                fehler.append(f'{wo}: Vorgabe „{v}“ gibt es in diesem Paket nicht (inhalt.vorgaben)')
+        elif v not in eigene_vorgaben:
+            fehler.append(f'{wo}: Vorgabe „{v}“ gibt es in diesem Paket nicht (inhalt.vorgaben)')
+
+    def bedingungen(liste, felder: dict, wo: str):
+        nonlocal benutzt
+        if liste is None:
+            return
+        benutzt = True
+        for b in liste if isinstance(liste, list) else []:
+            if not isinstance(b, dict) or 'feld' not in b:
+                continue
+            f = felder.get(b['feld'])
+            if f is None:
+                fehler.append(f'{wo}: anzeigenWenn nennt „{b["feld"]}“ – das Feld gibt es in diesem Mappentyp nicht')
+                continue
+            if ('vorgabe' in b or 'eigeneOrganisation' in b or 'typ' in b) and f.get('typ') != 'referenz':
+                fehler.append(f'{wo}: anzeigenWenn „{b["feld"]}“ – vorgabe, eigeneOrganisation und typ gehen nur bei Verweisfeldern')
+            for v in b.get('vorgabe') or []:
+                vorgabe_ok(v, wo)
+
+    for s, t in eigene.items():
+        felder = felder_je[s]
+        merkmale = 0
+        for k, f in felder.items():
+            wo = f'mappentypen/{s}/{k}'
+            art = f.get('typ')
+            if art in ETAPPE15_FELDARTEN or isinstance(f.get('ziel'), list) or any(x in f for x in ('negativ', 'berechnet', 'schreibschutz', 'merkmal', 'vorbelegen', 'gleicherTyp')):
+                benutzt = True
+            if f.get('gleicherTyp') and not (f.get('mehrfach') and isinstance(f.get('ziel'), list)):
+                fehler.append(f'{wo}: gleicherTyp nur mit mehrfach: true und mehreren Zielen')
+            if f.get('merkmal'):
+                merkmale += 1
+            if f.get('berechnet'):
+                if not code:
+                    fehler.append(f'{wo}: berechnet – nur ein Paket mit Code berechnet Felder (DMS #1034)')
+                elif not ({s, f'{pid}:{s}'} & schreiben):
+                    fehler.append(f'{wo}: berechnet – das Paket braucht code.rechte.schreiben auf „{s}“')
+                if f.get('pflicht'):
+                    fehler.append(f'{wo}: ein berechnetes Feld ist nie Pflicht')
+            if art == 'tabelle':
+                q = f.get('quelle') or {}
+                qs = lokal(str(q.get('typ', '')))
+                if qs is not None:
+                    qf = felder_je.get(qs, {}).get(q.get('feld')) if qs in eigene else None
+                    if qs not in eigene:
+                        fehler.append(f'{wo}: quelle.typ „{q.get("typ")}“ gibt es in diesem Paket nicht')
+                    elif qf is None or qf.get('typ') != 'referenz' or s not in [lokal(z) for z in (qf.get('ziel') if isinstance(qf.get('ziel'), list) else [qf.get('ziel')]) if isinstance(z, str)]:
+                        fehler.append(f'{wo}: quelle.feld „{q.get("feld")}“ muss in „{qs}“ ein Verweis auf „{s}“ sein')
+                for x in ('pflicht', 'eindeutig', 'standard'):
+                    if x in f:
+                        fehler.append(f'{wo}: eine Tabelle hat keinen eigenen Wert – {x} geht nicht')
+            if art == 'zusammengesetzt':
+                for p in PLATZHALTER_VORLAGE.findall(str(f.get('vorlage', ''))):
+                    if p not in felder or p == k:
+                        fehler.append(f'{wo}: vorlage nennt „{p}“ – das muss ein anderes Feld dieses Mappentyps sein')
+                    elif felder[p].get('typ') in ('passwort', 'tabelle', 'zusammengesetzt'):
+                        fehler.append(f'{wo}: vorlage nennt „{p}“ – {felder[p].get("typ")} geht nicht als Platzhalter')
+            for v in f.get('vorbelegen') or []:
+                if isinstance(v, dict):
+                    if v.get('nach') not in felder or v.get('nach') == k:
+                        fehler.append(f'{wo}: vorbelegen nach „{v.get("nach")}“ – das muss ein anderes Feld dieses Mappentyps sein')
+                    ziele = f.get('ziel') if isinstance(f.get('ziel'), list) else [f.get('ziel')]
+                    for z in ziele:
+                        zs = lokal(z) if isinstance(z, str) else None
+                        if zs in eigene and v.get('von') not in felder_je[zs]:
+                            fehler.append(f'{wo}: vorbelegen von „{v.get("von")}“ – das Feld gibt es in „{zs}“ nicht')
+            if art == 'zeitraum' and 'standard' in f and not ist_zeitraum(f['standard']):
+                fehler.append(f'{wo}: standard eines Zeitraums ist {{ anzahl, einheit }} mit Einheit tage, wochen, monate oder jahre')
+            bedingungen(f.get('anzeigenWenn'), felder, wo)
+        if merkmale > 1:
+            fehler.append(f'mappentypen/{s}: höchstens ein Feld mit merkmal')
+        for reg in t.get('register') or []:
+            if isinstance(reg, dict):
+                ks = set(reg.get('felder') or [])
+                for a in reg.get('abschnitte') or []:
+                    if isinstance(a, dict):
+                        if a.get('vor') not in ks:
+                            fehler.append(f'mappentypen/{s}/register/{reg.get("key")}: Abschnitt vor „{a.get("vor")}“ – das Feld liegt nicht auf diesem Register')
+                        bedingungen(a.get('anzeigenWenn'), felder, f'mappentypen/{s}/register/{reg.get("key")}')
+        gz = t.get('gehoertZu')
+        if gz is not None:
+            benutzt = True
+            g = felder.get(gz)
+            if g is None or g.get('typ') != 'referenz' or g.get('mehrfach') or not g.get('pflicht'):
+                fehler.append(f'mappentypen/{s}: gehoertZu „{gz}“ muss ein Verweisfeld auf genau eine Mappe mit pflicht: true sein')
+
+    # Vorgaben (DMS #1038)
+    gesehen: set[str] = set()
+    for i, v in enumerate(vorgaben):
+        if not isinstance(v, dict):
+            continue
+        wo = f'vorgaben[{i}]' + (f' ({v["kennung"]})' if v.get('kennung') else '')
+        if v.get('kennung'):
+            if v['kennung'] in gesehen:
+                fehler.append(f'{wo}: Kennung doppelt')
+            gesehen.add(v['kennung'])
+        if 'an' in v:
+            if ':' not in str(v['an']) or str(v['an']).split(':', 1)[0] == pid:
+                fehler.append(f'{wo}: an zeigt auf die Vorgabe eines anderen Pakets (paket:kennung) – eigene Vorgaben bekommen ihre Dokumente direkt')
+            else:
+                vorgabe_ok(str(v['an']), wo)
+        typ = str(v.get('typ', ''))
+        ts = lokal(typ) if typ else None
+        if typ and ts is None and typ.split(':', 1)[0] not in abh:
+            fehler.append(f'{wo}: Typ „{typ}“ – das Paket „{typ.split(":", 1)[0]}“ muss unter abhaengigkeiten stehen')
+        if ts is not None and typ and ts not in eigene:
+            fehler.append(f'{wo}: Mappentyp „{typ}“ gibt es in diesem Paket nicht')
+        tf = felder_je.get(ts) if ts in eigene else None
+        for k, w in (v.get('werte') or {}).items():
+            if tf is not None and k not in tf:
+                fehler.append(f'{wo}: Feld „{k}“ gibt es in „{ts}“ nicht')
+            elif tf is not None:
+                ft = tf[k].get('typ')
+                if ft == 'zeitraum' and not ist_zeitraum(w):
+                    fehler.append(f'{wo}: „{k}“ ist ein Zeitraum {{ anzahl, einheit }}')
+                if ft in ('passwort', 'tabelle', 'zusammengesetzt') or tf[k].get('berechnet'):
+                    fehler.append(f'{wo}: „{k}“ ({ft}{", berechnet" if tf[k].get("berechnet") else ""}) bekommt keinen Wert aus einer Vorgabe')
+            if isinstance(w, dict) and 'vorgabe' in w:
+                vorgabe_ok(str(w['vorgabe']), wo)
+        regs = {r.get('key'): r for r in (eigene[ts].get('register') or []) if isinstance(r, dict)} if ts in eigene else None
+        for d in v.get('dokumente') or []:
+            if not isinstance(d, dict):
+                continue
+            pfad = ordner / 'inhalt' / str(d.get('datei', ''))
+            if not pfad.is_file():
+                fehler.append(f'{wo}: Datei inhalt/{d.get("datei")} fehlt')
+            if regs is not None and d.get('register') and (d['register'] not in regs or regs[d['register']].get('art') != 'dokumente'):
+                fehler.append(f'{wo}: register „{d["register"]}“ ist kein Dokumentenregister von „{ts}“')
+    for b in beispiele:
+        for k, w in ((b.get('werte') or {}).items() if isinstance(b, dict) else []):
+            if isinstance(w, dict) and 'vorgabe' in w:
+                benutzt = True
+                vorgabe_ok(str(w['vorgabe']), f'beispiele ({b.get("typ")}.{k})')
+
+    if code:
+        if 'dms:hinweise' in ((rechte.get('schnittstellen') or [])):
+            benutzt = True
+        if 'zeitplan.taeglich' in (code.get('ereignisse') or []):
+            benutzt = True
+    if benutzt:
+        ab = dms_untergrenze(str(m.get('dms', '')))
+        if ab is None or ab < DMS_ETAPPE15_AB:
+            fehler.append('Bausteine aus Etappe 15 (Feldarten, Bedingungen, berechnete Felder, Vorgaben …) kennt Ablago erst ab '
+                          f'{".".join(map(str, DMS_ETAPPE15_AB))} (vorläufig) – bitte dms: ">={".".join(map(str, DMS_ETAPPE15_AB))}" angeben')
+    return fehler
+
+
 def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler: list[str] = []
     vorlage = ordner.name == 'vorlage'
@@ -1362,7 +1550,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     # Inhalte gegen das Schema; lokale Schlüssel eindeutig; Verweise auflösbar.
     inhalte = m.get('inhalt') or {}
     geladen: dict[str, list] = {}
-    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten', 'automatisierungen'):
+    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten', 'automatisierungen', 'vorgaben'):
         if art not in inhalte:
             continue
         pfad = ordner / str(inhalte[art])
@@ -1402,7 +1590,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         felder = {f.get('key') for f in t.get('felder', []) if isinstance(f, dict)}
         for f in t.get('felder', []):
             if isinstance(f, dict) and f.get('ziel'):
-                verweis_ok(f['ziel'], f'mappentypen/{s}/{f.get("key")}')
+                for z in (f['ziel'] if isinstance(f['ziel'], list) else [f['ziel']]):
+                    verweis_ok(z, f'mappentypen/{s}/{f.get("key")}')
         auf_registern: list[str] = []
         for r in t.get('register', []):
             if not isinstance(r, dict):
@@ -1456,6 +1645,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler += pruefe_beispiel_dokumente(ordner, geladen.get('beispiele', []) or [], geladen.get('mappentypen', []) or [], str(m.get('id')), str(m.get('dms', '')))
     fehler += pruefe_wortlisten(geladen.get('wortlisten', []) or [], str(m.get('dms', '')))
     fehler += pruefe_vorlagen(ordner, geladen.get('mappentypen', []) or [])
+    fehler += pruefe_etappe15(ordner, m, geladen.get('mappentypen', []) or [], geladen.get('vorgaben', []) or [],
+                              geladen.get('beispiele', []) or [], abh)
     typfelder = {t.get('schluessel'): t.get('felder') or [] for t in geladen.get('mappentypen', []) if isinstance(t, dict)}
     fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')))
 
@@ -1473,6 +1664,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             fehler.append('tests/erwartung.yaml: Anzahl wortlisten passt nicht')
         if erw.get('automatisierungen', 0) != len(geladen.get('automatisierungen', [])):
             fehler.append('tests/erwartung.yaml: Anzahl automatisierungen passt nicht')
+        if erw.get('vorgaben', 0) != len(geladen.get('vorgaben', [])):
+            fehler.append('tests/erwartung.yaml: Anzahl vorgaben passt nicht')
         if 'sprache' in m and erw.get('sprache') != (m.get('sprache') or {}).get('kennung'):
             fehler.append('tests/erwartung.yaml: sprache passt nicht zu manifest.yaml (sprache.kennung)')
     elif not vorlage:
