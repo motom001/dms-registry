@@ -1,5 +1,4 @@
-# Mitgelieferte Automatisierung (Ablago #712). Nach der Installation aus – beim Installieren fragt Ablago, ob sie gleich
-# eingeschaltet wird. Die Aufgabe geht an „Zuständig“ (sonst an den, der den Vertrag angelegt hat), bei Abwesenheit an
+# Mitgelieferte Automatisierungen (Ablago #712). Beim Installieren fragt Ablago, welche gleich eingeschaltet werden. Die Aufgabe geht an „Zuständig“ (sonst an den, der den Vertrag angelegt hat), bei Abwesenheit an
 # die Vertretung, und erledigt sich selbst, sobald „Kündigen bis“ sich ändert oder leer wird – z. B. weil „Gekündigt am“
 # gefüllt ist oder der Vertrag endet (Muster E5).
 - schluessel: kuendigen_bis
@@ -8,3 +7,10 @@
   wenn: { art: datum, typ: vertrag, feld: kuendigen_bis, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
   dann:
     - { art: aufgabe, als: aufgabe, empfaenger: [{ art: feld, feld: zustaendig, sonst: ersteller }], text: "Kündigen bis {datum}: {titel} – sonst läuft er weiter." }
+- schluessel: taeglich_pruefen
+  name: Verträge täglich prüfen
+  beschreibung: Jeden Morgen rechnet das Paket Status, „Kündigen bis“ und Ende aller Verträge neu – sie hängen am Datum. Uhrzeit und Tage kannst du ändern; ausgeschaltet rechnet das Paket nur noch, wenn jemand einen Vertrag ändert.
+  eingeschaltet: true
+  wenn: { art: zeitplan, uhrzeit: "05:00", tage: [1, 2, 3, 4, 5, 6, 7] }
+  dann:
+    - { art: paket, aufgabe: taeglich }

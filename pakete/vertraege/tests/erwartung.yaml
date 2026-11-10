@@ -2,5 +2,5 @@
 mappentypen: [vertrag, vertragsart]
 sichten: [vertraege, kuendigen_bald, gekuendigt, vertragsarten]
 beispiele: 3
-automatisierungen: 1
+automatisierungen: 2
 vorgaben: 11

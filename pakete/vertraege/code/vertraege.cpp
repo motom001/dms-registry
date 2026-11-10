@@ -1,8 +1,8 @@
 // Paket Verträge (dms-registry #159): rechnet die berechneten Felder eines Vertrags aus (Status, Kündigen bis,
 // frühestes Ende, nächste Verlängerung, Ende, Laufzeit in Monaten, pro Monat) und schreibt nur, was sich ändert.
 //
-// Ereignisse: mappe.angelegt / mappe.geaendert (ein Vertrag), zeitplan.taeglich und paket.einstellungen_geaendert
-// (alle Verträge – der Status hängt am Datum). Was das Paket selbst ändert, meldet Ablago ihm nicht zurück.
+// Ereignisse: mappe.angelegt / mappe.geaendert (ein Vertrag), zeitplan.ausgefuehrt (Automatisierung „Verträge täglich
+// prüfen“, DMS #1082) und paket.einstellungen_geaendert (alle Verträge – der Status hängt am Datum). Was das Paket selbst ändert, meldet Ablago ihm nicht zurück.
 // Geschrieben wird mit „stand“: Hat ein Mensch dasselbe Feld inzwischen geändert, gewinnt der Mensch (409, nichts
 // überschrieben). Die Berechnung steht in berechnung.h.
 #include <cstdint>
@@ -191,7 +191,7 @@ int verarbeite(const Json &e) {
   const std::string art = e["art"].text();
   if (!e["einstellungen"]["aktiv"].wahr(true)) { ergebnis("Berechnung ausgeschaltet (Einstellungen des Pakets)"); return 0; }
   if (art == "mappe.angelegt" || art == "mappe.geaendert") return eine(e);
-  if (art == "zeitplan.taeglich" || art == "paket.einstellungen_geaendert") return alle(e);
+  if (art == "zeitplan.ausgefuehrt" || art == "paket.einstellungen_geaendert") return alle(e);
   return 0;
 }
 
