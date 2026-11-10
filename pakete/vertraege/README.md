@@ -34,7 +34,7 @@ Ein Mappentyp für **alle Verträge** – Strom, Internet, Handy, Streaming, Mit
 - **Endet:** Der Vertrag endet von selbst zum Vertragsende.
 - **Gekündigt am** gefüllt: *Endet am* ist das Ende nach der Kündigung, der Status „gekündigt zum …“ (mit „Bestätigung fehlt noch“, bis *Kündigung bestätigt am* gefüllt ist), danach „beendet am …“.
 - **Pro Monat:** Betrag geteilt durch 1, 3, 6 oder 12 nach der Zahlweise; bei „einmalig“ leer.
-- Gerechnet wird bei jeder Änderung eines Vertrags und einmal am Tag. Das Paket schreibt nur die berechneten Felder und nur, wenn sich etwas ändert. Hat inzwischen jemand dasselbe Feld geändert, lässt es den Wert stehen.
+- Gerechnet wird bei jeder Änderung eines Vertrags und jeden Morgen über die mitgelieferte Automatisierung **„Verträge täglich prüfen“** (gleich eingeschaltet; Uhrzeit und Tage stellst du unter Automatisierungen ein). Das Paket schreibt nur die berechneten Felder und nur, wenn sich etwas ändert. Hat inzwischen jemand dasselbe Feld geändert, lässt es den Wert stehen.
 
 Beispiele für den Status: „läuft – kündigen bis 14.02.2028, Ende dann 14.03.2028“ · „läuft – jederzeit kündbar mit 3 Monaten zum Monatsende, frühestens zum 28.02.2027“ · „läuft – endet am 31.12.2026 von selbst“ · „gekündigt zum 20.06.2028“ · „beendet am 20.06.2028“.
 
@@ -54,14 +54,14 @@ Die mitgelieferte Automatisierung **„Vertrag rechtzeitig kündigen“** ist na
 
 ## Voraussetzungen
 
-- Ablago ab 0.230.0 (vorläufig): Zeitraum, mehrere Ziele, Anzeige-Bedingungen, berechnete Felder, Vorbelegen, Vorgaben und das tägliche Ereignis (Etappe 15).
+- Ablago ab 0.230.0 (vorläufig): Zeitraum, mehrere Ziele, Anzeige-Bedingungen, berechnete Felder, Vorbelegen, Vorgaben und „Paket nach Zeitplan ausführen“ (Etappe 15, DMS #1082).
 - Paket Basis ab 1.7.0.
 
 ## Rechte und Netzwerkzugriff
 
 - **Mappen lesen:** Vertrag, Vertragsart · **Mappen anlegen und ändern:** Vertrag – das Paket schreibt nur die berechneten Felder.
 - Keine Dokumente, **kein Zugriff auf Netzwerk und Internet**.
-- Reagiert auf: `mappe.angelegt`, `mappe.geaendert` (Verträge), `zeitplan.taeglich`, `paket.einstellungen_geaendert`.
+- Reagiert auf: `mappe.angelegt`, `mappe.geaendert` (Verträge), `zeitplan.ausgefuehrt` (Automatisierung „Verträge täglich prüfen“), `paket.einstellungen_geaendert`.
 
 ## Entwickeln
 

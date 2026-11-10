@@ -1,5 +1,5 @@
 // Test des gebauten Moduls (code/modul.wasm) mit einer kleinen Nachbildung von Ablago: Importe dms.* und WASI,
-// Ereignisse mappe.angelegt/geaendert und zeitplan.taeglich, Mappen mit Werten wie in API v1.
+// Ereignisse mappe.angelegt/geaendert und zeitplan.ausgefuehrt, Mappen mit Werten wie in API v1.
 //
 //   node tests/modul_test.mjs
 import { readFileSync } from 'node:fs';
@@ -89,11 +89,11 @@ pruefe('Gelöscht: nichts zu tun', r.code === 0, r);
 
 const viele = {};
 for (let i = 0; i < 230; i++) viele[`v${i}`] = { ...handy, beginn: `2025-0${(i % 9) + 1}-01` };
-r = lauf({ art: 'zeitplan.taeglich', daten: { datum: '2026-11-10' }, mappen: viele });
+r = lauf({ art: 'zeitplan.ausgefuehrt', daten: { automatisierung: 'a-1', aufgabe: 'taeglich', datum: '2026-11-10' }, mappen: viele });
 pruefe('Täglich: alle Verträge in Seiten', r.code === 0 && Object.keys(r.geschrieben).length === 230 && r.aufrufe.includes('GET /typen')
   && r.aufrufe.filter((a) => a.startsWith('GET /mappen?')).length === 3, r);
 
-r = lauf({ art: 'zeitplan.taeglich', daten: { datum: '2028-05-20' }, mappen: { v1: fertig } });
+r = lauf({ art: 'zeitplan.ausgefuehrt', daten: { aufgabe: 'taeglich', datum: '2028-05-20' }, mappen: { v1: fertig } });
 pruefe('Täglich: Mindestlaufzeit vorbei → jederzeit kündbar', r.geschrieben.v1?.werte.kuendigen_bis === null
   && r.geschrieben.v1?.werte.status === 'läuft – jederzeit kündbar mit 1 Monat, frühestens zum 20.06.2028', r);
 

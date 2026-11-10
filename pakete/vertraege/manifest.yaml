@@ -13,8 +13,8 @@ lizenz: Apache-2.0
 kategorien: [vorlagen]
 symbol: file-signature
 # 0.230.0 (vorläufig, Etappe 15): Zeitraum (DMS #1035), mehrere Ziele (#1036), Anzeige-Bedingungen (#1033),
-# Merkmal „beruflich genutzt“ (#1032), berechnete Felder und Ereignis zeitplan.taeglich (#1034), Vorbelegen (#1037),
-# Vorgaben (#1038), eigene Organisation (#995)
+# Merkmal „beruflich genutzt“ (#1032), berechnete Felder (#1034), Vorbelegen (#1037), Vorgaben (#1038),
+# eigene Organisation (#995), „Paket nach Zeitplan ausführen“ (#1082)
 dms: ">=0.230.0"
 abhaengigkeiten:
   basis: ">=1.7.0"
@@ -27,8 +27,9 @@ inhalt:
 code:
   sprache: c
   quelle: code/
-  # Rechnet bei jeder Änderung eines Vertrags und einmal am Tag (der Status hängt am Datum).
-  ereignisse: [mappe.angelegt, mappe.geaendert, zeitplan.taeglich, paket.einstellungen_geaendert]
+  # Rechnet bei jeder Änderung eines Vertrags und nach Zeitplan (Automatisierung „Verträge täglich prüfen“ – der Status
+  # hängt am Datum).
+  ereignisse: [mappe.angelegt, mappe.geaendert, zeitplan.ausgefuehrt, paket.einstellungen_geaendert]
   mappentypen: [vertrag]
   rechte:
     lesen: [vertrag, vertragsart]   # die Vertragsart liefert nichts für die Rechnung, nur Name und Vorschläge
