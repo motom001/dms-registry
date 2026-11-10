@@ -12,14 +12,21 @@ Im Ausgabeordner liegen danach:
 
     katalog.json                    alle Pakete mit allen Versionen (Format: schema/katalog.schema.json)
                                     – signiert danach werkzeuge/signieren.py (katalog.sig)
-    archive/<id>-<version>.zip      genau die Dateien des Paketordners, ohne Unterordner davor
+    archive/<id>-<version>.zip      genau die Dateien des Paketordners, ohne Unterordner davor – neue Archive;
+                                    auf GitHub Pages bleiben die Versionen nach SPIEGEL_VERSIONEN (#133)
+
+Jede Version liegt als Datei an einem GitHub-Release (Tag <id>-v<version>, #156): Dorthin zeigt `archiv`, von dort
+lädt Ablago, und GitHub zählt die Downloads. `spiegel` nennt die Kopie auf GitHub Pages, aus der die Sammeldatei im
+Browser zusammengestellt wird (Release-Downloads erlauben keinen Abruf aus dem Browser). Releases anlegen, Downloads
+zählen und Pages ausdünnen macht danach werkzeuge/releases.py.
 
 Ältere Versionen bleiben erhalten. Ein Archiv mit gleicher Id und Version ändert sich nie: Ist der Inhalt
-eines Pakets anders als im veröffentlichten Archiv, die Version aber gleich, bricht das Skript ab.
+eines Pakets anders als im veröffentlichten Archiv, die Version aber gleich, bricht das Skript ab. Liegt das Archiv
+nicht mehr auf Pages, holt das Skript es dafür vom Release.
 
 Braucht: pip install pyyaml jsonschema
 """
-import hashlib, io, json, sys, zipfile
+import hashlib, io, json, sys, urllib.request, zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -35,6 +42,32 @@ FORMAT = 1
 ZEIT = (1980, 1, 1, 0, 0, 0)
 # Nur zum Ausprobieren (Webseite): Pakete mit Code auch ohne gebautes Modul.
 OHNE_BAU = False
+
+
+# Releases (#156): eine je Paketversion, die Datei heißt wie das Archiv.
+RELEASES = f'{REPO}/releases/download'
+# Wie viele Versionen je Paket als Spiegel auf GitHub Pages bleiben – für die Sammeldatei im Browser. None = alle
+# (bis #133 entschieden ist); danach z. B. 3, und werkzeuge/releases.py ausduennen entfernt die übrigen.
+SPIEGEL_VERSIONEN: int | None = None
+
+
+def tag(pid: str, version: str) -> str:
+    return f'{pid}-v{version}'
+
+
+def release_url(pid: str, version: str) -> str:
+    return f'{RELEASES}/{tag(pid, version)}/{pid}-{version}.zip'
+
+
+def spiegeln(versionen: list[dict]) -> set[str]:
+    """Versionen (neueste zuerst), deren Archiv auf GitHub Pages bleibt."""
+    return {v['version'] for v in (versionen if SPIEGEL_VERSIONEN is None else versionen[:SPIEGEL_VERSIONEN])}
+
+
+def hole(url: str) -> bytes:
+    """Ein veröffentlichtes Archiv laden (Release, folgt der Weiterleitung von GitHub)."""
+    with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'dms-registry-katalog'}), timeout=120) as a:
+        return a.read(PAKET_MAX + 1)
 
 
 # Die eine Größengrenze für Pakete, wie im DMS (PAKET_MAX, DMS #644) und in pruefen.py/sammeldatei.py.
@@ -94,7 +127,7 @@ def eintrag(ordner: Path, m: dict, archivname: str, daten: bytes, veroeffentlich
             **({'beispieldokumente': n} if (n := sum(len(b.get('dokumente') or []) for b in beispiele if isinstance(b, dict))) else {}),
         },
         'code': 'code' in m,
-        'archiv': f'archive/{archivname}',
+        'archiv': release_url(pid, m['version']),
         'sha256': hashlib.sha256(daten).hexdigest(),
         'groesse': len(daten),
         'veroeffentlicht': veroeffentlicht,
@@ -142,8 +175,19 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         vorhanden = ausgabe / 'archive' / name
         p = pakete.setdefault(pid, {'id': pid, 'versionen': []})
         bekannt = next((v for v in p['versionen'] if v['version'] == version), None)
-        if vorhanden.exists():
-            daten = vorhanden.read_bytes()
+        if vorhanden.exists() or bekannt:
+            if vorhanden.exists():
+                daten = vorhanden.read_bytes()
+            else:
+                # Nicht mehr auf Pages (#133): vom Release holen und gegen den Katalog prüfen.
+                try:
+                    daten = hole(bekannt['archiv'] if bekannt['archiv'].startswith('https://') else release_url(pid, version))
+                except Exception as x:  # noqa: BLE001
+                    fehler.append(f'{pid}: Version {version} ist veröffentlicht, das Archiv lässt sich aber nicht laden ({x})')
+                    continue
+                if hashlib.sha256(daten).hexdigest() != bekannt['sha256']:
+                    fehler.append(f'{pid}: Archiv {version} am Release passt nicht zur Prüfsumme im Katalog')
+                    continue
             if ohne_erzeugtes(inhalt_von(daten)) != ohne_erzeugtes(inhalt):
                 fehler.append(f'{pid}: Inhalt geändert, aber Version {version} ist schon veröffentlicht – Version erhöhen')
                 continue
@@ -157,6 +201,8 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
                 continue
             neu.append((name, daten))
         v = eintrag(ordner, m, name, daten, bekannt['veroeffentlicht'] if bekannt else jetzt)
+        if bekannt and 'downloads' in bekannt:
+            v['downloads'] = bekannt['downloads']
         p['versionen'] = sorted([x for x in p['versionen'] if x['version'] != version] + [v], key=lambda x: versionsschluessel(x['version']), reverse=True)
         # Angaben des Pakets aus der neuesten Version.
         if p['versionen'][0]['version'] == version:
@@ -176,6 +222,16 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
                 p[feld] = wert
             else:
                 p.pop(feld, None)
+
+    # Alle Versionen (auch ältere ohne Paketordner) laden vom Release; die letzten bleiben als Spiegel auf Pages.
+    for pid, p in pakete.items():
+        behalten = spiegeln(p['versionen'])
+        for v in p['versionen']:
+            v['archiv'] = release_url(pid, v['version'])
+            if v['version'] in behalten:
+                v['spiegel'] = f'archive/{pid}-{v["version"]}.zip'
+            else:
+                v.pop('spiegel', None)
 
     katalog = {
         'format': FORMAT,

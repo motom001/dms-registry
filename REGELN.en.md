@@ -132,7 +132,7 @@ From Ablago 0.223.0 (motom001/dms#878, registry #137) a sample can bring documen
 - **Every named file must exist, and every file under `inhalt/beispiele/` must be named.** `pruefen.py` reports the size per file and in total on every check.
 - Packages with example documents require `dms: ">=0.223.0"`.
 - **No real data:** only invented people and companies (persona names such as Lena, Jonas, Markus, Petra, Herr Özdemir, Katrin), example domains (`example.org`, `example.com`, `example.net`), invalid or explicitly sample values for IBAN, tax and insurance numbers. No scanned real letters, not even redacted – metadata, signatures and logos often reveal more than you think.
-- **Large packages:** the catalogue lives on the branch `gh-pages` (registry #133), and git doesn't accept files over 100 MB. A package whose archive would be larger can't be published that way; `pruefen.py` points this out from 90 MB.
+- **Large packages:** Ablago downloads packages from the release (up to 128 MB, registry #156), but the copy for the bundle file lives on the branch `gh-pages`, and git doesn't accept files over 100 MB there (registry #133). A package whose archive would be larger therefore can't be published yet; `pruefen.py` points this out from 90 MB.
 
 ## Package kinds
 
