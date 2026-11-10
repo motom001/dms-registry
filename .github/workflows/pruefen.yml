@@ -21,7 +21,7 @@ jobs:
           python-version: '3.12'
       - run: pip install --quiet --require-hashes -r werkzeuge/requirements.txt
       - name: Tests der Prüfung
-        run: python3 -m unittest werkzeuge/test_pruefen.py werkzeuge/test_sammeldatei.py werkzeuge/test_signieren.py werkzeuge/test_symbole.py werkzeuge/test_sprachen.py
+        run: python3 -m unittest werkzeuge/test_pruefen.py werkzeuge/test_sammeldatei.py werkzeuge/test_signieren.py werkzeuge/test_symbole.py werkzeuge/test_sprachen.py werkzeuge/test_webseite.py
       # Pakete mit Code: aus dem Quellcode bauen (WASI-SDK und Bibliotheken bleiben im Cache), danach prüft
       # pruefen.py das Modul gegen die DMS-Paket-ABI.
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

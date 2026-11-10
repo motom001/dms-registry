@@ -33,9 +33,9 @@ class VersionNurImFragment(unittest.TestCase):
     def test_kein_skript_erwartet_die_version_als_query(self):
         for name, quelltext in (('dms.js', w.SKRIPT), ('sammeldatei.js', w.SAMMEL_SKRIPT)):
             self.assertIsNone(re.search(r"""get\(\s*['"]dms['"]\s*\)|[?&]dms=""", quelltext), name)
-            # Query nur für Kategorie und Autor (teilbare Filter), nie für die Version.
+            # Query nur für Kategorie, Autor und Paketart (#165) (teilbare Filter), nie für die Version.
             for feld in re.findall(r"""\.(?:get|set)\(\s*['"]([^'"]+)['"]""", quelltext):
-                self.assertIn(feld, {'kategorie', 'autor'}, (name, feld))
+                self.assertIn(feld, {'kategorie', 'autor', 'art'}, (name, feld))
 
     def test_stand_haengt_auch_am_sammelskript(self):
         self.assertIn(f'sammeldatei.js?v={w.STAND}', w.sammelseite())
@@ -62,3 +62,42 @@ class BeispielDokumente(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class Uebersicht(unittest.TestCase):
+    """Katalog-Übersicht (#165): Paketarten, „Für den Anfang“, Sprachen und Ergänzungen nicht in der ersten Übersicht."""
+
+    def paket(self, pid, **v):
+        x = {'version': '1.0.0', 'dms': '>=0.1.0', 'code': False, 'inhalt': {'mappentypen': [], 'sichten': [], 'beispiele': 0}}
+        x.update(v)
+        return {'id': pid, 'name': pid, 'beschreibung': 'Erster Satz. Zweiter Satz.', 'autor': {'name': 'A', 'github': 'a'},
+                'aktuell': '1.0.0', 'versionen': [x]}
+
+    def test_paketart(self):
+        self.assertEqual(w.paketart(self.paket('basis')), 'grundlagen')
+        self.assertEqual(w.paketart(self.paket('sprache_fr', sprache={'kennung': 'fr'})), 'sprachen')
+        self.assertEqual(w.paketart(self.paket('texterkennung_fra', ergaenzt={'paket': 'texterkennung'})), 'ergaenzungen')
+        self.assertEqual(w.paketart(self.paket('haus', inhalt={'mappentypen': [{'schluessel': 'x', 'name': 'X'}]})), 'vorlagen')
+        self.assertEqual(w.paketart(self.paket('benachrichtigungen')), 'automatisierungen')
+        self.assertEqual(w.paketart(self.paket('pdfa', code=True)), 'funktionen')
+
+    def test_kachel_klein_und_versteckt(self):
+        k = w.kachel(self.paket('texterkennung_fra', ergaenzt={'paket': 'texterkennung'}))
+        self.assertIn('data-versteckt="1"', k)
+        self.assertIn('>Erster Satz.<', k)
+        self.assertNotIn('Zweiter Satz.</span>', k)
+        self.assertNotIn('data-versteckt', w.kachel(self.paket('pdfa', code=True)))
+
+    def test_empfohlen_nur_vorhandene(self):
+        pakete = [self.paket('basis'), self.paket('haus')]
+        self.assertEqual([p['id'] for p in w.empfohlen(pakete)], ['basis'])
+
+    def test_uebersicht(self):
+        pakete = [self.paket('basis'), self.paket('pdfa', code=True), self.paket('sprache_fr', sprache={'kennung': 'fr'})]
+        h = w.uebersicht({'erstellt': '2026-11-10T10:00:00Z'}, pakete, 'de')
+        self.assertIn('id="anfang"', h)
+        self.assertEqual(h.count('href="paket/basis/"'), 2)  # einmal oben, einmal (versteckt) unter „Weitere Pakete“
+        self.assertIn('data-anfang="1"', h)
+        self.assertIn('<option value="sprachen">Sprachen (1)</option>', h)
+        self.assertNotIn('value="code"', h)
+        self.assertIn('data-ansicht="liste"', h)
