@@ -52,7 +52,7 @@ Auf demselben Branch liegt die **Katalog-Webseite** (`werkzeuge/webseite.py`): P
 
 Mit GitHub Pages (Quelle: Branch `gh-pages`) ist die Webseite unter **`https://catalog.ablago.app/`** erreichbar, der Katalog dann auch unter `…/katalog.json`.
 
-`katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige Ablago-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele und – falls vorhanden – `beispieldokumente`, die Anzahl der Beispiel-Dokumente), ob das Paket Code hat, Adresse des Archivs (relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
+`katalog.json` (Format: [`schema/katalog.schema.json`](schema/katalog.schema.json)) enthält Format-Version, Erstellungszeit, Quelle und je Paket Id, Name, Beschreibung, Autor, Lizenz, aktuelle Version und **alle Versionen**, neueste zuerst. Je Version stehen darin: nötige Ablago-Version, Abhängigkeiten, Inhaltsübersicht (Mappentypen und Sichten mit Namen, Anzahl Beispiele und – falls vorhanden – `beispieldokumente`, die Anzahl der Beispiel-Dokumente), ob das Paket Code hat, Adresse des Archivs (`archiv`, die Release-Datei, #156), die Kopie auf GitHub Pages (`spiegel`, relativ zu `katalog.json`), **SHA-256** und Größe des Archivs, die Downloads laut GitHub (`downloads`, auch als Summe je Paket), Zeitpunkt der Veröffentlichung sowie Links auf Quellordner, README und Changelog.
 
 ```json
 {
@@ -62,14 +62,17 @@ Mit GitHub Pages (Quelle: Branch `gh-pages`) ist die Webseite unter **`https://c
     "versionen": [{
       "version": "1.0.0", "dms": ">=0.63.0", "abhaengigkeiten": {},
       "inhalt": { "mappentypen": [{ "schluessel": "organisation", "name": "Organisation" }], "sichten": [ … ], "beispiele": 2 },
-      "code": false, "archiv": "archive/basis-1.0.0.zip", "sha256": "…", "groesse": 4711, "veroeffentlicht": "…",
+      "code": false, "archiv": "https://github.com/motom001/dms-registry/releases/download/basis-v1.0.0/basis-1.0.0.zip",
+      "spiegel": "archive/basis-1.0.0.zip", "sha256": "…", "groesse": 4711, "downloads": 42, "veroeffentlicht": "…",
       "quelle": "…", "readme": "…", "changelog": "…"
     }]
   }]
 }
 ```
 
-Die Archive liegen auf `gh-pages`, und git nimmt keine Datei über 100 MB an (#133) – Pakete mit Beispiel-Dokumenten deshalb deutlich darunter halten. Ältere Versionen bleiben im Katalog und als Archiv abrufbar. Ein Archiv mit gleicher Id und Version ändert sich nie: Ändert sich ein Paket ohne neue Version, schlägt die Prüfung im Pull Request fehl. Lokal baust du den Katalog mit `python3 werkzeuge/katalog.py <ordner>`. Das Feld `signatur` bleibt `null`: Die Signatur steht getrennt in `katalog.sig`.
+**Releases und Downloads (#156):** Jede Paketversion liegt als Datei an einem GitHub-Release (Tag `<id>-v<version>`, Datei `<id>-<version>.zip`, Byte für Byte das Archiv aus dem Katalog). Dorthin zeigt `archiv`; Ablago lädt von dort und folgt dabei der Weiterleitung von GitHub. GitHub zählt die Downloads selbst – **Ablago sendet dafür nichts**. Der Workflow legt fehlende Releases an (`werkzeuge/releases.py anlegen`) und schreibt einmal am Tag die Zahlen in den Katalog (`… zaehlen`, vor dem Signieren). Die Zahl sind **Downloads, nicht Installationen**: Updates und unsere eigenen Tests zählen mit. Die Webseite zeigt sie gerundet („über 100“), unter 10 gar nicht, und sortiert nicht danach.
+
+**Spiegel auf GitHub Pages:** Release-Dateien lassen sich aus dem Browser nicht abrufen (kein CORS). Die Sammeldatei auf der Webseite nimmt deshalb die Kopie unter `archive/` (`spiegel`). Git nimmt dort keine Datei über 100 MB an (#133), deshalb Pakete deutlich darunter halten. Ältere Versionen bleiben im Katalog und am Release abrufbar. Ein Archiv mit gleicher Id und Version ändert sich nie: Ändert sich ein Paket ohne neue Version, schlägt die Prüfung im Pull Request fehl. Lokal baust du den Katalog mit `python3 werkzeuge/katalog.py <ordner>`. Das Feld `signatur` bleibt `null`: Die Signatur steht getrennt in `katalog.sig`.
 
 ## Katalog signieren
 

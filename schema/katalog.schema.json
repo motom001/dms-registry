@@ -30,7 +30,9 @@
           }
         },
         "code": { "type": "boolean" },
-        "archiv": { "type": "string", "description": "Adresse des Archivs, relativ zu katalog.json" },
+        "archiv": { "type": "string", "description": "Adresse des Archivs – absolut (Release-Datei, #156) oder, in älteren Katalogen, relativ zu katalog.json; Ablago löst sie relativ zur Katalog-Adresse auf" },
+        "spiegel": { "type": "string", "pattern": "^archive/[a-z][a-z0-9_]{1,19}-\\d+\\.\\d+\\.\\d+\\.zip$", "description": "Optional (#133): Kopie des Archivs auf GitHub Pages, relativ zu katalog.json – nur für die letzten Versionen je Paket; daraus stellt die Webseite die Sammeldatei zusammen. Ablago liest das Feld nicht." },
+        "downloads": { "type": "integer", "minimum": 0, "description": "Optional (#156): Downloads dieser Version laut GitHub (Release-Datei), inklusive Updates und Tests. Ablago liest das Feld nicht." },
         "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
         "groesse": { "type": "integer", "minimum": 1 },
         "veroeffentlicht": { "type": "string", "format": "date-time" },
@@ -66,6 +68,7 @@
           "properties": { "name": { "type": "string" }, "github": { "type": "string" } }
         },
         "lizenz": { "type": "string" },
+        "downloads": { "type": "integer", "minimum": 0, "description": "Optional (#156): Downloads aller Versionen zusammen laut GitHub (Release-Dateien) – Downloads, nicht Installationen; Updates und Tests zählen mit. Ändert sich täglich." },
         "aktuell": { "$ref": "#/$defs/version" },
         "versionen": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/paketversion" }, "description": "neueste zuerst" },
         "kategorien": { "type": "array", "maxItems": 2, "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,19}$" }, "description": "Kategorien aus dem Manifest oder werkzeuge/kategorien.yaml (#84); ältere DMS-Versionen ignorieren das Feld" },

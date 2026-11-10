@@ -11,7 +11,7 @@ Im Ausgabeordner entstehen:
     paket/<id>/index.html        Detailseite: README, was angelegt wird, Rechte, Changelog, Versionen
     sammeldatei.html             mehrere Pakete als eine Sammeldatei für Ablago ohne Internet (motom001/dms#461)
     stil.css, dms.js             Aussehen wie die Handbücher; „In meinem Ablago installieren“
-    sammeldatei.js               stellt die Sammeldatei im Browser zusammen (nur aus katalog.json und archive/)
+    sammeldatei.js               stellt die Sammeldatei im Browser zusammen (aus katalog.json und den Spiegeln unter archive/)
 
 Die Ablago-Version kommt aus Ablago nur im Fragment (#dms=<X.Y.Z>, motom001/dms#622), nie als Query: Das
 Fragment geht an keinen Server und landet nicht im Zugriffsprotokoll. dms.js liest es auf jeder Seite (auch
@@ -742,11 +742,12 @@ def detail(p: dict, pakete: list) -> str:
     abh = ', '.join(f'<a href="../{e(k)}/">{e(k)}</a> {e(b)}' for k, b in v['abhaengigkeiten'].items()) or 'keine'
     versionen = ''.join(
         f'<tr><td>{e(x["version"])}</td><td>{datum(x["veroeffentlicht"])}</td><td>{e(x["dms"])}</td>'
-        f'<td><a href="../../{e(x["archiv"])}">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="{e(p["id"])}@{e(x["version"])}">installieren</button></td></tr>'
+        f'<td><a href="{e(x["archiv"] if "://" in x["archiv"] else "../../" + x["archiv"])}">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="{e(p["id"])}@{e(x["version"])}">installieren</button></td></tr>'
         for x in p['versionen'])
     technik = (f'<dl class="eckdaten"><dt>Version</dt><dd>{e(v["version"])} vom {datum(v["veroeffentlicht"])}</dd>'
                f'<dt>Lizenz</dt><dd>{e(p["lizenz"])}</dd><dt>Nötige Ablago-Version</dt><dd>{e(v["dms"])}</dd>'
-               f'<dt>Abhängigkeiten</dt><dd>{abh}</dd><dt>Quellcode</dt><dd><a href="{e(v["quelle"])}">auf GitHub ansehen</a></dd></dl>'
+               + (f'<dt>Downloads</dt><dd>{downloads_text(p.get("downloads"))} <span class="leise">– Downloads aller Versionen laut GitHub, nicht Installationen; Updates und Tests zählen mit</span></dd>' if downloads_text(p.get('downloads')) else '')
+               + f'<dt>Abhängigkeiten</dt><dd>{abh}</dd><dt>Quellcode</dt><dd><a href="{e(v["quelle"])}">auf GitHub ansehen</a></dd></dl>'
                f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th></th></tr></thead>'
                f'<tbody>{versionen}</tbody></table></div>')
     passt = ''.join((f'<h3><a class="weiter" href="{e(link)}">{e(t)} <span aria-hidden="true">›</span></a></h3>' if link else f'<h3>{e(t)}</h3>')
@@ -769,11 +770,23 @@ def detail(p: dict, pakete: list) -> str:
               f'      <div class="titel"><h1>{e(p["name"])}</h1>\n'
               f'        <button type="button" class="knopf primaer installieren" data-installieren="{e(p["id"])}@{e(v["version"])}">In meinem Ablago installieren</button>\n'
               f'        <p class="kurztext">{e(p["beschreibung"])}</p>\n'
-              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}</p>\n'
+              f'        <p class="leise klein">Version {e(v["version"])} · von {autor_link(p, "../../")}'
+              + (f' · <span title="Downloads laut GitHub, nicht Installationen – Updates und Tests zählen mit">{downloads_text(p.get("downloads"))} Downloads</span>' if downloads_text(p.get('downloads')) else '')
+              + '</p>\n'
               f'        <p class="chips">{kats}</p></div>\n'
               f'    </div>\n'
               f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + (sprach_hinweis(p) + '\n    ' if sprach_hinweis(p) else '') + '\n    '.join(teile) + passt_html + '\n')
     return seite(f'{p["name"]} – Ablago-Pakete', inhalt, 2, p['beschreibung'])
+
+
+def downloads_text(n) -> str:
+    """Downloads gerundet in Stufen (#156): unter 10 gar nicht, dann „über 10“, „über 100“, „über 1.000“ …"""
+    if not isinstance(n, int) or n < 10:
+        return ''
+    stufe = 10
+    while stufe * 10 <= n:
+        stufe *= 10
+    return f'über {stufe:,}'.replace(',', '.')
 
 
 def autorseite(name: str, github: str, liste: list) -> str:
@@ -1174,9 +1187,12 @@ SAMMEL_SKRIPT = r'''
   }
   function dmsPasst(dms, bereich) { return !dms || passt(dms, bereich); }
   function paket(id) { return katalog.pakete.filter(function (p) { return p.id === id; })[0]; }
+  // Archiv auf dieser Seite (#133): spiegel, in älteren Katalogen ein relatives archiv. Releases (#156) lassen sich aus
+  // dem Browser nicht abrufen – Versionen ohne Spiegel kommen nicht in die Sammeldatei.
+  function lokal(v) { return v.spiegel || (v.archiv && v.archiv.indexOf('://') < 0 ? v.archiv : null); }
   function neueste(p, bereich, dms) {
     return p.versionen.slice().sort(function (a, b) { return vergleiche(b.version, a.version); })
-      .filter(function (v) { return (!bereich || passt(v.version, bereich)) && dmsPasst(dms, v.dms); })[0];
+      .filter(function (v) { return lokal(v) && (!bereich || passt(v.version, bereich)) && dmsPasst(dms, v.dms); })[0];
   }
   // Wie auswahlMitAbhaengigkeiten im DMS: neueste passende Version, Abhängigkeiten mit, Abhängigkeiten zuerst.
   function plane(ids, dms) {
@@ -1274,8 +1290,8 @@ SAMMEL_SKRIPT = r'''
     try {
       var dateien = [], eintraege = [];
       for (var i = 0; i < r.pakete.length; i++) {
-        var x = r.pakete[i], antwort = await fetch(x.v.archiv, { cache: 'no-store' });
-        if (!antwort.ok) throw new Error(x.v.archiv + ': ' + antwort.status);
+        var x = r.pakete[i], antwort = await fetch(lokal(x.v), { cache: 'no-store' });
+        if (!antwort.ok) throw new Error(lokal(x.v) + ': ' + antwort.status);
         var daten = new Uint8Array(await antwort.arrayBuffer());
         if (daten.length !== x.v.groesse || hex(await crypto.subtle.digest('SHA-256', daten)) !== x.v.sha256) throw new Error(x.name + ' ' + x.v.version + ': Prüfsumme passt nicht zum Katalog – abgebrochen.');
         var name = 'pakete/' + x.id + '-' + x.v.version + '.zip';

@@ -86,6 +86,16 @@ def dms_passt(dms: str | None, bereich: str) -> bool:
     return not dms or passt(dms, bereich)
 
 
+def lokal(v: dict) -> str | None:
+    """Archiv dieser Version auf der Katalog-Seite selbst: `spiegel` (#133) oder, in älteren Katalogen, ein relatives
+    `archiv`. Releases (#156) erlauben keinen Abruf aus dem Browser – ohne Spiegel kommt die Version nicht in die
+    Sammeldatei."""
+    if v.get('spiegel'):
+        return v['spiegel']
+    a = v.get('archiv') or ''
+    return None if '://' in a else a
+
+
 def auswahl(katalog: dict, ids: list[str], dms: str | None) -> list[dict]:
     """Gewählte Pakete samt Abhängigkeiten, Abhängigkeiten zuerst. Wirft ValueError, wenn etwas nicht passt."""
     pakete = {p['id']: p for p in katalog['pakete']}
@@ -100,7 +110,7 @@ def auswahl(katalog: dict, ids: list[str], dms: str | None) -> list[dict]:
             return
         if pid not in pakete:
             raise ValueError(f'{pid} gibt es im Katalog nicht' + (f' (gebraucht von {von})' if von else ''))
-        kandidaten = sorted(pakete[pid]['versionen'], key=lambda v: teile(v['version']), reverse=True)
+        kandidaten = sorted((v for v in pakete[pid]['versionen'] if lokal(v)), key=lambda v: teile(v['version']), reverse=True)
         v = next((v for v in kandidaten if (not bereich or passt(v['version'], bereich)) and dms_passt(dms, v['dms'])), None)
         if not v:
             bedingungen = [f'zu {bereich}' if bereich else '', f'zu Ablago {dms}' if dms else '']
@@ -142,9 +152,9 @@ def erzeuge(katalogordner: Path, ids: list[str], dms: str | None, jetzt: str | N
     eintraege, archive = [], {}
     for p in liste:
         v = p['v']
-        daten = (katalogordner / v['archiv']).read_bytes()
+        daten = (katalogordner / lokal(v)).read_bytes()
         if hashlib.sha256(daten).hexdigest() != v['sha256'] or len(daten) != v['groesse']:
-            raise ValueError(f'{v["archiv"]}: Prüfsumme bzw. Größe passt nicht zu katalog.json')
+            raise ValueError(f'{lokal(v)}: Prüfsumme bzw. Größe passt nicht zu katalog.json')
         name = f'pakete/{p["id"]}-{p["version"]}.zip'
         archive[name] = daten
         eintraege.append({'id': p['id'], 'version': p['version'], 'name': p['name'], 'archiv': name, 'sha256': v['sha256'], 'groesse': v['groesse'], 'gewaehlt': p['gewaehlt']})

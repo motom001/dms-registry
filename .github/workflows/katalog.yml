@@ -1,11 +1,15 @@
 # Veröffentlicht den Katalog (katalog.json, katalog.sig und Archive) und die Katalog-Webseite auf dem
 # Branch gh-pages, erreichbar über GitHub Pages unter https://catalog.ablago.app/ (eigene Domain, Datei CNAME).
+# Jede Paketversion liegt zusätzlich als Datei an einem Release (#156): Von dort lädt Ablago, und GitHub zählt die
+# Downloads. Einmal am Tag läuft der Katalog neu, damit die Zahlen aktuell sind.
 name: Katalog veröffentlichen
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
 
 permissions:
   contents: write
@@ -45,6 +49,16 @@ jobs:
         run: python3 werkzeuge/bauen.py --unveroeffentlicht site
       - name: Katalog bauen
         run: python3 werkzeuge/katalog.py site
+      # Releases ändern sich nie; fehlende werden angelegt (beim ersten Lauf für alle bisherigen Versionen). Erst wenn
+      # jede Version ihre Release-Datei hat, geht es weiter – katalog.json zeigt schon dorthin.
+      - name: Releases anlegen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 werkzeuge/releases.py anlegen site
+      - name: Downloads zählen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 werkzeuge/releases.py zaehlen site
       # Ed25519 über die Bytes von katalog.json (#74). Ohne Secret (Fork, oder bevor es angelegt ist) bleibt der
       # Lauf grün: unsigniert, mit deutlicher Warnung. Danach prüft das Werkzeug die Signatur mit schluessel/*.pub.
       - name: Katalog signieren
