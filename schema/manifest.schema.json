@@ -220,6 +220,14 @@
       "type": "string",
       "pattern": "^(>=|>|=|\\^|~)?\\d+\\.\\d+\\.\\d+( <\\d+\\.\\d+\\.\\d+)?$"
     },
+    "kurzanleitung": {
+      "description": "Optional (#164): „So nutzt du es“ – 3 bis 5 kurze Schritte, oben auf der Paketseite im Katalog und später nach der Installation in Ablago (motom001/dms#1047). Kein Handbuch; große Themen gehören in einen Rundgang. en mit gleich vielen Schritten. Ältere Ablago-Versionen übergehen das Feld.",
+      "type": "object", "additionalProperties": false, "required": ["de"],
+      "properties": {
+        "de": { "type": "array", "minItems": 3, "maxItems": 5, "items": { "type": "string", "minLength": 3, "maxLength": 200 } },
+        "en": { "type": "array", "minItems": 3, "maxItems": 5, "items": { "type": "string", "minLength": 3, "maxLength": 200 } }
+      }
+    },
     "symbol": {
       "description": "Optional (#98, #80 Stufe 2): Symbol im Katalog statt des Anfangsbuchstabens – Name eines Lucide-Symbols aus werkzeuge/symbole/ (REGELN.md, „Symbol“). Ein neues Symbol kommt nur über ein Issue dazu. Das DMS liest das Feld nicht.",
       "enum": [

@@ -112,6 +112,24 @@ kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unte
 - **Bestehende Pakete:** Ihre Symbole stehen übergangsweise unter `symbole:` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml); mit der nächsten Version wandert das Symbol ins Manifest. Das Manifest gewinnt. Wie `kategorien` liest Ablago `symbol` und `kuerzel` nicht; ältere Ablago-Versionen installieren solche Pakete weiter.
 - **Symbol einer Ansicht** (dms #428): In `sichten.yaml` darf jede Ansicht `symbol: <name>` tragen – ein Lucide-Name aus der festen Liste in Ablago ([`shared/src/ansichtsymbole.ts`](https://github.com/motom001/dms/blob/main/shared/src/ansichtsymbole.ts)), z. B. `house`, `car`, `euro`, `mail`. Ablago zeigt es in der Ablage vor dem Namen; einen unbekannten Namen zeigt es ohne Symbol. Ältere Ablago-Versionen ignorieren das Feld.
 
+## Kurzanleitung
+
+Oben auf der Paketseite im Katalog steht **„So nutzt du es“**: 3 bis 5 kurze Schritte, wie man das Paket nach der Installation benutzt (#164). Später zeigt Ablago sie auch einmal direkt nach der Installation (motom001/dms#1047). Das ist **kein Handbuch** – große Themen gehören in einen Rundgang.
+
+```yaml
+kurzanleitung:
+  de:
+    - Lege ein Mietobjekt an und darunter seine Wohnungen.
+    - Trage zu jeder Wohnung den Mietvertrag mit Mieter, Miete und Fristen ein.
+    - Ordne Rechnungen als Ausgabe dem Mietobjekt zu – „umlagefähig“ angehakt landet in der Nebenkostenabrechnung.
+  en:
+    - …gleich viele Schritte auf Englisch
+```
+
+- Jeder Schritt ist **ein Satz** in Alltagssprache, mit den Namen, die man in Ablago sieht. Höchstens 200 Zeichen.
+- Vorlagen-Pakete (mit Mappentypen) und Funktions-Pakete (mit Code) bringen eine Kurzanleitung mit; ohne gibt `pruefen.py` einen **Hinweis** – später wird sie Pflicht. Sprachpakete und Ergänzungen brauchen keine.
+- `en` ist optional, hat aber gleich viele Schritte wie `de`. Ältere Ablago-Versionen übergehen das Feld.
+
 ## Namen
 
 Schlüssel von Mappentypen, Feldern und Registern sind **im Paket lokal**, z. B. `versicherung`. Ablago legt sie mit der Paket-Id davor an – ab 0.229.0 als `haushalt:versicherung` (Paket und Schlüssel getrennt, motom001/dms#1084), bis 0.228 als `haushalt_versicherung` –, damit sich zwei Pakete nicht in die Quere kommen. Angezeigt wird nur der Name („Versicherung“). Verweise auf Typen anderer Pakete schreibst du als `<paket>:<schluessel>`, z. B. `basis:organisation`. Das andere Paket muss dann unter `abhaengigkeiten` stehen. Auf Mappentypen, die Ablago selbst mitbringt, verweist du mit `dms:` – ohne Abhängigkeit: `dms:benutzer` und `dms:rolle`. Dafür muss im Manifest `dms: ">=0.75.0"` stehen. Den **Ablageort** (wo ein Original liegt) bringt seit Ablago 0.212.0 das Paket Basis mit: `basis:ablageort` mit `basis: ">=1.6.0"` unter `abhaengigkeiten` (Ablago #883, Registry #138). Das frühere `dms:ablageort` versteht Ablago bis 1.0 noch als Alias; `pruefen.py` warnt davor. Die Paket-Id `dms` ist deshalb vergeben.

@@ -111,6 +111,23 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 - **Existing packages:** their icons are listed under `symbole:` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml) for the time being; with the next version the icon moves into the manifest. The manifest wins. Like `kategorien`, Ablago does not read `symbol` and `kuerzel`; older Ablago versions keep installing such packages.
 - **View symbol** (dms #428): in `sichten.yaml` each view may have `symbol: <name>` – a Lucide name from the fixed list in Ablago ([`shared/src/ansichtsymbole.ts`](https://github.com/motom001/dms/blob/main/shared/src/ansichtsymbole.ts)), e.g. `house`, `car`, `euro`, `mail`. Ablago shows it before the view name; an unknown name is shown without a symbol. Older Ablago versions ignore the field.
 
+## Quick guide
+
+At the top of a package page in the catalogue there is **“How to use it”**: 3 to 5 short steps on using the package after installing it (#164). Later Ablago will show them once right after installation, too (motom001/dms#1047). It is **not a manual** – big topics belong in a guided tour.
+
+```yaml
+kurzanleitung:
+  de: [ …3–5 steps in German ]
+  en:
+    - Create a rental property and its units below it.
+    - Add the tenancy agreement with tenant, rent and deadlines to each unit.
+    - File invoices as an expense of the property – ticked “recoverable” ends up in the service charge statement.
+```
+
+- Each step is **one sentence** in everyday language, using the names people see in Ablago. At most 200 characters.
+- Template packages (with folder types) and function packages (with code) bring a quick guide; without one `pruefen.py` prints a **hint** – it will become mandatory later. Language packages and add-ons need none.
+- `en` is optional but has as many steps as `de`. Older Ablago versions skip the field.
+
 ## Names
 
 Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versicherung`. Ablago creates them with the package id in front – from 0.229.0 as `haushalt:versicherung` (package and key stored separately, motom001/dms#1084), up to 0.228 as `haushalt_versicherung` – so that two packages do not get in each other's way. Only the name ("Versicherung") is displayed. You write references to types of other packages as `<paket>:<schluessel>`, e.g. `basis:organisation`. The other package must then be listed under `abhaengigkeiten` (dependencies). To Mappe types that Ablago brings itself, you refer with `dms:` – without a dependency: `dms:benutzer` (user) and `dms:rolle` (role). This requires `dms: ">=0.75.0"` in the manifest. The **storage location** (where an original is kept) comes with the Basis package since Ablago 0.212.0: `basis:ablageort` with `basis: ">=1.6.0"` under `abhaengigkeiten` (Ablago #883, Registry #138). Ablago still understands the former `dms:ablageort` as an alias until 1.0; `pruefen.py` warns about it. The package id `dms` is therefore taken.

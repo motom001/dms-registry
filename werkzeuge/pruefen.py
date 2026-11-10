@@ -1783,7 +1783,25 @@ def hinweise(ordner: Path, basis: str | None = None) -> list[str]:
     if not vorlagen.symbol_von(pid, daten, m)[0]:
         h.append('symbol: Das Paket hat kein Symbol – der Katalog zeigt den Anfangsbuchstaben. '
                  f'Bitte ein Symbol im Manifest setzen (symbol: …), erlaubt: {", ".join(vorlagen.symbolnamen())} (REGELN.md, „Symbol“)')
+    h += kurzanleitung_hinweise(m)
     return h
+
+
+def kurzanleitung_hinweise(m: dict) -> list[str]:
+    """#164: Vorlagen- und Funktions-Pakete bringen eine Kurzanleitung mit – vorerst als Hinweis, später Pflicht.
+    Sprachpakete und Ergänzungen (z. B. Zusatzsprachen der Texterkennung) brauchen keine."""
+    k = m.get('kurzanleitung')
+    if isinstance(k, dict):
+        de, en = k.get('de'), k.get('en')
+        if isinstance(de, list) and isinstance(en, list) and len(de) != len(en):
+            return [f'kurzanleitung: en hat {len(en)} Schritte, de {len(de)} – bitte gleich viele (REGELN.md, „Kurzanleitung“)']
+        return []
+    if m.get('sprache') or m.get('ergaenzt'):
+        return []
+    if (m.get('inhalt') or {}).get('mappentypen') or m.get('code'):
+        return ['kurzanleitung: Das Paket hat keine Kurzanleitung „So nutzt du es“ (3–5 Schritte, de/en) – '
+                'bald Pflicht für Vorlagen- und Funktions-Pakete (REGELN.md, „Kurzanleitung“)']
+    return []
 
 
 def main():
