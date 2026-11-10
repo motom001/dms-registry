@@ -1097,3 +1097,65 @@ class FremdeTypen(unittest.TestCase):
         self.assertTrue(any('fremde_typen kennt das DMS erst ab 0.178.0' in f for f in alt), alt)
         self.assertTrue(self.paket([{'kennung': 'Vertrag!'}], '>=0.178.0'))
         self.assertTrue(self.paket([{'name': 'ohne Kennung'}], '>=0.178.0'))
+
+
+class Paketsprache(unittest.TestCase):
+    """Registry #157: gleiche Kennungen (Hinweise für neue Felder), Text-Vorlagen, Mappentyp in genau einem Paket."""
+
+    TYP = [{'schluessel': 'rechnung', 'name': 'Rechnung', 'felder': [
+        {'key': 'absender', 'typ': 'referenz'}, {'key': 'von', 'typ': 'datum'}, {'key': 'betrag', 'typ': 'text'},
+        {'key': 'an', 'typ': 'referenz'}, {'key': 'kennwort', 'typ': 'passwort'}]}]
+
+    def test_kennungen(self):
+        h = pruefen.kennung_hinweise(self.TYP, None)
+        self.assertTrue(any('rechnung.absender' in x and '„von“' in x for x in h), h)
+        self.assertTrue(any('rechnung.von' in x and '„beginn“' in x for x in h), h)
+        self.assertTrue(any('rechnung.betrag' in x and 'hier text' in x for x in h), h)
+        self.assertFalse(any('rechnung.an' in x for x in h), h)
+        # nur neue Felder
+        self.assertEqual(pruefen.kennung_hinweise(self.TYP, set()), [])
+        self.assertEqual(len(pruefen.kennung_hinweise(self.TYP, {('rechnung', 'absender')})), 1)
+
+    def test_neue_felder_ohne_basis(self):
+        self.assertEqual(pruefen.neue_felder(WURZEL / 'pakete' / 'haushalt', None, self.TYP, None), set())
+
+    def test_vorlage_text(self):
+        ok = 'Kündigung\n\nSehr geehrte Damen und Herren,\nhiermit kündige ich {vertragsnummer} von {von.name} zum {kuendigen_bis}.\n' \
+             'Mehr: [Hilfe](https://help.ablago.app) oder <https://example.org/kuendigen>\n\n*Muster ohne Gewähr, keine Rechtsberatung.*\n'
+        self.assertEqual(pruefen.pruefe_vorlage_text(ok.encode(), 'v.md', {'kennwort'}), [])
+        for schlecht, teil in [
+            ('<b>fett</b>', 'kein HTML'), ('<!-- x -->', 'kein HTML'), ('![Logo](https://example.org/l.png)', 'keine Bilder'),
+            ('[x](http://example.org)', 'nur mit https'), ('[x](javascript:alert(1))', 'nur mit https'), ('siehe http://example.org', 'nur mit https://'),
+            ('[a]: http://example.org', 'nur mit https'), ('Passwort: {kennwort}', 'Passwortfelder'), ('{konto.kennwort}', 'Passwortfelder')]:
+            f = pruefen.pruefe_vorlage_text(schlecht.encode(), 'v.md', {'kennwort'})
+            self.assertTrue(any(teil in x for x in f), (schlecht, f))
+        self.assertTrue(pruefen.pruefe_vorlage_text(b'\xff\xfe', 'v.md', set()))
+        self.assertTrue(pruefen.pruefe_vorlage_text(b'a' * (pruefen.VORLAGE_MAX + 1), 'v.md', set()))
+
+    def test_vorlagen_ordner(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            o = Path(tmp)
+            v = o / 'inhalt' / 'vorlagen'
+            v.mkdir(parents=True)
+            (v / 'kuendigung.md').write_text('Kündigung {vertragsnummer}\n', encoding='utf-8')
+            self.assertEqual(pruefen.pruefe_vorlagen(o, self.TYP), [])
+            (v / 'brief.docx').write_bytes(b'PK')
+            (v / 'LICENSE').write_text('MIT License', encoding='utf-8')
+            f = pruefen.pruefe_vorlagen(o, self.TYP)
+            self.assertTrue(any('brief.docx' in x for x in f), f)
+            self.assertTrue(any('LICENSE' in x for x in f), f)
+            (v / 'brief.docx').unlink()
+            (v / 'LICENSE').write_text('Creative Commons Attribution 4.0 International', encoding='utf-8')
+            self.assertEqual(pruefen.pruefe_vorlagen(o, self.TYP), [])
+
+    def test_mappentyp_in_einem_paket(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for pid in ('eins', 'zwei'):
+                o = Path(tmp) / pid
+                (o / 'inhalt').mkdir(parents=True)
+                (o / 'manifest.yaml').write_text(yaml.safe_dump({'id': pid, 'inhalt': {'mappentypen': 'inhalt/mappentypen.yaml'}}), encoding='utf-8')
+                (o / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump([{'schluessel': 'vertrag', 'name': 'Vertrag'}]), encoding='utf-8')
+            h = pruefen.doppelte_typen([Path(tmp) / 'eins', Path(tmp) / 'zwei'])
+            self.assertEqual(len(h), 1)
+            self.assertIn('eins:vertrag', h[0])
+        self.assertEqual(pruefen.doppelte_typen(sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir())), [])

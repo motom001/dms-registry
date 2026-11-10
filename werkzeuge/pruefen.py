@@ -1155,6 +1155,140 @@ def pruefe_sprachbeschriftung(datei: Path, rel: str, pakete: Path) -> list[str]:
     return fehler
 
 
+# ---------- Paketsprache (Registry #157): gleiche Kennungen, Text-Vorlagen ----------
+
+# Gleiche Kennung für gleiche Bedeutung über alle Mappentypen (REGELN.md, „Gleiche Kennungen“), damit Trefferlisten,
+# Ansichten und die erweiterte Suche über mehrere Typen dieselben Spalten zeigen. Je Kennung: Feldart(en), Bedeutung
+# und Schlüssel, die dasselbe meinen und künftig nicht mehr neu entstehen sollen.
+KENNUNGEN = {
+    'von': ({'referenz'}, 'Gegenseite, von der etwas kommt: Anbieter, Rechnungssteller, Verkäufer, Vermieter, Versicherer, Absender',
+            {'absender', 'vertragspartner', 'anbieter', 'aussteller', 'rechnungssteller', 'verkaeufer', 'vermieter', 'versicherer', 'lieferant'}),
+    'an': ({'referenz'}, 'wer es bekommt: Kunde, Rechnungsempfänger, Käufer, Mieter, Versicherungsnehmer, Empfänger',
+           {'empfaenger', 'fuer', 'kunde', 'rechnungsempfaenger', 'kaeufer', 'versicherungsnehmer'}),
+    'betrag': ({'betrag'}, 'Geldbetrag (bei Rechnungen brutto)', {'summe', 'preis', 'gesamtbetrag', 'bruttobetrag', 'betrag_brutto', 'betrag_eur'}),
+    'datum': ({'datum'}, 'Datum des Schriftstücks', {'rechnungsdatum', 'belegdatum', 'dokumentdatum', 'ausstellungsdatum', 'briefdatum'}),
+    'betrifft': ({'referenz'}, 'Gegenstand, um den es geht (Fahrzeug, Wohnung, Vertrag …)', {'bezug', 'gegenstand_verweis', 'betreff_verweis'}),
+    'steuerjahr': ({'referenz'}, 'Verweis auf das Steuerjahr', {'steuer_jahr', 'veranlagungsjahr'}),
+    'zustaendig': ({'referenz'}, 'Benutzer, der sich kümmert (dms:benutzer)', {'verantwortlich', 'zustaendigkeit', 'bearbeiter', 'kuemmert_sich'}),
+    'verbleib_original': ({'referenz'}, 'wo das Original liegt (basis:ablageort)', {'original', 'verbleib', 'originale', 'ablageort_original'}),
+    'person_verweis': ({'referenz'}, 'Person des Haushalts bzw. Betriebs (basis:person)', set()),
+    'bezeichnung': ({'text'}, 'kurzer Name der Mappe („Handyvertrag Jonas“)', {'name_kurz', 'kurzname'}),
+    'art': ({'auswahl', 'referenz'}, 'was es ist (Auswahl oder Verweis auf eine Art)', {'typ', 'kategorie', 'sorte'}),
+    'beginn': ({'datum'}, 'Beginn eines Zeitraums', {'start', 'startdatum', 'von_datum', 'gueltig_ab'}),
+    'ende': ({'datum'}, 'Ende eines Zeitraums', {'enddatum', 'bis_datum', 'gueltig_bis', 'ablauf'}),
+    'kuendigen_bis': ({'datum'}, 'letzter Tag zum Kündigen (Frist)', {'kuendigung_bis', 'kuendigungsfrist_bis'}),
+    'vertragsnummer': ({'text'}, 'Vertragsnummer der Gegenseite', {'vertrags_nr', 'vertragsnr'}),
+    'zahlweise': ({'auswahl'}, 'monatlich, vierteljährlich, jährlich …', {'zahlungsweise', 'zahlungsrhythmus'}),
+    'notiz': ({'langtext', 'formatiert'}, 'freie Bemerkungen', {'bemerkung', 'bemerkungen', 'anmerkung', 'anmerkungen', 'kommentar'}),
+}
+STATT = {alt: neu for neu, (_, _, alte) in KENNUNGEN.items() for alt in alte}
+# Zeiträume heißen beginn/ende; von/an/bis bleiben den Parteien vorbehalten (von/an) bzw. sind keine eigene Kennung.
+ZEITRAUM = {'von': 'beginn', 'bis': 'ende'}
+
+
+def kennung_hinweise(typen: list, neu: set[tuple[str, str]] | None) -> list[str]:
+    """Hinweise zu Kennungen (Registry #157): nur für neue Felder (neu = {(typ, feld)}, None = alle Felder)."""
+    h: list[str] = []
+    for t in typen:
+        if not isinstance(t, dict):
+            continue
+        ts = str(t.get('schluessel', ''))
+        for f in t.get('felder') or []:
+            if not isinstance(f, dict) or not isinstance(f.get('key'), str):
+                continue
+            k, art = f['key'], f.get('typ')
+            if neu is not None and (ts, k) not in neu:
+                continue
+            wo = f'mappentypen.{ts}.{k}'
+            if k in STATT:
+                h.append(f'{wo}: für „{KENNUNGEN[STATT[k]][1]}“ heißt die Kennung „{STATT[k]}“ (REGELN.md, „Gleiche Kennungen“)')
+            elif k in ZEITRAUM and art == 'datum':
+                h.append(f'{wo}: ein Zeitraum heißt „{ZEITRAUM[k]}“ – „von“ und „an“ sind die Parteien (REGELN.md, „Gleiche Kennungen“)')
+            elif k in KENNUNGEN and art and art not in KENNUNGEN[k][0]:
+                h.append(f'{wo}: „{k}“ bedeutet „{KENNUNGEN[k][1]}“ und ist {" oder ".join(sorted(KENNUNGEN[k][0]))} – '
+                         f'hier {art}; bitte eine andere Kennung wählen (REGELN.md, „Gleiche Kennungen“)')
+    return h
+
+
+def neue_felder(ordner: Path, basis: str | None, typen: list, inhalt_pfad: str | None) -> set[tuple[str, str]] | None:
+    """Felder, die es auf der Basis (z. B. origin/main) noch nicht gab; ohne Basis keine (leere Menge)."""
+    if not basis:
+        return set()
+    alle = {(str(t.get('schluessel', '')), f['key']) for t in typen if isinstance(t, dict)
+            for f in t.get('felder') or [] if isinstance(f, dict) and isinstance(f.get('key'), str)}
+    if not inhalt_pfad:
+        return alle
+    rel = (ordner / inhalt_pfad).relative_to(WURZEL).as_posix()
+    try:
+        alt = yaml.safe_load(subprocess.run(['git', 'show', f'{basis}:{rel}'], cwd=WURZEL, capture_output=True, text=True, check=True).stdout) or []
+    except (subprocess.CalledProcessError, yaml.YAMLError):
+        return alle  # neues Paket bzw. neue Datei
+    da = {(str(t.get('schluessel', '')), f.get('key')) for t in alt if isinstance(t, dict) for f in t.get('felder') or [] if isinstance(f, dict)}
+    return alle - da
+
+
+# Text-Vorlagen (Registry #157, Kern: DMS #1038/#1040): Markdown unter inhalt/vorlagen/, daraus macht Ablago ein PDF.
+# Dieselben Regeln prüft Ablago beim Installieren, denn Pakete kommen auch als Datei.
+VORLAGEN_ORDNER = 'inhalt/vorlagen'
+VORLAGE_MAX = 256 * 1024  # je Vorlage; vorläufig, bis die Grenze des Kerns (grenzen.ts, DMS #1038) feststeht
+VORLAGE_LIZENZEN = {'CC-BY-4.0': 'Attribution 4.0 International', 'CC0-1.0': 'CC0'}
+_HTML = re.compile(r'<(?!https://[^\s<>]+>)[A-Za-z!/?]')
+_BILD = re.compile(r'!\[[^\]]*\]')
+_LINK = re.compile(r'\]\(\s*<?([^)\s>]*)')
+_REFLINK = re.compile(r'^\s{0,3}\[[^\]]+\]:\s*<?(\S+?)>?(\s|$)', re.M)
+_ROH = re.compile(r'(?<![<(\w])(?:https?|ftp|file|javascript|data):', re.I)
+_PLATZHALTER = re.compile(r'\{([a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*)\}')
+
+
+def pruefe_vorlage_text(roh: bytes, wo: str, passwortfelder: set[str]) -> list[str]:
+    """Eine Text-Vorlage: UTF-8, klein, kein HTML, keine Bilder, Links nur https:, keine Passwortfelder als Platzhalter."""
+    if len(roh) > VORLAGE_MAX:
+        return [f'{wo}: größer als {VORLAGE_MAX // 1024} KB']
+    try:
+        text = roh.decode('utf-8')
+    except UnicodeDecodeError:
+        return [f'{wo}: kein UTF-8-Text']
+    fehler: list[str] = []
+    if '\x00' in text:
+        fehler.append(f'{wo}: enthält Nullzeichen – nur Text')
+    if _HTML.search(text):
+        fehler.append(f'{wo}: kein HTML in Vorlagen (auch keine Kommentare) – nur Markdown')
+    if _BILD.search(text):
+        fehler.append(f'{wo}: keine Bilder in Vorlagen – Briefkopf und Logo setzt Ablago')
+    ziele = _LINK.findall(text) + [m.group(1) for m in _REFLINK.finditer(text)]
+    for z in ziele:
+        if z and not z.startswith('https://') and not z.startswith('{'):
+            fehler.append(f'{wo}: Link „{z[:60]}“ – Links nur mit https://')
+    ohne_https = re.sub(r'https://\S+', '', text)
+    if _ROH.search(ohne_https):
+        fehler.append(f'{wo}: Adressen nur mit https:// (kein http:, data:, javascript: …)')
+    for p in _PLATZHALTER.findall(text):
+        if set(p.split('.')) & passwortfelder:
+            fehler.append(f'{wo}: Platzhalter {{{p}}} – Passwortfelder kommen nie in Vorlagen')
+    return fehler
+
+
+def pruefe_vorlagen(ordner: Path, typen: list) -> list[str]:
+    """Alle Dateien unter inhalt/vorlagen/: nur .md (und eine LICENSE für eine eigene Lizenz der Vorlagentexte)."""
+    wurzel = ordner / VORLAGEN_ORDNER
+    if not wurzel.is_dir():
+        return []
+    passwort = {f['key'] for t in typen if isinstance(t, dict) for f in t.get('felder') or []
+                if isinstance(f, dict) and f.get('typ') == 'passwort' and isinstance(f.get('key'), str)}
+    fehler: list[str] = []
+    for datei in sorted(p for p in wurzel.rglob('*') if p.is_file()):
+        rel = datei.relative_to(ordner).as_posix()
+        if datei.name == 'LICENSE' and datei.parent == wurzel:
+            text = datei.read_text(encoding='utf-8', errors='replace')
+            if not any(v.lower() in text.lower() for v in VORLAGE_LIZENZEN.values()):
+                fehler.append(f'{rel}: eigene Lizenz der Vorlagentexte nur ' + ' oder '.join(VORLAGE_LIZENZEN) + ' (sonst gilt die Lizenz des Pakets)')
+        elif datei.suffix != '.md' or not re.fullmatch(r'[a-z0-9][a-z0-9._-]*', datei.name):
+            fehler.append(f'{rel}: Vorlagen nur als Markdown (.md), Namen aus Kleinbuchstaben, Ziffern, „.“, „-“ und „_“')
+        else:
+            fehler += pruefe_vorlage_text(datei.read_bytes(), rel, passwort)
+    return fehler
+
+
 def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler: list[str] = []
     vorlage = ordner.name == 'vorlage'
@@ -1313,6 +1447,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler += pruefe_beispiel_verweise(geladen.get('beispiele', []) or [], str(m.get('id')), abh)
     fehler += pruefe_beispiel_dokumente(ordner, geladen.get('beispiele', []) or [], geladen.get('mappentypen', []) or [], str(m.get('id')), str(m.get('dms', '')))
     fehler += pruefe_wortlisten(geladen.get('wortlisten', []) or [], str(m.get('dms', '')))
+    fehler += pruefe_vorlagen(ordner, geladen.get('mappentypen', []) or [])
     typfelder = {t.get('schluessel'): t.get('felder') or [] for t in geladen.get('mappentypen', []) if isinstance(t, dict)}
     fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')))
 
@@ -1402,12 +1537,60 @@ def veraltete_verweise(ordner: Path) -> list[str]:
             f'basis: ">=1.6.0"). Das DMS versteht „{alt}“ nur noch bis 1.0.' for alt, dateien in sorted(gefunden.items())]
 
 
-def hinweise(ordner: Path) -> list[str]:
+def sprach_hinweise(ordner: Path, basis: str | None) -> list[str]:
+    """Paketsprache (Registry #157): Kennungen neuer Felder; Vorlagen-Pakete mit Code ändern nur eigene Mappentypen."""
+    try:
+        m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
+    except Exception:  # noqa: BLE001 – meldet schon pruefe()
+        return []
+    if not isinstance(m, dict):
+        return []
+    pfad = (m.get('inhalt') or {}).get('mappentypen')
+    typen = []
+    if pfad and (ordner / str(pfad)).is_file():
+        try:
+            typen = yaml.safe_load((ordner / str(pfad)).read_text(encoding='utf-8')) or []
+        except Exception:  # noqa: BLE001
+            typen = []
+    typen = typen if isinstance(typen, list) else []
+    h = kennung_hinweise(typen, neue_felder(ordner, basis, typen, str(pfad) if pfad else None))
+    code = m.get('code') if isinstance(m.get('code'), dict) else {}
+    rechte = code.get('rechte') if isinstance(code.get('rechte'), dict) else {}
+    eigene = {str(t.get('schluessel')) for t in typen if isinstance(t, dict)}
+    if eigene and code:
+        fremd = [v for v in rechte.get('schreiben') or [] if isinstance(v, str)
+                 and (v == '*' or (':' in v and not v.startswith(f"{m.get('id')}:")) or (':' not in v and v not in eigene))]
+        if fremd:
+            h.append('code.rechte.schreiben: ' + ', '.join(fremd) + ' – ein Vorlagen-Paket mit Code pflegt nur seine eigenen Mappentypen; '
+                     'Code für alle Mappen gehört in ein Funktions-Paket (REGELN.md, „Paketarten“)')
+    return h
+
+
+def doppelte_typen(ordner: list[Path]) -> list[str]:
+    """„Ein Mappentyp lebt in genau einem Paket“ (Registry #157): gleicher Name in zwei Paketen."""
+    namen: dict[str, list[str]] = {}
+    for o in ordner:
+        try:
+            m = yaml.safe_load((o / 'manifest.yaml').read_text(encoding='utf-8')) or {}
+            pfad = (m.get('inhalt') or {}).get('mappentypen')
+            typen = yaml.safe_load((o / str(pfad)).read_text(encoding='utf-8')) or [] if pfad else []
+        except Exception:  # noqa: BLE001
+            continue
+        for t in typen if isinstance(typen, list) else []:
+            if isinstance(t, dict) and isinstance(t.get('name'), str):
+                namen.setdefault(t['name'].strip().lower(), []).append(f"{m.get('id', o.name)}:{t.get('schluessel')}")
+    return [f'Mappentyp „{n}“ gibt es in {", ".join(sorted(w))} – ein Mappentyp lebt in genau einem Paket, die anderen verweisen '
+            'darauf (REGELN.md, „Paketarten“)' for n, w in sorted(namen.items()) if len(w) > 1]
+
+
+def hinweise(ordner: Path, basis: str | None = None) -> list[str]:
     """Hinweise ohne Fehler (#98): veraltete Verweise (DMS #883), Paket ohne Symbol, Manifest und
-    werkzeuge/kategorien.yaml verschieden.
+    werkzeuge/kategorien.yaml verschieden, Paketsprache (#157: Kennungen neuer Felder gegen die Basis).
 
     Ohne vorlagen.py und kategorien.yaml (pruefen.py allein, z. B. im Test des DMS) nur die veralteten Verweise."""
     veraltet = (veraltete_verweise(ordner) if (ordner / 'manifest.yaml').exists() else []) + beispiel_groessen(ordner)
+    if ordner.name != 'vorlage' and (ordner / 'manifest.yaml').exists():
+        veraltet += sprach_hinweise(ordner, basis)
     if ordner.name == 'vorlage' or not (ordner / 'manifest.yaml').exists():
         return veraltet
     if not (WURZEL / 'werkzeuge' / 'vorlagen.py').exists() or not (WURZEL / 'werkzeuge' / 'kategorien.yaml').exists():
@@ -1448,10 +1631,14 @@ def main():
                     print(f'::error file={name}/manifest.yaml,title={name}::{x}')
         else:
             print(f'✓ {name}')
-        for x in hinweise(o):
+        for x in hinweise(o, basis):
             print(f'    Hinweis: {x}')
             if 'GITHUB_ACTIONS' in __import__('os').environ:
                 print(f'::warning file={name}/manifest.yaml,title={name}::{x}')
+    for x in doppelte_typen([o for o in ordner if o.name != 'vorlage']):
+        print(f'Hinweis: {x}')
+        if 'GITHUB_ACTIONS' in __import__('os').environ:
+            print(f'::warning title=Paketsprache::{x}')
     sys.exit(1 if gesamt else 0)
 
 

@@ -10,6 +10,8 @@ Jedes Paket steht unter einer dieser Open-Source-Lizenzen (Kennung nach [SPDX](h
 
 `MIT`, `Apache-2.0`, `BSD-2-Clause`, `BSD-3-Clause`, `MPL-2.0`, `LGPL-3.0-or-later`, `GPL-3.0-or-later`, `AGPL-3.0-or-later`, `CC0-1.0` (nur für reine Konfiguration)
 
+Für **Vorlagentexte** darf zusätzlich `CC-BY-4.0` oder `CC0-1.0` gelten (siehe [Text-Vorlagen](#text-vorlagen)).
+
 Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im Paket braucht eine dazu passende Lizenz und einen Hinweis im README.
 
 ## Erlaubt
@@ -133,6 +135,68 @@ Ab Ablago 0.223.0 (motom001/dms#878, Registry #137) kann ein Beispiel Dokumente 
 - **Keine echten Daten:** nur erfundene Personen und Firmen (Persona-Namen wie Lena, Jonas, Markus, Petra, Herr Özdemir, Katrin), Beispiel-Domains (`example.org`, `example.com`, `example.net`), ungültige oder ausdrücklich als Beispiel gedachte Werte für IBAN, Steuer- und Versichertennummern. Keine eingescannten echten Briefe, auch nicht geschwärzt – Metadaten, Unterschriften und Logos verraten oft mehr als gedacht.
 - **Große Pakete:** Der Katalog liegt auf dem Branch `gh-pages` (Registry #133), und git nimmt keine Datei über 100 MB an. Ein Paket, dessen Archiv größer würde, lässt sich so nicht veröffentlichen; `pruefen.py` weist ab 90 MB darauf hin.
 
+## Paketarten
+
+Jedes Paket hat **eine** Art. Die Art steht nicht im Manifest – Katalog und Ablago leiten sie aus dem Inhalt ab. Wähle beim Zuschnitt die Art zuerst; was nicht zu ihr passt, gehört in ein anderes Paket.
+
+| Art | bringt mit | Beispiele | Name |
+|---|---|---|---|
+| **Grundlagen-Paket** | die gemeinsamen Mappentypen, auf die alle verweisen (Organisation, Person, Ablageort) | Basis | – (gibt es nur einmal, immer dabei) |
+| **Vorlagen-Paket** | Mappentypen, Ansichten, Beispiele, mitgelieferte Automatisierungen für **einen** Lebens- oder Fachbereich; **darf Code mitbringen, der nur seine eigenen Mappentypen pflegt** (z. B. Status und Fristen berechnen) | Haushalt, Haus, Fahrzeuge, Vermietung, Verträge, Rechnungen | Hauptwort in der Mehrzahl oder der Bereich |
+| **Funktions-Paket** | Code für **alle** Mappen, **keine** eigenen Mappentypen | Texterkennung, PDF/A, Trennblatt, KI | was es tut |
+| **Ergänzung** | erweitert **genau ein** anderes Paket (`ergaenzt`, siehe [Ergänzungen](#ergänzungen)) | Zusatzsprachen der Texterkennung, eine Vorlage für eine vorhandene Vertragsart | Hauptpaket + Zusatz |
+| **Sprache** | nur Texte für Ablago (siehe [Sprachpakete](#sprachpakete)) | Sprache Französisch | Sprache … |
+| **Automatisierungs-Paket** | nur Automatisierungen (und ggf. Einstellungen), keine Mappentypen | Benachrichtigungen | was es auslöst |
+
+- **Jedes Vorlagen-Paket hängt von Basis ab** (`abhaengigkeiten: basis: …`) und verweist auf deren Typen statt eigene Personen oder Organisationen mitzubringen.
+- **Code im Vorlagen-Paket** schreibt nur die eigenen Mappentypen (`code.rechte.schreiben`); lesen darf er, was er für die Berechnung braucht. Soll Code an allen Mappen arbeiten, ist es ein Funktions-Paket. `pruefen.py` weist darauf hin.
+- **Kleine Pakete, ein Zweck:** Ändert sich etwas an Verträgen, wird nur das Paket Verträge aktualisiert, nicht Haushalt. Lieber ein weiteres Paket mit Abhängigkeit als ein Typ, der in mehreren Paketen halb vorkommt.
+
+### Ein Mappentyp lebt in genau einem Paket
+
+Jeder Mappentyp gehört **genau einem** Paket. Andere Pakete **verweisen** darauf (`vertraege:vertrag`, `basis:organisation`) und nennen das Paket unter `abhaengigkeiten` – sie bringen keinen eigenen Typ gleicher Bedeutung mit, auch nicht unter anderem Schlüssel. Beispiel: Haushalt, Vermietung und Fahrzeuge bringen keine eigenen Vertragstypen mehr mit, sondern hängen von Verträge ab (Registry #163). Die Werkbank zeigt bei jedem Paket, wer davon abhängt.
+
+`pruefen.py` weist darauf hin, wenn zwei Pakete einen Mappentyp mit demselben Namen mitbringen. Zieht ein Typ in ein anderes Paket um, geht das über ein Umbau-Update (Ablago #1041), nie durch Löschen.
+
+## Gleiche Kennungen
+
+Felder mit **derselben Bedeutung** heißen in allen Mappentypen gleich – auch über Pakete hinweg. Dann zeigen Trefferlisten, Ansichten und die erweiterte Suche über mehrere Typen dieselben Spalten („von“ bei Post, Vertrag und Rechnung). Die **Kennung** ist fest, die **Beschriftung** darf je Typ sprechen: `von` heißt am Vertrag „Anbieter“, an der Rechnung „Rechnungssteller“.
+
+| Kennung | Feldart | Bedeutung | nicht |
+|---|---|---|---|
+| `von` | Verweis | Gegenseite, von der etwas kommt: Anbieter, Rechnungssteller, Verkäufer, Vermieter, Versicherer, Absender | `absender`, `vertragspartner`, `anbieter`, `rechnungssteller` … |
+| `an` | Verweis | wer es bekommt: Kunde, Rechnungsempfänger, Käufer, Mieter, Versicherungsnehmer | `empfaenger`, `fuer`, `kunde` … |
+| `betrag` | Betrag | Geldbetrag (bei Rechnungen brutto) | `summe`, `preis`, `gesamtbetrag` |
+| `datum` | Datum | Datum des Schriftstücks | `rechnungsdatum`, `belegdatum` |
+| `betrifft` | Verweis | Gegenstand, um den es geht (Fahrzeug, Wohnung, Vertrag …) | `bezug`, `gegenstand_verweis` |
+| `steuerjahr` | Verweis | Steuerjahr, unter dessen „Belegen“ die Mappe erscheint | `veranlagungsjahr` |
+| `zustaendig` | Verweis auf `dms:benutzer` | wer sich kümmert, Empfänger von Erinnerungen | `verantwortlich`, `bearbeiter` |
+| `verbleib_original` | Verweis auf `basis:ablageort` | wo das Original liegt | `original`, `verbleib` |
+| `person_verweis` | Verweis auf `basis:person` | Person des Haushalts bzw. Betriebs | – |
+| `bezeichnung` | Text | kurzer Name der Mappe („Handyvertrag Jonas“) | `kurzname` |
+| `art` | Auswahl oder Verweis | was es ist | `typ`, `kategorie` |
+| `beginn`, `ende` | Datum | Beginn und Ende eines Zeitraums | `von`/`bis` als Datum, `startdatum`, `gueltig_bis` |
+| `kuendigen_bis` | Datum (Frist) | letzter Tag zum Kündigen | `kuendigung_bis` |
+| `vertragsnummer` | Text | Nummer der Gegenseite | `vertragsnr` |
+| `zahlweise` | Auswahl | monatlich, vierteljährlich, jährlich … | `zahlungsweise` |
+| `notiz` | langer Text | freie Bemerkungen | `bemerkungen`, `kommentar` |
+
+- **`von` und `an` sind die Parteien.** Ein Zeitraum heißt `beginn`/`ende`. Ablago leitet daraus ab, wer „wir“ sind: Zeigt `von` auf eine eigene Organisation oder eine Person des Haushalts, ist es ausgehend.
+- **Neue Felder** in neuen oder geänderten Paketen folgen der Liste; `pruefen.py` gibt einen Hinweis, wenn ein neues Feld eine Kennung aus der Spalte „nicht“ hat oder eine Kennung der Liste mit anderer Feldart nutzt. Bestehende Felder bleiben, bis ein Umbau-Update sie umzieht (Registry #163) – Kennungen ändern bricht sonst Ansichten und Automatisierungen der Nutzer.
+- Die Liste wächst über Issues. Hat ein Feld eine Bedeutung, die schon ein anderer Typ kennt, nimm dessen Kennung.
+
+## Text-Vorlagen
+
+Pakete können **Vorlagen als Text** mitbringen – etwa ein Kündigungsschreiben an einer Vertragsart (Registry #160). Ablago macht daraus beim Erzeugen ein PDF (Ablago #1040); wie ein Paket die Vorlagen an seine mitgelieferten Mappen hängt, beschreibt Ablago #1038.
+
+- **Nur Markdown** (`.md`, UTF-8) unter `inhalt/vorlagen/`, höchstens 256 KB je Datei. Keine Office-Formate, auch keine offenen wie `.odt`.
+- **Kein HTML** (auch keine Kommentare `<!-- -->`), **keine Bilder** – Briefkopf und Logo setzt Ablago. Links nur mit `https://`, keine anderen Adressen (`http:`, `data:`, `javascript:` …).
+- **Platzhalter** wie bei Automatisierungen: `{vertragsnummer}`, `{von.name}`, `{kuendigen_bis}`. Ablago füllt nur Werte, die die Person sehen darf. **Passwortfelder nie** als Platzhalter.
+- `pruefen.py` lehnt Vorlagen ab, die gegen diese Regeln verstoßen; **Ablago prüft beim Installieren dasselbe**, denn Pakete können auch als Datei kommen.
+- **Lizenz:** Vorlagentexte stehen unter der Lizenz des Pakets. Eine eigene offene Lizenz nur für die Texte (`CC-BY-4.0` oder `CC0-1.0`) legst du als `inhalt/vorlagen/LICENSE` dazu und nennst sie im README.
+- **Vertragsmuster:** nur **eigene, schlichte** Muster, keine fremden oder geschützten Texte. Jedes Muster endet mit dem Hinweis *„Muster ohne Gewähr, keine Rechtsberatung – im Zweifel fachlich prüfen lassen.“* Kündigungsschreiben sind unkritisch, Kaufverträge eher vorsichtig formulieren.
+- **Keine echten Daten** in Vorlagen (wie bei Beispielen): Platzhalter statt Namen, Adressen oder Nummern.
+
 ## Ergänzungen
 
 Ein Paket, das ein anderes erweitert – etwa eine Zusatzsprache die Texterkennung –, sagt das mit `ergaenzt` (motom001/dms#405). Das ergänzte Paket steht auch unter `abhaengigkeiten`:
@@ -144,6 +208,8 @@ ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }   # oder kurz: erga
 ```
 
 Ablago ab 0.151.0 zeigt Ergänzungen beim Installieren als Häkchen unter dem ergänzten Paket, gruppiert nach `gruppe` (kurze Frage ohne Fragezeichen, höchstens 40 Zeichen; ohne Gruppe: „Ergänzungen“) – auch nachträglich, im Einrichtungsassistenten und in der Sammeldatei. Jede Ergänzung bleibt ein eigenes Paket mit eigener Version. Ältere Ablago-Versionen ignorieren das Feld, deshalb braucht es kein höheres `dms`. Im Katalog steht es je Version als `ergaenzt: { paket, gruppe }`, auf der Katalog-Webseite als eigene Gruppe unter „Passt dazu“.
+
+**Was eine Ergänzung darf:** Sie fügt dem ergänzten Paket etwas hinzu – Daten (z. B. ein Sprachmodell) oder Dokumente an dessen Vorgaben (z. B. eine Vorlage an eine vorhandene Vertragsart). Sie **ändert keine Mappentypen und keine Rechte** des ergänzten Pakets, bringt keine eigenen Mappentypen mit und ändert keine fremden Vorlagen. Entfernt man sie, nimmt sie nur mit, was sie selbst hinzugefügt hat.
 
 ## Beschriftungen je Sprache
 
