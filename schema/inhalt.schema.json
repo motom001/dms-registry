@@ -258,6 +258,7 @@
         "schluessel": { "$ref": "#/$defs/schluessel" },
         "name": { "type": "string", "minLength": 1, "maxLength": 120 },
         "beschreibung": { "type": "string", "maxLength": 500 },
+        "eingeschaltet": { "type": "boolean", "description": "DMS #1082 (Entwurf): beim Installieren mit gesetztem Haken angeboten; ein Update ändert den Zustand nie" },
         "wenn": {
           "type": "object", "required": ["art"], "additionalProperties": false,
           "properties": {
@@ -277,7 +278,7 @@
           "items": {
             "type": "object", "required": ["art"], "additionalProperties": false,
             "properties": {
-              "art": { "enum": ["aufgabe", "feld", "stopp", "zusammenfassung", "favoriten", "anmeldeschutz"] }, "was": { "enum": ["sammel", "konto"] }, "als": { "enum": ["aufgabe", "benachrichtigung"] },
+              "art": { "enum": ["aufgabe", "feld", "stopp", "zusammenfassung", "favoriten", "anmeldeschutz", "paket"], "description": "paket: „Paket nach Zeitplan ausführen“ (DMS #1082, Entwurf) – nur mit wenn: zeitplan, ruft nur das eigene Paket auf" }, "aufgabe": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$", "description": "Nur bei art paket: Kennung, die das Paket im Ereignis zeitplan.ausgefuehrt bekommt (z. B. taeglich, monatlich)" }, "was": { "enum": ["sammel", "konto"] }, "als": { "enum": ["aufgabe", "benachrichtigung"] },
               "text": { "type": "string", "maxLength": 2000 }, "faellig": { "type": ["integer", "null"] }, "werte": { "type": "object" },
               "empfaenger": { "type": "array", "items": { "type": "object", "required": ["art"], "additionalProperties": false,
                 "properties": { "art": { "type": "string" }, "feld": { "type": "string" }, "sonst": { "enum": ["ersteller"] } } } }

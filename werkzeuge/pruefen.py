@@ -127,7 +127,7 @@ PERSONEN_IM_EREIGNIS = {
     'benutzer.deaktiviert': {'benutzer'}, 'benutzer.aktiviert': {'benutzer'}, 'favorit.neu': {'benutzer'},
 }
 VORLAUF_EINHEITEN = {'tage', 'wochen', 'monate'}
-DANN_KARTEN = {'aufgabe', 'feld', 'stopp', 'zusammenfassung', 'favoriten', 'anmeldeschutz'}
+DANN_KARTEN = {'aufgabe', 'feld', 'stopp', 'zusammenfassung', 'favoriten', 'anmeldeschutz', 'paket'}
 # Schnittstelle dms:texterkennung (DMS #458): das Paket übernimmt die Texterkennung, ab DMS 0.133.0.
 DMS_TEXTERKENNUNG_AB = (0, 133, 0)
 # Schnittstelle dms:umwandeln, code.umwandeln und Ereignis datei.umwandeln (DMS #577): Dateien umwandeln, ab DMS 0.137.0.
@@ -630,12 +630,14 @@ def pruefe_wortlisten(gruppen: list, dms_bereich: str) -> list[str]:
     return fehler
 
 
-def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, dms_bereich: str) -> list[str]:
+def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, dms_bereich: str, paket_ereignisse: tuple = ()) -> list[str]:
     """inhalt.automatisierungen (DMS #712, Registry #108): bekannte Karten, vorhandene Felder, keine festen Personen
     oder Rollen, Empfänger-Felder verweisen auf Benutzer; passende DMS-Version. typen: Schlüssel → Liste der Felder."""
     fehler: list[str] = []
     gesehen: set[str] = set()
     neu = False  # Karten aus DMS #678 (Zeitplan, Favorit geändert, Benachrichtigungen)
+    _ab = dms_untergrenze(dms_bereich)
+    ab_etappe15_fehlt = _ab is None or _ab < DMS_ETAPPE15_AB
     for i, a in enumerate(liste, 1):
         if not isinstance(a, dict):
             continue
@@ -696,6 +698,15 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
             kw = f'{wo}/dann[{j}]'
             if k.get('art') not in DANN_KARTEN:
                 fehler.append(f'{kw}: unbekannte Dann-Karte „{k.get("art")}“ (erlaubt: {", ".join(sorted(DANN_KARTEN))})')
+                continue
+            if k['art'] == 'paket':
+                # „Paket nach Zeitplan ausführen“ (DMS #1082): nur nach Zeitplan, nur das eigene Paket, das das Ereignis abonniert.
+                if art != 'zeitplan' or w.get('jeBenutzer'):
+                    fehler.append(f'{kw}: „Paket nach Zeitplan ausführen“ nur mit wenn: zeitplan (nicht je Benutzer)')
+                if 'zeitplan.ausgefuehrt' not in paket_ereignisse:
+                    fehler.append(f'{kw}: „Paket nach Zeitplan ausführen“ braucht das Ereignis zeitplan.ausgefuehrt in code.ereignisse')
+                if ab_etappe15_fehlt:
+                    fehler.append(f'{kw}: „Paket nach Zeitplan ausführen“ kennt Ablago erst ab {".".join(map(str, DMS_ETAPPE15_AB))} (vorläufig) – bitte dms: ">={".".join(map(str, DMS_ETAPPE15_AB))}"')
                 continue
             if k['art'] in DANN_BENACHRICHTIGUNGEN:
                 neu = True
@@ -1475,7 +1486,7 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
     if code:
         if 'dms:hinweise' in ((rechte.get('schnittstellen') or [])):
             benutzt = True
-        if 'zeitplan.taeglich' in (code.get('ereignisse') or []):
+        if 'zeitplan.ausgefuehrt' in (code.get('ereignisse') or []):
             benutzt = True
     if benutzt:
         ab = dms_untergrenze(str(m.get('dms', '')))
@@ -1651,7 +1662,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler += pruefe_etappe15(ordner, m, geladen.get('mappentypen', []) or [], geladen.get('vorgaben', []) or [],
                               geladen.get('beispiele', []) or [], abh)
     typfelder = {t.get('schluessel'): t.get('felder') or [] for t in geladen.get('mappentypen', []) if isinstance(t, dict)}
-    fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')))
+    fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')),
+                                       tuple((m.get('code') or {}).get('ereignisse') or []) if isinstance(m.get('code'), dict) else ())
 
     # tests/erwartung.yaml stimmt mit dem Inhalt überein.
     erw_pfad = ordner / 'tests' / 'erwartung.yaml'
