@@ -1,0 +1,296 @@
+# Mappentypen des Pakets Verträge (dms-registry #159). Schema: schema/inhalt.schema.json
+# Ein Vertrag für alle – zu Hause und im Betrieb. Unterschiede nur über Abschnitte, die sich zeigen, wenn sie passen
+# (Anzeige-Bedingungen, DMS #1033), nie über einen anderen Mappentyp. Kennungen nach REGELN.md, „Gleiche Kennungen“.
+# Felder mit „berechnet: true“ schreibt nur der Code dieses Pakets (DMS #1034).
+
+- schluessel: vertrag
+  name: Vertrag
+  beschreibung: Jeder Vertrag mit Laufzeit oder Kündigungsfrist – Strom, Gas, Internet, Handy, Streaming, Zeitschrift, Mitgliedschaft, Miete, Versicherung, im Betrieb auch Leasing, Wartung oder Rahmenvertrag.
+  beschriftungen: { en: { name: "Contract", beschreibung: "Any contract with a term or notice period – electricity, gas, internet, mobile, streaming, magazine, membership, rent, insurance, and in a business also leasing, maintenance or framework contracts." } }
+  titelVorlage: "{bezeichnung}"
+  felder:
+    # Oben – das Wichtigste auf einen Blick
+    - key: bezeichnung
+      label: Bezeichnung
+      beschriftungen: { en: { label: "Name", hilfe: "So that you recognise it, e.g. “Mobile Jonas” or “Electricity flat”" } }
+      typ: text
+      pflicht: true
+      maxLen: 120
+      hilfe: Damit du ihn wiedererkennst, z. B. „Handyvertrag Jonas“ oder „Strom Wohnung“
+    - key: von
+      label: Anbieter
+      beschriftungen: { en: { label: "Provider", hilfe: "Who provides the service: provider, landlord, insurer, seller" } }
+      typ: referenz
+      ziel: ["basis:organisation", "basis:person"]
+      verweisart: bezug
+      hilfe: Wer die Leistung erbringt – Anbieter, Vermieter, Versicherer, Verkäufer
+      erkennung: { art: verweis }
+    - key: art
+      label: Vertragsart
+      beschriftungen: { en: { label: "Contract type", hilfe: "Suggests typical terms and notice periods – you can change them" } }
+      typ: referenz
+      ziel: vertragsart
+      verweisart: bezug
+      hilfe: Schlägt die üblichen Laufzeiten und Fristen vor – du kannst sie ändern
+      # Beim Auswählen typische Fristen vorschlagen, nur in leere Felder (DMS #1037).
+      vorbelegen:
+        - { von: mindestlaufzeit, nach: mindestlaufzeit }
+        - { von: verlaengerung, nach: verlaengerung }
+        - { von: verlaengerung_um, nach: verlaengerung_um }
+        - { von: kuendigungsfrist, nach: kuendigungsfrist }
+        - { von: kuendigung_zum, nach: kuendigung_zum }
+    - key: zustaendig
+      label: Zuständig
+      beschriftungen: { en: { label: "Responsible", hilfe: "Who takes care of it and gets the reminder before the cancellation deadline" } }
+      typ: referenz
+      ziel: "dms:benutzer"
+      hilfe: Wer sich kümmert und vor „Kündigen bis“ erinnert wird – leer heißt, wer den Vertrag angelegt hat
+    - key: kuendigen_bis
+      label: Kündigen bis
+      beschriftungen: { en: { label: "Cancel by", hilfe: "Last day your cancellation must arrive to end the contract at the earliest date – calculated from your details, without guarantee" } }
+      typ: datum
+      berechnet: true
+      hilfe: Letzter Tag, an dem deine Kündigung ankommen muss, damit der Vertrag frühestmöglich endet – berechnet aus deinen Angaben, ohne Gewähr
+    - key: status
+      label: Status
+      beschriftungen: { en: { label: "Status" } }
+      typ: text
+      maxLen: 200
+      berechnet: true
+      hilfe: z. B. „läuft – kündigen bis 31.03.2027, Ende dann 30.06.2027“ – berechnet aus deinen Angaben, ohne Gewähr
+    # Vertragsparteien (eingeklappt)
+    - key: an
+      label: Kunde
+      beschriftungen: { en: { label: "Customer", hilfe: "Who the contract is with on our side – empty means us (the household)" } }
+      typ: referenz
+      ziel: ["basis:organisation", "basis:person"]
+      verweisart: bezug
+      hilfe: "Wer auf unserer Seite Vertragspartner ist – leer heißt: wir (der Haushalt). Im Betrieb die eigene Organisation."
+    - key: vertragsnummer
+      label: Vertragsnummer (Anbieter)
+      beschriftungen: { en: { label: "Contract number (provider)" } }
+      typ: text
+      maxLen: 60
+      wiederfinden: true
+      erkennung: { art: nummer, hinweis: "Steht meist oben rechts, z. B. „Vertragsnummer 4711-0815“" }
+    # Laufzeit und Kündigung (eingeklappt)
+    - key: beginn
+      label: Beginn
+      beschriftungen: { en: { label: "Start" } }
+      typ: datum
+      erkennung: {}
+    - key: mindestlaufzeit
+      label: Mindestlaufzeit
+      beschriftungen: { en: { label: "Minimum term", hilfe: "e.g. 24 months; empty or 0 if there is none" } }
+      typ: zeitraum
+      hilfe: z. B. 24 Monate; leer oder 0, wenn es keine gibt
+    - key: verlaengerung
+      label: Danach
+      beschriftungen: { en: { label: "Afterwards", optionen: { "verlängert sich um": "renews for", "läuft unbefristet weiter": "continues indefinitely", "endet": "ends" } } }
+      typ: auswahl
+      optionen: [verlängert sich um, läuft unbefristet weiter, endet]
+      hilfe: Was nach der Mindestlaufzeit passiert. Viele Verbraucherverträge laufen seit März 2022 danach unbefristet weiter.
+    - key: verlaengerung_um
+      label: Verlängert sich um
+      beschriftungen: { en: { label: "Renews for" } }
+      typ: zeitraum
+      anzeigenWenn: [{ feld: verlaengerung, op: gleich, wert: verlängert sich um }]
+    - key: vertragsende
+      label: Vertragsende
+      beschriftungen: { en: { label: "End of contract", hilfe: "Only for fixed-term contracts with a set end date" } }
+      typ: datum
+      hilfe: Nur bei befristeten Verträgen mit festem Ende
+      anzeigenWenn: [{ feld: verlaengerung, op: gleich, wert: endet }]
+    - key: kuendigungsfrist
+      label: Kündigungsfrist
+      beschriftungen: { en: { label: "Notice period", hilfe: "As in the contract, e.g. 1 month or 3 months" } }
+      typ: zeitraum
+      hilfe: Wie im Vertrag, z. B. 1 Monat oder 3 Monate
+    - key: kuendigung_zum
+      label: Kündigung zum
+      beschriftungen: { en: { label: "Cancellation effective", optionen: { "Laufzeitende": "end of term", "Monatsende": "end of month", "Quartalsende": "end of quarter", "Jahresende": "end of year", "jederzeit": "any day" } } }
+      typ: auswahl
+      optionen: [Laufzeitende, Monatsende, Quartalsende, Jahresende, jederzeit]
+    - key: gekuendigt_am
+      label: Gekündigt am
+      beschriftungen: { en: { label: "Cancelled on", hilfe: "The day your cancellation arrived – from then on the reminder no longer comes" } }
+      typ: datum
+      hilfe: Der Tag, an dem deine Kündigung angekommen ist – ab dann kommt keine Erinnerung mehr
+    - key: kuendigung_bestaetigt_am
+      label: Kündigung bestätigt am
+      beschriftungen: { en: { label: "Cancellation confirmed on" } }
+      typ: datum
+    - key: fruehestes_ende
+      label: Frühestens zu Ende am
+      beschriftungen: { en: { label: "Can end at the earliest on" } }
+      typ: datum
+      berechnet: true
+    - key: naechste_verlaengerung
+      label: Nächste Verlängerung
+      beschriftungen: { en: { label: "Next renewal" } }
+      typ: datum
+      berechnet: true
+    - key: ende
+      label: Endet am
+      beschriftungen: { en: { label: "Ends on", hilfe: "When the contract ends – after cancellation or at the fixed end" } }
+      typ: datum
+      berechnet: true
+      hilfe: Wann der Vertrag endet – nach der Kündigung oder zum festen Ende
+    - key: laufzeit_monate
+      label: Laufzeit in Monaten
+      beschriftungen: { en: { label: "Term in months", hilfe: "From the start until today or until the end" } }
+      typ: zahl
+      berechnet: true
+      hilfe: Vom Beginn bis heute bzw. bis zum Ende
+    # Kosten
+    - key: betrag
+      label: Betrag
+      beschriftungen: { en: { label: "Amount" } }
+      typ: betrag
+      erkennung: {}
+    - key: zahlweise
+      label: Zahlweise
+      beschriftungen: { en: { label: "Payment interval", optionen: { "monatlich": "monthly", "vierteljährlich": "quarterly", "halbjährlich": "half-yearly", "jährlich": "yearly", "einmalig": "one-off" } } }
+      typ: auswahl
+      optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig]
+    - key: pro_monat
+      label: Pro Monat
+      beschriftungen: { en: { label: "Per month" } }
+      typ: betrag
+      berechnet: true
+    - key: uebergeordnet
+      label: Gehört zu
+      beschriftungen: { en: { label: "Belongs to", hilfe: "Parent contract, e.g. the family plan for an extra SIM or the framework agreement" } }
+      typ: referenz
+      ziel: vertrag
+      verweisart: zugehoerigkeit
+      hilfe: Übergeordneter Vertrag, z. B. der Familientarif zur Zusatzkarte oder der Rahmenvertrag
+    - key: verbleib_original
+      label: Verbleib Original
+      beschriftungen: { en: { label: "Where the original is" } }
+      typ: referenz
+      ziel: "basis:ablageort"
+      verweisart: bezug
+    - key: notiz
+      label: Bemerkungen
+      beschriftungen: { en: { label: "Remarks" } }
+      typ: langtext
+    # Abschluss – nur, wenn Ablago beruflich genutzt wird
+    - key: unterschrieben_wir_am
+      label: Von uns unterschrieben am
+      beschriftungen: { en: { label: "Signed by us on" } }
+      typ: datum
+    - key: unterschrieben_gegenseite_am
+      label: Von der Gegenseite unterschrieben am
+      beschriftungen: { en: { label: "Signed by the other side on" } }
+      typ: datum
+    - key: interne_nummer
+      label: Interne Nummer
+      beschriftungen: { en: { label: "Internal number" } }
+      typ: text
+      maxLen: 40
+    - key: ansprechpartner
+      label: Ansprechpartner
+      beschriftungen: { en: { label: "Contact person" } }
+      typ: referenz
+      ziel: "basis:person"
+      verweisart: bezug
+    # Miete – nur bei Vertragsart Miete
+    - key: mietart
+      label: Mietart
+      beschriftungen: { en: { label: "Rent type", optionen: { "Festmiete": "Fixed rent", "Staffelmiete": "Graduated rent", "Indexmiete": "Index-linked rent" } } }
+      typ: auswahl
+      optionen: [Festmiete, Staffelmiete, Indexmiete]
+    - { key: kaltmiete, label: Kaltmiete, typ: betrag, beschriftungen: { en: { label: "Basic rent" } } }
+    - { key: vorauszahlung, label: Vorauszahlung Nebenkosten, typ: betrag, beschriftungen: { en: { label: "Service charge advance" } } }
+    - { key: sonstiges, label: Sonstiges, typ: betrag, hilfe: z. B. Stellplatz, beschriftungen: { en: { label: "Other", hilfe: "e.g. parking space" } } }
+    - { key: mieterhoehung_ab, label: Nächste Mieterhöhung ab, typ: datum, beschriftungen: { en: { label: "Next rent increase from" } } }
+    - { key: kaution, label: Kaution, typ: betrag, beschriftungen: { en: { label: "Deposit" } } }
+    - { key: kaution_konto, label: Kautionskonto bei, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank des Kautionskontos, beschriftungen: { en: { label: "Deposit account at", hilfe: "Bank of the deposit account" } } }
+    - { key: kaution_zurueck_am, label: Kaution zurück am, typ: datum, beschriftungen: { en: { label: "Deposit returned on" } } }
+    # Versicherung – nur bei Vertragsart Versicherung
+    - key: versicherung_art
+      label: Versicherung
+      beschriftungen: { en: { label: "Insurance", optionen: { "Haftpflicht": "Liability", "Hausrat": "Contents", "Wohngebäude": "Buildings", "Kfz": "Motor", "Rechtsschutz": "Legal expenses", "Berufsunfähigkeit": "Disability", "Leben": "Life", "Kranken-Zusatz": "Supplementary health", "Reise": "Travel", "Unfall": "Accident", "Betriebshaftpflicht": "Business liability", "Sonstige": "Other" } } }
+      typ: auswahl
+      optionen: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz, Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall, Betriebshaftpflicht, Sonstige]
+    - { key: versicherte_personen, label: Versicherte Personen, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, beschriftungen: { en: { label: "Insured persons" } } }
+    - { key: selbstbeteiligung, label: Selbstbeteiligung, typ: betrag, beschriftungen: { en: { label: "Excess" } } }
+    - { key: hauptfaelligkeit, label: Hauptfälligkeit, typ: datum, hilfe: Tag, an dem das Versicherungsjahr beginnt, beschriftungen: { en: { label: "Main due date", hilfe: "Day the insurance year starts" } } }
+  register:
+    - key: vertrag
+      name: Vertrag
+      beschriftungen: { en: { name: "Contract" } }
+      art: felder
+      felder: [bezeichnung, von, art, zustaendig, kuendigen_bis, status,
+               an, vertragsnummer,
+               beginn, mindestlaufzeit, verlaengerung, verlaengerung_um, vertragsende, kuendigungsfrist, kuendigung_zum,
+               gekuendigt_am, kuendigung_bestaetigt_am, fruehestes_ende, naechste_verlaengerung, ende, laufzeit_monate,
+               betrag, zahlweise, pro_monat,
+               uebergeordnet, verbleib_original, notiz,
+               unterschrieben_wir_am, unterschrieben_gegenseite_am, interne_nummer, ansprechpartner,
+               mietart, kaltmiete, vorauszahlung, sonstiges, mieterhoehung_ab, kaution, kaution_konto, kaution_zurueck_am,
+               versicherung_art, versicherte_personen, selbstbeteiligung, hauptfaelligkeit]
+      abschnitte:
+        - { vor: an, titel: Vertragsparteien, eingeklappt: true, beschriftungen: { en: { titel: "Parties" } } }
+        - { vor: beginn, titel: Laufzeit und Kündigung, eingeklappt: true, beschriftungen: { en: { titel: "Term and cancellation" } } }
+        - { vor: betrag, titel: Kosten, beschriftungen: { en: { titel: "Costs" } } }
+        - { vor: uebergeordnet, titel: Weiteres, eingeklappt: true, beschriftungen: { en: { titel: "More" } } }
+        - vor: unterschrieben_wir_am
+          titel: Abschluss
+          eingeklappt: true
+          beschriftungen: { en: { titel: "Conclusion" } }
+          anzeigenWenn: [{ merkmal: beruflich }]
+        - vor: mietart
+          titel: Miete
+          beschriftungen: { en: { titel: "Rent" } }
+          anzeigenWenn: [{ feld: art, vorgabe: [miete] }]
+        - vor: versicherung_art
+          titel: Versicherung
+          beschriftungen: { en: { titel: "Insurance" } }
+          anzeigenWenn: [{ feld: art, vorgabe: [versicherung] }]
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    # Rechnungen zum Vertrag (Paket Rechnungen), Zusatzkarten, Schreiben – alles, was hierher verweist.
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [bezeichnung, von, art, kuendigen_bis, pro_monat, status]
+
+- schluessel: vertragsart
+  name: Vertragsart
+  beschreibung: Art eines Vertrags mit typischer Laufzeit und Kündigungsfrist und den passenden Vorlagen – z. B. Mobilfunk, Miete oder Versicherung. Das Paket bringt die üblichen mit; eigene kannst du ergänzen.
+  beschriftungen: { en: { name: "Contract type", beschreibung: "Type of contract with its typical term, notice period and matching templates – e.g. mobile, rent or insurance. The package brings the usual ones; you can add your own." } }
+  titelVorlage: "{name}"
+  felder:
+    - { key: name, label: Name, typ: text, pflicht: true, eindeutig: true, maxLen: 80, beschriftungen: { en: { label: "Name" } } }
+    - { key: beschreibung, label: Beschreibung, typ: langtext, beschriftungen: { en: { label: "Description" } } }
+    - key: nutzung
+      label: Für
+      beschriftungen: { en: { label: "For", optionen: { "privat": "private", "beruflich": "business", "beides": "both" } } }
+      typ: auswahl
+      optionen: [privat, beruflich, beides]
+      standard: beides
+    - { key: mindestlaufzeit, label: Übliche Mindestlaufzeit, typ: zeitraum, beschriftungen: { en: { label: "Usual minimum term" } } }
+    - key: verlaengerung
+      label: Danach
+      beschriftungen: { en: { label: "Afterwards", optionen: { "verlängert sich um": "renews for", "läuft unbefristet weiter": "continues indefinitely", "endet": "ends" } } }
+      typ: auswahl
+      optionen: [verlängert sich um, läuft unbefristet weiter, endet]
+    - { key: verlaengerung_um, label: Verlängert sich um, typ: zeitraum, anzeigenWenn: [{ feld: verlaengerung, op: gleich, wert: verlängert sich um }], beschriftungen: { en: { label: "Renews for" } } }
+    - { key: kuendigungsfrist, label: Übliche Kündigungsfrist, typ: zeitraum, beschriftungen: { en: { label: "Usual notice period" } } }
+    - key: kuendigung_zum
+      label: Kündigung zum
+      beschriftungen: { en: { label: "Cancellation effective", optionen: { "Laufzeitende": "end of term", "Monatsende": "end of month", "Quartalsende": "end of quarter", "Jahresende": "end of year", "jederzeit": "any day" } } }
+      typ: auswahl
+      optionen: [Laufzeitende, Monatsende, Quartalsende, Jahresende, jederzeit]
+  register:
+    - key: allgemein
+      name: Allgemein
+      beschriftungen: { en: { name: "General" } }
+      art: felder
+      felder: [name, beschreibung, nutzung, mindestlaufzeit, verlaengerung, verlaengerung_um, kuendigungsfrist, kuendigung_zum]
+      abschnitte:
+        - { vor: mindestlaufzeit, titel: Übliche Fristen – ohne Gewähr, beschriftungen: { en: { titel: "Usual periods – without guarantee" } } }
+    - { key: vorlagen, name: Vorlagen, art: dokumente, beschriftungen: { en: { name: "Templates" } } }
+    - { key: vertraege, name: Verträge, art: verknuepfungen, quellen: [{ typ: vertrag, feld: art }], beschriftungen: { en: { name: "Contracts" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [name, nutzung, mindestlaufzeit, kuendigungsfrist]

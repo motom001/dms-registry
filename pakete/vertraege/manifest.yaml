@@ -1,0 +1,45 @@
+# Paket Verträge (dms-registry #159, Etappe 15): ein Mappentyp für alle Verträge – zu Hause und im Betrieb –,
+# Vertragsarten mit typischen Fristen und Code, der Status und Fristen ausrechnet. Schema: schema/manifest.schema.json
+schema: 1
+id: vertraege
+name: Verträge
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: Ein Mappentyp für alle Verträge, zu Hause und im Betrieb. Du trägst ein, was es ist, bei wem und wie lange es läuft – das Paket rechnet aus, bis wann du kündigen musst, und erinnert rechtzeitig.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: file-signature
+# 0.230.0 (vorläufig, Etappe 15): Zeitraum (DMS #1035), mehrere Ziele (#1036), Anzeige-Bedingungen (#1033),
+# Merkmal „beruflich genutzt“ (#1032), berechnete Felder und Ereignis zeitplan.taeglich (#1034), Vorbelegen (#1037),
+# Vorgaben (#1038), eigene Organisation (#995)
+dms: ">=0.230.0"
+abhaengigkeiten:
+  basis: ">=1.7.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  vorgaben: inhalt/vorgaben.yaml
+  beispiele: inhalt/beispiele.yaml
+  automatisierungen: inhalt/automatisierungen.yaml
+code:
+  sprache: c
+  quelle: code/
+  # Rechnet bei jeder Änderung eines Vertrags und einmal am Tag (der Status hängt am Datum).
+  ereignisse: [mappe.angelegt, mappe.geaendert, zeitplan.taeglich, paket.einstellungen_geaendert]
+  mappentypen: [vertrag]
+  rechte:
+    lesen: [vertrag, vertragsart]   # die Vertragsart liefert nichts für die Rechnung, nur Name und Vorschläge
+    schreiben: [vertrag]            # schreibt nur die berechneten Felder (Status, Kündigen bis, Ende, pro Monat …)
+    dokumente: keine
+  netz: []
+  einstellungen:
+    - abschnitt: Berechnung
+      felder:
+        - schluessel: aktiv
+          name: Status und Fristen ausrechnen
+          typ: janein
+          standard: true
+          hilfe: Aus Beginn, Laufzeit, Verlängerung und Kündigungsfrist. Ohne Haken bleiben die berechneten Felder, wie sie sind.

@@ -1,0 +1,10 @@
+# Mitgelieferte Automatisierung (Ablago #712). Nach der Installation aus – beim Installieren fragt Ablago, ob sie gleich
+# eingeschaltet wird. Die Aufgabe geht an „Zuständig“ (sonst an den, der den Vertrag angelegt hat), bei Abwesenheit an
+# die Vertretung, und erledigt sich selbst, sobald „Kündigen bis“ sich ändert oder leer wird – z. B. weil „Gekündigt am“
+# gefüllt ist oder der Vertrag endet (Muster E5).
+- schluessel: kuendigen_bis
+  name: Vertrag rechtzeitig kündigen
+  beschreibung: 30 Tage vor „Kündigen bis“ bekommt die zuständige Person eine Aufgabe – Zeit, zu entscheiden und die Kündigung abzuschicken.
+  wenn: { art: datum, typ: vertrag, feld: kuendigen_bis, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: feld, feld: zustaendig, sonst: ersteller }], text: "Kündigen bis {datum}: {titel} – sonst läuft er weiter." }

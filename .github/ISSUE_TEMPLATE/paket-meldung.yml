@@ -50,6 +50,7 @@ body:
         - Texterkennung – Zusatzsprache Ukrainisch (texterkennung.ukr)
         - Trennblatt (trennblatt)
         - Vermietung (vermietung)
+        - Verträge (vertraege)
     validations:
       required: true
   - type: input

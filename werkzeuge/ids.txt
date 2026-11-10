@@ -43,3 +43,4 @@ texterkennung.tur
 texterkennung.rus
 texterkennung.ukr
 texterkennung.ara
+vertraege

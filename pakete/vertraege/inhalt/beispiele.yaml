@@ -1,0 +1,42 @@
+# Beispiel-Mappen (erfunden, auf Wunsch bei der Installation). Die berechneten Felder füllt das Paket selbst.
+- typ: vertrag
+  schluessel: strom
+  werte:
+    bezeichnung: Strom Wohnung
+    von: { beispiel: "basis:stadtwerke" }
+    art: { vorgabe: strom }
+    vertragsnummer: "4711-0815"
+    beginn: "2025-04-01"
+    mindestlaufzeit: { anzahl: 12, einheit: monate }
+    verlaengerung: läuft unbefristet weiter
+    kuendigungsfrist: { anzahl: 1, einheit: monate }
+    kuendigung_zum: jederzeit
+    betrag: { betrag: 84.0, waehrung: EUR }
+    zahlweise: monatlich
+- typ: vertrag
+  schluessel: handy
+  werte:
+    bezeichnung: Handyvertrag Jonas
+    art: { vorgabe: mobilfunk }
+    vertragsnummer: "M-2026-1234"
+    beginn: "2026-03-15"
+    mindestlaufzeit: { anzahl: 24, einheit: monate }
+    verlaengerung: läuft unbefristet weiter
+    kuendigungsfrist: { anzahl: 1, einheit: monate }
+    kuendigung_zum: jederzeit
+    betrag: { betrag: 19.99, waehrung: EUR }
+    zahlweise: monatlich
+- typ: vertrag
+  schluessel: haftpflicht
+  werte:
+    bezeichnung: Privathaftpflicht
+    art: { vorgabe: versicherung }
+    versicherung_art: Haftpflicht
+    beginn: "2024-01-01"
+    mindestlaufzeit: { anzahl: 12, einheit: monate }
+    verlaengerung: verlängert sich um
+    verlaengerung_um: { anzahl: 12, einheit: monate }
+    kuendigungsfrist: { anzahl: 3, einheit: monate }
+    kuendigung_zum: Laufzeitende
+    betrag: { betrag: 62.4, waehrung: EUR }
+    zahlweise: jährlich
