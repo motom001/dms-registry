@@ -1,7 +1,7 @@
 // Paket Rechnungen (dms-registry #161): Status der Rechnung, Umsatzsteuer und Gesamtpreis der Positionen,
 // Summenprüfung als Hinweis an der Rechnung (dms:hinweise). Die Regeln stehen in rechnung.h.
 //
-// Ereignisse: mappe.angelegt / mappe.geaendert zu Rechnungen und Positionen, zeitplan.taeglich (überfällig, Summen).
+// Ereignisse: mappe.angelegt / mappe.geaendert zu Rechnungen und Positionen, zeitplan.ausgefuehrt (überfällig, Summen).
 // (überfällig). Geschrieben wird nur, was sich ändert, mit „stand“ – ein Mensch gewinnt (409).
 // Hinweis setzen/entfernen: PUT bzw. DELETE /mappen/{id}/hinweise/summe (Schnittstelle aus DMS #1034, Entwurf).
 #include <cstdint>
@@ -157,7 +157,7 @@ int summe_pruefen(const std::string &rechnung_id, const std::string &pos_typ, co
 int verarbeite(const Json &e) {
   const std::string art = e["art"].text();
   const Json &d = e["daten"];
-  if (art == "zeitplan.taeglich") {
+  if (art == "zeitplan.ausgefuehrt") {
     const std::string typ = typ_id(TYP_RECHNUNG);
     if (typ.empty()) { ergebnis("Mappentyp Rechnung nicht gefunden – nichts zu tun"); return 0; }
     const rechnung::Datum heute = heute_aus(e);

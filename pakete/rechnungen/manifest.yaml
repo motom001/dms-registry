@@ -13,8 +13,8 @@ lizenz: Apache-2.0
 kategorien: [vorlagen]
 symbol: receipt-text
 # 0.230.0 (vorläufig, Etappe 15): Prozent und negativer Betrag (DMS #1035), mehrere Ziele (#1036), Anzeige-Bedingungen
-# (#1032, #1033), berechnete Felder, Hinweise und zeitplan.taeglich (#1034), Tabelle (#1030), gehört immer zu (#1031),
-# eigene Organisation (#995)
+# (#1032, #1033), berechnete Felder und Hinweise (#1034), Tabelle (#1030), gehört immer zu (#1031), eigene Organisation
+# (#995), „Paket nach Zeitplan ausführen“ (#1082)
 dms: ">=0.230.0"
 abhaengigkeiten:
   basis: ">=1.7.0"
@@ -23,11 +23,13 @@ inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml
   wortlisten: inhalt/wortlisten.yaml
+  automatisierungen: inhalt/automatisierungen.yaml
 code:
   sprache: c
   quelle: code/
-  # Status bei jeder Änderung und einmal am Tag (überfällig); Summenprüfung, wenn sich Rechnung oder Position ändert.
-  ereignisse: [mappe.angelegt, mappe.geaendert, zeitplan.taeglich]
+  # Status bei jeder Änderung und jeden Morgen (Automatisierung „Rechnungen täglich prüfen“, überfällig);
+  # Summenprüfung, wenn sich Rechnung oder Position ändert.
+  ereignisse: [mappe.angelegt, mappe.geaendert, zeitplan.ausgefuehrt]
   mappentypen: [rechnung, rechnungsposition]
   rechte:
     lesen: [rechnung, rechnungsposition]
