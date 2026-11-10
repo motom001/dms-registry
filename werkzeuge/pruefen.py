@@ -1592,6 +1592,62 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
     return fehler
 
 
+def pruefe_etappe16(m: dict, typen: list) -> list[str]:
+    """Bausteine aus Etappe 16 (Registry #166): Archivmodus eines Mappentyps (DMS #1051, ab 0.237.0); Rechte am Typ,
+    Versionen und Konfiguration/Nachweise lesen (DMS #1053/#1054, noch nicht in Ablago). Was im Paket nachprüfbar ist."""
+    fehler: list[str] = []
+    pid = str(m.get('id'))
+    code = m.get('code') if isinstance(m.get('code'), dict) else {}
+    rechte = code.get('rechte') if isinstance(code.get('rechte'), dict) else {}
+    schreiben = set(rechte.get('schreiben') or [])
+    benutzt = False  # Bausteine, die es in Ablago noch nicht gibt
+    archiv = False
+    for t in typen:
+        if not isinstance(t, dict):
+            continue
+        s = t.get('schluessel')
+        felder = {f.get('key'): f for f in t.get('felder') or [] if isinstance(f, dict)}
+        r = t.get('rechte')
+        if isinstance(r, dict):
+            benutzt = True
+            if 'paket' in (r.get('aendern'), r.get('anlegen')) and not ({s, f'{pid}:{s}'} & schreiben):
+                fehler.append(f'mappentypen/{s}: rechte „paket“ – das Paket braucht Code mit code.rechte.schreiben auf „{s}“')
+            if r.get('anlegen') == 'paket' and r.get('aendern', 'alle') == 'alle':
+                fehler.append(f'mappentypen/{s}: rechte.anlegen „paket“ mit aendern „alle“ – was nur das Paket anlegt, sollte nicht jeder ändern (aendern: paket oder verwaltung)')
+            if r.get('lesen') == 'verwaltung' and r.get('aendern') == 'alle':
+                fehler.append(f'mappentypen/{s}: rechte – lesen nur Verwaltung, aber ändern alle geht nicht')
+        a = t.get('archiv')
+        if isinstance(a, dict):
+            archiv = True
+            st = a.get('stichtag')
+            if st is not None and (felder.get(st) or {}).get('typ') != 'datum':
+                fehler.append(f'mappentypen/{s}: archiv.stichtag „{st}“ muss ein Datumsfeld dieses Typs sein')
+            if 'leererStichtag' in a and st is None:
+                fehler.append(f'mappentypen/{s}: archiv.leererStichtag nur mit archiv.stichtag')
+            if isinstance(a.get('jahreBeruflich'), int) and isinstance(a.get('jahre'), int) and a['jahreBeruflich'] < a['jahre']:
+                fehler.append(f'mappentypen/{s}: archiv.jahreBeruflich kürzer als jahre – beruflich gilt meist länger')
+        for reg in t.get('register') or []:
+            if isinstance(reg, dict) and reg.get('versionierung'):
+                benutzt = True
+                if reg.get('art') != 'dokumente':
+                    fehler.append(f'mappentypen/{s}/register/{reg.get("key")}: versionierung nur bei Dokumentenregistern')
+    if rechte.get('einrichtung') or rechte.get('nachweise'):
+        benutzt = True
+        # Sicherheit (DMS #1053): Konfiguration und Nachweise sind eine Landkarte der Sicherheit – nie in Pakete mit Netz.
+        adresse = any(isinstance(f, dict) and f.get('typ') == 'adresse'
+                      for x in code.get('einstellungen') or [] if isinstance(x, dict) for f in x.get('felder') or [])
+        if code.get('netz') or adresse:
+            fehler.append('code.rechte.einrichtung/nachweise: nur für Pakete ohne Netz (code.netz leer, keine Einstellung „adresse“, DMS #1053)')
+    ab = dms_untergrenze(str(m.get('dms', '')))
+    if archiv and (ab is None or ab < DMS_ARCHIV_PAKET_AB):
+        fehler.append('archiv am Mappentyp kennt Ablago erst ab 0.237.0 – bitte dms: ">=0.237.0" angeben')
+    if benutzt:
+        # Noch nicht in Ablago (DMS #1053/#1054): solche Pakete bleiben Entwurf, bis Entwicklung die Version meldet.
+        fehler.append('Rechte am Mappentyp, Versionen am Register und Konfiguration/Nachweise lesen gibt es in Ablago noch nicht '
+                      '(DMS #1053/#1054) – das Paket bleibt bis dahin Entwurf')
+    return fehler
+
+
 def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler: list[str] = []
     vorlage = ordner.name == 'vorlage'
@@ -1757,6 +1813,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler += pruefe_vorlagen(ordner, geladen.get('mappentypen', []) or [])
     fehler += pruefe_etappe15(ordner, m, geladen.get('mappentypen', []) or [], geladen.get('vorgaben', []) or [],
                               geladen.get('beispiele', []) or [], abh)
+    fehler += pruefe_etappe16(m, geladen.get('mappentypen', []) or [])
     typfelder = {t.get('schluessel'): t.get('felder') or [] for t in geladen.get('mappentypen', []) if isinstance(t, dict)}
     fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')),
                                        tuple((m.get('code') or {}).get('ereignisse') or []) if isinstance(m.get('code'), dict) else ())

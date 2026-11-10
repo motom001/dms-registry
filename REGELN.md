@@ -240,6 +240,10 @@ Pakete können **Vorlagen als Text** mitbringen – etwa ein Kündigungsschreibe
 | **Vorbelegen** (ab 0.234.0) | an einem Verweisfeld `vorbelegen: [{ von: kuendigungsfrist, nach: kuendigungsfrist }]` – nur in leere Felder, als Vorschlag | #1037 |
 | **Eigene Organisation** (ab 0.238.0) | Ja/Nein-Feld mit `merkmal: eigeneOrganisation` und `schreibschutz: verwaltung` (nur mit Verwaltungsrecht änderbar) | #995 |
 | **Vorgaben** (ab 0.236.0) | `inhalt.vorgaben: inhalt/vorgaben.yaml` – Mappen mit fester `kennung`, die bleiben (z. B. Vertragsarten), mit `werte`, `beschriftungen` je Sprache und `vorlagen` (nur [Text-Vorlagen](#text-vorlagen), je `datei`, `titel`, `register`; höchstens 20). Verweis darauf in Werten `{ vorgabe: miete }` bzw. `{ vorgabe: "vertraege:miete" }`. Eine **Ergänzung** hängt mit `ergaenzt: "vertraege:pkw_kaufvertrag"` nur Vorlagen an die Vorgabe eines Pakets unter `abhaengigkeiten`. Höchstens 200 Einträge. | #1038 |
+| **Rechte am Typ** | am Mappentyp `rechte: { lesen: verwaltung, aendern: paket, anlegen: paket }` – damit legt Ablago den Typ an, danach ändert der Admin sie wie immer. `alle` (Standard), `verwaltung` (Gesamte Verwaltung), `paket` (nur das Systemkonto des Pakets, braucht `code.rechte.schreiben`) | #1054, Entscheidung 10.11. |
+| **Archivmodus** (ab 0.237.0) | am Mappentyp `archiv: { jahre: 2, jahreBeruflich: 10, stichtag: abgeloest_am, leererStichtag: laeuftNicht }` – Vorschlag im Assistenten, jederzeit änderbar; mit `laeuftNicht` beginnt die Frist erst, wenn der Stichtag gefüllt ist | #1051 |
+| **Versionen** | am Dokumentenregister `versionierung: true` – eine Datei gleichen Namens wird eine neue Version | #194 |
+| **Konfiguration und Nachweise lesen** | `code.rechte.einrichtung: [sicherung, …]` und `code.rechte.nachweise: [...]` – Bereiche `allgemeines`, `belegeingang`, `ablage`, `zugang`, `betrieb`, `sicherung`, `unveraenderbarkeit`, `datenschutz`, `betriebspruefung`. Der Admin hakt jeden Bereich selbst an (Vorgabe: nichts). **Nur für Pakete ohne Netz.** | #1053, #1054 |
 
 ```yaml
 # inhalt/vorgaben.yaml (Paket Verträge)
@@ -251,7 +255,7 @@ Pakete können **Vorlagen als Text** mitbringen – etwa ein Kündigungsschreibe
     - { datei: vorlagen/kuendigung.md, register: vorlagen, titel: Kündigung }
 ```
 
-`pruefen.py` prüft, was im Paket selbst nachprüfbar ist: Felder und Vorgaben, auf die verwiesen wird, Quelle einer Tabelle, Platzhalter einer Zusammensetzung, Schreibrecht für berechnete Felder, Werte von Zeiträumen, Dateien der Vorgaben.
+`pruefen.py` prüft, was im Paket selbst nachprüfbar ist: Felder und Vorgaben, auf die verwiesen wird, Quelle einer Tabelle, Platzhalter einer Zusammensetzung, Schreibrecht für berechnete Felder und für Rechte „paket“, Stichtag des Archivmodus, Werte von Zeiträumen, Dateien der Vorgaben und dass ein Paket mit Konfiguration oder Nachweisen kein Netz hat.
 
 ## Ergänzungen
 
