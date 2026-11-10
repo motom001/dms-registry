@@ -73,7 +73,7 @@
       label: Papier weg nach
       beschriftungen: { en: { label: "Paper goes after" } }
       typ: zeitraum
-      anzeigenWenn: [{ feld: papier, op: gleich, wert: Papier weg nach einer Frist }]
+      anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: papier, op: einerVon, wert: { art: fest, wert: [Papier weg nach einer Frist] } } }] }
     - key: ausnahmen
       label: Bleibt im Original
       beschriftungen: { en: { label: "Kept as original", hilfe: "e.g. certificates, notarial deeds, documents with a seal" } }
@@ -112,7 +112,7 @@
       beschriftungen: { en: { label: "Where is the copy?" } }
       typ: text
       maxLen: 200
-      anzeigenWenn: [{ feld: kopie_ausser_haus, op: gleich, wert: true }]
+      anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: kopie_ausser_haus, op: ja } }] }
     - key: probe_wiederherstellung
       label: Probe-Wiederherstellung alle
       beschriftungen: { en: { label: "Test restore every" } }
@@ -165,17 +165,17 @@
                ablageregeln, zugangsregeln, updates, kopie_ausser_haus, kopie_wo, probe_wiederherstellung, unveraenderbarkeit, loeschung, auskunft, prueferzugang, datenherausgabe,
                gilt_nicht_mehr_seit, notiz]
       abschnitte:
-        - { vor: taetigkeit, titel: Allgemeines, beschriftungen: { en: { titel: General } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Allgemeines }] }
-        - { vor: weitere_programme, titel: Weitere Programme, beschriftungen: { en: { titel: Other software } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Allgemeines }, { merkmal: beruflich }] }
-        - { vor: eingangswege, titel: Belegeingang und Scannen, beschriftungen: { en: { titel: Incoming documents and scanning } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Belegeingang und Scannen }] }
-        - { vor: scannen_freigabe, titel: Ersetzendes Scannen, beschriftungen: { en: { titel: Replacing paper by scans } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Belegeingang und Scannen }, { merkmal: beruflich }] }
-        - { vor: ablageregeln, titel: Ablage, beschriftungen: { en: { titel: Filing } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Ablage }] }
-        - { vor: zugangsregeln, titel: Zugang und Berechtigungen, beschriftungen: { en: { titel: Access and permissions } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Zugang und Berechtigungen }] }
-        - { vor: updates, titel: Betrieb, beschriftungen: { en: { titel: Operation } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Betrieb }] }
-        - { vor: kopie_ausser_haus, titel: Sicherung, beschriftungen: { en: { titel: Backup } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Sicherung }] }
-        - { vor: unveraenderbarkeit, titel: Unveränderbarkeit, beschriftungen: { en: { titel: Immutability } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Unveränderbarkeit }] }
-        - { vor: loeschung, titel: Datenschutz, beschriftungen: { en: { titel: Data protection } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Datenschutz }] }
-        - { vor: prueferzugang, titel: Betriebsprüfung, beschriftungen: { en: { titel: Tax audit } }, anzeigenWenn: [{ feld: bereich, op: gleich, wert: Betriebsprüfung }, { merkmal: beruflich }] }
+        - { vor: taetigkeit, titel: Allgemeines, beschriftungen: { en: { titel: General } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Allgemeines] } } }] } }
+        - { vor: weitere_programme, titel: Weitere Programme, beschriftungen: { en: { titel: Other software } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Allgemeines] } } }, { art: merkmal, merkmal: beruflich }] } }
+        - { vor: eingangswege, titel: Belegeingang und Scannen, beschriftungen: { en: { titel: Incoming documents and scanning } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Belegeingang und Scannen] } } }] } }
+        - { vor: scannen_freigabe, titel: Ersetzendes Scannen, beschriftungen: { en: { titel: Replacing paper by scans } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Belegeingang und Scannen] } } }, { art: merkmal, merkmal: beruflich }] } }
+        - { vor: ablageregeln, titel: Ablage, beschriftungen: { en: { titel: Filing } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Ablage] } } }] } }
+        - { vor: zugangsregeln, titel: Zugang und Berechtigungen, beschriftungen: { en: { titel: Access and permissions } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Zugang und Berechtigungen] } } }] } }
+        - { vor: updates, titel: Betrieb, beschriftungen: { en: { titel: Operation } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Betrieb] } } }] } }
+        - { vor: kopie_ausser_haus, titel: Sicherung, beschriftungen: { en: { titel: Backup } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Sicherung] } } }] } }
+        - { vor: unveraenderbarkeit, titel: Unveränderbarkeit, beschriftungen: { en: { titel: Immutability } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Unveränderbarkeit] } } }] } }
+        - { vor: loeschung, titel: Datenschutz, beschriftungen: { en: { titel: Data protection } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Datenschutz] } } }] } }
+        - { vor: prueferzugang, titel: Betriebsprüfung, beschriftungen: { en: { titel: Tax audit } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Betriebsprüfung] } } }, { art: merkmal, merkmal: beruflich }] } }
         - { vor: gilt_nicht_mehr_seit, titel: Gültigkeit, beschriftungen: { en: { titel: Validity } }, eingeklappt: true }
     - key: unterlagen
       name: Unterlagen
