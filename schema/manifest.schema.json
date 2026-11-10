@@ -380,7 +380,7 @@
               "mappe.geloescht",
               "mappe.wiederhergestellt",
               "frist.erreicht",
-              "zeitplan.taeglich"
+              "zeitplan.ausgefuehrt"
             ]
           },
           "uniqueItems": true

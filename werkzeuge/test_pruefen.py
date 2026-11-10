@@ -1333,6 +1333,17 @@ class Etappe15(unittest.TestCase):
                  'dokumente': [{'datei': 'vorlagen/kuendigung.md', 'register': 'vorlagen', 'titel': 'Kündigung'}]}]
     MANIFEST = {'id': 'probe', 'dms': '>=0.230.0', 'code': {'rechte': {'schreiben': ['vertrag']}}}
 
+    def test_paket_nach_zeitplan(self):
+        a = [{'schluessel': 'taeglich', 'name': 'Täglich prüfen', 'eingeschaltet': True, 'wenn': {'art': 'zeitplan', 'uhrzeit': '05:00', 'tage': [1, 2, 3, 4, 5, 6, 7]},
+              'dann': [{'art': 'paket', 'aufgabe': 'taeglich'}]}]
+        self.assertEqual(list(pruefen.inhalt_validator('automatisierungen').iter_errors(a)), [])
+        self.assertEqual(pruefen.pruefe_automatisierungen(a, {}, 'probe', set(), '>=0.230.0', ('zeitplan.ausgefuehrt',)), [])
+        f = '\n'.join(pruefen.pruefe_automatisierungen(a, {}, 'probe', set(), '>=0.226.0', ()))
+        self.assertIn('zeitplan.ausgefuehrt', f)
+        self.assertIn('erst ab', f)
+        a[0]['wenn'] = {'art': 'datum', 'typ': 'x', 'feld': 'y', 'vorlauf': 1, 'einheit': 'tage'}
+        self.assertTrue(any('nur mit wenn: zeitplan' in x for x in pruefen.pruefe_automatisierungen(a, {}, 'probe', set(), '>=0.230.0', ('zeitplan.ausgefuehrt',))))
+
     def lauf(self, typen=None, vorgaben=None, manifest=None, mit_datei=True):
         import copy
         with tempfile.TemporaryDirectory() as tmp:
