@@ -94,13 +94,13 @@
       label: Verlängert sich um
       beschriftungen: { en: { label: "Renews for" } }
       typ: zeitraum
-      anzeigenWenn: [{ feld: verlaengerung, op: gleich, wert: verlängert sich um }]
+      anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: verlaengerung, op: einerVon, wert: { art: fest, wert: [verlängert sich um] } } }] }
     - key: vertragsende
       label: Vertragsende
       beschriftungen: { en: { label: "End of contract", hilfe: "Only for fixed-term contracts with a set end date" } }
       typ: datum
       hilfe: Nur bei befristeten Verträgen mit festem Ende
-      anzeigenWenn: [{ feld: verlaengerung, op: gleich, wert: endet }]
+      anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: verlaengerung, op: einerVon, wert: { art: fest, wert: [endet] } } }] }
     - key: kuendigungsfrist
       label: Kündigungsfrist
       beschriftungen: { en: { label: "Notice period", hilfe: "As in the contract, e.g. 1 month or 3 months" } }
@@ -242,15 +242,15 @@
           titel: Abschluss
           eingeklappt: true
           beschriftungen: { en: { titel: "Conclusion" } }
-          anzeigenWenn: [{ merkmal: beruflich }]
+          anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }
         - vor: mietart
           titel: Miete
           beschriftungen: { en: { titel: "Rent" } }
-          anzeigenWenn: [{ feld: art, vorgabe: [miete] }]
+          anzeigen: { bedingungen: [{ art: vorgabe, feld: art, vorgabe: [miete] }] }
         - vor: versicherung_art
           titel: Versicherung
           beschriftungen: { en: { titel: "Insurance" } }
-          anzeigenWenn: [{ feld: art, vorgabe: [versicherung] }]
+          anzeigen: { bedingungen: [{ art: vorgabe, feld: art, vorgabe: [versicherung] }] }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
     # Rechnungen zum Vertrag (Paket Rechnungen), Zusatzkarten, Schreiben – alles, was hierher verweist.
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
@@ -277,7 +277,7 @@
       beschriftungen: { en: { label: "Afterwards", optionen: { "verlängert sich um": "renews for", "läuft unbefristet weiter": "continues indefinitely", "endet": "ends" } } }
       typ: auswahl
       optionen: [verlängert sich um, läuft unbefristet weiter, endet]
-    - { key: verlaengerung_um, label: Verlängert sich um, typ: zeitraum, anzeigenWenn: [{ feld: verlaengerung, op: gleich, wert: verlängert sich um }], beschriftungen: { en: { label: "Renews for" } } }
+    - { key: verlaengerung_um, label: Verlängert sich um, typ: zeitraum, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: verlaengerung, op: einerVon, wert: { art: fest, wert: [verlängert sich um] } } }] }, beschriftungen: { en: { label: "Renews for" } } }
     - { key: kuendigungsfrist, label: Übliche Kündigungsfrist, typ: zeitraum, beschriftungen: { en: { label: "Usual notice period" } } }
     - key: kuendigung_zum
       label: Kündigung zum
