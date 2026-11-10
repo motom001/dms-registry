@@ -1315,12 +1315,13 @@ class Etappe15(unittest.TestCase):
         {'key': 'mindestlaufzeit', 'label': 'Mindestlaufzeit', 'typ': 'zeitraum'},
         {'key': 'betrag', 'label': 'Betrag', 'typ': 'betrag', 'negativ': True},
         {'key': 'status', 'label': 'Status', 'typ': 'text', 'berechnet': True},
-        {'key': 'kaltmiete', 'label': 'Kaltmiete', 'typ': 'betrag', 'anzeigenWenn': [{'feld': 'vertragsart', 'vorgabe': ['miete']}]},
+        {'key': 'kaltmiete', 'label': 'Kaltmiete', 'typ': 'betrag', 'anzeigen': {'bedingungen': [{'art': 'vorgabe', 'feld': 'vertragsart', 'vorgabe': ['miete']}]}},
         {'key': 'nummer', 'label': 'Nummer', 'typ': 'zusammengesetzt', 'vorlage': '{bezeichnung} · {betrag}'},
         {'key': 'positionen', 'label': 'Positionen', 'typ': 'tabelle', 'quelle': {'typ': 'teil', 'feld': 'vertrag'}},
     ], 'register': [{'key': 'allgemein', 'name': 'Allgemein', 'art': 'felder',
                      'felder': ['bezeichnung', 'vertragsart', 'betrifft', 'mindestlaufzeit', 'betrag', 'status', 'kaltmiete', 'nummer', 'positionen'],
-                     'abschnitte': [{'vor': 'kaltmiete', 'titel': 'Miete', 'anzeigenWenn': [{'merkmal': 'beruflich'}]}]},
+                     'abschnitte': [{'vor': 'kaltmiete', 'titel': 'Miete', 'anzeigen': {'modus': 'eine', 'bedingungen': [{'art': 'merkmal', 'merkmal': 'beruflich'},
+                                                                                 {'art': 'feld', 'bedingung': {'feld': 'betrag', 'op': 'groesser', 'wert': {'art': 'fest', 'wert': 100}}}]}}]},
                     {'key': 'vorlagen', 'name': 'Vorlagen', 'art': 'dokumente'}]}
     ART = {'schluessel': 'vertragsart', 'name': 'Vertragsart', 'beschreibung': 'x', 'felder': [
         {'key': 'name', 'label': 'Name', 'typ': 'text'}, {'key': 'mindestlaufzeit', 'label': 'Mindestlaufzeit', 'typ': 'zeitraum'}],
@@ -1365,7 +1366,25 @@ class Etappe15(unittest.TestCase):
 
     def test_braucht_version(self):
         f = self.lauf(manifest={**self.MANIFEST, 'dms': '>=0.226.0'})
-        self.assertTrue(any('Etappe 15' in x for x in f), f)
+        self.assertTrue(any('0.230.0 (vorläufig)' in x for x in f), f)
+
+    def test_version_je_baustein(self):
+        """Was schon in Ablago ist, braucht nur die Version, in der es kam (#1035: 0.227.0, #1033: 0.228.0)."""
+        typ = {'schluessel': 'abo', 'name': 'Abo', 'beschreibung': 'x', 'felder': [
+            {'key': 'laufzeit', 'label': 'Laufzeit', 'typ': 'zeitraum', 'standard': 'P12M'},
+            {'key': 'rabatt', 'label': 'Rabatt', 'typ': 'prozent'},
+            {'key': 'notiz', 'label': 'Notiz', 'typ': 'langtext', 'anzeigen': {'bedingungen': [{'art': 'merkmal', 'merkmal': 'beruflich', 'nicht': True}]}}],
+            'register': [{'key': 'a', 'name': 'A', 'art': 'felder', 'felder': ['laufzeit', 'rabatt', 'notiz']}]}
+        self.assertEqual(list(pruefen.inhalt_validator('mappentypen').iter_errors([typ])), [])
+        f = pruefen.pruefe_etappe15(Path('.'), {'id': 'probe', 'dms': '>=0.227.0'}, [typ], [], [], set())
+        self.assertTrue(f and 'Anzeigen, wenn' in f[0] and '0.228.0' in f[0] and 'vorläufig' not in f[0], f)
+        self.assertEqual(pruefen.pruefe_etappe15(Path('.'), {'id': 'probe', 'dms': '>=0.228.0'}, [typ], [], [], set()), [])
+
+    def test_alte_schreibweise(self):
+        import copy
+        v = copy.deepcopy(self.VERTRAG)
+        v['felder'][0]['anzeigenWenn'] = [{'merkmal': 'beruflich'}]
+        self.assertTrue(any('anzeigenWenn heißt in Ablago anzeigen' in x for x in self.lauf(typen=[v, self.ART, self.TEIL])))
 
     def test_berechnet_braucht_schreibrecht(self):
         f = self.lauf(manifest={'id': 'probe', 'dms': '>=0.230.0', 'code': {'rechte': {'lesen': ['vertrag']}}})
@@ -1377,7 +1396,10 @@ class Etappe15(unittest.TestCase):
         import copy
         v = copy.deepcopy(self.VERTRAG)
         felder = {f['key']: f for f in v['felder']}
-        felder['kaltmiete']['anzeigenWenn'] = [{'feld': 'gibtsnicht', 'op': 'leer'}, {'feld': 'vertragsart', 'vorgabe': ['unbekannt']}]
+        felder['kaltmiete']['anzeigen'] = {'bedingungen': [{'art': 'feld', 'bedingung': {'feld': 'gibtsnicht', 'op': 'leer'}},
+                                                           {'art': 'vorgabe', 'feld': 'vertragsart', 'vorgabe': ['unbekannt']},
+                                                           {'art': 'feld', 'bedingung': {'feld': 'betrag', 'op': 'enthaelt'}},
+                                                           {'art': 'verweistyp', 'feld': 'betrifft', 'typ': 'fahrzeuge:fahrzeug'}]}
         felder['nummer']['vorlage'] = '{nummer} {kennwort}'
         felder['positionen']['quelle'] = {'typ': 'teil', 'feld': 'falsch'}
         felder['vertragsart']['vorbelegen'] = [{'von': 'gibtsnicht', 'nach': 'vertragsart'}]
@@ -1385,7 +1407,8 @@ class Etappe15(unittest.TestCase):
         teil['felder'][0]['pflicht'] = False
         f = '\n'.join(self.lauf(typen=[v, self.ART, teil]))
         for teil_text in ('gibtsnicht“ – das Feld gibt es', 'Vorgabe „unbekannt“', 'vorlage nennt „nummer“', 'quelle.feld „falsch“',
-                          'vorbelegen von „gibtsnicht“', 'vorbelegen nach „vertragsart“', 'gehoertZu'):
+                          'vorbelegen von „gibtsnicht“', 'vorbelegen nach „vertragsart“', 'gehoertZu',
+                          'Operator „enthaelt“ gibt es dafür nicht', 'kein Ziel dieses Verweisfelds'):
             self.assertIn(teil_text, f)
 
     def test_ziel_optional(self):

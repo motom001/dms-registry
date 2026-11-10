@@ -218,15 +218,15 @@ Packages can bring **templates as text** – e.g. a cancellation letter on a con
 
 ## Building blocks for contracts, invoices and compliance (stage 15/16) { #bausteine-etappe-15 }
 
-> **Draft.** These building blocks come with core issues of stage 15/16; the Ablago version is not fixed yet (`pruefen.py` provisionally requires `dms: ">=0.230.0"`). Until then packages using them are drafts only.
+> **Partly in Ablago already.** Period, percentage and negative amounts exist from **0.227.0**, “Show if …” with the trait “used for business” from **0.228.0**. `pruefen.py` requires exactly that version per building block. For everything else the version isn't fixed yet (provisionally `dms: ">=0.230.0"`); packages using it are drafts until then.
 
 | Building block | in the package | Core |
 |---|---|---|
-| **Period** | `typ: zeitraum`, value `{ anzahl: 3, einheit: monate }` (tage, wochen, monate, jahre) | #1035 |
-| **Percentage** | `typ: prozent`, `nachkomma: 1` | #1035 |
-| **Negative amount** | `typ: betrag`, `negativ: true` (credit note, refund) | #1035 |
+| **Period** (from 0.227.0) | `typ: zeitraum`, value `{ anzahl: 3, einheit: monate }` (tage, wochen, monate, jahre) or short `P3M` | #1035 |
+| **Percentage** (from 0.227.0) | `typ: prozent`, `nachkomma: 1` | #1035 |
+| **Negative amount** (from 0.227.0) | `typ: betrag`, `negativ: true` (credit note, refund) | #1035 |
 | **Several targets** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; with `mehrfach: true` optionally `gleicherTyp: true`. Targets from packages the package does **not** depend on go into `zielOptional` – Ablago adds them as soon as the type exists (e.g. "betrifft" of an invoice: vehicle, flat, purchase) | #1036 |
-| **Show if …** | `anzeigenWenn:` on fields and sections (`register.abschnitte`), all conditions must hold: `{ merkmal: beruflich }` (`nicht: true` inverts), `{ feld, op: gleich/ungleich/leer/nichtLeer, wert }`, `{ feld, vorgabe: [miete] }`, `{ feld, eigeneOrganisation: true }`, `{ feld, typ: [fahrzeuge:fahrzeug] }`. A hidden section hides all fields up to the next one. **Order, not protection** – values stay stored and visible through API and export. | #1032, #1033 |
+| **Show if …** (from 0.228.0) | `anzeigen: { modus: alle, bedingungen: [...] }` on fields and sections (`register.abschnitte`), as in the core; `modus: eine` means “any one is enough”. Conditions: `{ art: merkmal, merkmal: beruflich }`, `{ art: feld, bedingung: { feld, op, wert: { art: fest, wert } } }` with the operators of views per field type (choice `einerVon` with a list, yes/no `ja`/`nein`, numbers `gleich`/`kleiner`/`groesser` …), `{ art: verweistyp, feld, typ: fahrzeuge:fahrzeug }`; each can be inverted with `nicht: true`. Still a draft: `{ art: vorgabe, feld, vorgabe: [miete] }` (#1038) and `{ art: eigeneOrganisation, feld }` (#995). A hidden section hides all fields up to the next one. **Order, not protection** – values stay stored and visible through API and export. | #1032, #1033 |
 | **Calculated** | `berechnet: true` – only this package's code writes the field, read-only in the interface; needs `code.rechte.schreiben` on its own type, never `pflicht` | #1034 |
 | **Note on a folder** | `code.rechte.schnittstellen: [dms:hinweise]` – set and remove a note; it never prevents saving | #1034 |
 | **On a schedule** | a bundled automation with `wenn: { art: zeitplan, … }` and the action card `{ art: paket, aufgabe: taeglich }` ("run package on schedule"), ideally with `eingeschaltet: true`; the package subscribes to `zeitplan.ausgefuehrt` and receives `aufgabe` and `datum`. Administrators see the run under Automations and can change time and days. It only calls its own package. | #1082 |
