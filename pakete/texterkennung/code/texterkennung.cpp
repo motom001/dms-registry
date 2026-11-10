@@ -8,7 +8,7 @@
 // die Archivfassung, motom001/dms#631 – ältere DMS übergehen das Feld). Lange Dokumente abschnittsweise: nach etwa
 // einer Minute antwortet das Modul mit {"weiter": …} und der Läufer ruft es gleich wieder auf.
 // Kein Netz, kein Dateisystem; die Sprachdaten liegen im Paket (code/daten/*.traineddata) bzw. in Zusatzpaketen
-// texterkennung_<sprache> und kommen über dms.datei.
+// texterkennung.<sprache> (bis zum Umzug texterkennung_<sprache>, dms-registry #173) und kommen über dms.datei.
 #include <leptonica/allheaders.h>
 #include <tesseract/baseapi.h>
 #include <tesseract/osdetect.h>
@@ -102,6 +102,14 @@ bool datei(const std::string &name, std::vector<char> &ziel) {
   return true;
 }
 
+// Sprachdaten einer Sprache: im Paket selbst, sonst aus dem Zusatzpaket. Ablago nennt die Dateien eines Pakets, das von
+// diesem abhängt, „<paket-id>/<datei>“; seit dem Umzug (dms-registry #173, Ablago 0.229.0) heißt das Zusatzpaket
+// texterkennung.<sprache>, vorher texterkennung_<sprache> – beide gelten, bis jede Installation umgezogen ist.
+bool sprachdaten(const std::string &k, std::vector<char> &ziel) {
+  return datei(k + ".traineddata", ziel) || datei("texterkennung." + k + "/" + k + ".traineddata", ziel) ||
+         datei("texterkennung_" + k + "/" + k + ".traineddata", ziel);
+}
+
 // Für Tesseract: Sprachdaten nach Dateinamen (…/fra.traineddata) – so lädt es mehrere Sprachen in einen Durchgang.
 bool leser(const char *pfad, std::vector<char> *ziel) {
   std::string name(pfad ? pfad : "");
@@ -110,7 +118,7 @@ bool leser(const char *pfad, std::vector<char> *ziel) {
   const size_t p = name.find('.');
   const std::string k = p == std::string::npos ? name : name.substr(0, p);
   if (k.empty() || k.size() > 8) return false;
-  return datei(k + ".traineddata", *ziel) || datei("texterkennung_" + k + "/" + k + ".traineddata", *ziel);
+  return sprachdaten(k, *ziel);
 }
 
 std::vector<std::string> teile(const std::string &s);
@@ -135,7 +143,7 @@ tesseract::TessBaseAPI *sprache(const std::string &k) {
     return a;
   }
   auto s = std::make_unique<Sprache>();
-  bool da = datei(k + ".traineddata", s->daten) || datei("texterkennung_" + k + "/" + k + ".traineddata", s->daten);
+  bool da = sprachdaten(k, s->daten);
   if (!da) { fehlen.insert(k); geladen[k] = nullptr; return nullptr; }
   s->api = std::make_unique<tesseract::TessBaseAPI>();
   if (s->api->Init(s->daten.data(), (int)s->daten.size(), k.c_str(), tesseract::OEM_LSTM_ONLY, nullptr, 0, nullptr, nullptr, false, nullptr)) {
@@ -404,7 +412,7 @@ std::string seitenText(int n) { return std::to_string(n) + (n == 1 ? " Seite" : 
 std::string fehlendText() {
   if (fehlen.empty()) return "";
   std::string s;
-  for (const std::string &k : fehlen) s += (s.empty() ? "" : ", ") + k + " (Zusatzpaket texterkennung_" + k + ")";
+  for (const std::string &k : fehlen) s += (s.empty() ? "" : ", ") + k + " (Zusatzpaket texterkennung." + k + ")";
   return s;
 }
 

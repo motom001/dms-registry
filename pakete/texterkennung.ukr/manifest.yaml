@@ -1,0 +1,33 @@
+# Zusatzpaket: Ukrainisch für das Paket Texterkennung (nach dem Muster texterkennung.fra). Schema: schema/manifest.schema.json
+schema: 1
+id: texterkennung.ukr
+# Neue Id seit 1.1.0 (dms-registry #173, motom001/dms#1084): Ablago ab 0.229.0 zieht eine Installation unter der
+# alten Id beim Update hierher um – dieselbe Installation, kein zweites Paket.
+ersetzt: texterkennung_ukr
+herausgeber: app.ablago
+name: Texterkennung – Zusatzsprache Ukrainisch
+version: 1.1.0
+beschreibung: Zusatzsprache Ukrainisch für das Grundpaket Texterkennung – damit auch ukrainische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+# Symbol im Katalog (#98): Kürzel = ISO-639-1-Code der Sprache, nicht des Landes.
+symbol: languages
+kuerzel: UK
+# 0.133.0: Ein Paket liest die Daten der Pakete, die von ihm abhängen (<paket>/<datei>).
+# 0.229.0: Id mit Punkt und ersetzt (#1084).
+dms: ">=0.229.0"
+abhaengigkeiten:
+  texterkennung: ">=2.5.0"   # liest texterkennung.<sprache> (2.5.0)
+# Ergänzung (motom001/dms#405): Ablago ab 0.151.0 zeigt die Sprache als Häkchen „Weitere Sprachen?“ unter der
+# Texterkennung; ältere DMS ignorieren das Feld.
+ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: []
+  rechte:
+    dokumente: keine
+  netz: []

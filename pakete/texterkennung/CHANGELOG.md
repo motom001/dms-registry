@@ -1,5 +1,13 @@
 # Änderungen
 
+## 2.5.0
+
+Zusatzsprachen unter neuer Id (dms-registry #173, motom001/dms#1084).
+
+- **Liest die Zusatzsprachen unter beiden Namen:** `texterkennung.<sprache>` (neu, ab Ablago 0.229.0) und `texterkennung_<sprache>` (bisher). So erkennt das Paket weiter, auch während eine Installation umzieht. Die Zusatzsprachen ab 1.1.0 brauchen diese Version.
+- Fehlende Sprachdaten nennen das Zusatzpaket mit der neuen Id, z. B. „fra (Zusatzpaket texterkennung.fra)“.
+- Herausgeber `app.ablago` im Manifest. Inhalt, Rechte und Einstellungen sind unverändert; weiter ab Ablago 0.179.0.
+
 ## 2.4.0
 
 Mappentypen ausschließen fertig gestellt (dms-registry #105). **Braucht Ablago 0.179.0** wie 2.3.0.

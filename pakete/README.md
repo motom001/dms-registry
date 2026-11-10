@@ -15,6 +15,6 @@ Ein Ordner je Paket, benannt nach der Paket-Id. Neue Pakete legst du mit `werkze
 | [ki_aehnlich](ki_aehnlich) | KI lokal – ähnliche Dokumente und Suche mit eigenen Worten, mit einem kleinen Embedding-Modell im Paket-Läufer, ohne Netz (mit Code) | @motom001 |
 | [ki_assistent](ki_assistent) | KI-Assistent – „Frag deine Ablage“ mit einem KI-Dienst, den du betreibst oder wählst (z. B. Ollama), Adapter für OpenAI-kompatible Dienste (mit Code) | @motom001 |
 | [texterkennung](texterkennung) | Die Texterkennung von Ablago: Text in Scans und Bildern erkennen – Sprache automatisch je Seite (auch Mischseiten), Seiten aufrichten, lange Dokumente abschnittsweise (mit Code) | @motom001 |
-| [texterkennung_fra](texterkennung_fra) | Französisch für die Texterkennung – Muster für weitere Sprachen (mit Code, nur Sprachdaten) | @motom001 |
+| [texterkennung.fra](texterkennung.fra) | Französisch für die Texterkennung – Muster für weitere Sprachen (mit Code, nur Sprachdaten) | @motom001 |
 | [sprache_fr](sprache_fr), [sprache_nl](sprache_nl), [sprache_es](sprache_es), [sprache_it](sprache_it), [sprache_tr](sprache_tr), [sprache_pl](sprache_pl) | Sprachpakete Französisch, Niederländisch, Spanisch, Italienisch, Türkisch, Polnisch – nur Texte, erste Welle maschinell übersetzt (Anmeldung, Start, Notfallzugang, Seitenrahmen, Beschriftungen von Basis) | @motom001 |
 | [trennblatt](trennblatt) | Sammelscan per Barcode-Trennblatt in mehrere Posts teilen, Archivnummer aus dem Aufkleber (mit Code) | @motom001 |
