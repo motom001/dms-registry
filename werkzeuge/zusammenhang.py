@@ -17,6 +17,7 @@ KNOTEN_H = 44
 REIHE_ABSTAND = 70
 LUECKE = 22
 RAND = 12
+PLATZHALTER_B = 14  # Breite der Lücke für einen langen Pfeil in einer Zwischenreihe
 
 
 def _voll(ziel: str, pid: str) -> str:
@@ -82,31 +83,55 @@ def zeichne(knoten: list[str], kanten: dict, index: dict, titel: str, fokus: str
     if not knoten:
         return ''
     reihe = anordnung(knoten, kanten)
+    # Lange Pfeile (über mehr als eine Reihe) bekommen in jeder Zwischenreihe einen unsichtbaren Platzhalter (Ebenen-
+    # Verfahren nach Sugiyama): Er hält eine Lücke frei, und die Kurve läuft hindurch statt durch fremde Kästchen.
+    ketten: dict = {}
+    platz: list[str] = []
+    for (von, nach) in sorted(kanten):
+        kette = [von]
+        if reihe[von] - reihe[nach] > 1:
+            for r in range(reihe[von] - 1, reihe[nach], -1):
+                d = f'~{len(platz)}'
+                platz.append(d)
+                reihe[d] = r
+                kette.append(d)
+        kette.append(nach)
+        ketten[(von, nach)] = kette
+    alle = list(knoten) + platz
+    oben: dict = {k: [] for k in alle}   # Nachbarn eine Reihe höher (Ziele)
+    unten: dict = {k: [] for k in alle}  # Nachbarn eine Reihe tiefer
+    for kette in ketten.values():
+        for a_, b_ in zip(kette, kette[1:]):
+            oben[a_].append(b_)
+            unten[b_].append(a_)
     reihen: dict = {}
-    for k in knoten:
+    for k in alle:
         reihen.setdefault(reihe[k], []).append(k)
-    # Reihenfolge in der Reihe: oben wie übergeben, darunter nach dem Mittel der Ziele (Schwerpunkt), dann Paket.
-    x_mitte: dict = {}
-    pos: dict = {}
     # Viele Pfeile an einem Kästchen (z. B. Organisation): breiter, damit die Spitzen nicht aufeinander liegen.
-    anschluesse = {k: max(sum(1 for (v, n) in kanten if n == k), sum(1 for (v, n) in kanten if v == k)) for k in knoten}
-    breiten = {k: max(_breite(index[k], fokus is not None and index[k]['paket'] != fokus), 16 * anschluesse[k] + 16) for k in knoten}
+    breiten = {k: max(_breite(index[k], fokus is not None and index[k]['paket'] != fokus), 16 * max(len(oben[k]), len(unten[k])) + 16)
+               for k in knoten}
+    breiten.update({d: PLATZHALTER_B for d in platz})
     hoehe_paket = fokus is None  # Gesamtseite: Paketname in jedem Kästchen
+
+    def ordne():
+        """Reihenfolge je Reihe nach dem Schwerpunkt der Nachbarn – ab- und aufwärts, damit sich wenig kreuzt."""
+        lage = {k: i for r in reihen.values() for i, k in enumerate(r)}
+        for _ in range(4):
+            for r in sorted(reihen)[1:]:
+                reihen[r].sort(key=lambda k: (sum(lage[n] for n in oben[k]) / len(oben[k])) if oben[k] else lage[k])
+                lage.update({k: i for i, k in enumerate(reihen[r])})
+            for r in sorted(reihen, reverse=True)[1:]:
+                reihen[r].sort(key=lambda k: (sum(lage[n] for n in unten[k]) / len(unten[k])) if unten[k] else lage[k])
+                lage.update({k: i for i, k in enumerate(reihen[r])})
+    ordne()
+    pos: dict = {}
     for r in sorted(reihen):
-        liste = reihen[r]
-        if r > 0:
-            def schwer(k):
-                ziele = [x_mitte[n] for (v, n) in kanten if v == k and n in x_mitte]
-                return (sum(ziele) / len(ziele)) if ziele else 1e9
-            liste.sort(key=lambda k: (schwer(k), index[k]['paketname'].lower(), index[k]['name'].lower()))
         x = RAND
-        for k in liste:
+        for k in reihen[r]:
             pos[k] = (x, RAND + r * (KNOTEN_H + REIHE_ABSTAND))
-            x_mitte[k] = x + breiten[k] / 2
-            x += breiten[k] + LUECKE
-    gesamt_b = max(pos[k][0] + breiten[k] for k in knoten) + RAND
-    # Reihen mittig ausrichten
-    for r, liste in reihen.items():
+            x += breiten[k] + (LUECKE if k in index else 6)
+    gesamt_b = max(pos[k][0] + breiten[k] for k in alle) + RAND
+    for r, liste in reihen.items():  # Reihen mittig ausrichten
         rb = pos[liste[-1]][0] + breiten[liste[-1]] - RAND
         versatz = (gesamt_b - 2 * RAND - rb) / 2
         for k in liste:
@@ -118,8 +143,8 @@ def zeichne(knoten: list[str], kanten: dict, index: dict, titel: str, fokus: str
         nachbarn = sorted(nachbarn, key=lambda n: pos[n][0])
         x0, b = pos[k][0], breiten[k]
         return {n: x0 + b * (i + 1) / (len(nachbarn) + 1) for i, n in enumerate(nachbarn)}
-    rein = {k: verteilt(k, [v for (v, n) in kanten if n == k]) for k in knoten}
-    raus = {k: verteilt(k, [n for (v, n) in kanten if v == k]) for k in knoten}
+    rein = {k: verteilt(k, unten[k]) for k in knoten}
+    raus = {k: verteilt(k, oben[k]) for k in knoten}
 
     pfeil = f'pfeil-{kennung}'
     teile = [f'<svg class="zusammenhang" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {int(gesamt_b)} {int(gesamt_h)}" '
@@ -128,15 +153,25 @@ def zeichne(knoten: list[str], kanten: dict, index: dict, titel: str, fokus: str
              f'<defs><marker id="{pfeil}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
              f'<path d="M0 0L10 5L0 10z" class="spitze"/></marker></defs>']
     for (von, nach), gehoert in sorted(kanten.items()):
-        x1, y1 = raus[von][nach], pos[von][1]
-        x2, y2 = rein[nach][von], pos[nach][1] + KNOTEN_H
-        if y2 > y1:  # Kreis: Ziel liegt nicht darüber – von unten an die Oberkante
-            y1, y2 = pos[von][1] + KNOTEN_H, pos[nach][1]
-            biege = 30
-            d = f'M{x1:.0f} {y1:.0f}C{x1:.0f} {y1 + biege:.0f} {x2:.0f} {y2 - biege:.0f} {x2:.0f} {y2:.0f}'
+        kette = ketten[(von, nach)]
+        if reihe[von] <= reihe[nach]:  # Kreis: Ziel liegt nicht darüber – von unten an die Oberkante
+            x1, y1 = raus[von][kette[1]], pos[von][1] + KNOTEN_H
+            x2, y2 = rein[nach][kette[-2]], pos[nach][1]
+            d = f'M{x1:.0f} {y1:.0f}C{x1:.0f} {y1 + 30:.0f} {x2:.0f} {y2 - 30:.0f} {x2:.0f} {y2:.0f}'
         else:
-            mitte = (y1 + y2) / 2
-            d = f'M{x1:.0f} {y1:.0f}C{x1:.0f} {mitte:.0f} {x2:.0f} {mitte:.0f} {x2:.0f} {y2:.0f}'
+            # Punkte: Oberkante des Anfangs, durch jeden Platzhalter senkrecht hindurch, Unterkante des Ziels.
+            punkte = [(raus[von][kette[1]], pos[von][1])]
+            for d_ in kette[1:-1]:
+                xm = pos[d_][0] + PLATZHALTER_B / 2
+                punkte += [(xm, pos[d_][1] + KNOTEN_H), (xm, pos[d_][1])]
+            punkte.append((rein[nach][kette[-2]], pos[nach][1] + KNOTEN_H))
+            d = f'M{punkte[0][0]:.0f} {punkte[0][1]:.0f}'
+            for (xa, ya), (xb, yb) in zip(punkte, punkte[1:]):
+                if xa == xb:
+                    d += f'L{xb:.0f} {yb:.0f}'
+                else:
+                    m = (ya + yb) / 2
+                    d += f'C{xa:.0f} {m:.0f} {xb:.0f} {m:.0f} {xb:.0f} {yb:.0f}'
         art = 'gehoert' if gehoert else 'bezug'
         teile.append(f'<path class="kante {art}" d="{d}" marker-end="url(#{pfeil})"><title>{e(index[von]["name"])} → '
                      f'{e(index[nach]["name"])} ({"gehört zu" if gehoert else "Bezug"})</title></path>')
