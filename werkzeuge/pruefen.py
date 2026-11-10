@@ -1583,6 +1583,48 @@ def doppelte_typen(ordner: list[Path]) -> list[str]:
             'darauf (REGELN.md, „Paketarten“)' for n, w in sorted(namen.items()) if len(w) > 1]
 
 
+def kennungs_kollisionen(ordner: list[Path]) -> tuple[list[str], list[str]]:
+    """Kennungen in Ablago (Registry #173): Ablago legt Mappentypen und Ansichten als <paket>_<schluessel> an. Weil beide
+    „_“ enthalten dürfen, können zwei Pakete dieselbe Kennung erzeugen (haus + garten_pflanze, haus_garten + pflanze).
+    Liefert (Fehler, Hinweise): Fehler bei gleicher Kennung, Hinweis bei einer Id, die wie <andere id>_… aussieht."""
+    gesehen: dict[str, str] = {}
+    fehler: list[str] = []
+    ids: dict[str, dict] = {}
+    for o in ordner:
+        try:
+            m = yaml.safe_load((o / 'manifest.yaml').read_text(encoding='utf-8')) or {}
+        except Exception:  # noqa: BLE001 – meldet schon pruefe()
+            continue
+        if not isinstance(m, dict) or not m.get('id'):
+            continue
+        pid = str(m['id'])
+        ids[pid] = m
+        for art in ('mappentypen', 'sichten'):
+            pfad = (m.get('inhalt') or {}).get(art)
+            try:
+                liste = yaml.safe_load((o / str(pfad)).read_text(encoding='utf-8')) or [] if pfad else []
+            except Exception:  # noqa: BLE001
+                continue
+            for x in liste if isinstance(liste, list) else []:
+                if not isinstance(x, dict) or not x.get('schluessel'):
+                    continue
+                k = f'{pid}_{x["schluessel"]}'
+                wer = f'{pid}:{x["schluessel"]} ({art})'
+                if k in gesehen and gesehen[k].split(':', 1)[0] != pid:
+                    fehler.append(f'Kennung „{k}“ entsteht doppelt: {gesehen[k]} und {wer} – Ablago legt beide als „{k}“ an. '
+                                  'Bitte einen Schlüssel umbenennen (Registry #173, motom001/dms#1084).')
+                gesehen.setdefault(k, wer)
+    hinweise: list[str] = []
+    for pid, m in sorted(ids.items()):
+        erg = m.get('ergaenzt')
+        erg = erg if isinstance(erg, str) else erg.get('paket') if isinstance(erg, dict) else None
+        for andere in sorted(ids):
+            if andere != pid and pid.startswith(andere + '_') and erg != andere:
+                hinweise.append(f'Paket-Id „{pid}“ beginnt wie „{andere}_“, ergänzt es aber nicht – das kann Kennungen doppeldeutig machen; '
+                                'besser eine eigene Id ohne diesen Anfang (Registry #173)')
+    return fehler, hinweise
+
+
 def hinweise(ordner: Path, basis: str | None = None) -> list[str]:
     """Hinweise ohne Fehler (#98): veraltete Verweise (DMS #883), Paket ohne Symbol, Manifest und
     werkzeuge/kategorien.yaml verschieden, Paketsprache (#157: Kennungen neuer Felder gegen die Basis).
@@ -1635,6 +1677,16 @@ def main():
             print(f'    Hinweis: {x}')
             if 'GITHUB_ACTIONS' in __import__('os').environ:
                 print(f'::warning file={name}/manifest.yaml,title={name}::{x}')
+    k_fehler, k_hinweise = kennungs_kollisionen([o for o in ordner if o.name != 'vorlage'])
+    for x in k_fehler:
+        gesamt += 1
+        print(f'✗ {x}')
+        if 'GITHUB_ACTIONS' in __import__('os').environ:
+            print(f'::error title=Kennungen::{x}')
+    for x in k_hinweise:
+        print(f'Hinweis: {x}')
+        if 'GITHUB_ACTIONS' in __import__('os').environ:
+            print(f'::warning title=Kennungen::{x}')
     for x in doppelte_typen([o for o in ordner if o.name != 'vorlage']):
         print(f'Hinweis: {x}')
         if 'GITHUB_ACTIONS' in __import__('os').environ:
