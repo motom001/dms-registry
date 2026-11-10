@@ -10,6 +10,8 @@ Every package is licensed under one of these open source licences (identifier ac
 
 `MIT`, `Apache-2.0`, `BSD-2-Clause`, `BSD-3-Clause`, `MPL-2.0`, `LGPL-3.0-or-later`, `GPL-3.0-or-later`, `AGPL-3.0-or-later`, `CC0-1.0` (only for pure configuration)
 
+**Template texts** may additionally be under `CC-BY-4.0` or `CC0-1.0` (see [Text templates](#text-templates)).
+
 The full licence text is in the package folder as `LICENSE`. Third-party code in the package needs a compatible licence and a note in the README.
 
 ## Allowed
@@ -132,6 +134,68 @@ From Ablago 0.223.0 (motom001/dms#878, registry #137) a sample can bring documen
 - **No real data:** only invented people and companies (persona names such as Lena, Jonas, Markus, Petra, Herr Özdemir, Katrin), example domains (`example.org`, `example.com`, `example.net`), invalid or explicitly sample values for IBAN, tax and insurance numbers. No scanned real letters, not even redacted – metadata, signatures and logos often reveal more than you think.
 - **Large packages:** the catalogue lives on the branch `gh-pages` (registry #133), and git doesn't accept files over 100 MB. A package whose archive would be larger can't be published that way; `pruefen.py` points this out from 90 MB.
 
+## Package kinds
+
+Every package has **one** kind. The kind is not stated in the manifest – the catalogue and Ablago derive it from the contents. Choose the kind first when cutting a package; whatever does not fit belongs in another package.
+
+| Kind | brings | Examples | Name |
+|---|---|---|---|
+| **Foundation package** | the shared folder types everyone refers to (organisation, person, storage location) | Basis | – (only one, always installed) |
+| **Template package** | folder types, views, examples, bundled automations for **one** area of life or business; **may bring code that only maintains its own folder types** (e.g. calculating status and deadlines) | Haushalt, Haus, Fahrzeuge, Vermietung, Verträge, Rechnungen | noun in the plural or the area |
+| **Function package** | code for **all** folders, **no** folder types of its own | Texterkennung, PDF/A, Trennblatt, AI | what it does |
+| **Add-on** | extends **exactly one** other package (`ergaenzt`, see [Add-ons](#add-ons-ergaenzt)) | additional languages for Texterkennung, a template for an existing contract type | main package + addition |
+| **Language** | only texts for Ablago (see [Language packages](#language-packages)) | French language | Language … |
+| **Automation package** | only automations (and settings, if any), no folder types | Benachrichtigungen | what it triggers |
+
+- **Every template package depends on Basis** (`abhaengigkeiten: basis: …`) and refers to its types instead of bringing its own persons or organisations.
+- **Code in a template package** only writes its own folder types (`code.rechte.schreiben`); it may read what it needs for its calculation. Code that works on all folders makes it a function package. `pruefen.py` points this out.
+- **Small packages, one purpose:** if something changes in contracts, only the Verträge package is updated, not Haushalt. Prefer another package with a dependency over a type that half exists in several packages.
+
+### A folder type lives in exactly one package
+
+Every folder type belongs to **exactly one** package. Other packages **refer** to it (`vertraege:vertrag`, `basis:organisation`) and list that package under `abhaengigkeiten` – they do not bring a type with the same meaning, not even under a different key. Example: Haushalt, Vermietung and Fahrzeuge no longer bring contract types of their own but depend on Verträge (Registry #163). The workbench shows for every package who depends on it.
+
+`pruefen.py` points out when two packages bring a folder type with the same name. A type moves to another package through a restructuring update (Ablago #1041), never by deleting it.
+
+## Same keys
+
+Fields with **the same meaning** have the same key in all folder types – across packages too. Then hit lists, views and the advanced search show the same columns across several types ("von" for mail, contract and invoice). The **key** is fixed, the **label** may speak per type: `von` is labelled "Anbieter" (provider) on a contract and "Rechnungssteller" (issuer) on an invoice.
+
+| Key | Field type | Meaning | not |
+|---|---|---|---|
+| `von` | reference | the other side something comes from: provider, invoice issuer, seller, landlord, insurer, sender | `absender`, `vertragspartner`, `anbieter`, `rechnungssteller` … |
+| `an` | reference | who receives it: customer, invoice recipient, buyer, tenant, policyholder | `empfaenger`, `fuer`, `kunde` … |
+| `betrag` | amount | amount of money (gross for invoices) | `summe`, `preis`, `gesamtbetrag` |
+| `datum` | date | date of the document | `rechnungsdatum`, `belegdatum` |
+| `betrifft` | reference | the object concerned (vehicle, flat, contract …) | `bezug`, `gegenstand_verweis` |
+| `steuerjahr` | reference | tax year under whose "Belege" the folder appears | `veranlagungsjahr` |
+| `zustaendig` | reference to `dms:benutzer` | who takes care, recipient of reminders | `verantwortlich`, `bearbeiter` |
+| `verbleib_original` | reference to `basis:ablageort` | where the original is kept | `original`, `verbleib` |
+| `person_verweis` | reference to `basis:person` | person of the household or business | – |
+| `bezeichnung` | text | short name of the folder ("Handyvertrag Jonas") | `kurzname` |
+| `art` | choice or reference | what it is | `typ`, `kategorie` |
+| `beginn`, `ende` | date | start and end of a period | `von`/`bis` as dates, `startdatum`, `gueltig_bis` |
+| `kuendigen_bis` | date (deadline) | last day to cancel | `kuendigung_bis` |
+| `vertragsnummer` | text | number used by the other side | `vertragsnr` |
+| `zahlweise` | choice | monthly, quarterly, yearly … | `zahlungsweise` |
+| `notiz` | long text | free remarks | `bemerkungen`, `kommentar` |
+
+- **`von` and `an` are the parties.** A period is `beginn`/`ende`. Ablago derives from them who "we" are: if `von` points to an own organisation or a person of the household, it is outgoing.
+- **New fields** in new or changed packages follow the list; `pruefen.py` gives a hint when a new field uses a key from the "not" column or a key from the list with a different field type. Existing fields stay until a restructuring update moves them (Registry #163) – changing keys would otherwise break the users' views and automations.
+- The list grows through issues. If a field has a meaning another type already knows, take that type's key.
+
+## Text templates
+
+Packages can bring **templates as text** – e.g. a cancellation letter on a contract type (Registry #160). Ablago turns them into a PDF when generating (Ablago #1040); how a package attaches templates to its bundled folders is described in Ablago #1038.
+
+- **Markdown only** (`.md`, UTF-8) under `inhalt/vorlagen/`, at most 256 KB per file. No office formats, not even open ones like `.odt`.
+- **No HTML** (not even comments `<!-- -->`), **no images** – Ablago sets letterhead and logo. Links only with `https://`, no other addresses (`http:`, `data:`, `javascript:` …).
+- **Placeholders** as in automations: `{vertragsnummer}`, `{von.name}`, `{kuendigen_bis}`. Ablago only fills in values the person may see. **Never password fields** as placeholders.
+- `pruefen.py` rejects templates that break these rules; **Ablago checks the same when installing**, because packages can also arrive as a file.
+- **Licence:** template texts are under the package's licence. An open licence of their own just for the texts (`CC-BY-4.0` or `CC0-1.0`) goes into `inhalt/vorlagen/LICENSE` and is named in the README.
+- **Contract samples:** only **your own, plain** samples, no third-party or protected texts. Every sample ends with the note *"Muster ohne Gewähr, keine Rechtsberatung – im Zweifel fachlich prüfen lassen."* (sample without warranty, no legal advice – have it checked if in doubt). Cancellation letters are harmless; word purchase contracts carefully.
+- **No real data** in templates (as in examples): placeholders instead of names, addresses or numbers.
+
 ## Add-ons (`ergaenzt`)
 
 A package that extends another one – e.g. an additional language for Texterkennung – says so with `ergaenzt` (motom001/dms#405). The extended package is also listed under `abhaengigkeiten`:
@@ -143,6 +207,8 @@ ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }   # or short: ergae
 ```
 
 Ablago from 0.151.0 shows add-ons as checkboxes below the extended package during installation, grouped by `gruppe` (a short question without question mark, at most 40 characters; without a group: "Ergänzungen") – also afterwards, in the setup assistant and in the bundle file. Every add-on stays a package of its own with its own version. Older Ablago versions ignore the field, so no higher `dms` is needed. In the catalogue it appears per version as `ergaenzt: { paket, gruppe }`, on the catalogue website as a group of its own under "Passt dazu".
+
+**What an add-on may do:** it adds something to the extended package – data (e.g. a language model) or documents on its defaults (e.g. a template on an existing contract type). It **changes no folder types and no permissions** of the extended package, brings no folder types of its own and changes no other templates. Removing it takes away only what it added itself.
 
 ## Labels per language
 
