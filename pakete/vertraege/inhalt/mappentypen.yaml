@@ -206,7 +206,9 @@
     - { key: sonstiges, label: Sonstiges, typ: betrag, hilfe: z. B. Stellplatz, beschriftungen: { en: { label: "Other", hilfe: "e.g. parking space" } } }
     - { key: mieterhoehung_ab, label: Nächste Mieterhöhung ab, typ: datum, beschriftungen: { en: { label: "Next rent increase from" } } }
     - { key: kaution, label: Kaution, typ: betrag, beschriftungen: { en: { label: "Deposit" } } }
-    - { key: kaution_konto, label: Kautionskonto bei, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank des Kautionskontos, beschriftungen: { en: { label: "Deposit account at", hilfe: "Bank of the deposit account" } } }
+    - { key: kaution_konto, label: Kaution angelegt bei, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank des Kautionskontos, beschriftungen: { en: { label: "Deposit held at", hilfe: "Bank of the deposit account" } } }
+    # Registry #114: das Kautionskonto selbst, wenn Haushalt installiert ist (ohne Abhängigkeit, DMS #1036)
+    - { key: kautionskonto, label: Kautionskonto, typ: referenz, zielOptional: ["haushalt:konto"], verweisart: bezug, hilfe: Das Konto aus Haushalt, auf dem die Kaution liegt, beschriftungen: { en: { label: "Deposit account", hilfe: "The account from Household that holds the deposit" } } }
     - { key: kaution_zurueck_am, label: Kaution zurück am, typ: datum, beschriftungen: { en: { label: "Deposit returned on" } } }
     # Versicherung – nur bei Vertragsart Versicherung
     - key: versicherung_art
@@ -229,7 +231,7 @@
                betrag, zahlweise, pro_monat,
                uebergeordnet, verbleib_original, notiz,
                unterschrieben_wir_am, unterschrieben_gegenseite_am, interne_nummer, ansprechpartner,
-               mietart, kaltmiete, vorauszahlung, sonstiges, mieterhoehung_ab, kaution, kaution_konto, kaution_zurueck_am,
+               mietart, kaltmiete, vorauszahlung, sonstiges, mieterhoehung_ab, kaution, kaution_konto, kautionskonto, kaution_zurueck_am,
                versicherung_art, versicherte_personen, selbstbeteiligung, hauptfaelligkeit]
       abschnitte:
         - { vor: an, titel: Vertragsparteien, eingeklappt: true, beschriftungen: { en: { titel: "Parties" } } }
