@@ -225,7 +225,7 @@ Packages can bring **templates as text** – e.g. a cancellation letter on a con
 | **Period** | `typ: zeitraum`, value `{ anzahl: 3, einheit: monate }` (tage, wochen, monate, jahre) | #1035 |
 | **Percentage** | `typ: prozent`, `nachkomma: 1` | #1035 |
 | **Negative amount** | `typ: betrag`, `negativ: true` (credit note, refund) | #1035 |
-| **Several targets** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; with `mehrfach: true` optionally `gleicherTyp: true` | #1036 |
+| **Several targets** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; with `mehrfach: true` optionally `gleicherTyp: true`. Targets from packages the package does **not** depend on go into `zielOptional` – Ablago adds them as soon as the type exists (e.g. "betrifft" of an invoice: vehicle, flat, purchase) | #1036 |
 | **Show if …** | `anzeigenWenn:` on fields and sections (`register.abschnitte`), all conditions must hold: `{ merkmal: beruflich }` (`nicht: true` inverts), `{ feld, op: gleich/ungleich/leer/nichtLeer, wert }`, `{ feld, vorgabe: [miete] }`, `{ feld, eigeneOrganisation: true }`, `{ feld, typ: [fahrzeuge:fahrzeug] }`. A hidden section hides all fields up to the next one. **Order, not protection** – values stay stored and visible through API and export. | #1032, #1033 |
 | **Calculated** | `berechnet: true` – only this package's code writes the field, read-only in the interface; needs `code.rechte.schreiben` on its own type, never `pflicht` | #1034 |
 | **Note on a folder** | `code.rechte.schnittstellen: [dms:hinweise]` – set and remove a note; it never prevents saving | #1034 |

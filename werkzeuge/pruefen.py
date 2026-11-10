@@ -1361,9 +1361,12 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
         for k, f in felder.items():
             wo = f'mappentypen/{s}/{k}'
             art = f.get('typ')
-            if art in ETAPPE15_FELDARTEN or isinstance(f.get('ziel'), list) or any(x in f for x in ('negativ', 'berechnet', 'schreibschutz', 'merkmal', 'vorbelegen', 'gleicherTyp')):
+            if art in ETAPPE15_FELDARTEN or isinstance(f.get('ziel'), list) or any(x in f for x in ('negativ', 'berechnet', 'schreibschutz', 'merkmal', 'vorbelegen', 'gleicherTyp', 'zielOptional')):
                 benutzt = True
-            if f.get('gleicherTyp') and not (f.get('mehrfach') and isinstance(f.get('ziel'), list)):
+            for z in f.get('zielOptional') or []:
+                if isinstance(z, str) and (':' not in z or z.split(':', 1)[0] in (pid, 'dms')):
+                    fehler.append(f'{wo}: zielOptional „{z}“ – nur Typen anderer Pakete (paket:typ); eigene und abhängige gehören in ziel')
+            if f.get('gleicherTyp') and not (f.get('mehrfach') and (isinstance(f.get('ziel'), list) or f.get('zielOptional'))):
                 fehler.append(f'{wo}: gleicherTyp nur mit mehrfach: true und mehreren Zielen')
             if f.get('merkmal'):
                 merkmale += 1
