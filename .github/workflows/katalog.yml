@@ -59,6 +59,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 werkzeuge/releases.py zaehlen site
+      # Auf Pages bleibt nur die aktuelle Version je Paket (#133) – für die Sammeldatei im Browser. Gelöscht wird nur,
+      # was als passende Release-Datei da ist.
+      - name: Pages ausdünnen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 werkzeuge/releases.py ausduennen site
       # Ed25519 über die Bytes von katalog.json (#74). Ohne Secret (Fork, oder bevor es angelegt ist) bleibt der
       # Lauf grün: unsigniert, mit deutlicher Warnung. Danach prüft das Werkzeug die Signatur mit schluessel/*.pub.
       - name: Katalog signieren
@@ -67,6 +73,8 @@ jobs:
         run: python3 werkzeuge/signieren.py signieren site --schluessel-env KATALOG_SIGNIERSCHLUESSEL
       - name: Webseite bauen
         run: python3 werkzeuge/webseite.py site
+      - name: Größe prüfen
+        run: python3 werkzeuge/releases.py groesse site
       - name: Veröffentlichen
         run: |
           cd site
@@ -75,5 +83,8 @@ jobs:
           echo catalog.ablago.app > CNAME
           git add -A
           if git diff --cached --quiet; then echo "Keine Änderung."; exit 0; fi
+          # Ohne Historie (#133): Jede Veröffentlichung ist ein einzelner Commit, gelöschte Archive wachsen nicht im
+          # Repository mit. Ablago und die Webseite brauchen nur den aktuellen Stand.
+          git checkout -q --orphan veroeffentlichen
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Katalog ${GITHUB_SHA::7}"
-          git push origin HEAD:gh-pages
+          git push --force origin HEAD:gh-pages

@@ -46,9 +46,10 @@ OHNE_BAU = False
 
 # Releases (#156): eine je Paketversion, die Datei heißt wie das Archiv.
 RELEASES = f'{REPO}/releases/download'
-# Wie viele Versionen je Paket als Spiegel auf GitHub Pages bleiben – für die Sammeldatei im Browser. None = alle
-# (bis #133 entschieden ist); danach z. B. 3, und werkzeuge/releases.py ausduennen entfernt die übrigen.
-SPIEGEL_VERSIONEN: int | None = None
+# Wie viele Versionen je Paket als Spiegel auf GitHub Pages bleiben – für die Sammeldatei im Browser (#133,
+# Entscheidung Thomas 10.11.2026 16:54: nur die aktuelle). werkzeuge/releases.py ausduennen entfernt die übrigen;
+# alle Versionen bleiben am Release und im Katalog. None = alle.
+SPIEGEL_VERSIONEN: int | None = 1
 
 
 def tag(pid: str, version: str) -> str:
