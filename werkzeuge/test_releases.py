@@ -127,7 +127,9 @@ class KatalogAdressen(unittest.TestCase):
         vs = [{'version': x} for x in ('1.3.0', '1.2.0', '1.1.0', '1.0.0')]
         with mock.patch.object(katalog, 'SPIEGEL_VERSIONEN', 3):
             self.assertEqual(katalog.spiegeln(vs), {'1.3.0', '1.2.0', '1.1.0'})
-        self.assertEqual(katalog.spiegeln(vs), {'1.3.0', '1.2.0', '1.1.0', '1.0.0'})
+        self.assertEqual(katalog.spiegeln(vs), {'1.3.0'})  # Vorgabe: nur die aktuelle (#133)
+        with mock.patch.object(katalog, 'SPIEGEL_VERSIONEN', None):
+            self.assertEqual(katalog.spiegeln(vs), {'1.3.0', '1.2.0', '1.1.0', '1.0.0'})
 
     def test_veroeffentlicht_ohne_archiv_auf_pages(self):
         """Liegt ein veröffentlichtes Archiv nicht mehr auf Pages, kommt es zur Prüfung vom Release."""

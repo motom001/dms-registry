@@ -1207,7 +1207,7 @@ SAMMEL_SKRIPT = r'''
       var p = paket(id);
       if (!p) { probleme.push('„' + name(von) + '“ braucht „' + id + '“ – das gibt es im Katalog nicht.'); return; }
       var v = neueste(p, bereich, dms);
-      if (!v) { probleme.push(von ? '„' + name(von) + '“ braucht „' + p.name + '“ ' + bereich + '; dazu passt keine Version für Ablago ' + dms + '.' : '„' + p.name + '“: keine Version passt zu DMS ' + dms + '.'); return; }
+      if (!v) { probleme.push(von ? '„' + name(von) + '“ braucht „' + p.name + '“ ' + bereich + '; dazu passt keine Version für Ablago ' + dms + '.' : '„' + p.name + '“: Die aktuelle Version braucht ein neueres Ablago als ' + dms + '. Ältere Versionen lädst du einzeln auf der Paketseite herunter (Alle Versionen).'); return; }
       plan[id] = { id: id, name: p.name, v: v, gewaehlt: !von, fuer: von ? [von] : [] };
       Object.keys(v.abhaengigkeiten || {}).forEach(function (a) { nimm(a, v.abhaengigkeiten[a], id); });
     }
