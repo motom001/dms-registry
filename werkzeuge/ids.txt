@@ -1,0 +1,35 @@
+# Alle Paket-Ids, die es im offiziellen Katalog je gab (Registry #173). Nur anhängen, nie löschen: Eine Id gehört für
+# immer zu einem Paket, auch wenn es zurückgezogen wird – sonst bekäme ein neues Paket die Rechte, Mappentypen und
+# Updates eines alten. Ein neues Paket trägt seine Id im selben Pull Request hier ein (pruefen.py prüft das).
+basis
+benachrichtigungen
+bildformate
+fahrzeuge
+hallo_post
+haus
+haushalt
+ki_aehnlich
+ki_assistent
+office_email
+pdfa
+qrcode
+sicherung_webdav
+sprache_es
+sprache_fr
+sprache_it
+sprache_nl
+sprache_pl
+sprache_tr
+texterkennung
+texterkennung_ara
+texterkennung_fra
+texterkennung_ita
+texterkennung_nld
+texterkennung_pol
+texterkennung_por
+texterkennung_rus
+texterkennung_spa
+texterkennung_tur
+texterkennung_ukr
+trennblatt
+vermietung

@@ -1625,6 +1625,46 @@ def kennungs_kollisionen(ordner: list[Path]) -> tuple[list[str], list[str]]:
     return fehler, hinweise
 
 
+IDS = WURZEL / 'werkzeuge' / 'ids.txt'
+
+
+def lies_ids(text: str) -> list[str]:
+    return [z.strip() for z in text.splitlines() if z.strip() and not z.lstrip().startswith('#')]
+
+
+def id_pruefung(ordner: list[Path], basis: str | None, ids_text: str | None = None, alt_text: str | None = None,
+                gab_es=None) -> list[str]:
+    """Eine Id nur einmal (Registry #173): werkzeuge/ids.txt nennt jede je veröffentlichte Paket-Id. Neue Pakete
+    tragen sich dort ein; keine Zeile verschwindet; ein neuer Paketordner darf keine früher vergebene Id nutzen."""
+    fehler: list[str] = []
+    ids = lies_ids(IDS.read_text(encoding='utf-8') if ids_text is None else ids_text)
+    if len(ids) != len(set(ids)):
+        fehler.append('werkzeuge/ids.txt: eine Id steht doppelt')
+    alt: list[str] = []
+    if basis or alt_text is not None:
+        if alt_text is None:
+            r = subprocess.run(['git', 'show', f'{basis}:werkzeuge/ids.txt'], cwd=WURZEL, capture_output=True, text=True)
+            alt_text = r.stdout if r.returncode == 0 else ''
+        alt = lies_ids(alt_text)
+        weg = sorted(set(alt) - set(ids))
+        if weg:
+            fehler.append(f'werkzeuge/ids.txt: {", ".join(weg)} gestrichen – Ids bleiben für immer vergeben, nur anhängen')
+    if gab_es is None:
+        def gab_es(pid: str) -> bool:
+            return not basis or subprocess.run(['git', 'cat-file', '-e', f'{basis}:pakete/{pid}/manifest.yaml'], cwd=WURZEL,
+                                               capture_output=True).returncode == 0
+    for o in ordner:
+        try:
+            pid = str((yaml.safe_load((o / 'manifest.yaml').read_text(encoding='utf-8')) or {}).get('id'))
+        except Exception:  # noqa: BLE001 – meldet schon pruefe()
+            continue
+        if pid not in ids:
+            fehler.append(f'{pid}: neue Paket-Id – bitte im selben Pull Request in werkzeuge/ids.txt eintragen (Registry #173)')
+        elif pid in alt and not gab_es(pid):
+            fehler.append(f'{pid}: diese Id war schon vergeben (werkzeuge/ids.txt) – ein neues Paket braucht eine eigene, auch wenn das alte zurückgezogen ist')
+    return fehler
+
+
 def hinweise(ordner: Path, basis: str | None = None) -> list[str]:
     """Hinweise ohne Fehler (#98): veraltete Verweise (DMS #883), Paket ohne Symbol, Manifest und
     werkzeuge/kategorien.yaml verschieden, Paketsprache (#157: Kennungen neuer Felder gegen die Basis).
@@ -1678,6 +1718,7 @@ def main():
             if 'GITHUB_ACTIONS' in __import__('os').environ:
                 print(f'::warning file={name}/manifest.yaml,title={name}::{x}')
     k_fehler, k_hinweise = kennungs_kollisionen([o for o in ordner if o.name != 'vorlage'])
+    k_fehler += id_pruefung([o for o in ordner if o.name != 'vorlage'], basis)
     for x in k_fehler:
         gesamt += 1
         print(f'✗ {x}')

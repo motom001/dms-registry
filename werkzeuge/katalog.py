@@ -234,6 +234,13 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
             else:
                 v.pop('spiegel', None)
 
+    # Eine Id nur einmal (Registry #173): Jede Id im Katalog steht in werkzeuge/ids.txt.
+    ids_pfad = WURZEL / 'werkzeuge' / 'ids.txt'
+    if ids_pfad.exists():
+        bekannt_ids = {z.strip() for z in ids_pfad.read_text(encoding='utf-8').splitlines() if z.strip() and not z.startswith('#')}
+        for pid in sorted(set(pakete) - bekannt_ids):
+            fehler.append(f'{pid}: fehlt in werkzeuge/ids.txt – jede veröffentlichte Id gehört dorthin (Registry #173)')
+
     katalog = {
         'format': FORMAT,
         'erstellt': jetzt,

@@ -59,6 +59,7 @@ They are explained in the administrator manual under [Pakete mit Code](https://h
 
 - `manifest.yaml`, `README.md`, `LICENSE`, `CHANGELOG.md`, `inhalt/` (empty if need be), `tests/`
 - Package id = folder name: lower-case letters, digits, `_`, starts with a letter, at most 20 characters
+- **An id only once** (registry #173): a new package adds its id to `werkzeuge/ids.txt` in the same pull request. Every id that was ever in the catalogue stays there for good, even if the package is withdrawn. `pruefen.py` rejects a previously used id for a new package, and so does removing a line.
 - With every change, a higher version (SemVer) and an entry in `CHANGELOG.md`
 - German texts in fields and views; the README in German, additionally in English if you like. English labels (`beschriftungen.en`) are welcome – the bundled packages with Mappe types have them.
 - A maintainer for the package in `CODEOWNERS`
