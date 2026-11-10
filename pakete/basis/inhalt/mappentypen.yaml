@@ -1,8 +1,8 @@
 # Mappentyp Organisation. Das DMS legt ihn als basis_organisation an; angezeigt wird „Organisation“.
 - schluessel: organisation
   name: Organisation
-  beschreibung: Firma, Behörde, Arztpraxis, Versicherung, Bank, Verein oder andere Stelle, mit der du zu tun hast.
-  beschriftungen: { en: { name: "Organisation", beschreibung: "Company, authority, doctor’s practice, insurer, bank, club or any other body you deal with." } }
+  beschreibung: Firma, Behörde, Arztpraxis, Versicherung, Bank, Verein oder andere Stelle, mit der du zu tun hast – auch deine eigene Firma. AGB und Preislisten legst du unter Dokumente mit ihrem Stand im Namen ab, z. B. „AGB Stand 2026-01“.
+  beschriftungen: { en: { name: "Organisation", beschreibung: "Company, authority, doctor’s practice, insurer, bank, club or any other body you deal with – your own company too. Keep terms and conditions and price lists under Documents with their date in the name, e.g. “Terms as of 2026-01”." } }
   titelVorlage: "{name}"
   felder:
     # Stammdaten
@@ -14,7 +14,8 @@
       eindeutig: true
       maxLen: 120
       # Für die Erkennung (DMS 0.113): Post wird an diesem Namen wiedererkannt (schwaches Merkmal).
-      erkennung: {}
+      # Ab 1.7.0 ausdrücklich „name“: Bei einer eigenen Organisation liest Ablago den Namen über diese Bedeutung (DMS #995).
+      erkennung: { art: name }
     - key: kuerzel
       label: Kürzel
       beschriftungen: { en: { label: "Short name", hilfe: "Abbreviation, e.g. “SWM” for Stadtwerke Musterstadt" } }
@@ -28,6 +29,16 @@
       typ: auswahl
       mehrfach: true
       optionen: [Lieferant, Kunde, Bank, Versicherung, Behörde, Arbeitgeber, Arzt/Praxis, Handwerker, Vermieter, Verein, Versorger, Sonstige]
+    # Ab 1.7.0 (DMS #995, dms-registry #158): Das sind wir – Ablago weiß, wer „wir“ sind (Auskünfte, Briefkopf, Erkennung).
+    # Ändern nur mit Verwaltungsrecht (Thomas 10.11.2026: Standardberechtigung am Feld).
+    - key: eigene_organisation
+      label: Eigene Organisation
+      beschriftungen: { en: { label: "Own organisation", hilfe: "This is us – e.g. your own company or business. Ablago uses it for data protection information, letterheads and recognition. Only people with administration rights can change it." } }
+      typ: janein
+      standard: false
+      merkmal: eigeneOrganisation
+      schreibschutz: verwaltung
+      hilfe: Das sind wir – z. B. deine eigene Firma oder dein Gewerbe. Ablago nimmt das für Datenschutz-Auskünfte, Briefköpfe und die Erkennung. Ändern kann es nur, wer Ablago verwaltet.
     - key: kundennummer
       label: Kundennummer
       beschriftungen: { en: { label: "Customer number", hilfe: "Your own number with this organisation (customer, membership, policyholder or patient number)" } }
@@ -58,6 +69,21 @@
       label: Beschreibung
       beschriftungen: { en: { label: "Description" } }
       typ: langtext
+    # Ab 1.7.0: Datenschutz – nur bei einer eigenen Organisation zu sehen (Abschnitt mit Anzeige-Bedingung, DMS #1033, #995).
+    - key: verantwortlicher
+      label: Verantwortlicher
+      beschriftungen: { en: { label: "Controller", hilfe: "Who is responsible for data protection (Art. 4 No. 7 GDPR) – usually the organisation itself, otherwise a person" } }
+      typ: referenz
+      ziel: [organisation, person]
+      verweisart: bezug
+      hilfe: Wer für den Datenschutz verantwortlich ist (Art. 4 Nr. 7 DSGVO) – meist die Organisation selbst, sonst eine Person
+    - key: datenschutzbeauftragter
+      label: Datenschutzbeauftragter
+      beschriftungen: { en: { label: "Data protection officer", hilfe: "Only if you have one – often required only from a certain number of employees. No legal advice." } }
+      typ: referenz
+      ziel: person
+      verweisart: bezug
+      hilfe: Nur, wenn es einen gibt – oft erst ab einer bestimmten Zahl von Beschäftigten nötig. Keine Rechtsberatung.
     # Kontakt
     - key: telefon
       label: Telefon
@@ -65,14 +91,14 @@
       typ: text
       maxLen: 40
       format: telefon
-      erkennung: {}
+      erkennung: { art: telefon }
     - key: fax
       label: Fax
       beschriftungen: { en: { label: "Fax" } }
       typ: text
       maxLen: 40
       format: telefon
-      erkennung: {}
+      erkennung: { art: fax }
     - key: email
       label: E-Mail
       beschriftungen: { en: { label: "Email", hilfe: "e.g. contact@example.org" } }
@@ -81,7 +107,7 @@
       muster: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
       hilfe: z. B. kontakt@beispiel.de
       format: email
-      erkennung: {}
+      erkennung: { art: email }
     - key: internet
       label: Internetseite
       beschriftungen: { en: { label: "Website", hilfe: "e.g. https://www.example.org" } }
@@ -90,20 +116,20 @@
       format: internetseite
       hilfe: z. B. https://www.beispiel.de
       # Auch die Domain einer E-Mail-Adresse im Brief zählt (…@beispiel.de).
-      erkennung: {}
+      erkennung: { art: internet }
     # Anschrift
     - key: strasse
       label: Straße
       beschriftungen: { en: { label: "Street" } }
       typ: text
       maxLen: 120
-      erkennung: {}
+      erkennung: { art: strasse }
     - key: hausnummer
       label: Hausnummer
       beschriftungen: { en: { label: "House number" } }
       typ: text
       maxLen: 10
-      erkennung: {}
+      erkennung: { art: hausnummer }
     - key: plz
       label: PLZ
       beschriftungen: { en: { label: "Postcode", hilfe: "Five digits in Germany" } }
@@ -113,13 +139,13 @@
       # In Deutschland (oder ohne Land) genau 5 Ziffern, sonst frei.
       format: plz
       landFeld: land
-      erkennung: {}
+      erkennung: { art: plz }
     - key: ort
       label: Ort
       beschriftungen: { en: { label: "Town" } }
       typ: text
       maxLen: 80
-      erkennung: {}
+      erkennung: { art: ort }
     - key: land
       label: Land
       beschriftungen: { en: { label: "Country" } }
@@ -131,7 +157,12 @@
       name: Stammdaten
       beschriftungen: { en: { name: "Basic data" } }
       art: felder
-      felder: [name, kuerzel, art, kundennummer, iban, ustid, beschreibung]
+      felder: [name, kuerzel, art, eigene_organisation, kundennummer, iban, ustid, beschreibung, verantwortlicher, datenschutzbeauftragter]
+      abschnitte:
+        - vor: verantwortlicher
+          titel: Datenschutz
+          beschriftungen: { en: { titel: "Data protection" } }
+          anzeigenWenn: [{ feld: eigene_organisation, op: gleich, wert: true }]
     - key: kontakt
       name: Kontakt
       beschriftungen: { en: { name: "Contact" } }
@@ -153,6 +184,7 @@
       beschriftungen: { en: { name: "Contacts" } }
       art: verknuepfungen
       quellen: [{ typ: person, feld: organisation }]
+    # Ab 1.7.0 im Hinweis: AGB und Preislisten mit Stand im Namen ablegen (dms-registry #158).
     - key: dokumente
       name: Dokumente
       beschriftungen: { en: { name: "Documents" } }

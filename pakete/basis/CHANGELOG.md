@@ -1,5 +1,14 @@
 # Änderungen
 
+## 1.7.0
+
+- Organisation: **Eigene Organisation** (Ja/Nein, Vorgabe nein, dms-registry #158, DMS #995) – so weiß Ablago, wer „wir“ sind: für Datenschutz-Auskünfte, den Briefkopf von Vorlagen und die Erkennung (die eigene Organisation ist nie Absender eingehender Post). Ändern kann es nur, wer Ablago verwaltet. Mehrere eigene Organisationen sind möglich (privat und Gewerbe, zwei Firmen) – das ist nur eine Zuordnung.
+- Organisation: neuer Abschnitt **Datenschutz** in den Stammdaten, nur bei einer eigenen Organisation zu sehen: **Verantwortlicher** (die Organisation selbst oder eine Person) und **Datenschutzbeauftragter** (Person, nur wenn es einen gibt). Keine Rechtsberatung.
+- Organisation: Name, Telefon, Fax, E-Mail, Internetseite und Anschrift nennen ihre Bedeutung jetzt ausdrücklich (`erkennung.art`); darüber liest Ablago die Angaben einer eigenen Organisation. Für die Erkennung ändert sich nichts.
+- Beschreibung: AGB und Preislisten mit ihrem Stand im Namen unter *Dokumente* ablegen.
+- Kurzanleitung „So nutzt du es“ für den Katalog und Ablago (dms-registry #164).
+- Braucht **Ablago 0.238.0** (eigene Organisation). Herausgeber `app.ablago` im Manifest.
+
 ## 1.6.1
 
 - Person: Bei **Niederlassung** erscheinen nur noch die Niederlassungen der gewählten **Organisation** (Auswahlfilter, dms-registry #139). Ist die Organisation leer, erscheinen alle wie bisher.
