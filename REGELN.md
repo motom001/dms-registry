@@ -218,6 +218,39 @@ Pakete können **Vorlagen als Text** mitbringen – etwa ein Kündigungsschreibe
 - **Vertragsmuster:** nur **eigene, schlichte** Muster, keine fremden oder geschützten Texte. Jedes Muster endet mit dem Hinweis *„Muster ohne Gewähr, keine Rechtsberatung – im Zweifel fachlich prüfen lassen.“* Kündigungsschreiben sind unkritisch, Kaufverträge eher vorsichtig formulieren.
 - **Keine echten Daten** in Vorlagen (wie bei Beispielen): Platzhalter statt Namen, Adressen oder Nummern.
 
+## Bausteine für Verträge, Rechnungen und Compliance (Etappe 15/16) { #bausteine-etappe-15 }
+
+> **Entwurf.** Diese Bausteine kommen mit Kern-Issues der Etappe 15/16; die Ablago-Version steht noch nicht fest (`pruefen.py` verlangt vorläufig `dms: ">=0.230.0"`). Bis dahin entstehen Pakete damit nur als Entwurf.
+
+| Baustein | so im Paket | Kern |
+|---|---|---|
+| **Zeitraum** | `typ: zeitraum`, Wert `{ anzahl: 3, einheit: monate }` (tage, wochen, monate, jahre) | #1035 |
+| **Prozent** | `typ: prozent`, `nachkomma: 1` | #1035 |
+| **Negativer Betrag** | `typ: betrag`, `negativ: true` (Gutschrift, Erstattung) | #1035 |
+| **Mehrere Ziele** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; mit `mehrfach: true` optional `gleicherTyp: true` | #1036 |
+| **Anzeigen, wenn …** | `anzeigenWenn:` an Feldern und Abschnitten (`register.abschnitte`), alle Bedingungen müssen gelten: `{ merkmal: beruflich }` (mit `nicht: true` umgekehrt), `{ feld, op: gleich/ungleich/leer/nichtLeer, wert }`, `{ feld, vorgabe: [miete] }`, `{ feld, eigeneOrganisation: true }`, `{ feld, typ: [fahrzeuge:fahrzeug] }`. Ein ausgeblendeter Abschnitt blendet alle Felder bis zum nächsten aus. **Ordnung, kein Schutz** – Werte bleiben gespeichert und über API und Export sichtbar. | #1032, #1033 |
+| **Berechnet** | `berechnet: true` – nur der Code dieses Pakets schreibt das Feld, in der Oberfläche nur lesbar; braucht `code.rechte.schreiben` auf den eigenen Typ, nie `pflicht` | #1034 |
+| **Hinweis an der Mappe** | `code.rechte.schnittstellen: [dms:hinweise]` – Hinweis setzen und entfernen, Speichern hindert er nie | #1034 |
+| **Einmal am Tag** | Ereignis `zeitplan.taeglich` in `code.ereignisse` (z. B. Status, der sich nur durch das Datum ändert) | #1034 |
+| **Tabelle** | `typ: tabelle`, `quelle: { typ: rechnungsposition, feld: rechnung, trefferliste, neu: "+ Position" }` – kein eigener Wert | #1030 |
+| **Gehört immer zu** | am Mappentyp `gehoertZu: rechnung` (Verweisfeld auf genau eine Mappe, Pflicht) – nicht in Ansichten und Suche | #1031 |
+| **Zusammengesetzt** | `typ: zusammengesetzt`, `vorlage: "{von} · {rechnungsnummer}"`, gern `eindeutig: true` | #1050 |
+| **Vorbelegen** | an einem Verweisfeld `vorbelegen: [{ von: kuendigungsfrist, nach: kuendigungsfrist }]` – nur in leere Felder, als Vorschlag | #1037 |
+| **Eigene Organisation** | Ja/Nein-Feld mit `merkmal: eigeneOrganisation` und `schreibschutz: verwaltung` (nur mit Verwaltungsrecht änderbar) | #995 |
+| **Vorgaben** | `inhalt.vorgaben: inhalt/vorgaben.yaml` – Mappen mit fester `kennung`, die bleiben (z. B. Vertragsarten), mit `werte`, `beschriftungen` je Sprache und `dokumente` (nur [Text-Vorlagen](#text-vorlagen)). Verweis darauf in Werten `{ vorgabe: miete }` bzw. `{ vorgabe: "vertraege:miete" }`. Eine **Ergänzung** hängt mit `an: "vertraege:pkw_kaufvertrag"` nur Dokumente an eine vorhandene Vorgabe. | #1038 |
+
+```yaml
+# inhalt/vorgaben.yaml (Paket Verträge)
+- kennung: mobilfunk
+  typ: vertragsart
+  werte: { name: Mobilfunk, mindestlaufzeit: { anzahl: 24, einheit: monate }, kuendigungsfrist: { anzahl: 1, einheit: monate } }
+  beschriftungen: { en: { name: Mobile phone } }
+  dokumente:
+    - { datei: vorlagen/kuendigung.md, register: vorlagen, titel: Kündigung }
+```
+
+`pruefen.py` prüft, was im Paket selbst nachprüfbar ist: Felder und Vorgaben, auf die verwiesen wird, Quelle einer Tabelle, Platzhalter einer Zusammensetzung, Schreibrecht für berechnete Felder, Werte von Zeiträumen, Dateien der Vorgaben.
+
 ## Ergänzungen
 
 Ein Paket, das ein anderes erweitert – etwa eine Zusatzsprache die Texterkennung –, sagt das mit `ergaenzt` (motom001/dms#405). Das ergänzte Paket steht auch unter `abhaengigkeiten`:

@@ -216,6 +216,39 @@ Packages can bring **templates as text** – e.g. a cancellation letter on a con
 - **Contract samples:** only **your own, plain** samples, no third-party or protected texts. Every sample ends with the note *"Muster ohne Gewähr, keine Rechtsberatung – im Zweifel fachlich prüfen lassen."* (sample without warranty, no legal advice – have it checked if in doubt). Cancellation letters are harmless; word purchase contracts carefully.
 - **No real data** in templates (as in examples): placeholders instead of names, addresses or numbers.
 
+## Building blocks for contracts, invoices and compliance (stage 15/16) { #bausteine-etappe-15 }
+
+> **Draft.** These building blocks come with core issues of stage 15/16; the Ablago version is not fixed yet (`pruefen.py` provisionally requires `dms: ">=0.230.0"`). Until then packages using them are drafts only.
+
+| Building block | in the package | Core |
+|---|---|---|
+| **Period** | `typ: zeitraum`, value `{ anzahl: 3, einheit: monate }` (tage, wochen, monate, jahre) | #1035 |
+| **Percentage** | `typ: prozent`, `nachkomma: 1` | #1035 |
+| **Negative amount** | `typ: betrag`, `negativ: true` (credit note, refund) | #1035 |
+| **Several targets** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; with `mehrfach: true` optionally `gleicherTyp: true` | #1036 |
+| **Show if …** | `anzeigenWenn:` on fields and sections (`register.abschnitte`), all conditions must hold: `{ merkmal: beruflich }` (`nicht: true` inverts), `{ feld, op: gleich/ungleich/leer/nichtLeer, wert }`, `{ feld, vorgabe: [miete] }`, `{ feld, eigeneOrganisation: true }`, `{ feld, typ: [fahrzeuge:fahrzeug] }`. A hidden section hides all fields up to the next one. **Order, not protection** – values stay stored and visible through API and export. | #1032, #1033 |
+| **Calculated** | `berechnet: true` – only this package's code writes the field, read-only in the interface; needs `code.rechte.schreiben` on its own type, never `pflicht` | #1034 |
+| **Note on a folder** | `code.rechte.schnittstellen: [dms:hinweise]` – set and remove a note; it never prevents saving | #1034 |
+| **Once a day** | event `zeitplan.taeglich` in `code.ereignisse` (e.g. a status that changes only with the date) | #1034 |
+| **Table** | `typ: tabelle`, `quelle: { typ: rechnungsposition, feld: rechnung, trefferliste, neu: "+ Position" }` – no value of its own | #1030 |
+| **Always belongs to** | on the folder type `gehoertZu: rechnung` (reference field to exactly one folder, required) – not in views and search | #1031 |
+| **Composed** | `typ: zusammengesetzt`, `vorlage: "{von} · {rechnungsnummer}"`, often `eindeutig: true` | #1050 |
+| **Prefill** | on a reference field `vorbelegen: [{ von: kuendigungsfrist, nach: kuendigungsfrist }]` – only into empty fields, as a suggestion | #1037 |
+| **Own organisation** | yes/no field with `merkmal: eigeneOrganisation` and `schreibschutz: verwaltung` (changeable only with administration rights) | #995 |
+| **Defaults** | `inhalt.vorgaben: inhalt/vorgaben.yaml` – folders with a fixed `kennung` that stay (e.g. contract types), with `werte`, `beschriftungen` per language and `dokumente` (only [text templates](#text-templates)). Refer to them in values with `{ vorgabe: miete }` or `{ vorgabe: "vertraege:miete" }`. An **add-on** uses `an: "vertraege:pkw_kaufvertrag"` to attach only documents to an existing default. | #1038 |
+
+```yaml
+# inhalt/vorgaben.yaml (package Verträge)
+- kennung: mobilfunk
+  typ: vertragsart
+  werte: { name: Mobilfunk, mindestlaufzeit: { anzahl: 24, einheit: monate }, kuendigungsfrist: { anzahl: 1, einheit: monate } }
+  beschriftungen: { en: { name: Mobile phone } }
+  dokumente:
+    - { datei: vorlagen/kuendigung.md, register: vorlagen, titel: Kündigung }
+```
+
+`pruefen.py` checks what can be checked inside the package: fields and defaults referred to, the source of a table, the placeholders of a composition, write permission for calculated fields, period values, files of the defaults.
+
 ## Add-ons (`ergaenzt`)
 
 A package that extends another one – e.g. an additional language for Texterkennung – says so with `ergaenzt` (motom001/dms#405). The extended package is also listed under `abhaengigkeiten`:
