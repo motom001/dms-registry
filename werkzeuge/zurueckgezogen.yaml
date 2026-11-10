@@ -1,0 +1,4 @@
+# Bewusst zurückgezogene Paketversionen (Tag <id>-v<version>), z. B. wegen eines Fehlers. Zurückziehen heißt: Version
+# aus dem Katalog nehmen, hier eintragen und das Release von Hand löschen – sonst bleibt die Datei öffentlich ladbar.
+# Ohne Eintrag meldet werkzeuge/releases.py zaehlen ein Release ohne Katalog-Version als Fehler (Schutz vor Verlust).
+[]

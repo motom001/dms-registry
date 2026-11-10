@@ -8,6 +8,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      hoechstens:
+        description: 'Höchstens so viele neue Releases in diesem Lauf (0 = alle)'
+        default: '20'
   schedule:
     - cron: '17 3 * * *'
 
@@ -54,6 +58,7 @@ jobs:
       - name: Releases anlegen
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASES_HOECHSTENS: ${{ inputs.hoechstens || '20' }}
         run: python3 werkzeuge/releases.py anlegen site
       - name: Downloads zählen
         env:

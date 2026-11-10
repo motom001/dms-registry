@@ -10,27 +10,36 @@ import sammeldatei  # noqa: E402
 
 
 class FalschesGitHub:
-    """Nachbildung der Releases eines Repos."""
+    """Nachbildung der Releases eines Repos mit eingeschaltetem „Immutable releases“: An ein veröffentlichtes Release
+    lässt sich nichts mehr hochladen."""
 
     def __init__(self):
-        self.liste, self.angelegt, self.hochgeladen, self.n = [], [], [], 0
+        self.liste, self.angelegt, self.hochgeladen, self.veroeffentlicht, self.n = [], [], [], [], 0
 
     def releases(self):
         return json.loads(json.dumps(self.liste))
 
     def anlegen(self, tag, name, text):
         self.n += 1
-        r = {'id': self.n, 'tag_name': tag, 'name': name, 'body': text, 'assets': []}
+        r = {'id': self.n, 'tag_name': tag, 'name': name, 'body': text, 'assets': [], 'draft': True}
         self.liste.append(r)
         self.angelegt.append(tag)
         return r
 
     def hochladen(self, release, name, daten):
         r = next(x for x in self.liste if x['id'] == release['id'])
+        if not r['draft']:
+            raise RuntimeError('422: Release ist unveränderlich')
         a = {'name': name, 'size': len(daten), 'digest': 'sha256:' + hashlib.sha256(daten).hexdigest(), 'download_count': 0}
         r['assets'].append(a)
         self.hochgeladen.append(name)
         return a
+
+    def veroeffentlichen(self, release):
+        r = next(x for x in self.liste if x['id'] == release['id'])
+        r['draft'] = False
+        self.veroeffentlicht.append(r['tag_name'])
+        return r
 
 
 def stand(tmp: Path, versionen=('1.0.0', '1.1.0')) -> Path:
@@ -55,6 +64,8 @@ class Releases(unittest.TestCase):
             self.assertEqual(releases.anlegen(stand(Path(t)), gh), [])
             self.assertEqual(sorted(gh.angelegt), ['probe-v1.0.0', 'probe-v1.1.0'])
             self.assertEqual(sorted(gh.hochgeladen), ['probe-1.0.0.zip', 'probe-1.1.0.zip'])
+            self.assertEqual(sorted(gh.veroeffentlicht), ['probe-v1.0.0', 'probe-v1.1.0'])
+            self.assertTrue(all(not r['draft'] and r['assets'] for r in gh.liste))
             # Zweiter Lauf: nichts Neues.
             self.assertEqual(releases.anlegen(Path(t), gh), [])
             self.assertEqual(len(gh.hochgeladen), 2)
@@ -65,7 +76,50 @@ class Releases(unittest.TestCase):
             releases.anlegen(stand(Path(t)), gh)
             gh.liste[0]['assets'][0]['size'] += 1
             f = releases.anlegen(Path(t), gh)
-            self.assertTrue(any('ändern sich nie' in x for x in f), f)
+            self.assertTrue(any('lässt sich nicht mehr ändern' in x for x in f), f)
+
+    def test_entwurf_wird_weiterverwendet(self):
+        with tempfile.TemporaryDirectory() as t:
+            gh = FalschesGitHub()
+            ordner = stand(Path(t), ('1.0.0',))
+            gh.anlegen('probe-v1.0.0', 'Probe 1.0.0', '')  # Lauf brach nach dem Anlegen ab
+            self.assertEqual(releases.anlegen(ordner, gh), [])
+            self.assertEqual(len(gh.liste), 1)
+            self.assertFalse(gh.liste[0]['draft'])
+            self.assertEqual(gh.hochgeladen, ['probe-1.0.0.zip'])
+
+    def test_veroeffentlicht_ohne_datei(self):
+        with tempfile.TemporaryDirectory() as t:
+            gh = FalschesGitHub()
+            ordner = stand(Path(t), ('1.0.0',))
+            gh.veroeffentlichen(gh.anlegen('probe-v1.0.0', 'Probe 1.0.0', ''))
+            f = releases.anlegen(ordner, gh)
+            self.assertTrue(any('veröffentlichtes Release ohne passende Datei' in x for x in f), f)
+            self.assertEqual(gh.hochgeladen, [])
+
+    def test_hoechstens_je_lauf(self):
+        with tempfile.TemporaryDirectory() as t:
+            gh = FalschesGitHub()
+            ordner = stand(Path(t), ('1.0.0', '1.1.0', '1.2.0'))
+            self.assertEqual(releases.anlegen(ordner, gh, hoechstens=2), [])
+            self.assertEqual(len(gh.veroeffentlicht), 2)
+            vs = {v['version']: v for v in json.loads((ordner / 'katalog.json').read_text())['pakete'][0]['versionen']}
+            ohne = [v for v in vs.values() if not v['archiv'].startswith('https://')]
+            self.assertEqual(len(ohne), 1)
+            self.assertEqual(ohne[0]['archiv'], f'archive/probe-{ohne[0]["version"]}.zip')  # lädt vorerst von Pages
+
+    def test_verlorene_version(self):
+        with tempfile.TemporaryDirectory() as t:
+            gh = FalschesGitHub()
+            ordner = stand(Path(t))
+            releases.anlegen(ordner, gh)
+            k = json.loads((ordner / 'katalog.json').read_text())
+            k['pakete'][0]['versionen'].pop()  # 1.0.0 fehlt plötzlich
+            (ordner / 'katalog.json').write_text(json.dumps(k))
+            f = releases.zaehlen(ordner, gh)
+            self.assertTrue(any('probe-v1.0.0' in x for x in f), f)
+            with mock.patch.object(releases, 'zurueckgezogen', lambda: {'probe-v1.0.0'}):
+                self.assertEqual(releases.zaehlen(ordner, gh), [])
 
     def test_ohne_archiv(self):
         with tempfile.TemporaryDirectory() as t:

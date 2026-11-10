@@ -9,14 +9,24 @@ veröffentlichen“ nach werkzeuge/katalog.py und vor dem Signieren.
     python3 werkzeuge/releases.py groesse <ausgabe>      Größe der Seite melden, Fehler ab GRENZE_MB
 
 Je Paketversion ein Release mit Tag <id>-v<version> und genau einer Datei <id>-<version>.zip – Byte für Byte das
-Archiv aus dem Katalog. Releases ändern sich nie: Gibt es die Datei schon, muss sie zu Größe und Prüfsumme im Katalog
+Archiv aus dem Katalog. Im Repository ist „Immutable releases“ eingeschaltet: Ein veröffentlichtes Release lässt sich
+nicht mehr ändern, sein Tag nie wiederverwenden. Deshalb erst als Entwurf anlegen, Datei hochladen und prüfen, dann
+veröffentlichen; ein liegengebliebener Entwurf wird beim nächsten Lauf weiterverwendet. Je Lauf höchstens
+RELEASES_HOECHSTENS neue Releases (Umgebung, Vorgabe 20) – Versionen ohne Release laden bis dahin weiter von Pages.
+Releases ändern sich nie: Gibt es die Datei schon, muss sie zu Größe und Prüfsumme im Katalog
 passen, sonst bricht das Werkzeug ab. Ablago lädt von dort (Feld `archiv`), GitHub zählt die Downloads selbst
 (`download_count`); Ablago sendet dafür nichts. Ein Archiv auf Pages wird erst gelöscht, wenn seine Release-Datei da
 ist.
 
+`zaehlen` meldet außerdem einen Fehler, wenn es ein veröffentlichtes Release gibt, dessen Version im Katalog fehlt
+(Schutz vor einem Lauf, der Versionen verliert – gh-pages hat keine Historie). Bewusst zurückgezogene Versionen stehen
+in werkzeuge/zurueckgezogen.yaml; ihr Release wird von Hand gelöscht.
+
 Braucht GITHUB_TOKEN (contents: write) und GITHUB_REPOSITORY; ohne Token: nur `groesse`.
 """
 import hashlib, json, os, sys, time, urllib.parse, urllib.request
+
+import yaml
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -56,9 +66,14 @@ class GitHub:
             seite += 1
 
     def anlegen(self, tag: str, name: str, text: str) -> dict:
-        body = {'tag_name': tag, 'target_commitish': self.commit, 'name': name, 'body': text, 'draft': False,
-                'prerelease': False, 'make_latest': 'false'}
+        """Als Entwurf – erst `veroeffentlichen` macht das Release (unveränderlich) sichtbar."""
+        body = {'tag_name': tag, 'target_commitish': self.commit, 'name': name, 'body': text, 'draft': True,
+                'prerelease': False}
         return self._anfrage('POST', f'{API}/repos/{self.repo}/releases', json.dumps(body).encode())
+
+    def veroeffentlichen(self, release: dict) -> dict:
+        body = {'draft': False, 'make_latest': 'false'}
+        return self._anfrage('PATCH', f'{API}/repos/{self.repo}/releases/{release["id"]}', json.dumps(body).encode())
 
     def hochladen(self, release: dict, name: str, daten: bytes) -> dict:
         url = f'{UPLOADS}/repos/{self.repo}/releases/{release["id"]}/assets?name={urllib.parse.quote(name)}'
@@ -85,43 +100,77 @@ def datei_passt(asset: dict, v: dict) -> bool:
     return asset.get('size') == v['groesse'] and (not d.startswith('sha256:') or d[7:] == v['sha256'])
 
 
-def anlegen(ausgabe: Path, gh) -> list[str]:
+def anlegen(ausgabe: Path, gh, hoechstens: int | None = None) -> list[str]:
+    """Fehlende Releases anlegen: Entwurf → Datei hochladen und prüfen → veröffentlichen. Versionen, die in diesem
+    Lauf kein Release mehr bekommen, zeigen in katalog.json vorerst auf ihr Archiv auf Pages."""
     fehler: list[str] = []
     katalog = lies_katalog(ausgabe)
     vorhanden = {r['tag_name']: r for r in gh.releases()}
-    neu = 0
+    neu = verschoben = 0
     for p, v, name, t in versionen(katalog):
         r = vorhanden.get(t)
         asset = next((a for a in (r or {}).get('assets') or [] if a['name'] == name), None)
-        if asset:
-            if not datei_passt(asset, v):
-                fehler.append(f'{name}: Release-Datei passt nicht zu katalog.json (Größe/Prüfsumme) – Releases ändern sich nie, bitte von Hand prüfen')
+        if r is not None and not r.get('draft'):
+            # Veröffentlicht und damit unveränderlich: muss passen, nachbessern geht nicht.
+            if not asset or not datei_passt(asset, v):
+                fehler.append(f'{name}: veröffentlichtes Release ohne passende Datei (Größe/Prüfsumme) – lässt sich nicht mehr ändern, bitte von Hand prüfen')
             continue
         datei = ausgabe / 'archive' / name
-        if not datei.exists():
-            fehler.append(f'{name}: weder Release-Datei noch Archiv auf Pages – kann das Release nicht anlegen')
+        if hoechstens is not None and neu >= hoechstens:
+            # Später weiter; bis dahin lädt Ablago diese Version von Pages (relative Adresse wie früher).
+            if datei.exists():
+                v['archiv'] = f'archive/{name}'
+                v['spiegel'] = f'archive/{name}'
+                verschoben += 1
+            else:
+                fehler.append(f'{name}: weder Release noch Archiv auf Pages')
             continue
-        daten = datei.read_bytes()
-        if hashlib.sha256(daten).hexdigest() != v['sha256'] or len(daten) != v['groesse']:
-            fehler.append(f'{name}: Archiv auf Pages passt nicht zu katalog.json')
+        if asset and not datei_passt(asset, v):
+            fehler.append(f'{name}: Entwurf mit falscher Datei – Entwurf {t} bitte von Hand löschen')
             continue
-        if r is None:
-            text = (f'{p["name"]} {v["version"]} – Paket für Ablago (braucht Ablago {v["dms"]}).\n\n'
-                    f'Installieren: Werkbank → Pakete → Dazuholen, oder https://catalog.ablago.app/pakete/{p["id"]}/ · '
-                    f'Änderungen: {v["changelog"]}\n\nDie Datei ist Byte für Byte das Archiv aus dem signierten Katalog '
-                    f'(SHA-256 {v["sha256"]}).')
-            r = gh.anlegen(t, f'{p["name"]} {v["version"]}', text)
-            vorhanden[t] = r
-        gh.hochladen(r, name, daten)
+        if not asset:
+            if not datei.exists():
+                fehler.append(f'{name}: weder Release-Datei noch Archiv auf Pages – kann das Release nicht anlegen')
+                continue
+            daten = datei.read_bytes()
+            if hashlib.sha256(daten).hexdigest() != v['sha256'] or len(daten) != v['groesse']:
+                fehler.append(f'{name}: Archiv auf Pages passt nicht zu katalog.json')
+                continue
+            if r is None:
+                text = (f'{p["name"]} {v["version"]} – Paket für Ablago (braucht Ablago {v["dms"]}).\n\n'
+                        f'Installieren: Werkbank → Pakete → Dazuholen, oder https://catalog.ablago.app/paket/{p["id"]}/ · '
+                        f'Änderungen: {v["changelog"]}\n\nDie Datei ist Byte für Byte das Archiv aus dem signierten Katalog '
+                        f'(SHA-256 {v["sha256"]}).')
+                r = gh.anlegen(t, f'{p["name"]} {v["version"]}', text)
+                vorhanden[t] = r
+            asset = gh.hochladen(r, name, daten)
+            if not datei_passt(asset, v):
+                fehler.append(f'{name}: hochgeladene Datei passt nicht (Größe/Prüfsumme) – Entwurf bleibt unveröffentlicht')
+                continue
+        gh.veroeffentlichen(r)
         neu += 1
-    print(f'Releases: {neu} Datei(en) hochgeladen, {len(vorhanden)} Releases')
+    if verschoben:
+        schreib_katalog(ausgabe, katalog)
+    print(f'Releases: {neu} veröffentlicht, {verschoben} auf den nächsten Lauf verschoben (laden solange von Pages)')
     return fehler
+
+
+def zurueckgezogen() -> set[str]:
+    pfad = Path(__file__).resolve().parent / 'zurueckgezogen.yaml'
+    return {str(x) for x in (yaml.safe_load(pfad.read_text(encoding='utf-8')) or [])} if pfad.exists() else set()
 
 
 def zaehlen(ausgabe: Path, gh) -> list[str]:
     """Downloads je Version (Release-Datei) und je Paket (Summe) in katalog.json – vor dem Signieren."""
     katalog = lies_katalog(ausgabe)
-    zahl = {a['name']: int(a.get('download_count') or 0) for r in gh.releases() for a in r.get('assets') or []}
+    alle = gh.releases()
+    zahl = {a['name']: int(a.get('download_count') or 0) for r in alle for a in r.get('assets') or []}
+    # Sicherheit (PR #177): Ein veröffentlichtes Release, dessen Version im Katalog fehlt, heißt meist, dass ein Lauf
+    # Versionen verloren hat – gh-pages hat keine Historie, aus der man sie zurückholen könnte.
+    im_katalog = {t for _, _, _, t in versionen(katalog)}
+    weg = sorted(r['tag_name'] for r in alle if not r.get('draft') and r['tag_name'] not in im_katalog and r['tag_name'] not in zurueckgezogen())
+    if weg:
+        return [f'Releases ohne Version im Katalog: {", ".join(weg)} – Version verloren? Bewusst zurückgezogen: in werkzeuge/zurueckgezogen.yaml eintragen']
     for p in katalog['pakete']:
         summe = 0
         for v in p['versionen']:
@@ -193,7 +242,10 @@ def main():
             print('GITHUB_TOKEN fehlt')
             sys.exit(2)
         gh = GitHub(os.environ.get('GITHUB_REPOSITORY', 'motom001/dms-registry'), token, os.environ.get('GITHUB_SHA', 'main'))
-        fehler = {'anlegen': anlegen, 'zaehlen': zaehlen, 'ausduennen': ausduennen}[was](ausgabe, gh)
+        if was == 'anlegen':
+            fehler = anlegen(ausgabe, gh, int(os.environ.get('RELEASES_HOECHSTENS') or 20) or None)
+        else:
+            fehler = {'zaehlen': zaehlen, 'ausduennen': ausduennen}[was](ausgabe, gh)
     for f in fehler:
         print(f'✗ {f}')
         if 'GITHUB_ACTIONS' in os.environ:
