@@ -59,6 +59,7 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://help.
 
 - `manifest.yaml`, `README.md`, `LICENSE`, `CHANGELOG.md`, `inhalt/` (ggf. leer), `tests/`
 - Paket-Id = Ordnername: Kleinbuchstaben, Ziffern, `_`, beginnt mit einem Buchstaben, höchstens 20 Zeichen
+- **Eine Id nur einmal** (Registry #173): Ein neues Paket trägt seine Id im selben Pull Request in `werkzeuge/ids.txt` ein. Dort steht jede Id, die es im Katalog je gab, für immer, auch wenn das Paket zurückgezogen wird. `pruefen.py` lehnt eine früher vergebene Id für ein neues Paket ab, ebenso das Streichen einer Zeile.
 - Bei jeder Änderung eine höhere Version (SemVer) und ein Eintrag im `CHANGELOG.md`
 - Deutsche Texte in Feldern und Sichten; das README auf Deutsch, gern zusätzlich auf Englisch. Englische Beschriftungen (`beschriftungen.en`) sind erwünscht – die mitgelieferten Pakete mit Mappentypen haben sie.
 - Ein Pfleger in `CODEOWNERS`

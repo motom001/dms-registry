@@ -1193,3 +1193,32 @@ class Kennungen(unittest.TestCase):
         f, h = pruefen.kennungs_kollisionen(sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir()))
         self.assertEqual(f, [])
         self.assertEqual(h, [])
+
+
+class IdsNurEinmal(unittest.TestCase):
+    """Registry #173: Eine Paket-Id gehört für immer zu einem Paket (werkzeuge/ids.txt)."""
+
+    def paket(self, wurzel: Path, pid: str) -> Path:
+        o = wurzel / pid
+        o.mkdir(parents=True)
+        (o / 'manifest.yaml').write_text(yaml.safe_dump({'id': pid}), encoding='utf-8')
+        return o
+
+    def test_registry(self):
+        self.assertEqual(pruefen.id_pruefung(sorted(p for p in (WURZEL / 'pakete').iterdir() if (p / 'manifest.yaml').exists()), None), [])
+
+    def test_neue_id_eintragen(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            o = self.paket(Path(tmp), 'garten')
+            self.assertTrue(any('ids.txt eintragen' in x for x in pruefen.id_pruefung([o], None, 'haus\n')))
+            self.assertEqual(pruefen.id_pruefung([o], None, 'haus\ngarten\n'), [])
+
+    def test_nie_streichen(self):
+        self.assertTrue(any('gestrichen' in x for x in pruefen.id_pruefung([], 'x', 'haus\n', 'haus\nalt\n')))
+
+    def test_alte_id_fuer_neues_paket(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            o = self.paket(Path(tmp), 'alt')
+            f = pruefen.id_pruefung([o], 'x', '# Kommentar\nalt\n', 'alt\n', gab_es=lambda pid: False)
+            self.assertTrue(any('schon vergeben' in x for x in f), f)
+            self.assertEqual(pruefen.id_pruefung([o], 'x', 'alt\n', 'alt\n', gab_es=lambda pid: True), [])
