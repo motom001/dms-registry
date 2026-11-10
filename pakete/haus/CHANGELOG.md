@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.4.0
+
+- Neu (Registry #114): **Eigentümer/Vermieter (Person)** an der Immobilie – Verweis auf eine oder mehrere Personen aus Basis, z. B. „ihr beide“ oder die private Vermieterin. Das bisherige Feld heißt jetzt **Eigentümer/Vermieter (Organisation)** und bleibt für Gesellschaften, Erbengemeinschaften und die Hausverwaltung. Ein Update ergänzt nur das neue Feld; gespeicherte Werte bleiben, wo sie sind.
+
 ## 1.3.1
 
 - Das Feld **Verbleib Originaldokumente** verweist auf den Ablageort aus dem Paket **Basis** (`basis:ablageort` statt `dms:ablageort`, dms-registry #138, Ablago #883). Braucht Basis ab 1.6.0 und Ablago ab 0.212.0. In einer bestehenden Ablage ändert sich nichts: Basis übernimmt den bisherigen Ablageort mit allen Orten, das Feld zeigt weiter darauf.
