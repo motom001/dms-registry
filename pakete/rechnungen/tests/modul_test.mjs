@@ -1,5 +1,5 @@
 // Test des gebauten Moduls (code/modul.wasm) mit einer kleinen Nachbildung von Ablago: Importe dms.* und WASI,
-// Rechnungen und Positionen, Status, Umsatzsteuer, Summenprüfung als Hinweis, zeitplan.taeglich.
+// Rechnungen und Positionen, Status, Umsatzsteuer, Summenprüfung als Hinweis, zeitplan.ausgefuehrt.
 //
 //   node tests/modul_test.mjs
 import { readFileSync } from 'node:fs';
@@ -87,7 +87,7 @@ const gut = { g1: { typ: 't-r', werte: { betrag: E(-12.5) } } };
 r = lauf({ daten: { mappe: 'g1', typ: 't-r', felder: ['notiz'] }, mappen: gut });
 pruefe('Gutschrift: Status in Worten, keine Summenprüfung ohne Betragsänderung', r.geschrieben.g1?.werte.status === 'Gutschrift – noch nicht erhalten' && !('g1' in r.hinweise), r);
 
-r = lauf({ art: 'zeitplan.taeglich', daten: { datum: '2026-11-20' }, mappen: basis() });
+r = lauf({ art: 'zeitplan.ausgefuehrt', daten: { datum: '2026-11-20' }, mappen: basis() });
 pruefe('Täglich: überfällig und Summen', r.geschrieben.r1?.werte.status === 'überfällig seit 15.11.2026' && typeof r.hinweise.r1 === 'string', r);
 
 r = lauf({ einstellungen: { summenpruefung: false }, daten: { mappe: 'r1', typ: 't-r' }, mappen: basis() });

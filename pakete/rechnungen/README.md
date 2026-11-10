@@ -27,7 +27,7 @@ Register: *Rechnung*, *Anlagen*, *Lieferscheine*, *Verknüpfungen*, *Historie*.
 
 ## So rechnet das Paket
 
-- **Status:** „offen – fällig am 15.11.2026“, „überfällig seit 01.11.2026“, „bezahlt am 09.11.2026“; bei Gutschriften „Gutschrift – noch nicht erhalten“ bzw. „Gutschrift erhalten am …“; bei Ausgangsrechnungen zählt der Zahlungseingang. Neu bei jeder Änderung und einmal am Tag.
+- **Status:** „offen – fällig am 15.11.2026“, „überfällig seit 01.11.2026“, „bezahlt am 09.11.2026“; bei Gutschriften „Gutschrift – noch nicht erhalten“ bzw. „Gutschrift erhalten am …“; bei Ausgangsrechnungen zählt der Zahlungseingang. Neu bei jeder Änderung und jeden Morgen über die mitgelieferte Automatisierung **„Rechnungen täglich prüfen“** (gleich eingeschaltet, änderbar unter Automatisierungen).
 - **Positionen:** Ist der Gesamtpreis leer, füllt das Paket Menge × Einzelpreis ein – was du selbst einträgst, bleibt. Mit Umsatzsteuersatz gelten die Preise netto, das Paket rechnet die Umsatzsteuer aus.
 - **Summenprüfung:** Ergeben die Positionen (mit Umsatzsteuer) etwas anderes als der Betrag, steht an der Rechnung „Die Positionen ergeben 118,97 €, die Rechnung sagt 120,80 €.“ Bis 1 Cent je Position zählt als Rundung. Der Hinweis verschwindet, sobald es passt; Speichern hindert er nie.
 
@@ -39,7 +39,7 @@ Register: *Rechnung*, *Anlagen*, *Lieferscheine*, *Verknüpfungen*, *Historie*.
 
 ## Voraussetzungen
 
-- Ablago ab 0.230.0 (vorläufig): Prozent, negative Beträge, mehrere Ziele, Anzeige-Bedingungen, berechnete Felder, Hinweise, Tabelle, „gehört immer zu“ und das tägliche Ereignis (Etappe 15).
+- Ablago ab 0.230.0 (vorläufig): Prozent, negative Beträge, mehrere Ziele, Anzeige-Bedingungen, berechnete Felder, Hinweise, Tabelle, „gehört immer zu“ und „Paket nach Zeitplan ausführen“ (Etappe 15, DMS #1082).
 - Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung und Haushalt sind nicht nötig – sind sie installiert, kann *Betrifft* auf ihre Mappen zeigen.
 
 ## Rechte und Netzwerkzugriff
@@ -47,7 +47,7 @@ Register: *Rechnung*, *Anlagen*, *Lieferscheine*, *Verknüpfungen*, *Historie*.
 - **Mappen lesen:** Rechnung, Rechnungsposition · **Mappen anlegen und ändern:** Rechnung (nur *Status*), Rechnungsposition (nur *Umsatzsteuer* und leere Gesamtpreise).
 - **Hinweise an Mappen setzen** (dms:hinweise) – nur an Rechnungen, nur zur Summe.
 - Keine Dokumente, **kein Zugriff auf Netzwerk und Internet**.
-- Reagiert auf: `mappe.angelegt`, `mappe.geaendert` (Rechnungen, Positionen), `zeitplan.taeglich`.
+- Reagiert auf: `mappe.angelegt`, `mappe.geaendert` (Rechnungen, Positionen), `zeitplan.ausgefuehrt` (Automatisierung „Rechnungen täglich prüfen“).
 
 ## Entwickeln
 
