@@ -24,10 +24,13 @@
     - { key: baujahr, label: Baujahr, typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Vierstellig, z. B. 1998", beschriftungen: { en: { label: "Year built", hilfe: "Four digits, e.g. 1998" } }  }
     - { key: wohnflaeche, label: Wohnfläche (m²), typ: zahl, min: 0, nachkomma: 2, beschriftungen: { en: { label: "Living space (m²)" } }  }
     - { key: grundstueck, label: Grundstücksgröße (m²), typ: zahl, min: 0, nachkomma: 0, beschriftungen: { en: { label: "Plot size (m²)" } }  }
-    - { key: eigentuemer, label: Eigentümer/Vermieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bei Miete der Vermieter oder die Hausverwaltung, beschriftungen: { en: { label: "Owner/landlord", hilfe: "If rented, the landlord or the property management" } }  }
+    # Ab 1.4.0 (Registry #114): Eigentümer auch als Person – im Haushalt gehört die Immobilie meist Menschen, nicht einer
+    # Firma. Das bisherige Feld bleibt für Gesellschaften, Erbengemeinschaften und die Hausverwaltung (Kennung unverändert).
+    - { key: eigentuemer_person, label: Eigentümer/Vermieter (Person), typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: "Wem die Immobilie gehört – z. B. ihr beide; bei Miete die Vermieterin oder der Vermieter", beschriftungen: { en: { label: "Owner/landlord (person)", hilfe: "Who owns the property – e.g. the two of you; if rented, the landlord" } }  }
+    - { key: eigentuemer, label: Eigentümer/Vermieter (Organisation), typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: "Gesellschaft, Erbengemeinschaft oder bei Miete die Hausverwaltung", beschriftungen: { en: { label: "Owner/landlord (organisation)", hilfe: "Company, community of heirs or, if rented, the property management" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo Grundbuchauszug, Kauf- oder Mietvertrag auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the land register extract is" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, wohnflaeche, grundstueck, eigentuemer, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, strasse, hausnummer, plz, ort, land, baujahr, wohnflaeche, grundstueck, eigentuemer_person, eigentuemer, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - key: wartungen
       name: Wartungen
       beschriftungen: { en: { name: "Maintenance" } }

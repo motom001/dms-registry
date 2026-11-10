@@ -8,7 +8,7 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
-| Immobilie | Haus, Wohnung, Ferienwohnung, Garage, Grundstück | Bezeichnung (eindeutig), Art (Eigentum, Miete …), Anschrift, Baujahr, Wohnfläche, Grundstücksgröße, Eigentümer/Vermieter | – |
+| Immobilie | Haus, Wohnung, Ferienwohnung, Garage, Grundstück | Bezeichnung (eindeutig), Art (Eigentum, Miete …), Anschrift, Baujahr, Wohnfläche, Grundstücksgröße, Eigentümer/Vermieter (Person oder Organisation) | – |
 | Wartung | Heizung, Schornstein, Rauchmelder, Dach, Lüftung, Photovoltaik, Aufzug | Immobilie, Gegenstand, Fachbetrieb, Wartungsvertrag, zuletzt am, Turnus (Monate), Notiz | **Nächste fällig** (30 Tage vorher) |
 | Zählerstand | eine Ablesung | Immobilie, Zählerart (Strom, Gas, Wasser, Wärme, Einspeisung), Zählernummer, abgelesen am, Stand, Einheit | – |
 
@@ -16,7 +16,8 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 **Verweise:**
 
-- **Eigentümer/Vermieter** und **Fachbetrieb** sind **Organisationen** aus dem Paket Basis.
+- **Eigentümer/Vermieter (Person)** verweist auf eine oder mehrere **Personen** aus dem Paket Basis (z. B. ihr beide), **Eigentümer/Vermieter (Organisation)** auf eine **Organisation** (Gesellschaft, Erbengemeinschaft, Hausverwaltung).
+- **Fachbetrieb** ist eine **Organisation** aus dem Paket Basis.
 - **Wartungsvertrag** ist ein **Vertrag** aus dem Paket Haushalt (Art z. B. „Sonstiges“).
 - **Verbleib Originaldokumente** zeigt auf einen **Ablageort** aus dem Paket Basis – wo Grundbuchauszug, Kauf- oder Mietvertrag liegen.
 
