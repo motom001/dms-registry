@@ -109,10 +109,10 @@
       abschnitte:
         - { vor: betrifft, titel: Wozu, beschriftungen: { en: { titel: "What for" } } }
         - { vor: rechnungsnummer, titel: Einzelheiten, eingeklappt: true, beschriftungen: { en: { titel: "Details" } } }
-        - { vor: netto, titel: Beträge im Einzelnen, eingeklappt: true, beschriftungen: { en: { titel: "Amounts in detail" } }, anzeigenWenn: [{ merkmal: beruflich }] }
-        - { vor: zahlungseingang_am, titel: Ausgangsrechnung, beschriftungen: { en: { titel: "Outgoing invoice" } }, anzeigenWenn: [{ feld: von, eigeneOrganisation: true }] }
-        - { vor: kilometerstand, titel: Fahrzeug, beschriftungen: { en: { titel: "Vehicle" } }, anzeigenWenn: [{ feld: betrifft, typ: ["fahrzeuge:fahrzeug"] }] }
-        - { vor: umlagefaehig, titel: Vermietung, beschriftungen: { en: { titel: "Letting" } }, anzeigenWenn: [{ feld: betrifft, typ: ["vermietung:mietobjekt", "vermietung:wohnung"] }] }
+        - { vor: netto, titel: Beträge im Einzelnen, eingeklappt: true, beschriftungen: { en: { titel: "Amounts in detail" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
+        - { vor: zahlungseingang_am, titel: Ausgangsrechnung, beschriftungen: { en: { titel: "Outgoing invoice" } }, anzeigen: { bedingungen: [{ art: eigeneOrganisation, feld: von }] } }
+        - { vor: kilometerstand, titel: Fahrzeug, beschriftungen: { en: { titel: "Vehicle" } }, anzeigen: { bedingungen: [{ art: verweistyp, feld: betrifft, typ: fahrzeuge:fahrzeug }] } }
+        - { vor: umlagefaehig, titel: Vermietung, beschriftungen: { en: { titel: "Letting" } }, anzeigen: { modus: eine, bedingungen: [{ art: verweistyp, feld: betrifft, typ: vermietung:mietobjekt }, { art: verweistyp, feld: betrifft, typ: vermietung:wohnung }] } }
         - { vor: positionen, titel: Positionen, beschriftungen: { en: { titel: "Items" } } }
     - { key: anlagen, name: Anlagen, art: dokumente, beschriftungen: { en: { name: "Attachments" } } }
     - { key: lieferscheine, name: Lieferscheine, art: verknuepfungen, quellen: [{ typ: lieferschein, feld: rechnung }], beschriftungen: { en: { name: "Delivery notes" } } }
