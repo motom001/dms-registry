@@ -645,14 +645,14 @@ def sicht_baum(sichten: list, typnamen: dict, feldnamen: dict) -> str:
         bed = s.get('bedingungen') or []
         if bed:
             filter_ = '<p class="leise">Nur Mappen, bei denen:</p><ul>' + ''.join(f'<li>{e(bedingung_text(b, feldnamen))}</li>' for b in bed) + '</ul>'
-        else:
-            filter_ = '<p class="leise">Keine weiteren Filter.</p>'
         unter = kinder.get(s['schluessel'])
         rest = ('<ul class="baum">' + ''.join(eintrag(k) for k in unter) + '</ul>') if unter else ''
+        if not bed:  # Qualität (PR #180): ohne Bedingungen nichts zum Aufklappen
+            return f'<li><div class="sicht ohne">{kopf}</div>{rest}</li>'
         return f'<li><details class="sicht"><summary>{kopf}</summary><div class="filter">{filter_}</div></details>{rest}</li>'
 
     oben = [s for s in sichten if not s.get('eltern') or s['eltern'] not in {x['schluessel'] for x in sichten}]
-    return ('<p class="leise klein">So erscheinen sie später in der Ablage. Antippen zeigt, was eine Ansicht filtert.</p>'
+    return ('<p class="leise klein">So erscheinen sie später in der Ablage. Antippen (›) zeigt, was eine Ansicht filtert.</p>'
             '<ul class="baum wurzel">' + ''.join(eintrag(s) for s in oben) + '</ul>')
 
 
@@ -781,8 +781,10 @@ def auto_zeilen(a: dict, pid: str, index: dict) -> tuple[str, str, str]:
     art = w.get('art')
     if art == 'datum':
         n, (eins, viele) = int(w.get('vorlauf') or 0), VORLAUF_EINHEIT.get(w.get('einheit', 'tage'), ('Tag', 'Tage'))
-        wann = 'am Tag selbst' if not n else f'{abs(n)} {eins if abs(n) == 1 else viele} {"vorher" if n > 0 else "danach"}'
-        wenn = f'„{feldname.get(w.get("feld"), w.get("feld"))}“ einer Mappe {typ["name"] if typ else w.get("typ")} ist erreicht – {wann}, geprüft um {w.get("uhrzeit", "?")}'
+        # Qualität (PR #180): „60 Tage vor „Ende“ (Mietvertrag), geprüft um 07:00“ – Fassung für Katalog und Ablago (#1047).
+        feld = f'„{feldname.get(w.get("feld"), w.get("feld"))}“ ({typ["name"] if typ else w.get("typ")})'
+        wann = f'am Tag {feld}' if not n else f'{abs(n)} {eins if abs(n) == 1 else viele} {"vor" if n > 0 else "nach"} {feld}'
+        wenn = f'{wann}, geprüft um {w.get("uhrzeit", "?")}'
         wdh = int(w.get('wiederholung') or 0)
         ablauf = (f'wiederkehrend ({WIEDERHOLUNGEN.get(wdh) or (f"alle {wdh // 12} Jahre" if wdh % 12 == 0 else f"alle {wdh} Monate")}): '
                   'nach dem Erledigen schlägt Ablago den Folgetermin vor') if wdh else 'einmal je Termin'
@@ -795,11 +797,11 @@ def auto_zeilen(a: dict, pid: str, index: dict) -> tuple[str, str, str]:
 
     def wer(x: dict) -> str:
         if x.get('art') == 'ersteller':
-            return 'wer die Mappe angelegt hat'
+            return 'die Person, die die Mappe angelegt hat'
         if x.get('art') == 'ereignis':
             return EREIGNIS_PERSON.get(x.get('feld'), str(x.get('feld')))
         if x.get('art') == 'feld':
-            return f'„{feldname.get(x.get("feld"), x.get("feld"))}“' + (' (sonst wer die Mappe angelegt hat)' if x.get('sonst') == 'ersteller' else '')
+            return f'„{feldname.get(x.get("feld"), x.get("feld"))}“' + (' (sonst an die Person, die die Mappe angelegt hat)' if x.get('sonst') == 'ersteller' else '')
         return str(x.get('art'))
 
     dann = []
@@ -853,12 +855,12 @@ def vorgaben_block(vorgaben: list, pid: str, index: dict) -> str:
             'überschreiben aber nichts, was du geändert hast.</p><ul>' + ''.join(teile) + '</ul>') if teile else ''
 
 
-EINSTELLUNG_ARTEN = {'text': 'Text', 'langtext': 'Langtext', 'zahl': 'Zahl', 'janein': 'Ja/Nein', 'auswahl': 'Auswahl',
+EINSTELLUNG_ARTEN = {'text': 'Text', 'langtext': 'Langtext', 'mehrzeilig': 'Langtext', 'geheim': 'Geheim', 'zahl': 'Zahl', 'janein': 'Ja/Nein', 'auswahl': 'Auswahl',
                      'mehrfachauswahl': 'Mehrfachauswahl', 'passwort': 'Passwort', 'adresse': 'Adresse', 'mappentyp': 'Mappentyp',
                      'ablageort': 'Ablageort', 'datum': 'Datum'}
 
 
-def einstellungen_block(code: dict) -> str:
+def einstellungen_block(code: dict, name: str) -> str:
     """Einstellungen eines Pakets mit Code (#164): Abschnitte und Felder kurz, Hilfetexte auf Klick."""
     abschnitte = [b for b in code.get('einstellungen') or [] if isinstance(b, dict)]
     if not abschnitte:
@@ -874,8 +876,9 @@ def einstellungen_block(code: dict) -> str:
         wie = ' (Liste, mehrere Einträge)' if 'liste' in b else ''
         teile.append(f'<details class="typ"><summary><strong>{e(titel)}</strong>{e(wie)} <span class="leise klein">'
                      f'{mehrzahl(len(felder), "Einstellung", "Einstellungen")}</span></summary><ul class="felder">{zeilen}</ul></details>')
-    return ('<h3>Einstellungen</h3><p class="leise klein">Unter Werkbank → Pakete → Einstellungen; das Paket bringt sinnvolle Vorgaben mit.</p>'
-            + ''.join(teile))
+    selbst = any(isinstance(f, dict) and f.get('typ') in ('adresse', 'geheim') for b in abschnitte for f in b.get('felder') or [])
+    return (f'<h3>Einstellungen</h3><p class="leise klein">In Ablago unter Werkbank → Pakete → {e(name)} → Einstellungen.'
+            + (' Adresse und Zugangsdaten trägst du selbst ein.' if selbst else '') + '</p>' + ''.join(teile))
 
 
 def kurzanleitung(m: dict) -> list[str]:
@@ -929,7 +932,7 @@ def detail(p: dict, pakete: list) -> str:
     # Vorgaben (DMS #1038) und Einstellungen (#164): erscheinen, sobald ein Paket sie mitbringt.
     vorgaben = lies_yaml(ordner, (m.get('inhalt') or {}).get('vorgaben')) if vorhanden else []
     vorgabe_html = vorgaben_block(vorgaben, p['id'], index) if vorgaben else ''
-    einst_html = einstellungen_block(m.get('code') or {}) if vorhanden and isinstance(m.get('code'), dict) else ''
+    einst_html = einstellungen_block(m.get('code') or {}, p['name']) if vorhanden and isinstance(m.get('code'), dict) else ''
     n_einst = sum(len(b.get('felder') or []) for b in ((m.get('code') or {}).get('einstellungen') or []) if isinstance(b, dict)) if einst_html else 0
     sp = m.get('sprache') if vorhanden and isinstance(m.get('sprache'), dict) else None
     if sp:
@@ -970,7 +973,7 @@ def detail(p: dict, pakete: list) -> str:
         kurz_mit = 'legt nichts in der Ablage an'
     rechte = rechte_text(m['code'], {t['schluessel']: t['name'] for t in typen if 'schluessel' in t}) if vorhanden and m.get('code') \
         else '<p>Kein Code: Das Paket bringt nur Texte – kein HTML, keine Programme.</p>' if sp \
-        else '<p>Kein Code: Das Paket legt nur Mappentypen, Ansichten und auf Wunsch Beispiele an.</p>'
+        else '<p>Kein Code: Das Paket bringt nur Vorlagen für Ablago mit (siehe „Was mitkommt“).</p>'
     if sp:
         kurz_recht = 'nur Texte, kein Code'
     elif m.get('code'):
@@ -987,7 +990,7 @@ def detail(p: dict, pakete: list) -> str:
                + f'<dt>Lizenz</dt><dd>{e(p["lizenz"])}</dd><dt>Nötige Ablago-Version</dt><dd>{e(v["dms"])}</dd>'
                + (f'<dt>Downloads</dt><dd>{downloads_text(p.get("downloads"))} <span class="leise">– Downloads aller Versionen laut GitHub, nicht Installationen; Updates und Tests zählen mit</span></dd>' if downloads_text(p.get('downloads')) else '')
                + f'<dt>Abhängigkeiten</dt><dd>{abh}</dd><dt>Quellcode</dt><dd><a href="{e(v["quelle"])}">auf GitHub ansehen</a></dd></dl>'
-               f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th></th></tr></thead>'
+               f'<h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead>'
                f'<tbody>{versionen}</tbody></table></div>')
     passt = ''.join((f'<h3><a class="weiter" href="{e(link)}">{e(t)} <span aria-hidden="true">›</span></a></h3>' if link else f'<h3>{e(t)}</h3>')
                     + '<div class="minis">' + ''.join(mini(x, '../../') for x in liste) + '</div>' for t, liste, link in beziehungen(p, pakete))
@@ -1139,6 +1142,8 @@ details.typ > summary { cursor: pointer; list-style: none; }
 details.typ > summary::-webkit-details-marker { display: none; }
 details.typ > summary::before { content: "›"; display: inline-block; width: 1.1em; color: var(--leise); font-weight: 700; transition: transform .15s; }
 details.typ[open] > summary::before { transform: rotate(90deg); }
+details.typ > summary::before, details.sicht > summary::before, details.bereich > summary::before { text-align: center; transform-origin: 50% 55%; }
+div.sicht.ohne { padding: 3px 0 3px .9em; }
 details.typ:target { border-color: var(--a); }
 .typtext { display: block; font-size: .9rem; line-height: 1.4; margin: 1px 0 0 1.1em; }
 details.sicht .typtext { margin-left: .9em; }
@@ -1196,7 +1201,7 @@ a.mini:hover, a.mini:focus-visible { border-color: var(--a); }
 @media (max-width: 640px) { .paketkopf { gap: 12px; } .paketkopf .titel { grid-template-columns: 1fr; grid-template-areas: 'name' 'text' 'meta' 'knopf'; } .paketkopf .installieren { width: 100%; margin-top: 12px; } .paketkopf .symbol.gross { width: 48px; height: 48px; font-size: 1.4rem; } .spalten { grid-template-columns: 1fr; } }
 .knoepfe { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
 .knopf { display: inline-block; font: inherit; font-weight: 600; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--linie); background: var(--flaeche); color: var(--tinte); text-decoration: none; cursor: pointer; }
-.knopf.primaer { background: var(--a); border-color: var(--a); color: #fff; }
+.knopf.primaer { background: var(--a); border-color: var(--a); color: var(--auf-a); }
 .textknopf { font: inherit; background: none; border: 0; padding: 0; color: var(--a); cursor: pointer; font-weight: 600; }
 .eckdaten { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 12px; padding: 16px; }
 .eckdaten dt { color: var(--leise); }
@@ -1210,6 +1215,7 @@ th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--lin
 .readme img { max-width: 100%; }
 .readme table { display: block; overflow-x: auto; }
 code { font-size: .92em; overflow-wrap: anywhere; }
+pre { overflow-x: auto; max-width: 100%; }
 .leerhinweis { color: var(--leise); }
 dialog { border: 1px solid var(--linie); border-radius: 12px; background: var(--flaeche); color: var(--tinte); max-width: min(520px, calc(100vw - 32px)); }
 dialog input { width: 100%; }

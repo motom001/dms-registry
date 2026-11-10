@@ -150,8 +150,8 @@ class WasMitkommt(unittest.TestCase):
         a = {'name': 'X', 'wenn': {'art': 'datum', 'typ': 'mietvertrag', 'feld': 'ende', 'vorlauf': 60, 'einheit': 'tage', 'uhrzeit': '07:00'},
              'dann': [{'art': 'aufgabe', 'als': 'aufgabe', 'empfaenger': [{'art': 'ersteller'}], 'text': 't'}]}
         wenn, dann, ablauf = w.auto_zeilen(a, 'vermietung', index)
-        self.assertIn('Mietvertrag ist erreicht – 60 Tage vorher, geprüft um 07:00', wenn)
-        self.assertEqual(dann, 'Aufgabe an wer die Mappe angelegt hat')
+        self.assertEqual(wenn, "60 Tage vor „Ende“ (Mietvertrag), geprüft um 07:00")
+        self.assertEqual(dann, "Aufgabe an die Person, die die Mappe angelegt hat")
         self.assertEqual(ablauf, 'einmal je Termin')
         a['wenn']['wiederholung'] = 12
         self.assertTrue(w.auto_zeilen(a, 'vermietung', index)[2].startswith('wiederkehrend (jährlich)'))
@@ -168,6 +168,18 @@ class WasMitkommt(unittest.TestCase):
         self.assertIn('<h3>Einstellungen</h3>', h)
         self.assertIn('<strong>Barcode auf dem Trennblatt</strong><span class="art">Text</span>', h)
         self.assertIn('legt nichts in der Ablage an · ', h)
+        self.assertIn('In Ablago unter Werkbank → Pakete → Trennblatt → Einstellungen.', h)
+        g = w.einstellungen_block({'einstellungen': [{'abschnitt': 'Dienst', 'felder': [{'schluessel': 'k', 'name': 'Schlüssel', 'typ': 'geheim'},
+                                                                                     {'schluessel': 'p', 'name': 'Prompt', 'typ': 'mehrzeilig'}]}]}, 'KI')
+        self.assertIn('<span class="art">Geheim</span>', g)
+        self.assertIn('<span class="art">Langtext</span>', g)
+        self.assertIn('Adresse und Zugangsdaten trägst du selbst ein.', g)
+
+    def test_ansicht_ohne_bedingungen_klappt_nicht_auf(self):
+        h = w.sicht_baum([{'schluessel': 'a', 'name': 'Alle', 'typen': []}, {'schluessel': 'b', 'name': 'Offen', 'typen': [],
+                          'bedingungen': [{'feld': 'x', 'operator': 'leer'}]}], {}, {})
+        self.assertIn('<div class="sicht ohne"><strong>Alle</strong>', h)
+        self.assertIn('<details class="sicht"><summary><strong>Offen</strong>', h)
 
     def test_vorgaben(self):
         index = w.alle_typen(self.pakete)
