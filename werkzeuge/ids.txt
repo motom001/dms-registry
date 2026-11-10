@@ -44,3 +44,4 @@ texterkennung.rus
 texterkennung.ukr
 texterkennung.ara
 vertraege
+rechnungen

@@ -1,0 +1,45 @@
+# Paket Rechnungen (dms-registry #161, Etappe 15): Rechnung, Lieferschein und Rechnungsposition – eingehend und
+# ausgehend, mit Status und Summenprüfung. Schema: schema/manifest.schema.json
+schema: 1
+id: rechnungen
+name: Rechnungen
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: Rechnungen, Quittungen, Kassenbons und Gutschriften – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, und meldet, wenn die Positionen nicht zum Betrag passen.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: receipt-text
+# 0.230.0 (vorläufig, Etappe 15): Prozent und negativer Betrag (DMS #1035), mehrere Ziele (#1036), Anzeige-Bedingungen
+# (#1032, #1033), berechnete Felder, Hinweise und zeitplan.taeglich (#1034), Tabelle (#1030), gehört immer zu (#1031),
+# eigene Organisation (#995)
+dms: ">=0.230.0"
+abhaengigkeiten:
+  basis: ">=1.7.0"
+  vertraege: ">=1.0.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  wortlisten: inhalt/wortlisten.yaml
+code:
+  sprache: c
+  quelle: code/
+  # Status bei jeder Änderung und einmal am Tag (überfällig); Summenprüfung, wenn sich Rechnung oder Position ändert.
+  ereignisse: [mappe.angelegt, mappe.geaendert, zeitplan.taeglich]
+  mappentypen: [rechnung, rechnungsposition]
+  rechte:
+    lesen: [rechnung, rechnungsposition]
+    schreiben: [rechnung, rechnungsposition]   # nur Status, Umsatzsteuer der Position und leere Gesamtpreise
+    dokumente: keine
+    schnittstellen: ["dms:hinweise"]           # Hinweis an der Rechnung, wenn die Positionen nicht zum Betrag passen
+  netz: []
+  einstellungen:
+    - abschnitt: Rechnungen
+      felder:
+        - schluessel: summenpruefung
+          name: Positionen mit dem Betrag vergleichen
+          typ: janein
+          standard: true
+          hilfe: Passen die Positionen nicht zum Rechnungsbetrag, steht ein Hinweis an der Rechnung. Speichern hindert er nie.
