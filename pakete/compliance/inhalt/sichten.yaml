@@ -1,0 +1,29 @@
+# Ansichten des Pakets Compliance. Schema: schema/inhalt.schema.json
+# „Aktueller Stand“ zeigt je Bereich die neueste Konfiguration; darunter Verfahren, Nachweise und alle Stände.
+# Konfiguration und Nachweise sieht nur, wer sie lesen darf (Gesamte Verwaltung) – die Ansicht zeigt dann nur Verfahren.
+- schluessel: aktueller_stand
+  name: Aktueller Stand
+  beschreibung: Je Bereich die neueste Konfiguration
+  symbol: clipboard-check
+  beschriftungen: { en: { name: "Current state", beschreibung: "The latest configuration per area" } }
+  typen: [konfiguration]
+  bedingungen:
+    - { feld: status, operator: gleich, wert: aktuell }
+- schluessel: verfahren
+  name: Verfahren
+  beschreibung: So machen wir es – je Bereich ein Verfahren
+  beschriftungen: { en: { name: "Procedures", beschreibung: "This is how we do it – one procedure per area" } }
+  eltern: aktueller_stand
+  typen: [verfahren]
+- schluessel: nachweise
+  name: Nachweise
+  beschreibung: Ein Bericht je Monat, der neueste oben
+  beschriftungen: { en: { name: "Evidence", beschreibung: "One report per month, latest first" } }
+  eltern: aktueller_stand
+  typen: [nachweise]
+- schluessel: konfigurationen
+  name: Alle Konfigurationen
+  beschreibung: Alle Stände, auch abgelöste
+  beschriftungen: { en: { name: "All configurations", beschreibung: "All states, including superseded ones" } }
+  eltern: aktueller_stand
+  typen: [konfiguration]

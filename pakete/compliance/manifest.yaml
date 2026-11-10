@@ -1,0 +1,110 @@
+# Paket Compliance (dms-registry #166, Etappe 16): Selbstkontrolle mit Verfahrensdokumentation. Drei Schichten:
+# Verfahren (der Mensch beschreibt, wie es gemacht wird), Konfiguration (Ablago hält fest, wie es eingerichtet ist –
+# eine Mappe je Bereich und Monat) und Nachweise (was im Monat passiert ist). Schema: schema/manifest.schema.json
+#
+# Unterstützt die Dokumentation – macht nichts „GoBD-konform“, ist kein Zertifikat und keine Rechts- oder Steuerberatung.
+schema: 1
+id: compliance
+name: Compliance
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: "Selbstkontrolle: Verfahrensdokumentation, Datenschutz, Nachweise. Du beschreibst einmal, wie ihr arbeitet; Ablago hält jeden Monat fest, wie es eingerichtet ist und was passiert ist. Konfiguration und Nachweise sehen nur Personen mit Gesamter Verwaltung."
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: clipboard-check
+# 0.230.0 (vorläufig, Etappe 15/16): Konfiguration und Nachweise lesen (DMS #1053, #1054), Rechte und Archivmodus am
+# Mappentyp (#1051, Entscheidung 10.11.2026 11:28), Zusammengesetzt (#1050), berechnete Felder (#1034), Anzeige-
+# Bedingungen und „beruflich genutzt“ (#1032, #1033), „Paket nach Zeitplan ausführen“ (#1082)
+dms: ">=0.230.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  beispiele: inhalt/beispiele.yaml
+  automatisierungen: inhalt/automatisierungen.yaml
+code:
+  sprache: c
+  quelle: code/
+  # Läuft jeden Morgen über die Automatisierung „Konfiguration und Nachweise festhalten“ und gleich, wenn der Admin
+  # die Einstellungen ändert (Erstlauf nach dem Anhaken der Bereiche).
+  ereignisse: [zeitplan.ausgefuehrt, paket.einstellungen_geaendert]
+  rechte:
+    lesen: [konfiguration, nachweise]      # Verfahren liest das Paket nicht – das ist Sache der Menschen
+    schreiben: [konfiguration, nachweise]  # legt Monatsmappen an und schreibt nur ihre berechneten Felder
+    dokumente: schreiben                   # JSON je Stand, neue Versionen im selben Monat
+    # Welche Bereiche das Paket wirklich bekommt, hakt der Admin in den Paket-Einstellungen an (Vorgabe: nichts) – und
+    # nur, was der hinterlegte Benutzer selbst verwaltet (DMS #1054).
+    einrichtung: [allgemeines, belegeingang, ablage, zugang, betrieb, sicherung, unveraenderbarkeit, datenschutz, betriebspruefung]
+    nachweise: [allgemeines, belegeingang, ablage, zugang, betrieb, sicherung, unveraenderbarkeit, datenschutz, betriebspruefung]
+  # Kein Netz: Konfiguration und Nachweise verlassen das Haus nie (Sicherheit, DMS #1053).
+  netz: []
+  einstellungen:
+    # „Was zählt“ je Bereich: Nur angehakte Änderungen ergeben eine neue Version der Konfiguration. Vorausgewählt ist der
+    # mit Thomas abgestimmte Vorschlag (Issue #166). Die Texte müssen zu code/bereiche.h passen (tests/einstellungen_test.py).
+    - abschnitt: Allgemeines
+      hilfe: Was zählt als Änderung? Nur Angehaktes ergibt eine neue Version der Konfiguration.
+      felder:
+        - schluessel: zaehlt_allgemeines
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Ablago-Version (Haupt- und Nebenversion), Patch-Versionen, „beruflich genutzt“, Angaben der eigenen Organisation, Auswahl in diesen Einstellungen]
+          standard: [Ablago-Version (Haupt- und Nebenversion), „beruflich genutzt“, Angaben der eigenen Organisation, Auswahl in diesen Einstellungen]
+    - abschnitt: Belegeingang und Scannen
+      felder:
+        - schluessel: zaehlt_belegeingang
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Eingangsweg hinzugefügt oder entfernt, Zielordner bzw. Postfach, Trennblatt- und Barcode-Regeln, Texterkennung an oder aus, Sprachen der Texterkennung, PDF/A an oder aus]
+          standard: [Eingangsweg hinzugefügt oder entfernt, Zielordner bzw. Postfach, Trennblatt- und Barcode-Regeln, Texterkennung an oder aus, PDF/A an oder aus]
+    - abschnitt: Ablage
+      felder:
+        - schluessel: zaehlt_ablage
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Mappentyp neu oder gelöscht, "Archivmodus, Frist, Stichtag", Feld neu oder entfernt, Feldtyp, Pflichtfeld, Versionierung, An KI übergeben, Beschriftung, Hilfetext, Titel-Vorlage, Ansichten und Spalten, Erkennung und Wiederfinden]
+          standard: [Mappentyp neu oder gelöscht, "Archivmodus, Frist, Stichtag", Feld neu oder entfernt, Feldtyp, Pflichtfeld, Versionierung, An KI übergeben]
+    - abschnitt: Zugang und Berechtigungen
+      felder:
+        - schluessel: zaehlt_zugang
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Zwei-Faktor möglich oder Pflicht, Passkey, Anmeldeschutz, WebDAV an oder aus, Schnittstelle an oder aus, Rolle neu oder gelöscht, Rechte-Regeln, Verwaltungsrechte, Sitzungsdauer]
+          standard: [Zwei-Faktor möglich oder Pflicht, Passkey, Anmeldeschutz, WebDAV an oder aus, Schnittstelle an oder aus, Rolle neu oder gelöscht, Rechte-Regeln, Verwaltungsrechte]
+    - abschnitt: Betrieb
+      felder:
+        - schluessel: zaehlt_betrieb
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Paket installiert oder entfernt, Paket-Update, Rechte eines Pakets, Automatisierung neu oder gelöscht, Automatisierung geändert, KI-Assistent an oder aus]
+          standard: [Paket installiert oder entfernt, Paket-Update, Rechte eines Pakets, Automatisierung neu oder gelöscht, KI-Assistent an oder aus]
+    - abschnitt: Sicherung
+      felder:
+        - schluessel: zaehlt_sicherung
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Zeitplan, Ziel neu oder entfernt, Verschlüsselung, Aufbewahrung der Sicherungen]
+          standard: [Zeitplan, Ziel neu oder entfernt, Verschlüsselung, Aufbewahrung der Sicherungen]
+    - abschnitt: Unveränderbarkeit
+      felder:
+        - schluessel: zaehlt_unveraenderbarkeit
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Zeitplan „Alle Dateien prüfen“, Versionierung je Mappentyp]
+          standard: [Zeitplan „Alle Dateien prüfen“, Versionierung je Mappentyp]
+    - abschnitt: Datenschutz
+      felder:
+        - schluessel: zaehlt_datenschutz
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Löschkonzept, Frist des Papierkorbs]
+          standard: [Löschkonzept, Frist des Papierkorbs]
+    - abschnitt: Betriebsprüfung
+      hilfe: Nur wichtig, wenn Ablago beruflich genutzt wird.
+      felder:
+        - schluessel: zaehlt_betriebspruefung
+          name: Was zählt
+          typ: mehrfachauswahl
+          optionen: [Prüferzugang eingerichtet oder entfernt, Exportformate]
+          standard: [Prüferzugang eingerichtet oder entfernt, Exportformate]

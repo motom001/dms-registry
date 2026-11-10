@@ -232,6 +232,7 @@
       "description": "Optional (#98, #80 Stufe 2): Symbol im Katalog statt des Anfangsbuchstabens – Name eines Lucide-Symbols aus werkzeuge/symbole/ (REGELN.md, „Symbol“). Ein neues Symbol kommt nur über ein Issue dazu. Das DMS liest das Feld nicht.",
       "enum": [
         "car",
+        "clipboard-check",
         "cloud-upload",
         "contact",
         "file-signature",

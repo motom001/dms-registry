@@ -105,6 +105,7 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 | `mail` | post, e-mail |
 | `message-circle-question-mark` | questions, assistant |
 | `receipt-text` | invoices, receipts |
+| `clipboard-check` | compliance, self-checks |
 | `scan-barcode` | separator sheets, barcodes |
 | `scan-text` | text recognition |
 | `wallet` | money, household |
