@@ -15,10 +15,10 @@ autor:
 lizenz: Apache-2.0
 kategorien: [vorlagen]
 symbol: clipboard-check
-# 0.230.0 (vorläufig, Etappe 15/16): Konfiguration und Nachweise lesen (DMS #1053, #1054), Rechte und Archivmodus am
-# Mappentyp (#1051, Entscheidung 10.11.2026 11:28), Zusammengesetzt (#1050), berechnete Felder (#1034), Anzeige-
-# Bedingungen und „beruflich genutzt“ (#1032, #1033), „Paket nach Zeitplan ausführen“ (#1082)
-dms: ">=0.230.0"
+# 0.239.0: Zusammengesetzt (DMS #1050); darin Anzeige-Bedingungen (0.228.0), berechnete Felder (0.231.0), „Paket nach
+# Zeitplan ausführen“ (0.233.0) und Archivmodus am Mappentyp (0.237.0, #1051). Noch offen: Konfiguration und Nachweise
+# lesen und Rechte am Mappentyp (DMS #1053, #1054) – bis dahin Entwurf, die Version hebt sich dann noch einmal.
+dms: ">=0.239.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

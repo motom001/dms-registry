@@ -131,7 +131,7 @@ struct Lauf {
 
 // Neue Monatsmappe mit dem ersten Dokument. Liefert { m, d } im Eintrag oder false.
 bool lege_an(const Bereich &b, const std::string &roh, const std::string &ablago, const std::string &aenderung, const std::string &vorgaenger, Lauf &l, Json &eintrag) {
-  std::string typ = typ_id("compliance_konfiguration");
+  std::string typ = typ_id("compliance:konfiguration");
   if (typ.empty()) { log(FEHLER, "Mappentyp Konfiguration nicht gefunden"); return false; }
   std::string pw = sha256(roh);
   Json w = objekt();
@@ -206,7 +206,7 @@ bool neue_version(const Bereich &b, const std::string &roh, const std::string &a
 // Speicher leer (neu installiert, zurückgesetzt), aber es gibt schon Stände? Den aktuellen dieses Bereichs wiederfinden,
 // damit keine zweite Mappe mit derselben Kennung entsteht. Leeres Objekt, wenn es keinen gibt.
 Json wiederfinden(const Bereich &b) {
-  std::string typ = typ_id("compliance_konfiguration");
+  std::string typ = typ_id("compliance:konfiguration");
   if (typ.empty()) return Json();
   const int SEITE = 100;
   for (int von = 0; von < 2000; von += SEITE) {
@@ -284,7 +284,7 @@ bool nachweise(const std::string &monat, NachweisLauf &n) {
   Antwort a = api("GET", "/nachweise?monat=" + monat);
   if (a.status == 403 || a.status == 404) { n.gesperrt = true; return false; }
   if (a.status != 200 || a.json.art != Json::OBJEKT) { log(FEHLER, "Nachweise " + monat + ": HTTP " + std::to_string(a.status)); n.fehler++; return false; }
-  std::string typ = typ_id("compliance_nachweise");
+  std::string typ = typ_id("compliance:nachweise");
   if (typ.empty()) { log(FEHLER, "Mappentyp Nachweise nicht gefunden"); n.fehler++; return false; }
   Json w = objekt();
   w.o["monat"] = txt(monat);

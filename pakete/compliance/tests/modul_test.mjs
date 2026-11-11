@@ -35,7 +35,7 @@ function lauf(welt, { datum = '2026-11-10', einstellungen = {}, erstellt = `${da
   const roh = (status, t) => { antwort = new TextEncoder().encode(t); return status; };
   const json = (status, x) => roh(status, JSON.stringify(x));
   const id = (p) => `${p}-${++welt.zaehler}`;
-  const typen = [{ id: 't-verfahren', schluessel: 'compliance_verfahren' }, { id: 't-konf', schluessel: 'compliance_konfiguration' }, { id: 't-nachw', schluessel: 'compliance_nachweise' }];
+  const typen = [{ id: 't-verfahren', schluessel: 'compliance:verfahren' }, { id: 't-konf', schluessel: 'compliance:konfiguration' }, { id: 't-nachw', schluessel: 'compliance:nachweise' }];
   const einrichtungText = (b) => JSON.stringify({ bereich: b, ablago: '0.230.0', erstellt: `${datum}T04:30:01.000Z`, daten: welt.einrichtung[b] ?? {} });
 
   const api = (q, body) => {
