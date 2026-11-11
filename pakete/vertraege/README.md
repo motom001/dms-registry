@@ -20,7 +20,7 @@ Ein Mappentyp für **alle Verträge** – Strom, Internet, Handy, Streaming, Mit
 | Laufzeit und Kündigung | Beginn, Mindestlaufzeit, Danach (verlängert sich um … / läuft unbefristet weiter / endet), Verlängert sich um, Vertragsende, Kündigungsfrist, Kündigung zum (Laufzeitende, Monats-, Quartals-, Jahresende, jederzeit), Gekündigt am, Kündigung bestätigt am, *Frühestens zu Ende am*, *Nächste Verlängerung*, *Endet am*, *Laufzeit in Monaten* |
 | Kosten | Betrag, Zahlweise, *Pro Monat* |
 | Weiteres | Gehört zu (übergeordneter Vertrag, z. B. Familientarif), Verbleib Original, Bemerkungen |
-| Abschluss | nur, wenn Ablago beruflich genutzt wird: von uns / von der Gegenseite unterschrieben am, interne Nummer, Ansprechpartner |
+| Abschluss | nur, wenn Anbieter oder Kunde eine **eigene Organisation** ist (Basis): von uns / von der Gegenseite unterschrieben am, interne Nummer, Ansprechpartner |
 | Miete | nur bei Vertragsart Miete: Mietart, Kaltmiete, Vorauszahlung, Sonstiges, nächste Mieterhöhung, Kaution, Kautionskonto, Kaution zurück am |
 | Versicherung | nur bei Vertragsart Versicherung: Versicherung (Haftpflicht, Hausrat …), versicherte Personen, Selbstbeteiligung, Hauptfälligkeit |
 
@@ -54,7 +54,7 @@ Die mitgelieferte Automatisierung **„Vertrag rechtzeitig kündigen“** ist na
 
 ## Voraussetzungen
 
-- Ablago ab 0.230.0 (vorläufig): Zeitraum, mehrere Ziele, Anzeige-Bedingungen, berechnete Felder, Vorbelegen, Vorgaben und „Paket nach Zeitplan ausführen“ (Etappe 15, DMS #1082).
+- Ablago ab 0.238.0: Zeitraum, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, „Paket nach Zeitplan ausführen“, Vorbelegen, Vorgaben und eigene Organisation (Etappe 15).
 - Paket Basis ab 1.7.0.
 
 ## Rechte und Netzwerkzugriff

@@ -25,7 +25,7 @@ DMS(ergebnis) int32_t dms_ergebnis(const char *text, int32_t len);
 namespace {
 
 enum Stufe { DEBUG = 0, INFO = 1, WARNUNG = 2, FEHLER = 3 };
-const char *TYP_SCHLUESSEL = "vertraege_vertrag";  // wie Ablago den Mappentyp anlegt: <paket>_<schluessel>
+const char *TYP_SCHLUESSEL = "vertraege:vertrag";  // Kennung in Ablago ab 0.229.0: <paket>:<schluessel> (DMS #1084)
 const int SEITE = 100;                             // Mappen je Abruf
 const int HOECHSTENS = 5000;                       // Verträge je Durchgang (danach morgen weiter)
 const char *BERECHNET[] = {"status", "kuendigen_bis", "fruehestes_ende", "naechste_verlaengerung", "ende", "laufzeit_monate", "pro_monat"};

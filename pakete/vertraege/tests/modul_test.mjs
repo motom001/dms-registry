@@ -20,7 +20,7 @@ function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = fal
   const json = (status, x) => { antwort = new TextEncoder().encode(JSON.stringify(x)); return status; };
   const api = (q) => {
     aufrufe.push(`${q.methode} ${q.pfad}`);
-    if (q.methode === 'GET' && q.pfad === '/typen') return json(200, [{ id: 't-andere', schluessel: 'haushalt_konto' }, { id: 't-vertrag', schluessel: 'vertraege_vertrag' }]);
+    if (q.methode === 'GET' && q.pfad === '/typen') return json(200, [{ id: 't-andere', schluessel: 'haushalt:konto' }, { id: 't-vertrag', schluessel: 'vertraege:vertrag' }]);
     let m = /^\/mappen\/([^/?]+)$/.exec(q.pfad);
     if (m && q.methode === 'GET') return mappen[m[1]] ? json(200, { id: m[1], typId: 't-vertrag', geaendert: '2026-11-09T10:00:00.000Z', werte: mappen[m[1]] }) : json(404, { fehler: 'nicht da' });
     if (m && q.methode === 'PUT') {

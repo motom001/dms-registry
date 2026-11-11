@@ -12,10 +12,22 @@ autor:
 lizenz: Apache-2.0
 kategorien: [vorlagen]
 symbol: file-signature
-# 0.230.0 (vorläufig, Etappe 15): Zeitraum (DMS #1035), mehrere Ziele (#1036), Anzeige-Bedingungen (#1033),
-# Merkmal „beruflich genutzt“ (#1032), berechnete Felder (#1034), Vorbelegen (#1037), Vorgaben (#1038),
-# eigene Organisation (#995), „Paket nach Zeitplan ausführen“ (#1082)
-dms: ">=0.230.0"
+# 0.238.0: Bedingung „eigene Organisation“ (DMS #995); darin enthalten Zeitraum (0.227.0, #1035), Anzeige-Bedingungen
+# (0.228.0, #1033), mehrere Ziele (0.230.0, #1036), berechnete Felder und Hinweise (0.231.0, #1034), „Paket nach Zeitplan
+# ausführen“ (0.233.0, #1082), Vorbelegen (0.234.0, #1037) und Vorgaben (0.236.0, #1038)
+dms: ">=0.238.0"
+# „So nutzt du es“ (dms-registry #164)
+kurzanleitung:
+  de:
+    - Lege einen Vertrag an und trage ein, was es ist, bei wem und wann er begonnen hat.
+    - Wähle die Vertragsart, etwa Mobilfunk – Ablago schlägt die üblichen Fristen in leere Felder vor.
+    - Unter „Kündigen bis“ steht, bis wann die Kündigung spätestens ankommen muss; das Paket rechnet jeden Morgen neu.
+    - Schalte unter Automatisierungen „Vertrag rechtzeitig kündigen“ ein, wenn du 30 Tage vorher erinnert werden willst.
+  en:
+    - Create a contract and enter what it is, who it is with and when it started.
+    - Choose the contract type, e.g. mobile phone – Ablago suggests the usual periods in empty fields.
+    - “Cancel by” shows the last day the cancellation must arrive; the package recalculates every morning.
+    - Turn on “Cancel the contract in time” under automations to get a reminder 30 days before.
 abhaengigkeiten:
   basis: ">=1.7.0"
 inhalt:
