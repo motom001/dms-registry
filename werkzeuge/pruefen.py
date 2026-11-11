@@ -1350,6 +1350,41 @@ def ist_zeitraum(w) -> bool:
             and not isinstance(w['anzahl'], bool) and w['anzahl'] >= 0 and w['einheit'] in ZEITRAUM_EINHEITEN)
 
 
+def installier_reihenfolge(eigene: dict, lokal) -> dict[str, set[str]]:
+    """Wie Ablago neue Typen anlegt (server/src/pakete.ts, „Ziele zuerst“): immer den ersten vollständigen, sonst den ersten
+    überhaupt – ohne die Verweisfelder auf eigene Typen, die es noch nicht gibt (die kommen im zweiten Durchgang).
+    Ergebnis: je Typ die Felder, die im ersten Durchgang fehlen."""
+    def ziele(t: dict) -> dict[str, set[str]]:
+        aus: dict[str, set[str]] = {}
+        for f in t.get('felder') or []:
+            if not isinstance(f, dict):
+                continue
+            zs = f.get('ziel') if isinstance(f.get('ziel'), list) else [f.get('ziel')]
+            if f.get('typ') == 'tabelle':
+                zs = zs + [(f.get('quelle') or {}).get('typ')]
+            for z in zs:
+                s = lokal(str(z)) if z else None
+                if s in eigene and s != t.get('schluessel'):
+                    aus.setdefault(f.get('key'), set()).add(s)
+        return aus
+
+    def quellen(t: dict) -> set[str]:
+        return {lokal(str(q.get('typ'))) for r in t.get('register') or [] if isinstance(r, dict) for q in r.get('quellen') or []
+                if isinstance(q, dict) and lokal(str(q.get('typ'))) in eigene and lokal(str(q.get('typ'))) != t.get('schluessel')}
+
+    def offen(s: str) -> tuple[set[str], bool]:
+        return {k for k, zs in ziele(eigene[s]).items() if not zs <= angelegt}, bool(quellen(eigene[s]) - angelegt)
+    angelegt: set[str] = set()
+    rest = list(eigene)
+    fehlt: dict[str, set[str]] = {}
+    while rest:
+        i = next((j for j, s in enumerate(rest) if not any(offen(s))), 0)
+        s = rest.pop(i)
+        fehlt[s] = offen(s)[0]
+        angelegt.add(s)
+    return fehlt
+
+
 def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiele: list, abh: set) -> list[str]:
     """Neue Bausteine im Paketformat: Feldarten, mehrere Ziele, Anzeige-Bedingungen, berechnete Felder, Vorbelegen,
     Tabelle, gehoertZu, Merkmal „eigene Organisation“ und Vorgaben. Prüft, was im Paket selbst nachprüfbar ist."""
@@ -1417,15 +1452,36 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
                     fehler.append(f'{wo}: anzeigen „{k}“ ({f.get("typ", "text")}) – Operator „{op}“ gibt es dafür nicht, möglich: {", ".join(sorted(erlaubt))}')
             elif f.get('typ') != 'referenz':
                 fehler.append(f'{wo}: anzeigen „{k}“ – {art} geht nur bei Verweisfeldern')
+            feste = [z for z in (f.get('ziel') if isinstance(f.get('ziel'), list) else [f.get('ziel')]) if z]
+            optionale = list(f.get('zielOptional') or [])
+            norm = lambda z: lokal(z) or z  # noqa: E731 – eigener Typ mit oder ohne Präfix gleich
             if art == 'verweistyp':
-                ziele = (f.get('ziel') if isinstance(f.get('ziel'), list) else [f.get('ziel')]) + list(f.get('zielOptional') or [])
-                norm = lambda z: lokal(z) or z  # noqa: E731 – eigener Typ mit oder ohne Präfix gleich
-                if norm(str(b.get('typ'))) not in {norm(str(z)) for z in ziele if z}:
+                if norm(str(b.get('typ'))) not in {norm(str(z)) for z in feste + optionale}:
                     fehler.append(f'{wo}: anzeigen „{k}“ – Typ „{b.get("typ")}“ ist kein Ziel dieses Verweisfelds')
+                elif str(b.get('typ')) in optionale:
+                    # Ablago löst „verweistyp“ beim Installieren fest auf – fehlt das andere Paket, bricht die Installation ab
+                    # (gefunden mit Rechnungen 1.0.0 in Ablago 0.244.0). zeigtAufTyp lässt fehlende optionale Typen weg.
+                    fehler.append(f'{wo}: anzeigen „{k}“ – „{b.get("typ")}“ ist ein optionales Ziel; bitte {{ art: feld, bedingung: '
+                                  f'{{ feld: {k}, op: zeigtAufTyp, wert: {{ art: fest, wert: [{b.get("typ")}] }} }} }} – verweistyp bricht '
+                                  'die Installation ab, wenn das Paket fehlt')
+            if art == 'feld' and b['bedingung'].get('op') == 'zeigtAufTyp':
+                braucht(DMS_MEHRERE_ZIELE_AB, 'zeigtAufTyp')
+                werte = ((b['bedingung'].get('wert') or {}).get('wert')) or []
+                for w in werte if isinstance(werte, list) else [werte]:
+                    if norm(str(w)) not in {norm(str(z)) for z in feste + optionale}:
+                        fehler.append(f'{wo}: anzeigen „{k}“ – zeigtAufTyp „{w}“ ist kein Ziel dieses Verweisfelds')
+            # Reihenfolge (gefunden mit Verträge 1.0.0 in Ablago 0.244.0): Ablago legt Verweise auf eigene Typen, die erst
+            # später entstehen, im zweiten Durchgang an – eine Anzeige-Bedingung auf so ein Feld scheitert im ersten.
+            if k in erst_spaeter.get(typ_jetzt[0], set()):
+                fehler.append(f'{wo}: anzeigen „{k}“ – Ablago legt das Verweisfeld beim Installieren erst im zweiten Durchgang an, die '
+                              f'Bedingung scheitert dann. Bitte das Ziel in mappentypen.yaml vor „{typ_jetzt[0]}“ stellen (oder den Kreis lösen)')
             for v in b.get('vorgabe') or []:
                 vorgabe_ok(v, wo)
 
+    erst_spaeter = installier_reihenfolge(eigene, lokal)
+    typ_jetzt = ['']
     for s, t in eigene.items():
+        typ_jetzt[0] = s
         felder = felder_je[s]
         merkmale = 0
         for k, f in felder.items():

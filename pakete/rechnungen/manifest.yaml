@@ -4,7 +4,7 @@ schema: 1
 id: rechnungen
 name: Rechnungen
 herausgeber: app.ablago
-version: 1.0.0
+version: 1.0.1
 beschreibung: Rechnungen, Quittungen, Kassenbons und Gutschriften – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, und meldet, wenn die Positionen nicht zum Betrag passen.
 autor:
   name: Thomas Meissner

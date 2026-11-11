@@ -3,6 +3,46 @@
 # (Anzeige-Bedingungen, DMS #1033), nie über einen anderen Mappentyp. Kennungen nach REGELN.md, „Gleiche Kennungen“.
 # Felder mit „berechnet: true“ schreibt nur der Code dieses Pakets (DMS #1034).
 
+- schluessel: vertragsart
+  name: Vertragsart
+  beschreibung: Art eines Vertrags mit typischer Laufzeit und Kündigungsfrist und den passenden Vorlagen – z. B. Mobilfunk, Miete oder Versicherung. Das Paket bringt die üblichen mit; eigene kannst du ergänzen.
+  beschriftungen: { en: { name: "Contract type", beschreibung: "Type of contract with its typical term, notice period and matching templates – e.g. mobile, rent or insurance. The package brings the usual ones; you can add your own." } }
+  titelVorlage: "{name}"
+  felder:
+    - { key: name, label: Name, typ: text, pflicht: true, eindeutig: true, maxLen: 80, beschriftungen: { en: { label: "Name" } } }
+    - { key: beschreibung, label: Beschreibung, typ: langtext, beschriftungen: { en: { label: "Description" } } }
+    - key: nutzung
+      label: Für
+      beschriftungen: { en: { label: "For", optionen: { "privat": "private", "beruflich": "business", "beides": "both" } } }
+      typ: auswahl
+      optionen: [privat, beruflich, beides]
+      standard: beides
+    - { key: mindestlaufzeit, label: Übliche Mindestlaufzeit, typ: zeitraum, beschriftungen: { en: { label: "Usual minimum term" } } }
+    - key: verlaengerung
+      label: Danach
+      beschriftungen: { en: { label: "Afterwards", optionen: { "verlängert sich um": "renews for", "läuft unbefristet weiter": "continues indefinitely", "endet": "ends" } } }
+      typ: auswahl
+      optionen: [verlängert sich um, läuft unbefristet weiter, endet]
+    - { key: verlaengerung_um, label: Verlängert sich um, typ: zeitraum, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: verlaengerung, op: einerVon, wert: { art: fest, wert: [verlängert sich um] } } }] }, beschriftungen: { en: { label: "Renews for" } } }
+    - { key: kuendigungsfrist, label: Übliche Kündigungsfrist, typ: zeitraum, beschriftungen: { en: { label: "Usual notice period" } } }
+    - key: kuendigung_zum
+      label: Kündigung zum
+      beschriftungen: { en: { label: "Cancellation effective", optionen: { "Laufzeitende": "end of term", "Monatsende": "end of month", "Quartalsende": "end of quarter", "Jahresende": "end of year", "jederzeit": "any day" } } }
+      typ: auswahl
+      optionen: [Laufzeitende, Monatsende, Quartalsende, Jahresende, jederzeit]
+  register:
+    - key: allgemein
+      name: Allgemein
+      beschriftungen: { en: { name: "General" } }
+      art: felder
+      felder: [name, beschreibung, nutzung, mindestlaufzeit, verlaengerung, verlaengerung_um, kuendigungsfrist, kuendigung_zum]
+      abschnitte:
+        - { vor: mindestlaufzeit, titel: Übliche Fristen – ohne Gewähr, beschriftungen: { en: { titel: "Usual periods – without guarantee" } } }
+    - { key: vorlagen, name: Vorlagen, art: dokumente, beschriftungen: { en: { name: "Templates" } } }
+    - { key: vertraege, name: Verträge, art: verknuepfungen, quellen: [{ typ: vertrag, feld: art }], beschriftungen: { en: { name: "Contracts" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [name, nutzung, mindestlaufzeit, kuendigungsfrist]
+
 - schluessel: vertrag
   name: Vertrag
   beschreibung: Jeder Vertrag mit Laufzeit oder Kündigungsfrist – Strom, Gas, Internet, Handy, Streaming, Zeitschrift, Mitgliedschaft, Miete, Versicherung, im Betrieb auch Leasing, Wartung oder Rahmenvertrag.
@@ -257,42 +297,3 @@
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
   trefferliste: [bezeichnung, von, art, kuendigen_bis, pro_monat, status]
 
-- schluessel: vertragsart
-  name: Vertragsart
-  beschreibung: Art eines Vertrags mit typischer Laufzeit und Kündigungsfrist und den passenden Vorlagen – z. B. Mobilfunk, Miete oder Versicherung. Das Paket bringt die üblichen mit; eigene kannst du ergänzen.
-  beschriftungen: { en: { name: "Contract type", beschreibung: "Type of contract with its typical term, notice period and matching templates – e.g. mobile, rent or insurance. The package brings the usual ones; you can add your own." } }
-  titelVorlage: "{name}"
-  felder:
-    - { key: name, label: Name, typ: text, pflicht: true, eindeutig: true, maxLen: 80, beschriftungen: { en: { label: "Name" } } }
-    - { key: beschreibung, label: Beschreibung, typ: langtext, beschriftungen: { en: { label: "Description" } } }
-    - key: nutzung
-      label: Für
-      beschriftungen: { en: { label: "For", optionen: { "privat": "private", "beruflich": "business", "beides": "both" } } }
-      typ: auswahl
-      optionen: [privat, beruflich, beides]
-      standard: beides
-    - { key: mindestlaufzeit, label: Übliche Mindestlaufzeit, typ: zeitraum, beschriftungen: { en: { label: "Usual minimum term" } } }
-    - key: verlaengerung
-      label: Danach
-      beschriftungen: { en: { label: "Afterwards", optionen: { "verlängert sich um": "renews for", "läuft unbefristet weiter": "continues indefinitely", "endet": "ends" } } }
-      typ: auswahl
-      optionen: [verlängert sich um, läuft unbefristet weiter, endet]
-    - { key: verlaengerung_um, label: Verlängert sich um, typ: zeitraum, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: verlaengerung, op: einerVon, wert: { art: fest, wert: [verlängert sich um] } } }] }, beschriftungen: { en: { label: "Renews for" } } }
-    - { key: kuendigungsfrist, label: Übliche Kündigungsfrist, typ: zeitraum, beschriftungen: { en: { label: "Usual notice period" } } }
-    - key: kuendigung_zum
-      label: Kündigung zum
-      beschriftungen: { en: { label: "Cancellation effective", optionen: { "Laufzeitende": "end of term", "Monatsende": "end of month", "Quartalsende": "end of quarter", "Jahresende": "end of year", "jederzeit": "any day" } } }
-      typ: auswahl
-      optionen: [Laufzeitende, Monatsende, Quartalsende, Jahresende, jederzeit]
-  register:
-    - key: allgemein
-      name: Allgemein
-      beschriftungen: { en: { name: "General" } }
-      art: felder
-      felder: [name, beschreibung, nutzung, mindestlaufzeit, verlaengerung, verlaengerung_um, kuendigungsfrist, kuendigung_zum]
-      abschnitte:
-        - { vor: mindestlaufzeit, titel: Übliche Fristen – ohne Gewähr, beschriftungen: { en: { titel: "Usual periods – without guarantee" } } }
-    - { key: vorlagen, name: Vorlagen, art: dokumente, beschriftungen: { en: { name: "Templates" } } }
-    - { key: vertraege, name: Verträge, art: verknuepfungen, quellen: [{ typ: vertrag, feld: art }], beschriftungen: { en: { name: "Contracts" } } }
-    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
-  trefferliste: [name, nutzung, mindestlaufzeit, kuendigungsfrist]

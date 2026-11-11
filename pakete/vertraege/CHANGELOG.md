@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.0.1
+
+- **Installieren repariert:** Ablago 0.238–0.244 brach die Installation mit „Abschnitt „Miete“: Das Feld „art“ gibt es nicht (mehr)“ ab. Grund: Die Vertragsart stand in `mappentypen.yaml` nach dem Vertrag, und Ablago legt den Verweis darauf erst im zweiten Durchgang an. Jetzt steht die Vertragsart vorn. Inhalt und Berechnung sind unverändert.
+
 ## 1.0.0
 
 - Neu (dms-registry #159, Etappe 15): Mappentyp **Vertrag** für alle Verträge – zu Hause und im Betrieb. Oben das Wichtigste (Bezeichnung, Anbieter, Vertragsart, Zuständig, Kündigen bis, Status), darunter eingeklappt Vertragsparteien, Laufzeit und Kündigung, Kosten und Weiteres. **Abschluss** zeigt sich nur, wenn Anbieter oder Kunde eine eigene Organisation ist, **Miete** und **Versicherung** nur bei dieser Vertragsart.

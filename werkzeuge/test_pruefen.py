@@ -1440,3 +1440,38 @@ class Etappe15(unittest.TestCase):
         for teil_text in ('ist ein Zeitraum', '„gibtsnicht“ gibt es', 'fehlt.md fehlt', 'kein Dokumentenregister', 'Kennung doppelt',
                           '„fremd“ muss unter abhaengigkeiten', 'Vorgabe eines anderen Pakets', 'Vorgabe „unbekannt“' if False else 'Vorgabe „miete“'):
             self.assertIn(teil_text, f)
+
+
+class InstallierenWieAblago(unittest.TestCase):
+    """Funde vom 11.11.2026 beim Installieren in Ablago 0.244.0 (Verträge 1.0.0, Rechnungen 1.0.0)."""
+
+    def typen(self, vertrag_zuerst: bool):
+        vertrag = {'schluessel': 'vertrag', 'name': 'Vertrag', 'beschreibung': '', 'felder': [
+            {'key': 'art', 'label': 'Art', 'typ': 'referenz', 'ziel': 'vertragsart'}, {'key': 'miete', 'label': 'Miete', 'typ': 'betrag'}],
+            'register': [{'key': 'v', 'name': 'V', 'art': 'felder', 'felder': ['art', 'miete'],
+                          'abschnitte': [{'vor': 'miete', 'titel': 'Miete', 'anzeigen': {'bedingungen': [
+                              {'art': 'feld', 'bedingung': {'feld': 'art', 'op': 'leer'}, 'nicht': True}]}}]}]}
+        art = {'schluessel': 'vertragsart', 'name': 'Vertragsart', 'beschreibung': '', 'felder': [{'key': 'name', 'label': 'Name', 'typ': 'text'}],
+               'register': [{'key': 'a', 'name': 'A', 'art': 'felder', 'felder': ['name']},
+                            {'key': 'vertraege', 'name': 'Verträge', 'art': 'verknuepfungen', 'quellen': [{'typ': 'vertrag', 'feld': 'art'}]}]}
+        return [vertrag, art] if vertrag_zuerst else [art, vertrag]
+
+    def test_reihenfolge(self):
+        m = {'id': 'probe', 'dms': '>=0.239.0'}
+        f = pruefen.pruefe_etappe15(Path('.'), m, self.typen(True), [], [], set())
+        self.assertTrue(any('zweiten Durchgang' in x for x in f), f)
+        self.assertEqual(pruefen.pruefe_etappe15(Path('.'), m, self.typen(False), [], [], set()), [])
+        self.assertEqual(pruefen.installier_reihenfolge({t['schluessel']: t for t in self.typen(True)}, lambda z: z.split(':')[-1] if not z.startswith('x:') else None),
+                         {'vertrag': {'art'}, 'vertragsart': set()})
+
+    def test_verweistyp_auf_optionales_ziel(self):
+        t = {'schluessel': 'rechnung', 'name': 'Rechnung', 'beschreibung': '', 'felder': [
+            {'key': 'betrifft', 'label': 'betrifft', 'typ': 'referenz', 'ziel': 'rechnung', 'zielOptional': ['fahrzeuge:fahrzeug']},
+            {'key': 'km', 'label': 'km', 'typ': 'zahl'}],
+            'register': [{'key': 'r', 'name': 'R', 'art': 'felder', 'felder': ['betrifft', 'km'], 'abschnitte': [{'vor': 'km', 'titel': 'Fahrzeug'}]}]}
+        m = {'id': 'probe', 'dms': '>=0.239.0'}
+        t['register'][0]['abschnitte'][0]['anzeigen'] = {'bedingungen': [{'art': 'verweistyp', 'feld': 'betrifft', 'typ': 'fahrzeuge:fahrzeug'}]}
+        self.assertTrue(any('optionales Ziel' in x for x in pruefen.pruefe_etappe15(Path('.'), m, [t], [], [], set())))
+        t['register'][0]['abschnitte'][0]['anzeigen'] = {'bedingungen': [{'art': 'feld', 'bedingung': {'feld': 'betrifft', 'op': 'zeigtAufTyp', 'wert': {'art': 'fest', 'wert': ['fahrzeuge:fahrzeug']}}}]}
+        self.assertEqual(pruefen.pruefe_etappe15(Path('.'), m, [t], [], [], set()), [])
+        self.assertEqual(list(pruefen.inhalt_validator('mappentypen').iter_errors([t])), [])
