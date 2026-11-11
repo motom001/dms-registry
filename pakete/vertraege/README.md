@@ -40,7 +40,11 @@ Beispiele für den Status: „läuft – kündigen bis 14.02.2028, Ende dann 14.
 
 ## Vertragsarten
 
-Mitgeliefert (als Vorgaben, sie bleiben nach der Installation und du kannst sie ändern): Strom, Gas, Wasser, Internet, Mobilfunk, Streaming, Zeitschrift, Mitgliedschaft, Miete, Versicherung, Sonstiges. Wählst du am Vertrag eine Vertragsart, schlägt Ablago ihre üblichen Fristen in leere Felder vor. Eigene Vertragsarten legst du einfach dazu; in ihr Register *Vorlagen* kommen später Vorlagen wie ein Kündigungsschreiben (dms-registry #160).
+Mitgeliefert (als Vorgaben, sie bleiben nach der Installation und du kannst sie ändern): Strom, Gas, Wasser, Internet, Mobilfunk, Streaming, Zeitschrift, Mitgliedschaft, Miete, Versicherung, Sonstiges. Wählst du am Vertrag eine Vertragsart, schlägt Ablago ihre üblichen Fristen in leere Felder vor. Eigene Vertragsarten legst du einfach dazu; jede mitgelieferte hat im Register *Vorlagen* die Vorlage „Kündigung“.
+
+## Kündigen mit Vorlage
+
+Am Vertrag öffnet **Mappe → Vorlage hinzufügen** die Vorlagen der gewählten Vertragsart. Jede mitgelieferte Vertragsart hat die Vorlage **Kündigung**: Ablago setzt Anschrift des Anbieters, Bezeichnung, Vertragsnummer, Kundennummer und das berechnete Datum *Frühestens zu Ende am* ein und legt das PDF in den Vertrag. Fehlt eine Angabe, steht im Brief die Beschriftung in eckigen Klammern, z. B. „[Vertragsnummer]“. Wenn du die Kündigung abgeschickt hast, trag *Gekündigt am* ein – dann rechnet das Paket das Ende. Weitere Briefe hängst du als Markdown-Datei ins Register *Vorlagen* einer Vertragsart; über **Mappe → Brief aus Vorlage …** findest du auch Vorlagen anderer Pakete (z. B. den Pkw-Kaufvertrag aus Fahrzeuge). Die Vorlage ist ein Muster ohne Gewähr, keine Rechtsberatung.
 
 ## Erinnerung
 
@@ -61,7 +65,7 @@ Bis Haushalt 1.x und Vermietung 1.x brachten eigene Typen *Vertrag*, *Versicheru
 
 ## Voraussetzungen
 
-- Ablago ab 0.243.0: Umbau, Zeitraum, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, „Paket nach Zeitplan ausführen“, Vorbelegen, Vorgaben und eigene Organisation (Etappe 15).
+- Ablago ab 0.245.3: Aktionen im Menü „Mappe“, Umbau, Zeitraum, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, „Paket nach Zeitplan ausführen“, Vorbelegen, Vorgaben und eigene Organisation (Etappe 15).
 - Paket Basis ab 1.7.0.
 
 ## Rechte und Netzwerkzugriff

@@ -4,7 +4,7 @@ schema: 1
 id: rechnungen
 name: Rechnungen
 herausgeber: app.ablago
-version: 1.1.0
+version: 1.2.0
 beschreibung: Rechnungen, Quittungen, Kassenbons und Gutschriften – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, und meldet, wenn die Positionen nicht zum Betrag passen.
 autor:
   name: Thomas Meissner
@@ -16,7 +16,9 @@ symbol: receipt-text
 # Anzeige-Bedingungen (0.228.0, #1032/#1033), mehrere Ziele (0.230.0, #1036), berechnete Felder und Hinweise (0.231.0,
 # #1034), Tabelle (0.232.0, #1030), „Paket nach Zeitplan ausführen“ (0.233.0, #1082), gehört immer zu (0.235.0, #1031)
 # 0.243.0: Umbau (DMS #1041) – Werkstattrechnungen (Fahrzeuge) und Ausgaben (Vermietung) ziehen hierher
-dms: ">=0.243.0"
+# 0.245.0: Aktionen im Menü „Mappe“ (DMS #1039); 0.245.3: Bedingungen auf zielOptional-Ziele (Abschnitte Fahrzeug und
+# Vermietung, DMS #1122) – 0.245.1/0.245.2 lehnten das Paket ab
+dms: ">=0.245.3"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
@@ -50,6 +52,17 @@ inhalt:
   sichten: inhalt/sichten.yaml
   wortlisten: inhalt/wortlisten.yaml
   automatisierungen: inhalt/automatisierungen.yaml
+# Aktionen im Menü „Mappe“ (dms-registry #162, DMS #1039). Ablago fragt im Dialog und schreibt mit dem Zugriff der Person.
+mappenaktionen:
+  - schluessel: bezahlt
+    name: Als bezahlt markieren
+    beschreibung: Trägt „Bezahlt am“ ein – heute oder ein anderes Datum. Den Status rechnet das Paket danach neu.
+    mappentypen: [rechnung]
+    rechte: [aendern]
+    bedingung:
+      modus: alle
+      bedingungen: [{ art: feld, bedingung: { feld: bezahlt_am, op: leer } }]
+      grund: Die Rechnung ist schon als bezahlt markiert.
 code:
   sprache: c
   quelle: code/

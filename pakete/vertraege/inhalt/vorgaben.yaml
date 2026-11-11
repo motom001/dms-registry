@@ -2,47 +2,59 @@
 # nichts, was du geändert hast. Die Fristen sind übliche Werte als Vorschlag – ohne Gewähr, keine Rechtsberatung.
 # Seit März 2022 laufen viele Verbraucherverträge (Strom, Gas, Internet, Handy, Zeitschriften, Fitnessstudio) nach der
 # Mindestlaufzeit unbefristet weiter und sind dann mit einem Monat kündbar.
+# Ab 1.2.0 hat jede Vertragsart die Vorlage „Kündigung“ (dms-registry #160); am Vertrag über Mappe → „Vorlage hinzufügen“.
 - kennung: strom
   typ: vertragsart
   werte: { name: Strom, nutzung: beides, mindestlaufzeit: { anzahl: 12, einheit: monate }, verlaengerung: läuft unbefristet weiter, kuendigungsfrist: { anzahl: 1, einheit: monate }, kuendigung_zum: jederzeit }
   beschriftungen: { en: { name: Electricity } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: gas
   typ: vertragsart
   werte: { name: Gas, nutzung: beides, mindestlaufzeit: { anzahl: 12, einheit: monate }, verlaengerung: läuft unbefristet weiter, kuendigungsfrist: { anzahl: 1, einheit: monate }, kuendigung_zum: jederzeit }
   beschriftungen: { en: { name: Gas } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: wasser
   typ: vertragsart
   werte: { name: Wasser, nutzung: beides, beschreibung: "Meist beim örtlichen Versorger ohne Mindestlaufzeit.", verlaengerung: läuft unbefristet weiter }
   beschriftungen: { en: { name: Water, beschreibung: "Usually with the local utility without a minimum term." } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: internet
   typ: vertragsart
   werte: { name: Internet, nutzung: beides, mindestlaufzeit: { anzahl: 24, einheit: monate }, verlaengerung: läuft unbefristet weiter, kuendigungsfrist: { anzahl: 1, einheit: monate }, kuendigung_zum: jederzeit }
   beschriftungen: { en: { name: Internet } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: mobilfunk
   typ: vertragsart
   werte: { name: Mobilfunk, nutzung: beides, mindestlaufzeit: { anzahl: 24, einheit: monate }, verlaengerung: läuft unbefristet weiter, kuendigungsfrist: { anzahl: 1, einheit: monate }, kuendigung_zum: jederzeit }
   beschriftungen: { en: { name: Mobile phone } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: streaming
   typ: vertragsart
   werte: { name: Streaming, nutzung: privat, beschreibung: "Meist monatlich zum Ende des bezahlten Monats kündbar.", mindestlaufzeit: { anzahl: 1, einheit: monate }, verlaengerung: verlängert sich um, verlaengerung_um: { anzahl: 1, einheit: monate }, kuendigungsfrist: { anzahl: 0, einheit: tage }, kuendigung_zum: Laufzeitende }
   beschriftungen: { en: { name: Streaming, beschreibung: "Usually cancellable monthly at the end of the paid month." } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: zeitschrift
   typ: vertragsart
   werte: { name: Zeitschrift, nutzung: beides, mindestlaufzeit: { anzahl: 12, einheit: monate }, verlaengerung: läuft unbefristet weiter, kuendigungsfrist: { anzahl: 1, einheit: monate }, kuendigung_zum: jederzeit }
   beschriftungen: { en: { name: Magazine } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: mitgliedschaft
   typ: vertragsart
   werte: { name: Mitgliedschaft, nutzung: privat, beschreibung: "Fitnessstudio, Verein, Club – bei Vereinen gilt die Satzung.", mindestlaufzeit: { anzahl: 12, einheit: monate }, verlaengerung: läuft unbefristet weiter, kuendigungsfrist: { anzahl: 1, einheit: monate }, kuendigung_zum: jederzeit }
   beschriftungen: { en: { name: Membership, beschreibung: "Gym, club, association – for associations the statutes apply." } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: miete
   typ: vertragsart
   werte: { name: Miete, nutzung: beides, beschreibung: "Wohnung, Haus, Stellplatz oder Gewerberaum. Für Mieter einer Wohnung meist 3 Monate zum Monatsende; Gewerbe und Vermieter oft anders.", verlaengerung: läuft unbefristet weiter, kuendigungsfrist: { anzahl: 3, einheit: monate }, kuendigung_zum: Monatsende }
   beschriftungen: { en: { name: Rent, beschreibung: "Flat, house, parking space or commercial premises. For tenants of a flat usually 3 months to the end of a month; commercial and landlords often differ." } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: versicherung
   typ: vertragsart
   werte: { name: Versicherung, nutzung: beides, beschreibung: "Meist ein Jahr, das sich um ein Jahr verlängert; kündbar 3 Monate zum Ende des Versicherungsjahrs.", mindestlaufzeit: { anzahl: 12, einheit: monate }, verlaengerung: verlängert sich um, verlaengerung_um: { anzahl: 12, einheit: monate }, kuendigungsfrist: { anzahl: 3, einheit: monate }, kuendigung_zum: Laufzeitende }
   beschriftungen: { en: { name: Insurance, beschreibung: "Usually one year that renews for a year; cancellable 3 months before the end of the insurance year." } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]
 - kennung: sonstiges
   typ: vertragsart
   werte: { name: Sonstiges, nutzung: beides }
   beschriftungen: { en: { name: Other } }
+  vorlagen: [{ datei: vorlagen/kuendigung.md, titel: Kündigung }]

@@ -361,6 +361,34 @@
         }
       }
     },
+    "mappenaktionen": {
+      "description": "Aktionen im Menü „Mappe“ (motom001/dms#1039, ab Ablago 0.245.0, dms: \">=0.245.0\"). Das Paket bringt keine Oberfläche mit: Ablago ruft dms_aktion mit { aktion: dms:mappenaktion } und zeigt den Dialog aus Daten bzw. wendet das Ergebnis mit dem Zugriff der Person an; dialog: dms:vorlage öffnet „Brief aus Vorlage“ ohne Code. Wie server/src/paketaktionen/manifest.ts.",
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["schluessel", "name", "mappentypen", "rechte"],
+        "additionalProperties": false,
+        "properties": {
+          "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,59}$" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+          "beschreibung": { "type": "string", "maxLength": 300, "description": "Tooltip im Menü" },
+          "mappentypen": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59}$" } },
+          "rechte": { "type": "array", "minItems": 1, "items": { "enum": ["lesen", "dokument_hinzufuegen", "aendern", "mappen_anlegen", "herausgeben"] } },
+          "anlegen": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59}$" }, "description": "Pflicht bei mappen_anlegen: Zieltypen" },
+          "dialog": { "enum": ["dms:vorlage"] },
+          "bedingung": {
+            "type": "object",
+            "required": ["modus", "bedingungen", "grund"],
+            "properties": {
+              "modus": { "enum": ["alle", "eine"] },
+              "bedingungen": { "type": "array", "minItems": 1, "items": { "type": "object" } },
+              "grund": { "type": "string", "minLength": 1, "maxLength": 300, "description": "steht im Menü, solange die Bedingung nicht zutrifft" }
+            }
+          }
+        }
+      }
+    },
     "code": {
       "type": "object",
       "additionalProperties": false,

@@ -4,8 +4,11 @@
 // Ereignisse: mappe.angelegt / mappe.geaendert zu Rechnungen und Positionen, zeitplan.ausgefuehrt (überfällig, Summen).
 // (überfällig). Geschrieben wird nur, was sich ändert, mit „stand“ – ein Mensch gewinnt (409).
 // Hinweis setzen/entfernen: PUT bzw. DELETE /mappen/{id}/hinweise/summe (Schnittstelle aus DMS #1034, ab Ablago 0.231.0; Text höchstens 300 Zeichen).
+// Aktion im Menü „Mappe“ (dms-registry #162, DMS #1039, ab 0.245.0): „Als bezahlt markieren“ – dms_aktion mit
+// { aktion: dms:mappenaktion }; Schritt 1 fragt das Datum (heute vorgeschlagen), Schritt 2 setzt „Bezahlt am“.
 #include <cstdint>
 #include <cstdlib>
+#include <ctime>
 #include <string>
 #include <vector>
 
@@ -205,6 +208,51 @@ int verarbeite(const Json &e) {
   return 0;
 }
 
+// Heute (UTC) als JJJJ-MM-TT – leer, wenn der Läufer keine Uhr hat.
+std::string heute_iso() {
+  struct timespec ts {};
+  if (clock_gettime(CLOCK_REALTIME, &ts) != 0 || ts.tv_sec <= 0) return "";
+  time_t s = ts.tv_sec;
+  struct tm u {};
+  if (!gmtime_r(&s, &u)) return "";
+  char b[16];
+  strftime(b, sizeof b, "%Y-%m-%d", &u);
+  return b;
+}
+
+// „Als bezahlt markieren“: Dialog mit dem Datum, dann das Ergebnis { felder: { bezahlt_am } }. Ablago schreibt mit dem
+// Zugriff der Person; den Status rechnet danach das Ereignis mappe.geaendert.
+int bezahlt(const Json &e) {
+  const int schritt = (int)e["schritt"].zahl(1);
+  if (schritt <= 1) {
+    const std::string heute = heute_iso();
+    std::string datum = "{\"art\":\"datum\",\"schluessel\":\"am\",\"name\":\"Bezahlt am\",\"pflicht\":true" +
+                        (heute.empty() ? std::string() : ",\"standard\":" + jsonText(heute)) + "}";
+    const Json &w = e["mappe"]["werte"];
+    std::string satz = "Wann wurde die Rechnung bezahlt?";
+    if (auto b = zahl(w["betrag"])) satz += " Betrag: " + rechnung::euro(*b, w["betrag"]["waehrung"].text("EUR")) + ".";
+    ergebnis("{\"dialog\":{\"titel\":\"Als bezahlt markieren\",\"knopf\":\"Markieren\",\"felder\":[{\"art\":\"text\",\"text\":" +
+             jsonText(satz) + "}," + datum + "]}}");
+    return 0;
+  }
+  const std::string am = e["antworten"]["am"].text();
+  auto d = rechnung::lies_iso(am);
+  if (!d || am.size() != 10) {
+    ergebnis("{\"ergebnis\":{\"meldung\":\"Kein gültiges Datum – nichts geändert.\"}}");
+    return 0;
+  }
+  ergebnis("{\"ergebnis\":{\"meldung\":" + jsonText("Als bezahlt markiert (" + rechnung::text(*d) + ").") +
+           ",\"felder\":{\"bezahlt_am\":" + jsonText(am) + "}}}");
+  return 0;
+}
+
+int aktion(const Json &e) {
+  if (e["aktion"].text() != "dms:mappenaktion") return 0;
+  if (e["mappenaktion"].text() == "bezahlt") return bezahlt(e);
+  log(WARNUNG, "Unbekannte Aktion „" + e["mappenaktion"].text() + "“");
+  return 2;
+}
+
 }  // namespace
 
 extern "C" {
@@ -218,6 +266,10 @@ __attribute__((export_name("dms_puffer"))) char *dms_puffer(int32_t n) {
 
 __attribute__((export_name("dms_ereignis"))) int32_t dms_ereignis(char *json, int32_t len) {
   return verarbeite(JsonLeser::lies(json, (size_t)len));
+}
+
+__attribute__((export_name("dms_aktion"))) int32_t dms_aktion(char *json, int32_t len) {
+  return aktion(JsonLeser::lies(json, (size_t)len));
 }
 
 }
