@@ -8,6 +8,7 @@
 //  - „läuft unbefristet weiter“ (oder leer): nach der ersten Laufzeit jederzeit mit der Frist, ggf. zum Monats-,
 //    Quartals- oder Jahresende. Vorher frühestens zum Ende der ersten Laufzeit.
 //  - „endet“: endet von selbst zum Vertragsende; eine Kündigung ändert daran nichts.
+//  - Gekündigt ohne Kündigungsfrist, aber mit Vertragsende: Das Vertragsende gilt (Umbau aus Vermietung 1.x, #163).
 //  - „Kündigen bis“ gibt es nur, wenn ein Laufzeitende wartet – nicht im unbefristeten Teil, sonst käme jeden Monat
 //    eine Erinnerung.
 #pragma once
@@ -172,7 +173,10 @@ class Rechner {
       return r;
     }
     if (e_.gekuendigt_am) {
-      Datum ende = ende_nach(*e_.gekuendigt_am);
+      // Ohne Kündigungsfrist, aber mit Vertragsende (z. B. ein Mietvertrag aus Vermietung 1.x nach dem Umbau, Registry
+      // #163): Das eingetragene Ende gilt – sonst endete der Vertrag am Tag der Kündigung.
+      const bool ende_steht = !e_.kuendigungsfrist && e_.vertragsende && !(*e_.vertragsende < *e_.gekuendigt_am);
+      Datum ende = ende_steht ? *e_.vertragsende : ende_nach(*e_.gekuendigt_am);
       r.ende = ende;
       r.laufzeit_monate = monate(beginn, heute < ende ? heute : ende);
       if (ende < heute) r.status = "beendet am " + text(ende);

@@ -1,11 +1,19 @@
 # Ansichten des Pakets Fahrzeuge. Schema: schema/inhalt.schema.json
+# Ab 2.0.0: Rechnungen zu Fahrzeugen sind Rechnungen aus dem Paket Rechnungen mit „Betrifft“ = Fahrzeug.
 - schluessel: fahrzeuge
   name: Fahrzeuge
-  beschreibung: Fahrzeuge und Werkstattrechnungen
-  beschriftungen: { en: { name: "Vehicles", beschreibung: "Vehicles and garage invoices" } }
-  typen: [fahrzeug, werkstattrechnung]
+  beschreibung: Fahrzeuge und ihre Rechnungen
+  beschriftungen: { en: { name: "Vehicles", beschreibung: "Vehicles and their invoices" } }
+  typen: [fahrzeug]
 - { schluessel: alle_fahrzeuge, name: Alle Fahrzeuge, eltern: fahrzeuge, typen: [fahrzeug], beschriftungen: { en: { name: "All vehicles" } }  }
-- { schluessel: werkstattrechnungen, name: Werkstattrechnungen, eltern: fahrzeuge, typen: [werkstattrechnung], beschriftungen: { en: { name: "Garage invoices" } }  }
+- schluessel: werkstattrechnungen
+  name: Rechnungen zu Fahrzeugen
+  beschreibung: Rechnungen, die ein Fahrzeug betreffen – Werkstatt, Reifen, Zubehör
+  beschriftungen: { en: { name: "Vehicle invoices", beschreibung: "Invoices concerning a vehicle – garage, tyres, accessories" } }
+  eltern: fahrzeuge
+  typen: ["rechnungen:rechnung"]
+  bedingungen:
+    - { feld: betrifft, operator: zeigtAufTyp, wert: ["fahrzeuge:fahrzeug"] }
 - schluessel: hu_faellig
   name: HU fällig
   beschreibung: Fahrzeuge, deren Hauptuntersuchung in den nächsten 3 Monaten fällig oder schon überfällig ist

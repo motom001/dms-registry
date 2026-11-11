@@ -1,5 +1,17 @@
 # Änderungen
 
+## 2.0.0
+
+- **Breaking Change – Mietvertrag und Ausgabe ziehen in die Pakete Verträge und Rechnungen** (dms-registry #163): Vermietung bringt die Mappentypen *Mietvertrag* und *Ausgabe Mietobjekt* nicht mehr mit.
+  - Ein Mietverhältnis ist ein **Vertrag** aus dem Paket Verträge mit der Vertragsart *Miete*: *Betrifft* = die Wohnung, *Kunde* = die Mieter; Miete und Kaution stehen im Abschnitt *Miete*. Das Paket Verträge rechnet Status, Kündigungsfrist und Ende aus.
+  - Eine Ausgabe ist eine **Rechnung** aus dem Paket Rechnungen mit *Betrifft* = Mietobjekt oder Wohnung; *Umlagefähig* und *Kostenart* stehen im Abschnitt *Vermietung*.
+  - Bestehende Mappen ziehen beim Installieren bzw. Aktualisieren von **Verträge 1.1.0** und **Rechnungen 1.1.0** dorthin um, mit allen Werten und Dokumenten (Ablago 0.243.0, „Umbau“). Deshalb erst Verträge, dann Rechnungen, dann dieses Update.
+- Registers *Mietverträge* (Wohnung) und *Ausgaben* (Mietobjekt, Wohnung) zeigen Verträge bzw. Rechnungen, deren *Betrifft* hierher zeigt. Neu an der **Nebenkostenabrechnung:** *Rechnungen* – die umgelegten Rechnungen des Jahres.
+- Ansichten *Mietverträge*, *Ausgaben* (mit *dieses Jahr*, *letztes Jahr*, *Umlagefähig letztes Jahr*), *Mieterhöhung möglich* und *Vertrag endet bald* zeigen jetzt Verträge bzw. Rechnungen. *Laufende Mietverträge* entfällt (das Paket Verträge hat *Gekündigt*), ebenso die Automatisierung „Mietvertrag endet bald“ (Verträge erinnert an *Kündigen bis*). „Mieterhöhung möglich“ bleibt und gilt für Verträge.
+- In einer bestehenden Ablage bleiben die alten Ansichten erhalten und zeigen nach dem Umzug auf Verträge bzw. Rechnungen – und zwar auf **alle** (*Vermietung*, *Mietverträge*, *Ausgaben*); setz dort die Bedingung „Betrifft zeigt auf eine Mappe vom Typ Wohnung“ bzw. „… Mietobjekt oder Wohnung“. Die Bedingung „Stand läuft oder gekündigt“ (*Laufende Mietverträge*, *Mieterhöhung möglich*) passt danach nicht mehr – der Stand steht in der Notiz; bitte die Ansicht anpassen oder löschen.
+- Haushalt ist keine Abhängigkeit mehr: Das Steuerjahr an der Nebenkostenabrechnung zeigt auf ein Steuerjahr aus Haushalt, wenn Haushalt installiert ist. Kurzanleitung „So nutzt du es“ (dms-registry #164).
+- Hängt jetzt ab von **Basis 1.7.0, Haus, Verträge 1.1.0 und Rechnungen 1.1.0**; braucht Ablago 0.243.0.
+
 ## 1.4.1
 
 - Das Feld **Verbleib Originaldokumente** verweist auf den Ablageort aus dem Paket **Basis** (`basis:ablageort` statt `dms:ablageort`, dms-registry #138, Ablago #883). Braucht Basis ab 1.6.0 und Ablago ab 0.212.0. In einer bestehenden Ablage ändert sich nichts: Basis übernimmt den bisherigen Ablageort mit allen Orten, das Feld zeigt weiter darauf.

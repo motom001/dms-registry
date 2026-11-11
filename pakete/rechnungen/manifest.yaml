@@ -4,7 +4,7 @@ schema: 1
 id: rechnungen
 name: Rechnungen
 herausgeber: app.ablago
-version: 1.0.1
+version: 1.1.0
 beschreibung: Rechnungen, Quittungen, Kassenbons und Gutschriften – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, und meldet, wenn die Positionen nicht zum Betrag passen.
 autor:
   name: Thomas Meissner
@@ -15,7 +15,8 @@ symbol: receipt-text
 # 0.238.0: Bedingung „eigene Organisation“ (DMS #995); darin enthalten Prozent und negativer Betrag (0.227.0, #1035),
 # Anzeige-Bedingungen (0.228.0, #1032/#1033), mehrere Ziele (0.230.0, #1036), berechnete Felder und Hinweise (0.231.0,
 # #1034), Tabelle (0.232.0, #1030), „Paket nach Zeitplan ausführen“ (0.233.0, #1082), gehört immer zu (0.235.0, #1031)
-dms: ">=0.238.0"
+# 0.243.0: Umbau (DMS #1041) – Werkstattrechnungen (Fahrzeuge) und Ausgaben (Vermietung) ziehen hierher
+dms: ">=0.243.0"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
@@ -31,6 +32,19 @@ kurzanleitung:
 abhaengigkeiten:
   basis: ">=1.7.0"
   vertraege: ">=1.0.0"
+# Umbau (dms-registry #163, DMS #1041): Fahrzeuge und Vermietung bringen ab 2.0.0 keine eigenen Rechnungstypen mehr mit.
+# Ihre Mappen ziehen beim Installieren bzw. Aktualisieren von Rechnungen hierher, mit allen Werten; was nicht passt, steht
+# danach in einer Notiz an der Mappe. Ablago zeigt vorher, was wohin geht, und fragt nach.
+umbau:
+  - von: "fahrzeuge:werkstattrechnung"
+    nach: rechnung
+    felder: { fahrzeug: betrifft, werkstatt: von, datum: datum, kilometerstand: kilometerstand, arbeiten: arbeiten, betrag: betrag,
+              verbleib_original: verbleib_original }
+  # Mietobjekt und Wohnung → Betrifft: Das Mietobjekt gilt (es ist Pflicht), eine Wohnung steht dann in der Notiz.
+  - von: "vermietung:ausgabe"
+    nach: rechnung
+    felder: { mietobjekt: betrifft, wohnung: betrifft, art: kostenart, datum: datum, betrag: betrag, umlagefaehig: umlagefaehig,
+              firma: von, steuerjahr: steuerjahr, notiz: notiz, verbleib_original: verbleib_original }
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

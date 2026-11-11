@@ -1,5 +1,14 @@
 # Änderungen
 
+## 2.0.0
+
+- **Breaking Change – Vertrag und Versicherung ziehen ins Paket Verträge** (dms-registry #163): Haushalt bringt die Mappentypen *Vertrag* und *Versicherung* nicht mehr mit. Verträge und Versicherungen legst du als **Vertrag** aus dem Paket Verträge an (Versicherung ist dort eine Vertragsart); es rechnet *Kündigen bis* selbst aus. Bestehende Mappen ziehen beim Installieren bzw. Aktualisieren von **Verträge 1.1.0** dorthin um – mit allen Werten, Dokumenten, Verknüpfungen, Ansichten und Rechten (Ablago 0.243.0, „Umbau“). Deshalb erst Verträge, dann Rechnungen, dann dieses Update.
+- Neu an der **Anschaffung:** Register *Rechnungen* – Kassenbon und Rechnung sind Rechnungen aus dem Paket Rechnungen mit *Betrifft* = diese Anschaffung. Am **Steuerjahr** erscheinen unter *Belege* auch Rechnungen mit diesem Steuerjahr.
+- Ansichten *Verträge*, *Versicherungen* (Verträge mit ausgefüllter Versicherung), *Sach-* und *Personenversicherungen* und *Kündigung in den nächsten 3 Monaten* zeigen jetzt Verträge aus dem Paket Verträge. Die Automatisierungen „Kündigung … bald fällig“ entfallen (das Paket Verträge bringt „Vertrag rechtzeitig kündigen“ mit); „Hauptfälligkeit einer Versicherung“ bleibt und gilt für Verträge.
+- In einer bestehenden Ablage bleiben die bisherigen Ansichten, wie sie sind; nach dem Umzug zeigen *Verträge* und *Versicherungen* dort **alle** Verträge (auch Mietverträge). Am einfachsten setzt du bei *Versicherungen* die Bedingung „Versicherung ist nicht leer“.
+- Die Beispiel-Verträge und -Versicherungen entfallen (Beispiele bringt das Paket Verträge mit).
+- Hängt jetzt ab von **Basis 1.7.0, Verträge 1.1.0 und Rechnungen 1.1.0**; braucht Ablago 0.243.0.
+
 ## 1.4.1
 
 - Das Feld **Verbleib Originaldokumente** verweist auf den Ablageort aus dem Paket **Basis** (`basis:ablageort` statt `dms:ablageort`, dms-registry #138, Ablago #883). Braucht Basis ab 1.6.0 und Ablago ab 0.212.0. In einer bestehenden Ablage ändert sich nichts: Basis übernimmt den bisherigen Ablageort mit allen Orten, das Feld zeigt weiter darauf.

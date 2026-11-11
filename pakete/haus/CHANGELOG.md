@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.5.0
+
+- Der **Wartungsvertrag** an der Wartung ist ein **Vertrag** aus dem Paket Verträge (bisher Vertrag aus Haushalt, dms-registry #163). In einer bestehenden Ablage zeigt das Feld von selbst dorthin, sobald Verträge 1.1.0 die Verträge aus Haushalt übernommen hat.
+- Hängt jetzt ab von **Basis** und **Verträge 1.1.0** statt Haushalt; braucht Ablago 0.243.0.
+
 ## 1.4.0
 
 - Neu (Registry #114): **Eigentümer/Vermieter (Person)** an der Immobilie – Verweis auf eine oder mehrere Personen aus Basis, z. B. „ihr beide“ oder die private Vermieterin. Das bisherige Feld heißt jetzt **Eigentümer/Vermieter (Organisation)** und bleibt für Gesellschaften, Erbengemeinschaften und die Hausverwaltung. Ein Update ergänzt nur das neue Feld; gespeicherte Werte bleiben, wo sie sind.

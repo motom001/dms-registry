@@ -2,8 +2,9 @@
 schema: 1
 id: fahrzeuge
 name: Fahrzeuge
-version: 1.5.1
-beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Werkstattrechnungen.
+herausgeber: app.ablago
+version: 2.0.0
+beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -15,14 +16,29 @@ lizenz: Apache-2.0
 # 0.127.0: Wortlisten für die Suche (inhalt.wortlisten, DMS #356)
 # 0.177.0: mitgelieferte Automatisierungen (inhalt.automatisierungen, Ablago #712) – das Datumsfeld erinnert nicht mehr selbst
 # 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
-dms: ">=0.212.0"
+# 0.236.0: Vorgaben (Vertragsarten für das Paket Verträge, DMS #1038); Verträge 1.1.0 und Rechnungen 1.1.0 brauchen 0.243.0
+dms: ">=0.243.0"
+# „So nutzt du es“ (dms-registry #164)
+kurzanleitung:
+  de:
+    - Lege je Fahrzeug eine Mappe an und übernimm „HU fällig“ von der Plakette.
+    - Leg die Kfz-Versicherung als Vertrag mit der Vertragsart Versicherung an und wähle sie am Fahrzeug aus.
+    - Rechnungen von Werkstatt und Reifenhändler legst du als Rechnung ab und wählst unter „Betrifft“ das Fahrzeug – am Fahrzeug stehen sie unter „Rechnungen“.
+    - Schalte unter Automatisierungen „HU wird bald fällig“ ein, wenn du einen Monat vorher erinnert werden willst.
+  en:
+    - Create a folder for each vehicle and copy “MOT due” from the sticker.
+    - Create the car insurance as a contract of the type insurance and select it on the vehicle.
+    - File garage and tyre invoices as an invoice and choose the vehicle under “Concerns” – the vehicle lists them under “Invoices”.
+    - Turn on the MOT reminder under automations to get a reminder one month before.
 abhaengigkeiten:
-  # Person gibt es ab Basis 1.1.0, den Ablageort ab Basis 1.6.0 (dms-registry #138); das Beispiel „Tom“ (Halter) ab Haushalt 1.1.0.
-  basis: ">=1.6.0"
-  haushalt: ">=1.1.0"
+  # Ab 2.0.0 (dms-registry #163): Versicherung und Finanzierung aus Verträge, Rechnungen aus Rechnungen; Haushalt nicht mehr.
+  basis: ">=1.7.0"
+  vertraege: ">=1.1.0"
+  rechnungen: ">=1.1.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml
+  vorgaben: inhalt/vorgaben.yaml
   beispiele: inhalt/beispiele.yaml
   wortlisten: inhalt/wortlisten.yaml
   automatisierungen: inhalt/automatisierungen.yaml

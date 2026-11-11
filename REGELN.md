@@ -285,6 +285,25 @@ ersetzt: texterkennung_fra
 - Die alte Id steht weiter in `werkzeuge/ids.txt` und wird nie wieder vergeben; die neue kommt dazu. `pruefen.py` prüft, dass es die alte Id gab und ihr Ordner weg ist.
 - Kein Alias: Wer das Paket irgendwo mit der alten Id nennt (Abhängigkeiten, Verweise), zieht im selben Pull Request mit.
 
+## Umbau: ein Mappentyp zieht in ein anderes Paket { #umbau }
+
+Gibt ein Paket einen Mappentyp ab (Registry #163: Haushalt gibt *Vertrag* und *Versicherung* an Verträge ab), bringt **das Paket, das ihn aufnimmt,** Umbau-Schritte im Manifest mit (Ablago ab 0.243.0, motom001/dms#1041, `dms: ">=0.243.0"`):
+
+```yaml
+umbau:
+  - von: "haushalt:versicherung"   # alter Typ; ohne Präfix ein früherer eigener
+    nach: vertrag                   # Typ dieses Pakets oder paket:schluessel einer Abhängigkeit
+    felder: { versicherer: von, beitrag: betrag }          # alt → neu; ohne Zuordnung: Notiz
+    setzen: { art: { vorgabe: versicherung }, bezeichnung: Versicherung }   # feste Werte in leere Felder
+    register: { unterlagen: dokumente }                     # Dokumentregister alt → neu
+```
+
+- Beim Installieren bzw. Aktualisieren zeigt Ablago je Schritt, wie viele Mappen umziehen und welche Werte wohin gehen, und fragt bei Feldern nach, die der Administrator selbst angelegt hat. Mappen, Dokumente, Verweise, Ansichten, Automatisierungen und Rechte-Regeln ziehen mit; was nicht passt, steht in einer **Notiz** an der Mappe. Gibt es den Zieltyp noch nicht, **übernimmt** der erste Schritt den alten Typ mit seiner Id – dann gibt es auch keinen Namenskonflikt.
+- Nur einzeln (nicht im Ablauf mehrerer Pakete), nur mit „Gesamte Verwaltung“. Ein Schritt, dessen alter Typ nicht (mehr) da ist, entfällt still – Umbau-Schritte dürfen also in späteren Versionen stehen bleiben.
+- **Das abgebende Paket** bekommt eine **Major-Version** ohne den Typ (Breaking Change im CHANGELOG), hängt vom aufnehmenden Paket in der Version mit dem Umbau ab und verweist auf dessen Typ. So kommt das Update erst, wenn der Umbau gelaufen ist.
+- Werte zieht Ablago nur in passende Felder um (gleiche Feldart, Text → Zeitraum/Zahl/Datum/Auswahl, Verweise nur auf erlaubte Typen). Mehrere alte Felder auf ein neues: Der erste gefüllte Wert in der Reihenfolge des alten Typs gilt. `setzen` schreibt Werte so, wie sie sind – Text, Zahl, Ja/Nein, Liste oder `{ vorgabe: … }`, kein Zeitraum und kein Betrag.
+- `pruefen.py` prüft Form, Zieltyp, die neuen Felder (vorhanden, nicht berechnet), `setzen` gegen Feldart und Optionen und die alten Feldkennungen gegen den Typ, wie er zuletzt in der Registry stand (auch aus der git-Geschichte).
+
 ## Beschriftungen je Sprache
 
 Mappentypen, Felder, Auswahlwerte, Register und Ansichten eines Pakets bekommen Beschriftungen in weiteren Sprachen (Ablago #728, Registry #135) – dann erscheinen sie in einer englischen Ablago englisch:

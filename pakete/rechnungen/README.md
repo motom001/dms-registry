@@ -37,9 +37,13 @@ Register: *Rechnung*, *Anlagen*, *Lieferscheine*, *Verknüpfungen*, *Historie*.
 | --- | --- | --- |
 | Positionen mit dem Betrag vergleichen | an | Aus: kein Hinweis an der Rechnung. |
 
+## Umzug aus Fahrzeuge und Vermietung
+
+Bis Fahrzeuge 1.x und Vermietung 1.x brachten eigene Typen *Werkstattrechnung* und *Ausgabe Mietobjekt* mit. Ab Rechnungen 1.1.0 ziehen sie beim **Installieren oder Aktualisieren von Rechnungen** hierher (Ablago 0.243.0, „Umbau“): Ablago zeigt vorher, wie viele Mappen umziehen und welche Werte wohin gehen; nach deiner Bestätigung (nur mit „Gesamte Verwaltung“) laufen sie in einem Zug um. Was nicht in ein Feld passt, steht danach in einer **Notiz** an der Mappe. Reihenfolge: erst Verträge, dann Rechnungen (je allein), danach Haushalt, Fahrzeuge und Vermietung auf 2.0.0.
+
 ## Voraussetzungen
 
-- Ablago ab 0.238.0: Prozent, negative Beträge, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „Paket nach Zeitplan ausführen“, „gehört immer zu“ und eigene Organisation (Etappe 15).
+- Ablago ab 0.243.0: Umbau, Prozent, negative Beträge, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „Paket nach Zeitplan ausführen“, „gehört immer zu“ und eigene Organisation (Etappe 15).
 - Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung und Haushalt sind nicht nötig – sind sie installiert, kann *Betrifft* auf ihre Mappen zeigen.
 
 ## Rechte und Netzwerkzugriff

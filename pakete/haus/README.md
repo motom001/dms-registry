@@ -1,6 +1,6 @@
 # Haus
 
-Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zählerstand**. Damit weißt du, wann die Heizung gewartet werden muss, wer sie zuletzt gewartet hat und wie sich der Verbrauch entwickelt – im Eigenheim genauso wie als Mieter. Installiert wird es unter **Werkbank → Pakete**; die Pakete **Basis** und **Haushalt** kommen dabei automatisch mit.
+Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zählerstand**. Damit weißt du, wann die Heizung gewartet werden muss, wer sie zuletzt gewartet hat und wie sich der Verbrauch entwickelt – im Eigenheim genauso wie als Mieter. Installiert wird es unter **Werkbank → Pakete**; die Pakete **Basis** und **Verträge** kommen dabei automatisch mit.
 
 ![Die drei Mappentypen des Pakets mit ihren Feldern, Fristen und Beispielen](https://raw.githubusercontent.com/motom001/dms-registry/main/pakete/haus/bilder/ueberblick.png)
 
@@ -18,7 +18,7 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 - **Eigentümer/Vermieter (Person)** verweist auf eine oder mehrere **Personen** aus dem Paket Basis (z. B. ihr beide), **Eigentümer/Vermieter (Organisation)** auf eine **Organisation** (Gesellschaft, Erbengemeinschaft, Hausverwaltung).
 - **Fachbetrieb** ist eine **Organisation** aus dem Paket Basis.
-- **Wartungsvertrag** ist ein **Vertrag** aus dem Paket Haushalt (Art z. B. „Sonstiges“).
+- **Wartungsvertrag** ist ein **Vertrag** aus dem Paket Verträge (Vertragsart z. B. „Sonstiges“).
 - **Verbleib Originaldokumente** zeigt auf einen **Ablageort** aus dem Paket Basis – wo Grundbuchauszug, Kauf- oder Mietvertrag liegen.
 
 **Fristen:** Trag nach jeder Wartung *Zuletzt am* und *Nächste fällig* ein („Zuletzt am“ plus Turnus). Ablago erinnert 30 Tage vorher unter **Zu erledigen** und in der Ansicht **Anstehend**.
@@ -29,8 +29,8 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.212 (Ablageort aus dem Paket Basis; vorher 0.121 für Feldformate und Datumsgrenzen)
-- Pakete **Basis** ab 1.6.0 (Ablageort) und **Haushalt** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
+- Ablago ab Version 0.243 (für das Paket Verträge; Ablageort aus dem Paket Basis ab 0.212)
+- Pakete **Basis** ab 1.6.0 (Ablageort) und **Verträge** ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
 

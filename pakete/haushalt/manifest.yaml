@@ -2,8 +2,9 @@
 schema: 1
 id: haushalt
 name: Haushalt
-version: 1.4.1
-beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Verträge, Versicherungen, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen.
+herausgeber: app.ablago
+version: 2.0.0
+beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Verträge, Versicherungen und Rechnungen kommen aus den Paketen Verträge und Rechnungen.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -14,10 +15,25 @@ lizenz: Apache-2.0
 # 0.121.0: Feldformate und Datumsgrenzen (format, landFeld, min/max bei Datum, DMS #535)
 # 0.177.0: mitgelieferte Automatisierungen (inhalt.automatisierungen, Ablago #712) – das Datumsfeld erinnert nicht mehr selbst
 # 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
-dms: ">=0.212.0"
+# 0.243.0: Verträge 1.1.0 und Rechnungen 1.1.0 (Umbau, DMS #1041) – Vertrag und Versicherung ziehen dorthin (dms-registry #163)
+dms: ">=0.243.0"
+# „So nutzt du es“ (dms-registry #164)
+kurzanleitung:
+  de:
+    - Lege deine Bank, Versicherer und Ärzte einmal als Organisation an – du wählst sie danach überall aus.
+    - Leg Konten, Ausweise, Arztbriefe und Anschaffungen als Mappe an; Verträge und Versicherungen als Vertrag.
+    - Trag beim Ausweis „Gültig bis“ und bei der Anschaffung „Garantie bis“ ein – die mitgelieferten Automatisierungen erinnern rechtzeitig, wenn du sie einschaltest.
+    - Im Steuerjahr findest du unter „Belege“ alles, was du diesem Jahr zugeordnet hast.
+  en:
+    - Create your bank, insurers and doctors once as an organisation – then you can choose them everywhere.
+    - Create accounts, IDs, medical letters and purchases as folders; contracts and insurance policies as a contract.
+    - Enter “Valid until” for IDs and “Warranty until” for purchases – the included automations remind you in time once you turn them on.
+    - In a tax year, “Receipts” shows everything you assigned to that year.
 abhaengigkeiten:
-  # Person gibt es ab Basis 1.1.0, den Ablageort ab Basis 1.6.0 (dms-registry #138).
-  basis: ">=1.6.0"
+  # Ab 2.0.0 (dms-registry #163): Vertrag und Versicherung aus Verträge, Rechnungen und Kassenbons aus Rechnungen.
+  basis: ">=1.7.0"
+  vertraege: ">=1.1.0"
+  rechnungen: ">=1.1.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

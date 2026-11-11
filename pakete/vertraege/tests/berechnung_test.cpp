@@ -108,6 +108,17 @@ int main() {
   Eingabe nichts;
   pruefe("Ohne Angaben: kein Status", rechne(nichts, d("2026-11-10")).status.empty());
 
+  // Mietvertrag aus Vermietung 1.x (Umbau, Registry #163): gekündigt, Ende eingetragen, keine Kündigungsfrist.
+  Eingabe umzug;
+  umzug.beginn = d("2019-08-01");
+  umzug.gekuendigt_am = d("2026-09-28");
+  umzug.vertragsende = d("2026-12-31");
+  r = rechne(umzug, d("2026-11-11"));
+  pruefe("Umgezogener Mietvertrag: Ende wie eingetragen", t(r.ende) == "2026-12-31" && r.status == "gekündigt zum 31.12.2026 – Bestätigung fehlt noch", r.status);
+  umzug.kuendigungsfrist = monate(3);
+  r = rechne(umzug, d("2026-11-11"));
+  pruefe("Mit Kündigungsfrist rechnet das Paket", t(r.ende) == "2026-12-28", t(r.ende));
+
   printf("%d ok, %d Fehler\n", ok, fehler);
   return fehler ? 1 : 0;
 }

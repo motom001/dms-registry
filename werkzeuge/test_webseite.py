@@ -110,7 +110,7 @@ class WasMitkommt(unittest.TestCase):
     def setUpClass(cls):
         import yaml
         cls.pakete = []
-        for pid in ('basis', 'haushalt', 'haus', 'vermietung', 'trennblatt', 'benachrichtigungen'):
+        for pid in ('basis', 'haushalt', 'haus', 'vermietung', 'vertraege', 'rechnungen', 'trennblatt', 'benachrichtigungen'):
             m = yaml.safe_load((w.WURZEL / 'pakete' / pid / 'manifest.yaml').read_text(encoding='utf-8'))
             v = {'version': m['version'], 'dms': m['dms'], 'abhaengigkeiten': m.get('abhaengigkeiten') or {}, 'code': bool(m.get('code')),
                  'inhalt': {'mappentypen': [], 'sichten': [], 'beispiele': 0}, 'archiv': 'archive/x.zip', 'sha256': '0' * 64, 'groesse': 1,
@@ -147,10 +147,10 @@ class WasMitkommt(unittest.TestCase):
 
     def test_automatisierung_in_klartext(self):
         index = w.alle_typen(self.pakete)
-        a = {'name': 'X', 'wenn': {'art': 'datum', 'typ': 'mietvertrag', 'feld': 'ende', 'vorlauf': 60, 'einheit': 'tage', 'uhrzeit': '07:00'},
+        a = {'name': 'X', 'wenn': {'art': 'datum', 'typ': 'vertraege:vertrag', 'feld': 'mieterhoehung_ab', 'vorlauf': 60, 'einheit': 'tage', 'uhrzeit': '07:00'},
              'dann': [{'art': 'aufgabe', 'als': 'aufgabe', 'empfaenger': [{'art': 'ersteller'}], 'text': 't'}]}
         wenn, dann, ablauf = w.auto_zeilen(a, 'vermietung', index)
-        self.assertEqual(wenn, "60 Tage vor „Ende“ (Mietvertrag), geprüft um 07:00")
+        self.assertEqual(wenn, "60 Tage vor „Nächste Mieterhöhung ab“ (Vertrag), geprüft um 07:00")
         self.assertEqual(dann, "Aufgabe an die Person, die die Mappe angelegt hat")
         self.assertEqual(ablauf, 'einmal je Termin')
         a['wenn']['wiederholung'] = 12
@@ -184,7 +184,7 @@ class WasMitkommt(unittest.TestCase):
     def test_vorgaben(self):
         index = w.alle_typen(self.pakete)
         h = w.vorgaben_block([{'kennung': 'strom', 'typ': 'vertrag', 'werte': {'name': 'Strom'}},
-                              {'an': {'paket': 'x', 'kennung': 'y'}, 'dokumente': [{'datei': 'vorlagen/a.md'}]}], 'haushalt', index)
+                              {'an': {'paket': 'x', 'kennung': 'y'}, 'dokumente': [{'datei': 'vorlagen/a.md'}]}], 'vertraege', index)
         self.assertIn('href="#typ-vertrag">Vertrag</a>: Strom', h)
         self.assertIn('1 Text-Vorlage zum Ausfüllen', h)
 

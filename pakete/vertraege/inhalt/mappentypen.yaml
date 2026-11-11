@@ -101,9 +101,11 @@
     # Vertragsparteien (eingeklappt)
     - key: an
       label: Kunde
-      beschriftungen: { en: { label: "Customer", hilfe: "Who the contract is with on our side – empty means us (the household)" } }
+      beschriftungen: { en: { label: "Customer", hilfe: "Who the contract is with on our side – empty means us (the household). In a business, the own organisation." } }
       typ: referenz
       ziel: ["basis:organisation", "basis:person"]
+      # Ab 1.1.0 mehrere – z. B. alle Mieter, die den Mietvertrag unterschrieben haben (dms-registry #163).
+      mehrfach: true
       verweisart: bezug
       hilfe: "Wer auf unserer Seite Vertragspartner ist – leer heißt: wir (der Haushalt). Im Betrieb die eigene Organisation."
     - key: vertragsnummer
@@ -198,6 +200,17 @@
       beschriftungen: { en: { label: "Per month" } }
       typ: betrag
       berechnet: true
+    # Ab 1.1.0 (dms-registry #163): wofür der Vertrag ist – die Kfz-Versicherung fürs Auto, der Mietvertrag für die
+    # Wohnung. Ziele aus Paketen, die selbst von Verträge abhängen (zielOptional, DMS #1036); gleiche Kennung wie bei Rechnungen.
+    - key: betrifft
+      label: Betrifft
+      beschriftungen: { en: { label: "Concerns", hilfe: "What the contract is for – a vehicle, flat, property or purchase" } }
+      typ: referenz
+      zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"]
+      mehrfach: true
+      gleicherTyp: true
+      verweisart: bezug
+      hilfe: Wofür der Vertrag ist – Fahrzeug, Wohnung, Immobilie oder Anschaffung
     - key: uebergeordnet
       label: Gehört zu
       beschriftungen: { en: { label: "Belongs to", hilfe: "Parent contract, e.g. the family plan for an extra SIM or the framework agreement" } }
@@ -269,7 +282,7 @@
                beginn, mindestlaufzeit, verlaengerung, verlaengerung_um, vertragsende, kuendigungsfrist, kuendigung_zum,
                gekuendigt_am, kuendigung_bestaetigt_am, fruehestes_ende, naechste_verlaengerung, ende, laufzeit_monate,
                betrag, zahlweise, pro_monat,
-               uebergeordnet, verbleib_original, notiz,
+               betrifft, uebergeordnet, verbleib_original, notiz,
                unterschrieben_wir_am, unterschrieben_gegenseite_am, interne_nummer, ansprechpartner,
                mietart, kaltmiete, vorauszahlung, sonstiges, mieterhoehung_ab, kaution, kaution_konto, kautionskonto, kaution_zurueck_am,
                versicherung_art, versicherte_personen, selbstbeteiligung, hauptfaelligkeit]
@@ -277,7 +290,7 @@
         - { vor: an, titel: Vertragsparteien, eingeklappt: true, beschriftungen: { en: { titel: "Parties" } } }
         - { vor: beginn, titel: Laufzeit und Kündigung, eingeklappt: true, beschriftungen: { en: { titel: "Term and cancellation" } } }
         - { vor: betrag, titel: Kosten, beschriftungen: { en: { titel: "Costs" } } }
-        - { vor: uebergeordnet, titel: Weiteres, eingeklappt: true, beschriftungen: { en: { titel: "More" } } }
+        - { vor: betrifft, titel: Weiteres, eingeklappt: true, beschriftungen: { en: { titel: "More" } } }
         - vor: unterschrieben_wir_am
           titel: Abschluss
           eingeklappt: true

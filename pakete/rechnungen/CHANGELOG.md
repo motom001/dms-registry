@@ -1,5 +1,13 @@
 # Änderungen
 
+## 1.1.0
+
+- **Rechnungen aus Fahrzeuge und Vermietung ziehen um** (dms-registry #163, Ablago #1041): Beim Installieren oder Aktualisieren von Rechnungen ziehen die Mappen der Typen *Werkstattrechnung* (Fahrzeuge bis 1.x) und *Ausgabe Mietobjekt* (Vermietung bis 1.x) in die Rechnung – mit allen Werten, Dokumenten, Verknüpfungen, Ansichten und Rechten. Ablago zeigt vorher, was wohin geht; was nicht passt, steht danach in einer Notiz an der Mappe.
+  - *Werkstattrechnung:* Fahrzeug → Betrifft, Werkstatt → Rechnungssteller; Kilometerstand und Arbeiten im Abschnitt *Fahrzeug*.
+  - *Ausgabe Mietobjekt:* Mietobjekt → Betrifft (eine zusätzlich eingetragene Wohnung steht in der Notiz), Firma → Rechnungssteller, Art → Kostenart (was es dort nicht gibt, z. B. „Modernisierung“, steht in der Notiz), Umlagefähig, Steuerjahr und Notiz bleiben.
+  - Der Umbau läuft nur einzeln (nicht zusammen mit anderen Paketen) und nur mit „Gesamte Verwaltung“; „Vorher sichern“ ist vorausgewählt.
+- Braucht **Ablago 0.243.0**.
+
 ## 1.0.1
 
 - **Installieren repariert:** Ohne das Paket Fahrzeuge bzw. Vermietung brach Ablago 0.238–0.244 die Installation ab („Der Verweis „fahrzeuge:fahrzeug“ lässt sich nicht auflösen“). Die Abschnitte *Fahrzeug* und *Vermietung* fragen jetzt mit „zeigt auf eine Mappe vom Typ …“ (`zeigtAufTyp`), das fehlende Pakete überspringt. Sonst unverändert.

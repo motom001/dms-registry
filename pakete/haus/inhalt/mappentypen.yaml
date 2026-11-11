@@ -60,7 +60,7 @@
       pflicht: true
       optionen: [Heizung, Schornstein, Rauchmelder, Dach, Lüftung, Photovoltaik, Aufzug, Sonstiges]
     - { key: fachbetrieb, label: Fachbetrieb, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Contractor" } }  }
-    - { key: wartungsvertrag, label: Wartungsvertrag, typ: referenz, ziel: "haushalt:vertrag", verweisart: bezug, hilfe: Falls es einen Wartungsvertrag gibt – ein Vertrag aus dem Paket Haushalt, beschriftungen: { en: { label: "Maintenance contract", hilfe: "If there is a maintenance contract – a contract from the Household package" } }  }
+    - { key: wartungsvertrag, label: Wartungsvertrag, typ: referenz, ziel: "vertraege:vertrag", verweisart: bezug, hilfe: Falls es einen Wartungsvertrag gibt – ein Vertrag aus dem Paket Verträge, beschriftungen: { en: { label: "Maintenance contract", hilfe: "If there is a maintenance contract – a contract from the Contracts package" } }  }
     - { key: zuletzt_am, label: Zuletzt am, typ: datum, max: heute, beschriftungen: { en: { label: "Last on" } }  }
     - { key: turnus, label: Turnus (Monate), typ: zahl, min: 1, max: 120, nachkomma: 0, hilfe: "Alle wie viele Monate, z. B. 12 für jährlich", beschriftungen: { en: { label: "Interval (months)", hilfe: "Every how many months, e.g. 12 for yearly" } }  }
     - key: naechste_faellig
