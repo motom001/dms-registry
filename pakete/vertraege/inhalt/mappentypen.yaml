@@ -175,7 +175,7 @@
       label: Bemerkungen
       beschriftungen: { en: { label: "Remarks" } }
       typ: langtext
-    # Abschluss – nur, wenn Ablago beruflich genutzt wird
+    # Abschluss – nur, wenn die eigene Seite eine eigene Organisation ist (von oder an, DMS #995, Konzept Verträge §4)
     - key: unterschrieben_wir_am
       label: Von uns unterschrieben am
       beschriftungen: { en: { label: "Signed by us on" } }
@@ -242,7 +242,7 @@
           titel: Abschluss
           eingeklappt: true
           beschriftungen: { en: { titel: "Conclusion" } }
-          anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }
+          anzeigen: { modus: eine, bedingungen: [{ art: eigeneOrganisation, feld: von }, { art: eigeneOrganisation, feld: an }] }
         - vor: mietart
           titel: Miete
           beschriftungen: { en: { titel: "Rent" } }
