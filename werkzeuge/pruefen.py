@@ -637,7 +637,7 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
     gesehen: set[str] = set()
     neu = False  # Karten aus DMS #678 (Zeitplan, Favorit geändert, Benachrichtigungen)
     _ab = dms_untergrenze(dms_bereich)
-    ab_etappe15_fehlt = _ab is None or _ab < DMS_ETAPPE15_AB
+    ab_zeitplan_paket_fehlt = _ab is None or _ab < DMS_ZEITPLAN_PAKET_AB
     for i, a in enumerate(liste, 1):
         if not isinstance(a, dict):
             continue
@@ -705,8 +705,8 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
                     fehler.append(f'{kw}: „Paket nach Zeitplan ausführen“ nur mit wenn: zeitplan (nicht je Benutzer)')
                 if 'zeitplan.ausgefuehrt' not in paket_ereignisse:
                     fehler.append(f'{kw}: „Paket nach Zeitplan ausführen“ braucht das Ereignis zeitplan.ausgefuehrt in code.ereignisse')
-                if ab_etappe15_fehlt:
-                    fehler.append(f'{kw}: „Paket nach Zeitplan ausführen“ kennt Ablago erst ab {".".join(map(str, DMS_ETAPPE15_AB))} (vorläufig) – bitte dms: ">={".".join(map(str, DMS_ETAPPE15_AB))}"')
+                if ab_zeitplan_paket_fehlt:
+                    fehler.append(f'{kw}: „Paket nach Zeitplan ausführen“ kennt Ablago erst ab 0.233.0 – bitte dms: ">=0.233.0"')
                 continue
             if k['art'] in DANN_BENACHRICHTIGUNGEN:
                 neu = True
@@ -1284,6 +1284,10 @@ def pruefe_vorlage_text(roh: bytes, wo: str, passwortfelder: set[str]) -> list[s
     return fehler
 
 
+# Pfad einer Vorlage relativ zu inhalt/ – wie VORLAGE_DATEI in shared/src/vorgaben.ts.
+VORLAGE_DATEI = re.compile(r'vorlagen/(?:[a-z0-9][a-z0-9_-]{0,59}/){0,2}[a-z0-9][a-z0-9_-]{0,79}\.md')
+
+
 def pruefe_vorlagen(ordner: Path, typen: list) -> list[str]:
     """Alle Dateien unter inhalt/vorlagen/: nur .md (und eine LICENSE für eine eigene Lizenz der Vorlagentexte)."""
     wurzel = ordner / VORLAGEN_ORDNER
@@ -1298,8 +1302,9 @@ def pruefe_vorlagen(ordner: Path, typen: list) -> list[str]:
             text = datei.read_text(encoding='utf-8', errors='replace')
             if not any(v.lower() in text.lower() for v in VORLAGE_LIZENZEN.values()):
                 fehler.append(f'{rel}: eigene Lizenz der Vorlagentexte nur ' + ' oder '.join(VORLAGE_LIZENZEN) + ' (sonst gilt die Lizenz des Pakets)')
-        elif datei.suffix != '.md' or not re.fullmatch(r'[a-z0-9][a-z0-9._-]*', datei.name):
-            fehler.append(f'{rel}: Vorlagen nur als Markdown (.md), Namen aus Kleinbuchstaben, Ziffern, „.“, „-“ und „_“')
+        elif not VORLAGE_DATEI.fullmatch(datei.relative_to(ordner / 'inhalt').as_posix()):
+            fehler.append(f'{rel}: Vorlagen nur als Markdown (.md) unter inhalt/vorlagen/, höchstens zwei Ordner tief, '
+                          'Namen aus Kleinbuchstaben, Ziffern, „-“ und „_“ (VORLAGE_DATEI in Ablago)')
         else:
             fehler += pruefe_vorlage_text(datei.read_bytes(), rel, passwort)
     return fehler
@@ -1307,14 +1312,21 @@ def pruefe_vorlagen(ordner: Path, typen: list) -> list[str]:
 
 # ---------- Paketformat Etappe 15/16 (Registry #159, Entwurf): Bausteine aus DMS #995, #1030–#1038, #1050 ----------
 
-# Vorläufig – die Version nennt Entwicklung, sobald die Kern-Teile gemergt sind (wie bei #946).
-DMS_ETAPPE15_AB = (0, 230, 0)
-# Schon in Ablago (Etappe 15 läuft): Feldarten Zeitraum/Prozent, Betrag negativ (DMS #1035, FELDARTEN_AB in
-# server/src/paketerstellung.ts) und „Anzeigen, wenn …“ mit Merkmal „beruflich genutzt“ (DMS #1032/#1033).
-DMS_FELDARTEN_AB = (0, 227, 0)
-DMS_ANZEIGEN_AB = (0, 228, 0)
-ETAPPE15_FELDARTEN = {'zeitraum', 'prozent', 'tabelle', 'zusammengesetzt'}
-FELDARTEN_FERTIG = {'zeitraum', 'prozent'}
+# Mindestversion je Baustein, wie die Konstanten DMS_*_AB in Ablago (shared/src/*.ts), gemeldet von Entwicklung.
+DMS_FELDARTEN_AB = (0, 227, 0)        # #1035 Zeitraum, Prozent, negative Beträge
+DMS_ANZEIGEN_AB = (0, 228, 0)         # #1032/#1033 Merkmal „beruflich“, anzeigen: { modus, bedingungen }
+DMS_MEHRERE_ZIELE_AB = (0, 230, 0)    # #1036 ziel als Liste, zielOptional, gleicherTyp, Operator zeigtAufTyp
+DMS_BERECHNET_AB = (0, 231, 0)        # #1034 berechnet, Schnittstelle dms:hinweise
+DMS_TABELLE_AB = (0, 232, 0)          # #1030 Feldart tabelle
+DMS_ZEITPLAN_PAKET_AB = (0, 233, 0)   # #1082 Dann-Karte paket, Ereignis zeitplan.ausgefuehrt, eingeschaltet
+DMS_VORBELEGEN_AB = (0, 234, 0)       # #1037 vorbelegen
+DMS_TEILE_AB = (0, 235, 0)            # #1031 gehoertZu
+DMS_VORGABEN_AB = (0, 236, 0)         # #1038 inhalt.vorgaben, Bedingung „zeigt auf die Vorgabe“
+DMS_ARCHIV_PAKET_AB = (0, 237, 0)     # #1051 archiv am Mappentyp
+DMS_ORGANISATION_AB = (0, 238, 0)     # #995 merkmal: eigeneOrganisation, schreibschutz, Bedingung eigeneOrganisation
+DMS_ZUSAMMENGESETZT_AB = (0, 239, 0)  # #1050 Feldart zusammengesetzt
+FELDART_AB = {'zeitraum': DMS_FELDARTEN_AB, 'prozent': DMS_FELDARTEN_AB, 'tabelle': DMS_TABELLE_AB,
+              'zusammengesetzt': DMS_ZUSAMMENGESETZT_AB}
 # Operatoren je Feldart in Bedingungen – wie OPERATOREN_JE_ART in shared/src/sichten.ts.
 OPERATOREN_JE_ART = {
     'text': {'gleich', 'enthaelt', 'leer', 'nichtLeer'}, 'langtext': {'enthaelt', 'leer', 'nichtLeer'},
@@ -1323,7 +1335,8 @@ OPERATOREN_JE_ART = {
     'datum': {'gleich', 'kleiner', 'groesser', 'zwischen', 'ausserhalb', 'imZeitraum', 'leer', 'nichtLeer'},
     'zeit': {'gleich', 'kleiner', 'groesser', 'zwischen', 'ausserhalb', 'imZeitraum'},
     'janein': {'ja', 'nein'}, 'auswahl': {'einerVon', 'leer', 'nichtLeer'},
-    'referenz': {'zeigtAuf', 'leer', 'nichtLeer'}, 'person': {'zeigtAuf', 'leer'},
+    'referenz': {'zeigtAuf', 'zeigtAufTyp', 'leer', 'nichtLeer'}, 'person': {'zeigtAuf', 'leer'},
+    'zusammengesetzt': {'gleich', 'enthaelt', 'leer', 'nichtLeer'},
 }
 ZEITRAUM_EINHEITEN = {'tage', 'wochen', 'monate', 'jahre'}
 PLATZHALTER_VORLAGE = re.compile(r'\{([a-z_][a-z0-9_]*)')
@@ -1354,7 +1367,7 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
     def braucht(ab: tuple, was: str):
         brauche.setdefault(ab, set()).add(was)
     if vorgaben:
-        braucht(DMS_ETAPPE15_AB, 'Vorgaben')
+        braucht(DMS_VORGABEN_AB, 'Vorgaben')
 
     def lokal(v: str) -> str | None:
         """Schlüssel eines eigenen Typs (ohne oder mit eigenem Präfix), sonst None."""
@@ -1384,8 +1397,10 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
             if not isinstance(b, dict):
                 continue
             art = b.get('art')
-            if art in ('vorgabe', 'eigeneOrganisation'):
-                braucht(DMS_ETAPPE15_AB, f'Bedingung {art}')
+            if art == 'vorgabe':
+                braucht(DMS_VORGABEN_AB, 'Bedingung vorgabe')
+            elif art == 'eigeneOrganisation':
+                braucht(DMS_ORGANISATION_AB, 'Bedingung eigeneOrganisation')
             else:
                 braucht(DMS_ANZEIGEN_AB, 'Anzeigen, wenn …')
             if art == 'merkmal':
@@ -1416,15 +1431,30 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
         for k, f in felder.items():
             wo = f'mappentypen/{s}/{k}'
             art = f.get('typ')
-            if art in FELDARTEN_FERTIG or 'negativ' in f:
-                braucht(DMS_FELDARTEN_AB, 'Zeitraum, Prozent, negative Beträge')
-            if art in ETAPPE15_FELDARTEN - FELDARTEN_FERTIG:
-                braucht(DMS_ETAPPE15_AB, f'Feldart {art}')
-            for x in ('berechnet', 'schreibschutz', 'merkmal', 'vorbelegen', 'gleicherTyp', 'zielOptional'):
+            if art in FELDART_AB:
+                braucht(FELDART_AB[art], f'Feldart {art}')
+            if 'negativ' in f:
+                braucht(DMS_FELDARTEN_AB, 'negative Beträge')
+            for x, ab in (('berechnet', DMS_BERECHNET_AB), ('schreibschutz', DMS_ORGANISATION_AB), ('merkmal', DMS_ORGANISATION_AB),
+                          ('vorbelegen', DMS_VORBELEGEN_AB), ('gleicherTyp', DMS_MEHRERE_ZIELE_AB), ('zielOptional', DMS_MEHRERE_ZIELE_AB)):
                 if x in f:
-                    braucht(DMS_ETAPPE15_AB, x)
+                    braucht(ab, x)
             if isinstance(f.get('ziel'), list):
-                braucht(DMS_ETAPPE15_AB, 'mehrere Ziele')
+                braucht(DMS_MEHRERE_ZIELE_AB, 'mehrere Ziele')
+            if f.get('merkmal') is not None and (f.get('merkmal') != 'eigeneOrganisation' or art != 'janein'):
+                fehler.append(f'{wo}: merkmal gibt es nur als eigeneOrganisation an einem Ja/Nein-Feld (DMS #995)')
+            if f.get('schreibschutz') is not None and (f.get('schreibschutz') != 'verwaltung' or art in ('passwort', 'tabelle')):
+                fehler.append(f'{wo}: schreibschutz gibt es nur als verwaltung, nicht an Passwort- und Tabellenfeldern (DMS #995)')
+            if f.get('berechnet') and art == 'passwort':
+                fehler.append(f'{wo}: ein Passwortfeld ist nie berechnet')
+            if art == 'zusammengesetzt':
+                for x in ('pflicht', 'berechnet', 'standard'):
+                    if f.get(x) not in (None, False):
+                        fehler.append(f'{wo}: ein zusammengesetztes Feld hat kein {x} – Ablago setzt den Wert selbst (DMS #1050)')
+                if not f.get('vorlage') or len(str(f.get('vorlage'))) > 300:
+                    fehler.append(f'{wo}: zusammengesetzt braucht vorlage (höchstens 300 Zeichen)')
+            elif 'vorlage' in f:
+                fehler.append(f'{wo}: vorlage gibt es nur bei typ: zusammengesetzt')
             for z in f.get('zielOptional') or []:
                 if isinstance(z, str) and (':' not in z or z.split(':', 1)[0] in (pid, 'dms')):
                     fehler.append(f'{wo}: zielOptional „{z}“ – nur Typen anderer Pakete (paket:typ); eigene und abhängige gehören in ziel')
@@ -1448,9 +1478,13 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
                         fehler.append(f'{wo}: quelle.typ „{q.get("typ")}“ gibt es in diesem Paket nicht')
                     elif qf is None or qf.get('typ') != 'referenz' or s not in [lokal(z) for z in (qf.get('ziel') if isinstance(qf.get('ziel'), list) else [qf.get('ziel')]) if isinstance(z, str)]:
                         fehler.append(f'{wo}: quelle.feld „{q.get("feld")}“ muss in „{qs}“ ein Verweis auf „{s}“ sein')
-                for x in ('pflicht', 'eindeutig', 'standard'):
+                for x in ('pflicht', 'eindeutig', 'standard', 'berechnet'):
                     if x in f:
                         fehler.append(f'{wo}: eine Tabelle hat keinen eigenen Wert – {x} geht nicht')
+                if len(str(q.get('neu', ''))) > 40:
+                    fehler.append(f'{wo}: quelle.neu höchstens 40 Zeichen')
+                if str(q.get('typ', '')).startswith('dms:'):
+                    fehler.append(f'{wo}: quelle.typ nie dms:')
             if art == 'zusammengesetzt':
                 for p in PLATZHALTER_VORLAGE.findall(str(f.get('vorlage', ''))):
                     if p not in felder or p == k:
@@ -1485,12 +1519,18 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
                             fehler.append(f'mappentypen/{s}/register/{reg.get("key")}: anzeigenWenn heißt in Ablago anzeigen: {{ modus, bedingungen }} – bitte umstellen')
         gz = t.get('gehoertZu')
         if gz is not None:
-            braucht(DMS_ETAPPE15_AB, 'gehoertZu')
+            braucht(DMS_TEILE_AB, 'gehoertZu')
             g = felder.get(gz)
-            if g is None or g.get('typ') != 'referenz' or g.get('mehrfach') or not g.get('pflicht'):
-                fehler.append(f'mappentypen/{s}: gehoertZu „{gz}“ muss ein Verweisfeld auf genau eine Mappe mit pflicht: true sein')
+            if (g is None or g.get('typ') != 'referenz' or g.get('mehrfach') or not g.get('pflicht') or isinstance(g.get('ziel'), list)
+                    or g.get('zielOptional') or g.get('anzeigen')):
+                fehler.append(f'mappentypen/{s}: gehoertZu „{gz}“ muss ein Verweisfeld mit genau einem Zieltyp sein – eine Mappe, pflicht: true, '
+                              'ohne zielOptional und ohne anzeigen (DMS #1031)')
+            elif (lokal(str(g.get('ziel'))) in eigene) and eigene[lokal(str(g.get('ziel')))].get('gehoertZu'):
+                fehler.append(f'mappentypen/{s}: gehoertZu „{gz}“ zeigt auf einen Typ, der selbst Teil einer anderen Mappe ist – keine Ketten')
 
-    # Vorgaben (DMS #1038)
+    # Vorgaben (DMS #1038) – wie shared/src/vorgaben.ts: höchstens 200, je Vorgabe höchstens 20 Vorlagen (Schema)
+    if len(vorgaben) > 200:
+        fehler.append(f'vorgaben: {len(vorgaben)} Einträge – höchstens 200 (VORGABEN_MAX)')
     gesehen: set[str] = set()
     for i, v in enumerate(vorgaben):
         if not isinstance(v, dict):
@@ -1500,11 +1540,11 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
             if v['kennung'] in gesehen:
                 fehler.append(f'{wo}: Kennung doppelt')
             gesehen.add(v['kennung'])
-        if 'an' in v:
-            if ':' not in str(v['an']) or str(v['an']).split(':', 1)[0] == pid:
-                fehler.append(f'{wo}: an zeigt auf die Vorgabe eines anderen Pakets (paket:kennung) – eigene Vorgaben bekommen ihre Dokumente direkt')
+        if 'ergaenzt' in v:
+            if ':' not in str(v['ergaenzt']) or str(v['ergaenzt']).split(':', 1)[0] == pid:
+                fehler.append(f'{wo}: ergaenzt nennt die Vorgabe eines anderen Pakets (paket:kennung) – eigene Vorgaben bekommen ihre Vorlagen direkt')
             else:
-                vorgabe_ok(str(v['an']), wo)
+                vorgabe_ok(str(v['ergaenzt']), wo)
         typ = str(v.get('typ', ''))
         ts = lokal(typ) if typ else None
         if typ and ts is None and typ.split(':', 1)[0] not in abh:
@@ -1524,7 +1564,7 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
             if isinstance(w, dict) and 'vorgabe' in w:
                 vorgabe_ok(str(w['vorgabe']), wo)
         regs = {r.get('key'): r for r in (eigene[ts].get('register') or []) if isinstance(r, dict)} if ts in eigene else None
-        for d in v.get('dokumente') or []:
+        for d in v.get('vorlagen') or []:
             if not isinstance(d, dict):
                 continue
             pfad = ordner / 'inhalt' / str(d.get('datei', ''))
@@ -1535,21 +1575,20 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
     for b in beispiele:
         for k, w in ((b.get('werte') or {}).items() if isinstance(b, dict) else []):
             if isinstance(w, dict) and 'vorgabe' in w:
-                braucht(DMS_ETAPPE15_AB, 'Vorgaben')
+                braucht(DMS_VORGABEN_AB, 'Vorgaben')
                 vorgabe_ok(str(w['vorgabe']), f'beispiele ({b.get("typ")}.{k})')
 
     if code:
         if 'dms:hinweise' in ((rechte.get('schnittstellen') or [])):
-            braucht(DMS_ETAPPE15_AB, 'dms:hinweise')
+            braucht(DMS_BERECHNET_AB, 'dms:hinweise')
         if 'zeitplan.ausgefuehrt' in (code.get('ereignisse') or []):
-            braucht(DMS_ETAPPE15_AB, 'zeitplan.ausgefuehrt')
+            braucht(DMS_ZEITPLAN_PAKET_AB, 'zeitplan.ausgefuehrt')
     if brauche:
         ab_paket = dms_untergrenze(str(m.get('dms', '')))
         noetig = max(brauche)
         if ab_paket is None or ab_paket < noetig:
             v = '.'.join(map(str, noetig))
-            vorl = ' (vorläufig)' if noetig == DMS_ETAPPE15_AB else ''
-            fehler.append(f'{", ".join(sorted(brauche[noetig]))} kennt Ablago erst ab {v}{vorl} – bitte dms: ">={v}" angeben')
+            fehler.append(f'{", ".join(sorted(brauche[noetig]))} kennt Ablago erst ab {v} – bitte dms: ">={v}" angeben')
     return fehler
 
 

@@ -33,7 +33,7 @@
       "properties": {
         "key": { "$ref": "#/$defs/schluessel" },
         "label": { "type": "string", "minLength": 1 },
-        "typ": { "enum": ["text", "langtext", "formatiert", "zahl", "betrag", "datum", "janein", "auswahl", "referenz", "passwort", "zeitraum", "prozent", "tabelle", "zusammengesetzt"], "description": "zeitraum, prozent (DMS #1035), tabelle (#1030), zusammengesetzt (#1050) – Etappe 15, Entwurf (Registry #159)" },
+        "typ": { "enum": ["text", "langtext", "formatiert", "zahl", "betrag", "datum", "janein", "auswahl", "referenz", "passwort", "zeitraum", "prozent", "tabelle", "zusammengesetzt"], "description": "zeitraum, prozent (DMS #1035, ab 0.227.0), tabelle (#1030, ab 0.232.0), zusammengesetzt (#1050, ab 0.239.0)" },
         "pflicht": { "type": "boolean" }, "eindeutig": { "type": "boolean" }, "hilfe": { "type": "string" },
         "standard": {}, "minLen": { "type": "integer" }, "maxLen": { "type": "integer" }, "muster": { "type": "string" },
         "beschriftungen": { "$ref": "#/$defs/beschriftungen_feld" },
@@ -143,8 +143,8 @@
                   "op": { "enum": ["gleich", "enthaelt", "leer", "nichtLeer", "kleiner", "groesser", "zwischen", "ausserhalb", "imZeitraum", "ja", "nein", "einerVon", "zeigtAuf"] },
                   "wert": { "$ref": "#/$defs/wertangabe" }, "bis": { "$ref": "#/$defs/wertangabe" } } } }, "description": "Feldwert dieser Mappe, Operatoren je Feldart wie in Ansichten" },
               { "type": "object", "required": ["art", "feld", "typ"], "additionalProperties": false, "properties": { "art": { "const": "verweistyp" }, "feld": { "$ref": "#/$defs/schluessel" }, "typ": { "$ref": "#/$defs/typverweis" }, "nicht": { "type": "boolean" } }, "description": "Verweisfeld zeigt auf eine Mappe dieses Typs (DMS #1036)" },
-              { "type": "object", "required": ["art", "feld", "vorgabe"], "additionalProperties": false, "properties": { "art": { "const": "vorgabe" }, "feld": { "$ref": "#/$defs/schluessel" }, "vorgabe": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/vorgabeverweis" } }, "nicht": { "type": "boolean" } }, "description": "Entwurf bis DMS #1038: Verweisfeld zeigt auf eine dieser Vorgabe-Mappen" },
-              { "type": "object", "required": ["art", "feld"], "additionalProperties": false, "properties": { "art": { "const": "eigeneOrganisation" }, "feld": { "$ref": "#/$defs/schluessel" }, "nicht": { "type": "boolean" } }, "description": "Entwurf bis DMS #995: Verweisfeld zeigt auf eine eigene Organisation" }
+              { "type": "object", "required": ["art", "feld", "vorgabe"], "additionalProperties": false, "properties": { "art": { "const": "vorgabe" }, "feld": { "$ref": "#/$defs/schluessel" }, "vorgabe": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/vorgabeverweis" } }, "nicht": { "type": "boolean" } }, "description": "DMS #1038 (ab 0.236.0): Verweisfeld zeigt auf eine dieser Vorgabe-Mappen" },
+              { "type": "object", "required": ["art", "feld"], "additionalProperties": false, "properties": { "art": { "const": "eigeneOrganisation" }, "feld": { "$ref": "#/$defs/schluessel" }, "nicht": { "type": "boolean" } }, "description": "DMS #995 (ab 0.238.0): Verweisfeld zeigt auf eine eigene Organisation" }
             ]
           }
         }
@@ -155,7 +155,7 @@
       "type": "object", "required": ["art"],
       "properties": { "art": { "enum": ["fest", "heute", "jahr", "monat", "ich"] }, "wert": {}, "versatz": { "type": "integer" }, "einheit": { "enum": ["tage", "wochen", "monate", "jahre"] } }
     },
-    "vorgabeverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,19}:)?[a-z][a-z0-9_]{0,39}$", "description": "Kennung einer Vorgabe-Mappe, mit paket: davor aus einem anderen Paket" },
+    "vorgabeverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59}$", "description": "Kennung einer Vorgabe-Mappe, mit paket: davor aus einem anderen Paket" },
     "mappentyp": {
       "type": "object", "required": ["schluessel", "name", "beschreibung", "felder", "register"],
       "properties": {
@@ -169,29 +169,29 @@
       }
     },
     "vorgabe": {
-      "description": "Mitgelieferte Mappe mit fester Kennung (DMS #1038): bleibt nach der Installation, Updates überschreiben keine Änderungen. Mit an statt typ/kennung: hängt nur Dokumente an eine vorhandene Vorgabe eines anderen Pakets (Ergänzung).",
+      "description": "Mitgelieferte Mappe mit fester Kennung (DMS #1038, ab Ablago 0.236.0): bleibt nach der Installation, Updates überschreiben keine Änderungen. Mit ergaenzt statt kennung/typ: hängt nur Text-Vorlagen an die Vorgabe eines Pakets unter abhaengigkeiten. Wie shared/src/vorgaben.ts.",
       "type": "object", "additionalProperties": false,
       "properties": {
-        "kennung": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+        "kennung": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,59}$", "description": "fest, eindeutig im Paket, nie umbenennen" },
         "typ": { "$ref": "#/$defs/typverweis" },
-        "an": { "$ref": "#/$defs/vorgabeverweis" },
+        "ergaenzt": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:[a-z][a-z0-9_]{0,59}$", "description": "paket:kennung der Vorgabe eines Pakets unter abhaengigkeiten – nur Vorlagen anhängen" },
         "werte": { "type": "object" },
         "beschriftungen": { "type": "object", "propertyNames": { "$ref": "#/$defs/sprachkennung" }, "additionalProperties": { "type": "object", "additionalProperties": { "$ref": "#/$defs/beschriftung" } }, "description": "Textwerte je Sprache: Sprache → Feld → Text (DMS #728)" },
-        "dokumente": {
-          "type": "array", "maxItems": 50,
+        "vorlagen": {
+          "type": "array", "maxItems": 20,
           "items": {
             "type": "object", "required": ["datei"], "additionalProperties": false,
             "properties": {
-              "datei": { "type": "string", "pattern": "^vorlagen/([a-z0-9][a-z0-9._-]{0,79}/){0,3}[a-z0-9][a-z0-9._-]{0,99}\\.md$", "description": "Text-Vorlage relativ zu inhalt/ (REGELN.md, Text-Vorlagen)" },
-              "titel": { "type": "string", "minLength": 1, "maxLength": 200 },
-              "register": { "$ref": "#/$defs/schluessel" }
+              "datei": { "type": "string", "pattern": "^vorlagen/(?:[a-z0-9][a-z0-9_-]{0,59}/){0,2}[a-z0-9][a-z0-9_-]{0,79}\\.md$", "description": "Text-Vorlage relativ zu inhalt/ (VORLAGE_DATEI in Ablago)" },
+              "titel": { "type": "string", "minLength": 1, "maxLength": 200, "description": "Name des Dokuments" },
+              "register": { "$ref": "#/$defs/schluessel", "description": "Dokumentenregister; ohne: vorlagen, sonst das erste" }
             }
           }
         }
       },
       "oneOf": [
-        { "required": ["kennung", "typ", "werte"], "not": { "required": ["an"] } },
-        { "required": ["an", "dokumente"], "not": { "anyOf": [{ "required": ["kennung"] }, { "required": ["typ"] }, { "required": ["werte"] }] } }
+        { "required": ["kennung", "typ", "werte"], "not": { "required": ["ergaenzt"] } },
+        { "required": ["ergaenzt", "vorlagen"], "not": { "anyOf": [{ "required": ["kennung"] }, { "required": ["typ"] }, { "required": ["werte"] }, { "required": ["beschriftungen"] }] } }
       ]
     },
     "sicht": {
@@ -273,7 +273,7 @@
         "schluessel": { "$ref": "#/$defs/schluessel" },
         "name": { "type": "string", "minLength": 1, "maxLength": 120 },
         "beschreibung": { "type": "string", "maxLength": 500 },
-        "eingeschaltet": { "type": "boolean", "description": "DMS #1082 (Entwurf): beim Installieren mit gesetztem Haken angeboten; ein Update ändert den Zustand nie" },
+        "eingeschaltet": { "type": "boolean", "description": "DMS #1082 (ab 0.233.0): beim Installieren mit gesetztem Haken angeboten; nennt keine Automatisierung eingeschaltet, sind alle angehakt. Ein Update ändert den Zustand nie" },
         "wenn": {
           "type": "object", "required": ["art"], "additionalProperties": false,
           "properties": {
@@ -293,7 +293,7 @@
           "items": {
             "type": "object", "required": ["art"], "additionalProperties": false,
             "properties": {
-              "art": { "enum": ["aufgabe", "feld", "stopp", "zusammenfassung", "favoriten", "anmeldeschutz", "paket"], "description": "paket: „Paket nach Zeitplan ausführen“ (DMS #1082, Entwurf) – nur mit wenn: zeitplan, ruft nur das eigene Paket auf" }, "aufgabe": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$", "description": "Nur bei art paket: Kennung, die das Paket im Ereignis zeitplan.ausgefuehrt bekommt (z. B. taeglich, monatlich)" }, "was": { "enum": ["sammel", "konto"] }, "als": { "enum": ["aufgabe", "benachrichtigung"] },
+              "art": { "enum": ["aufgabe", "feld", "stopp", "zusammenfassung", "favoriten", "anmeldeschutz", "paket"], "description": "paket: „Paket nach Zeitplan ausführen“ (DMS #1082, ab 0.233.0) – nur mit wenn: zeitplan, ruft nur das eigene Paket auf" }, "aufgabe": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$", "description": "Nur bei art paket: Kennung, die das Paket im Ereignis zeitplan.ausgefuehrt bekommt (z. B. taeglich, monatlich)" }, "was": { "enum": ["sammel", "konto"] }, "als": { "enum": ["aufgabe", "benachrichtigung"] },
               "text": { "type": "string", "maxLength": 2000 }, "faellig": { "type": ["integer", "null"] }, "werte": { "type": "object" },
               "empfaenger": { "type": "array", "items": { "type": "object", "required": ["art"], "additionalProperties": false,
                 "properties": { "art": { "type": "string" }, "feld": { "type": "string" }, "sonst": { "enum": ["ersteller"] } } } }

@@ -1331,19 +1331,19 @@ class Etappe15(unittest.TestCase):
         {'key': 'vertrag', 'label': 'Vertrag', 'typ': 'referenz', 'ziel': 'vertrag', 'pflicht': True}],
         'register': [{'key': 'allgemein', 'name': 'Allgemein', 'art': 'felder', 'felder': ['vertrag']}]}
     VORGABEN = [{'kennung': 'miete', 'typ': 'vertragsart', 'werte': {'name': 'Miete', 'mindestlaufzeit': {'anzahl': 0, 'einheit': 'monate'}},
-                 'dokumente': [{'datei': 'vorlagen/kuendigung.md', 'register': 'vorlagen', 'titel': 'Kündigung'}]}]
-    MANIFEST = {'id': 'probe', 'dms': '>=0.230.0', 'code': {'rechte': {'schreiben': ['vertrag']}}}
+                 'vorlagen': [{'datei': 'vorlagen/kuendigung.md', 'register': 'vorlagen', 'titel': 'Kündigung'}]}]
+    MANIFEST = {'id': 'probe', 'dms': '>=0.239.0', 'code': {'rechte': {'schreiben': ['vertrag']}}}
 
     def test_paket_nach_zeitplan(self):
         a = [{'schluessel': 'taeglich', 'name': 'Täglich prüfen', 'eingeschaltet': True, 'wenn': {'art': 'zeitplan', 'uhrzeit': '05:00', 'tage': [1, 2, 3, 4, 5, 6, 7]},
               'dann': [{'art': 'paket', 'aufgabe': 'taeglich'}]}]
         self.assertEqual(list(pruefen.inhalt_validator('automatisierungen').iter_errors(a)), [])
-        self.assertEqual(pruefen.pruefe_automatisierungen(a, {}, 'probe', set(), '>=0.230.0', ('zeitplan.ausgefuehrt',)), [])
+        self.assertEqual(pruefen.pruefe_automatisierungen(a, {}, 'probe', set(), '>=0.233.0', ('zeitplan.ausgefuehrt',)), [])
         f = '\n'.join(pruefen.pruefe_automatisierungen(a, {}, 'probe', set(), '>=0.226.0', ()))
         self.assertIn('zeitplan.ausgefuehrt', f)
         self.assertIn('erst ab', f)
         a[0]['wenn'] = {'art': 'datum', 'typ': 'x', 'feld': 'y', 'vorlauf': 1, 'einheit': 'tage'}
-        self.assertTrue(any('nur mit wenn: zeitplan' in x for x in pruefen.pruefe_automatisierungen(a, {}, 'probe', set(), '>=0.230.0', ('zeitplan.ausgefuehrt',))))
+        self.assertTrue(any('nur mit wenn: zeitplan' in x for x in pruefen.pruefe_automatisierungen(a, {}, 'probe', set(), '>=0.233.0', ('zeitplan.ausgefuehrt',))))
 
     def lauf(self, typen=None, vorgaben=None, manifest=None, mit_datei=True):
         import copy
@@ -1362,11 +1362,20 @@ class Etappe15(unittest.TestCase):
         v = pruefen.inhalt_validator('mappentypen')
         self.assertEqual(list(v.iter_errors([self.VERTRAG, self.ART, self.TEIL])), [])
         self.assertEqual(list(pruefen.inhalt_validator('vorgaben').iter_errors(self.VORGABEN)), [])
-        self.assertTrue(list(pruefen.inhalt_validator('vorgaben').iter_errors([{'an': 'fahrzeuge:pkw', 'kennung': 'x', 'dokumente': []}])))
+        self.assertTrue(list(pruefen.inhalt_validator('vorgaben').iter_errors([{'ergaenzt': 'fahrzeuge:pkw', 'kennung': 'x', 'vorlagen': []}])))
+        self.assertEqual(list(pruefen.inhalt_validator('vorgaben').iter_errors([{'ergaenzt': 'vertraege:miete', 'vorlagen': [{'datei': 'vorlagen/garage.md'}]}])), [])
+        self.assertTrue(list(pruefen.inhalt_validator('vorgaben').iter_errors([{'ergaenzt': 'vertraege:miete', 'vorlagen': [{'datei': 'vorlagen/a.b.md'}]}])))
 
     def test_braucht_version(self):
+        # Mindestversion je Baustein wie DMS_*_AB in Ablago; die Meldung nennt die höchste nötige.
         f = self.lauf(manifest={**self.MANIFEST, 'dms': '>=0.226.0'})
-        self.assertTrue(any('0.230.0 (vorläufig)' in x for x in f), f)
+        self.assertTrue(any('Feldart zusammengesetzt kennt Ablago erst ab 0.239.0' in x for x in f), f)
+        self.assertFalse(any('vorläufig' in x for x in f), f)
+        for ab, was in (('0.230.0', 'mehrere Ziele'), ('0.231.0', 'berechnet'), ('0.232.0', 'Feldart tabelle'), ('0.234.0', 'vorbelegen'),
+                        ('0.235.0', 'gehoertZu'), ('0.236.0', 'Vorgaben')):
+            self.assertEqual(pruefen.__dict__[{'0.230.0': 'DMS_MEHRERE_ZIELE_AB', '0.231.0': 'DMS_BERECHNET_AB', '0.232.0': 'DMS_TABELLE_AB',
+                                               '0.234.0': 'DMS_VORBELEGEN_AB', '0.235.0': 'DMS_TEILE_AB', '0.236.0': 'DMS_VORGABEN_AB'}[ab]],
+                             tuple(int(x) for x in ab.split('.')), was)
 
     def test_version_je_baustein(self):
         """Was schon in Ablago ist, braucht nur die Version, in der es kam (#1035: 0.227.0, #1033: 0.228.0)."""
@@ -1387,9 +1396,9 @@ class Etappe15(unittest.TestCase):
         self.assertTrue(any('anzeigenWenn heißt in Ablago anzeigen' in x for x in self.lauf(typen=[v, self.ART, self.TEIL])))
 
     def test_berechnet_braucht_schreibrecht(self):
-        f = self.lauf(manifest={'id': 'probe', 'dms': '>=0.230.0', 'code': {'rechte': {'lesen': ['vertrag']}}})
+        f = self.lauf(manifest={'id': 'probe', 'dms': '>=0.239.0', 'code': {'rechte': {'lesen': ['vertrag']}}})
         self.assertTrue(any('code.rechte.schreiben' in x for x in f), f)
-        f = self.lauf(manifest={'id': 'probe', 'dms': '>=0.230.0'})
+        f = self.lauf(manifest={'id': 'probe', 'dms': '>=0.239.0'})
         self.assertTrue(any('nur ein Paket mit Code' in x for x in f), f)
 
     def test_fehler(self):
@@ -1422,9 +1431,9 @@ class Etappe15(unittest.TestCase):
 
     def test_vorgaben(self):
         f = '\n'.join(self.lauf(vorgaben=[
-            {'kennung': 'a', 'typ': 'vertragsart', 'werte': {'mindestlaufzeit': 24, 'gibtsnicht': 1}, 'dokumente': [{'datei': 'vorlagen/fehlt.md', 'register': 'allgemein'}]},
+            {'kennung': 'a', 'typ': 'vertragsart', 'werte': {'mindestlaufzeit': 24, 'gibtsnicht': 1}, 'vorlagen': [{'datei': 'vorlagen/fehlt.md', 'register': 'allgemein'}]},
             {'kennung': 'a', 'typ': 'fremd:typ', 'werte': {}},
-            {'an': 'probe:a', 'dokumente': [{'datei': 'vorlagen/kuendigung.md'}]}]))
+            {'ergaenzt': 'probe:a', 'vorlagen': [{'datei': 'vorlagen/kuendigung.md'}]}]))
         for teil_text in ('ist ein Zeitraum', '„gibtsnicht“ gibt es', 'fehlt.md fehlt', 'kein Dokumentenregister', 'Kennung doppelt',
                           '„fremd“ muss unter abhaengigkeiten', 'Vorgabe eines anderen Pakets', 'Vorgabe „unbekannt“' if False else 'Vorgabe „miete“'):
             self.assertIn(teil_text, f)
