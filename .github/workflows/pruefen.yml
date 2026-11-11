@@ -49,6 +49,21 @@ jobs:
           basis=""
           if [ "${{ github.event_name }}" = pull_request ]; then basis="--basis origin/${{ github.base_ref }}"; fi
           python3 werkzeuge/pruefen.py $basis
+      # Mit dem echten Installer von Ablago (motom001/dms#1124): installiert die Pakete in eine Testdatenbank, im
+      # Pull Request als Update vom Stand des Ziel-Zweigs aus (gleiche Id = Update, ersetzt = Umzug, umbau läuft mit).
+      # Saubere Kopien aus git, damit gebaute Module nicht als „Inhalt anders bei gleicher Version“ zählen.
+      # ABLAGO beim Kern-Update hochziehen.
+      - name: Pakete mit dem Installer von Ablago prüfen
+        env:
+          ABLAGO: ghcr.io/motom001/dms:0.247.1
+        run: |
+          git worktree add -q "$RUNNER_TEMP/neu" HEAD
+          if [ "${{ github.event_name }}" = pull_request ]; then
+            git worktree add -q "$RUNNER_TEMP/alt" "origin/${{ github.base_ref }}"
+            docker run --rm -v "$RUNNER_TEMP/alt/pakete:/alt:ro" -v "$RUNNER_TEMP/neu/pakete:/neu:ro" "$ABLAGO" pakete-pruefen /alt /neu
+          else
+            docker run --rm -v "$RUNNER_TEMP/neu/pakete:/neu:ro" "$ABLAGO" pakete-pruefen /neu
+          fi
       # Sprachpakete (#116, motom001/dms#731): Abdeckung je Sprache gegen die neueste veröffentlichte Ablago-Version,
       # Fehler wie beim Installieren (HTML, Steuerzeichen); Hinweise (unbekannte Schlüssel, Platzhalter) machen nichts rot.
       - name: Sprachpakete gegen die neueste Ablago-Version

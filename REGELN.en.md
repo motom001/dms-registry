@@ -300,7 +300,7 @@ umbau:
 - Only on its own (not in a run of several packages), only with “All administration”. A step whose old type is not (or no longer) there is skipped silently – so rework steps may stay in later versions.
 - **The package giving up the type** gets a **major version** without it (breaking change in the CHANGELOG), depends on the receiving package in the version with the rework and refers to its type. That way the update only comes after the rework.
 - Ablago moves values only into fitting fields (same field type, text → period/number/date/choice, references only to allowed types). Several old fields onto one new field: the first filled value in the order of the old type wins. `setzen` writes values as they are – text, number, yes/no, list or `{ vorgabe: … }`, no period and no amount.
-- `pruefen.py` checks the form, the target type, the new fields (present, not calculated), `setzen` against field type and options, and the old field keys against the type as it last was in the registry (git history included).
+- `pruefen.py` checks the form, the target type, the new fields (present, not calculated), `setzen` against field type and options, and the old field keys against the type as it last was in the registry (git history included). CI also installs all packages with the real installer of a fixed Ablago version (`pakete-pruefen` in the image `ghcr.io/motom001/dms`, motom001/dms#1124) – in a pull request as an update from the target branch, rework included. Locally: `docker run --rm -v "$PWD/pakete:/neu:ro" ghcr.io/motom001/dms:<version> pakete-pruefen /neu`.
 
 ## Labels per language
 
