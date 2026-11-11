@@ -88,22 +88,28 @@ def zeichne(knoten: list[str], kanten: dict, index: dict, titel: str, fokus: str
     ketten: dict = {}
     platz: list[str] = []
     for (von, nach) in sorted(kanten):
+        # Auch Pfeile eines Kreises (Ziel liegt tiefer, z. B. Person → Niederlassung → Organisation → Person) laufen
+        # durch Platzhalter – abwärts statt aufwärts.
+        schritt = -1 if reihe[von] > reihe[nach] else 1
         kette = [von]
-        if reihe[von] - reihe[nach] > 1:
-            for r in range(reihe[von] - 1, reihe[nach], -1):
-                d = f'~{len(platz)}'
-                platz.append(d)
-                reihe[d] = r
-                kette.append(d)
+        for r in range(reihe[von] + schritt, reihe[nach], schritt):
+            d = f'~{len(platz)}'
+            platz.append(d)
+            reihe[d] = r
+            kette.append(d)
         kette.append(nach)
         ketten[(von, nach)] = kette
     alle = list(knoten) + platz
-    oben: dict = {k: [] for k in alle}   # Nachbarn eine Reihe höher (Ziele)
+    oben: dict = {k: [] for k in alle}   # Nachbarn eine Reihe höher
     unten: dict = {k: [] for k in alle}  # Nachbarn eine Reihe tiefer
     for kette in ketten.values():
         for a_, b_ in zip(kette, kette[1:]):
-            oben[a_].append(b_)
-            unten[b_].append(a_)
+            if reihe[a_] > reihe[b_]:
+                oben[a_].append(b_)
+                unten[b_].append(a_)
+            elif reihe[a_] < reihe[b_]:
+                unten[a_].append(b_)
+                oben[b_].append(a_)
     reihen: dict = {}
     for k in alle:
         reihen.setdefault(reihe[k], []).append(k)
@@ -143,8 +149,8 @@ def zeichne(knoten: list[str], kanten: dict, index: dict, titel: str, fokus: str
         nachbarn = sorted(nachbarn, key=lambda n: pos[n][0])
         x0, b = pos[k][0], breiten[k]
         return {n: x0 + b * (i + 1) / (len(nachbarn) + 1) for i, n in enumerate(nachbarn)}
-    rein = {k: verteilt(k, unten[k]) for k in knoten}
-    raus = {k: verteilt(k, oben[k]) for k in knoten}
+    anker_unten = {k: verteilt(k, unten[k]) for k in knoten}  # Anschluss an der Unterkante, je Nachbar
+    anker_oben = {k: verteilt(k, oben[k]) for k in knoten}    # Anschluss an der Oberkante, je Nachbar
 
     pfeil = f'pfeil-{kennung}'
     teile = [f'<svg class="zusammenhang" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {int(gesamt_b)} {int(gesamt_h)}" '
@@ -154,17 +160,20 @@ def zeichne(knoten: list[str], kanten: dict, index: dict, titel: str, fokus: str
              f'<path d="M0 0L10 5L0 10z" class="spitze"/></marker></defs>']
     for (von, nach), gehoert in sorted(kanten.items()):
         kette = ketten[(von, nach)]
-        if reihe[von] <= reihe[nach]:  # Kreis: Ziel liegt nicht darüber – von unten an die Oberkante
-            x1, y1 = raus[von][kette[1]], pos[von][1] + KNOTEN_H
-            x2, y2 = rein[nach][kette[-2]], pos[nach][1]
-            d = f'M{x1:.0f} {y1:.0f}C{x1:.0f} {y1 + 30:.0f} {x2:.0f} {y2 - 30:.0f} {x2:.0f} {y2:.0f}'
+        if reihe[von] == reihe[nach]:  # gleiche Reihe (Kreis): Bogen über die Reihe
+            x1, x2, y = pos[von][0] + breiten[von] / 2, pos[nach][0] + breiten[nach] / 2, pos[von][1]
+            d = f'M{x1:.0f} {y:.0f}C{x1:.0f} {y - 40:.0f} {x2:.0f} {y - 40:.0f} {x2:.0f} {y:.0f}'
         else:
-            # Punkte: Oberkante des Anfangs, durch jeden Platzhalter senkrecht hindurch, Unterkante des Ziels.
-            punkte = [(raus[von][kette[1]], pos[von][1])]
+            auf = reihe[von] > reihe[nach]  # aufwärts: Oberkante → … → Unterkante; abwärts umgekehrt
+
+            def kante(k, nachbar, oberkante):
+                return ((anker_oben if oberkante else anker_unten)[k][nachbar], pos[k][1] + (0 if oberkante else KNOTEN_H))
+            # Punkte: Anfang, durch jeden Platzhalter senkrecht hindurch, Ziel.
+            punkte = [kante(von, kette[1], auf)]
             for d_ in kette[1:-1]:
                 xm = pos[d_][0] + PLATZHALTER_B / 2
-                punkte += [(xm, pos[d_][1] + KNOTEN_H), (xm, pos[d_][1])]
-            punkte.append((rein[nach][kette[-2]], pos[nach][1] + KNOTEN_H))
+                punkte += [(xm, pos[d_][1] + KNOTEN_H), (xm, pos[d_][1])] if auf else [(xm, pos[d_][1]), (xm, pos[d_][1] + KNOTEN_H)]
+            punkte.append(kante(nach, kette[-2], not auf))
             d = f'M{punkte[0][0]:.0f} {punkte[0][1]:.0f}'
             for (xa, ya), (xb, yb) in zip(punkte, punkte[1:]):
                 if xa == xb:

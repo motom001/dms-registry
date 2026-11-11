@@ -269,3 +269,17 @@ class KeinPfeilDurchFremdeKaestchen(unittest.TestCase):
         svg = ('<rect x="0" y="40" width="100" height="44" rx="8"/><text x="50" y="57" class="name">Mitte</text>'
                '<path class="kante bezug" d="M50 200L50 0"><title>Unten → Oben (Bezug)</title></path>')
         self.assertEqual(schnitte(svg), [('Unten → Oben (Bezug)', 'Mitte')])
+
+
+class Kreise(unittest.TestCase):
+    """Pfeile eines Kreises (z. B. Basis 1.7: Person → Niederlassung → Organisation → Person) laufen durch Platzhalter."""
+
+    def test_kreis_ohne_schnitt(self):
+        import zusammenhang as z
+        from zusammenhang_pruefen import schnitte
+        i = {k: {'name': k.title(), 'paketname': 'Basis', 'paket': 'basis', 'felder': []} for k in ('person', 'niederlassung', 'organisation', 'immobilie')}
+        kanten = {('niederlassung', 'organisation'): True, ('organisation', 'person'): False, ('person', 'niederlassung'): False,
+                  ('person', 'organisation'): False, ('immobilie', 'person'): False, ('immobilie', 'organisation'): False}
+        svg = z.zeichne(list(i), kanten, i, 'Kreis')
+        self.assertEqual(schnitte(svg), [])
+        self.assertEqual(svg.count('class="kante'), 6)
