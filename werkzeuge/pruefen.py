@@ -1325,6 +1325,7 @@ DMS_VORGABEN_AB = (0, 236, 0)         # #1038 inhalt.vorgaben, Bedingung „zeig
 DMS_ARCHIV_PAKET_AB = (0, 237, 0)     # #1051 archiv am Mappentyp
 DMS_ORGANISATION_AB = (0, 238, 0)     # #995 merkmal: eigeneOrganisation, schreibschutz, Bedingung eigeneOrganisation
 DMS_ZUSAMMENGESETZT_AB = (0, 239, 0)  # #1050 Feldart zusammengesetzt
+DMS_UMBAU_AB = (0, 243, 0)            # #1041 umbau im Manifest
 FELDART_AB = {'zeitraum': DMS_FELDARTEN_AB, 'prozent': DMS_FELDARTEN_AB, 'tabelle': DMS_TABELLE_AB,
               'zusammengesetzt': DMS_ZUSAMMENGESETZT_AB}
 # Operatoren je Feldart in Bedingungen – wie OPERATOREN_JE_ART in shared/src/sichten.ts.
@@ -1348,6 +1349,30 @@ def ist_zeitraum(w) -> bool:
         return re.fullmatch(r'P\d{1,4}[DWMY]', w) is not None
     return (isinstance(w, dict) and set(w) == {'anzahl', 'einheit'} and isinstance(w['anzahl'], int)
             and not isinstance(w['anzahl'], bool) and w['anzahl'] >= 0 and w['einheit'] in ZEITRAUM_EINHEITEN)
+
+
+def alter_typ(paket: str, schluessel: str) -> dict | None:
+    """Mappentyp eines Pakets der Registry, wie er zuletzt im Paket stand – heute oder in einer früheren Fassung (git).
+    Für Umbau-Schritte (#1041): Die alten Feldkennungen müssen stimmen. None, wenn er sich nicht finden lässt."""
+    def finde(typen) -> dict | None:
+        for x in typen or []:
+            if isinstance(x, dict) and x.get('schluessel') == schluessel:
+                return x
+        return None
+    pfad = WURZEL / 'pakete' / paket / 'inhalt' / 'mappentypen.yaml'
+    try:
+        if pfad.exists() and (x := finde(yaml.safe_load(pfad.read_text(encoding='utf-8')))):
+            return x
+        rel = pfad.relative_to(WURZEL).as_posix()
+        commits = subprocess.run(['git', 'log', '--format=%H', '-n', '50', '--', rel], cwd=WURZEL, capture_output=True,
+                                 text=True, check=True).stdout.split()
+        for c in commits:
+            r = subprocess.run(['git', 'show', f'{c}:{rel}'], cwd=WURZEL, capture_output=True, text=True)
+            if r.returncode == 0 and (x := finde(yaml.safe_load(r.stdout))):
+                return x
+    except (subprocess.CalledProcessError, yaml.YAMLError, OSError):
+        return None
+    return None
 
 
 def installier_reihenfolge(eigene: dict, lokal) -> dict[str, set[str]]:
@@ -1633,6 +1658,59 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
             if isinstance(w, dict) and 'vorgabe' in w:
                 braucht(DMS_VORGABEN_AB, 'Vorgaben')
                 vorgabe_ok(str(w['vorgabe']), f'beispiele ({b.get("typ")}.{k})')
+
+    # Umbau (#1041): Mappen eines alten Typs ziehen in einen Typ dieses Pakets oder einer Abhängigkeit.
+    umbau = m.get('umbau')
+    if umbau is not None:
+        braucht(DMS_UMBAU_AB, 'Umbau')
+    for i, s in enumerate(umbau if isinstance(umbau, list) else []):
+        wo = f'manifest.yaml: umbau[{i + 1}]'
+        if not isinstance(s, dict):
+            continue
+        von, nach = str(s.get('von', '')), str(s.get('nach', ''))
+        vp, vk = (von.split(':', 1) if ':' in von else (pid, von))
+        np_, nk = (nach.split(':', 1) if ':' in nach else (pid, nach))
+        if (vp, vk) == (np_, nk):
+            fehler.append(f'{wo}: von und nach sind derselbe Typ')
+            continue
+        if 'dms' in (vp, np_):
+            fehler.append(f'{wo}: Mappentypen von Ablago (dms:…) baut kein Paket um')
+            continue
+        if vp == pid and vk in eigene:
+            fehler.append(f'{wo}: „{von}“ bringt das Paket noch mit – ein Umbau gibt einen Typ ab, den es nicht mehr gibt')
+        if np_ != pid and np_ not in abh:
+            fehler.append(f'{wo}: Ziel „{nach}“ – das Paket „{np_}“ muss unter abhaengigkeiten stehen')
+        if [x for x in umbau[:i] if isinstance(x, dict) and str(x.get('von', '')) == von]:
+            fehler.append(f'{wo}: „{von}“ steht zweimal unter umbau')
+        ziel = felder_je.get(nk) if np_ == pid else None
+        if np_ == pid and nk not in eigene:
+            fehler.append(f'{wo}: Zieltyp „{nach}“ gibt es in diesem Paket nicht')
+        alt_typ = alter_typ(vp, vk)
+        alt_felder = {f.get('key'): f for f in (alt_typ or {}).get('felder') or [] if isinstance(f, dict)}
+        for a, n in (s.get('felder') or {}).items():
+            if alt_typ is not None and a not in alt_felder:
+                fehler.append(f'{wo}: Feld „{a}“ gibt es im alten Typ „{von}“ nicht')
+            if ziel is not None and n not in ziel:
+                fehler.append(f'{wo}: Feld „{n}“ gibt es im Zieltyp „{nach}“ nicht')
+            elif ziel is not None and ziel[n].get('berechnet'):
+                fehler.append(f'{wo}: „{n}“ ist berechnet – dorthin zieht kein Wert')
+        for k, w in (s.get('setzen') or {}).items():
+            f = ziel.get(k) if ziel is not None else None
+            if ziel is not None and f is None:
+                fehler.append(f'{wo}: setzen „{k}“ – das Feld gibt es im Zieltyp „{nach}“ nicht')
+                continue
+            if isinstance(w, dict) and 'vorgabe' in w:
+                vorgabe_ok(str(w['vorgabe']), f'{wo}: setzen „{k}“')
+                continue
+            ft = f.get('typ') if f else None
+            if f and (f.get('berechnet') or ft in ('zeitraum', 'betrag', 'referenz', 'tabelle', 'zusammengesetzt', 'passwort')):
+                fehler.append(f'{wo}: setzen „{k}“ ({ft}) – setzen schreibt Text, Zahl, Ja/Nein oder Liste so, wie sie sind')
+            elif f and ft == 'auswahl' and f.get('optionen') and any(x not in f['optionen'] for x in (w if isinstance(w, list) else [w])):
+                fehler.append(f'{wo}: setzen „{k}“ – „{w}“ ist keine Option des Felds')
+        for a, n in (s.get('register') or {}).items():
+            regs = {r.get('key'): r for r in (eigene[nk].get('register') or []) if isinstance(r, dict)} if np_ == pid and nk in eigene else None
+            if regs is not None and (n not in regs or regs[n].get('art') != 'dokumente'):
+                fehler.append(f'{wo}: register „{n}“ ist kein Dokumentenregister von „{nach}“')
 
     if code:
         if 'dms:hinweise' in ((rechte.get('schnittstellen') or [])):

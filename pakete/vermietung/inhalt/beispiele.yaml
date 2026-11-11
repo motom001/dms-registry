@@ -1,6 +1,6 @@
 # Beispiel-Mappen mit erfundenen Daten: Familie Muster vermietet ein Zweifamilienhaus.
-# Verweise zwischen Beispielen ({ beispiel: … }) ab DMS 0.79.0; Steuerjahr und Bank kommen aus
-# den Beispielen der Pakete Haushalt und Basis – fehlen die, bleiben diese Felder leer.
+# Verweise zwischen Beispielen ({ beispiel: … }) ab DMS 0.79.0; die Bank des Kautionskontos kommt aus den Beispielen
+# des Pakets Basis. Ab 2.0.0 sind die Mietverträge Verträge (Paket Verträge) und die Ausgaben Rechnungen (Paket Rechnungen).
 - typ: "basis:person"
   schluessel: mieterin_eg
   werte: { anrede: Frau, vorname: Petra, nachname: Mieterin, beziehung: [Mieter/in], telefon: "0123 44444", email: petra.mieterin@example.org }
@@ -16,15 +16,45 @@
 - typ: wohnung
   schluessel: og
   werte: { mietobjekt: { beispiel: gartenstrasse }, bezeichnung: OG, art: Wohnung, lage: Obergeschoss mit Balkon, wohnflaeche: 64, zimmer: 2.5, zaehler: "Strom 1ESY1160222222, Wasser kalt 22-3345" }
-- typ: mietvertrag
-  werte: { wohnung: { beispiel: eg }, mieter: [{ beispiel: mieterin_eg }], stand: läuft, beginn: "2021-04-01", mietart: Indexmiete, kaltmiete: 720, vorauszahlung: 210, mieterhoehung_ab: "2027-01-01", kaution: 2160, kaution_konto: { beispiel: "basis:sparkasse" } }
-- typ: mietvertrag
-  werte: { wohnung: { beispiel: og }, mieter: [{ beispiel: mieter_og }], stand: gekündigt, beginn: "2019-08-01", gekuendigt_am: "2026-09-28", ende: "2026-12-31", mietart: Festmiete, kaltmiete: 560, vorauszahlung: 170, sonstiges: 40, kaution: 1680 }
+- typ: "vertraege:vertrag"
+  werte:
+    bezeichnung: Mietvertrag EG
+    art: { vorgabe: "vertraege:miete" }
+    betrifft: [{ beispiel: eg }]
+    an: [{ beispiel: mieterin_eg }]
+    beginn: "2021-04-01"
+    verlaengerung: läuft unbefristet weiter
+    kuendigungsfrist: { anzahl: 3, einheit: monate }
+    kuendigung_zum: Monatsende
+    mietart: Indexmiete
+    kaltmiete: 720
+    vorauszahlung: 210
+    mieterhoehung_ab: "2027-01-01"
+    kaution: 2160
+    kaution_konto: { beispiel: "basis:sparkasse" }
+- typ: "vertraege:vertrag"
+  werte:
+    bezeichnung: Mietvertrag OG
+    art: { vorgabe: "vertraege:miete" }
+    betrifft: [{ beispiel: og }]
+    an: [{ beispiel: mieter_og }]
+    beginn: "2019-08-01"
+    verlaengerung: läuft unbefristet weiter
+    kuendigungsfrist: { anzahl: 3, einheit: monate }
+    kuendigung_zum: Monatsende
+    gekuendigt_am: "2026-09-28"
+    mietart: Festmiete
+    kaltmiete: 560
+    vorauszahlung: 170
+    sonstiges: 40
+    kaution: 1680
+- typ: "rechnungen:rechnung"
+  schluessel: grundsteuer2025
+  werte: { betrifft: [{ beispiel: gartenstrasse }], kostenart: Grundsteuer, datum: "2025-02-15", betrag: 412, bezahlt_am: "2025-02-15", umlagefaehig: true }
+- typ: "rechnungen:rechnung"
+  schluessel: versicherung2025
+  werte: { betrifft: [{ beispiel: gartenstrasse }], kostenart: Versicherung, datum: "2025-01-10", betrag: 689.9, bezahlt_am: "2025-01-10", umlagefaehig: true, notiz: Wohngebäudeversicherung }
+- typ: "rechnungen:rechnung"
+  werte: { betrifft: [{ beispiel: og }], kostenart: Reparatur, datum: "2026-03-04", betrag: 318.6, bezahlt_am: "2026-03-10", umlagefaehig: false, notiz: Thermostatventile im Bad und in der Küche getauscht }
 - typ: nebenkostenabrechnung
-  werte: { mietobjekt: { beispiel: gartenstrasse }, jahr: "2025", von: "2025-01-01", bis: "2025-12-31", versenden_bis: "2026-12-31", kosten: 4630.4, steuerjahr: { beispiel: "haushalt:steuer2025" } }
-- typ: ausgabe
-  werte: { mietobjekt: { beispiel: gartenstrasse }, art: Grundsteuer, datum: "2025-02-15", betrag: 412, umlagefaehig: true, steuerjahr: { beispiel: "haushalt:steuer2025" } }
-- typ: ausgabe
-  werte: { mietobjekt: { beispiel: gartenstrasse }, art: Versicherung, datum: "2025-01-10", betrag: 689.9, umlagefaehig: true, notiz: Wohngebäudeversicherung, steuerjahr: { beispiel: "haushalt:steuer2025" } }
-- typ: ausgabe
-  werte: { mietobjekt: { beispiel: gartenstrasse }, wohnung: { beispiel: og }, art: Reparatur/Instandhaltung, datum: "2026-03-04", betrag: 318.6, umlagefaehig: false, notiz: Thermostatventile im Bad und in der Küche getauscht }
+  werte: { mietobjekt: { beispiel: gartenstrasse }, jahr: "2025", von: "2025-01-01", bis: "2025-12-31", versenden_bis: "2026-12-31", kosten: 4630.4, rechnungen: [{ beispiel: grundsteuer2025 }, { beispiel: versicherung2025 }] }

@@ -283,6 +283,25 @@ ersetzt: texterkennung_fra
 - The old id stays in `werkzeuge/ids.txt` and is never given out again; the new one is added. `pruefen.py` checks that the old id existed and its folder is gone.
 - No alias: whatever names the package by its old id (dependencies, references) moves in the same pull request.
 
+## Rework: a Mappe type moves to another package { #umbau }
+
+When a package gives up a Mappe type (Registry #163: Haushalt hands *Vertrag* and *Versicherung* to Verträge), **the package that takes it in** carries rework steps in its manifest (Ablago 0.243.0 or later, motom001/dms#1041, `dms: ">=0.243.0"`):
+
+```yaml
+umbau:
+  - von: "haushalt:versicherung"   # old type; without prefix a former type of this package
+    nach: vertrag                   # type of this package or paket:schluessel of a dependency
+    felder: { versicherer: von, beitrag: betrag }          # old → new; unmapped: note
+    setzen: { art: { vorgabe: versicherung }, bezeichnung: Versicherung }   # fixed values into empty fields
+    register: { unterlagen: dokumente }                     # document tabs old → new
+```
+
+- When installing or updating, Ablago shows per step how many Mappen move and which values go where, and asks about fields the administrator added. Mappen, documents, references, views, automations and permission rules move along; whatever does not fit ends up in a **note** on the Mappe. If the target type does not exist yet, the first step **takes over** the old type with its id – then there is no name clash either.
+- Only on its own (not in a run of several packages), only with “All administration”. A step whose old type is not (or no longer) there is skipped silently – so rework steps may stay in later versions.
+- **The package giving up the type** gets a **major version** without it (breaking change in the CHANGELOG), depends on the receiving package in the version with the rework and refers to its type. That way the update only comes after the rework.
+- Ablago moves values only into fitting fields (same field type, text → period/number/date/choice, references only to allowed types). Several old fields onto one new field: the first filled value in the order of the old type wins. `setzen` writes values as they are – text, number, yes/no, list or `{ vorgabe: … }`, no period and no amount.
+- `pruefen.py` checks the form, the target type, the new fields (present, not calculated), `setzen` against field type and options, and the old field keys against the type as it last was in the registry (git history included).
+
 ## Labels per language
 
 Mappe types, fields, choice values, tabs and views of a package can carry labels in further languages (Ablago #728, Registry #135) – an English Ablago then shows them in English:

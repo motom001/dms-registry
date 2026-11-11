@@ -1,12 +1,13 @@
 # Mappentypen des Pakets Haushalt. Schema: schema/inhalt.schema.json
-# Das DMS legt sie als haushalt_<schluessel> an; angezeigt wird der Name.
+# Ablago legt sie als haushalt:<schluessel> an; angezeigt wird der Name.
+# Ab 2.0.0 (dms-registry #163): Vertrag und Versicherung kommen aus dem Paket Verträge (Versicherung ist dort eine
+# Vertragsart), Rechnungen und Kassenbons aus dem Paket Rechnungen. Den Umzug bestehender Mappen macht Verträge.
 #
 # Gemeinsame Felder (gleicher Schlüssel in allen Typen, damit Ansichten über mehrere Typen gehen):
 #   art                Auswahl je Typ
 #   person_verweis     wer im Haushalt – Verweis auf eine Person aus Basis (bis 1.0.x Textfeld person; aus_text,
 #                      ein Update legt den Verweis dazu, umgewandelt wird mit Vorschau in der Werkbank, DMS #534)
 #   verbleib_original  „Verbleib Originaldokumente“, Verweis auf den Ablageort des DMS
-#   kuendigen_bis      Frist bei Vertrag und Versicherung
 #   steuerjahr         Verweis auf das Steuerjahr; das Steuerjahr zeigt diese Mappen unter „Belege“
 
 - schluessel: konto
@@ -43,78 +44,6 @@
     - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [art, bank, inhaber_verweis, iban]
 
-- schluessel: vertrag
-  name: Vertrag
-  beschreibung: Strom, Gas, Internet, Mobilfunk, Streaming, Miete, Mitgliedschaft und andere laufende Verträge.
-  beschriftungen: { en: { name: "Contract", beschreibung: "Electricity, gas, internet, mobile, streaming, rent, membership and other running contracts." } }
-  titelVorlage: "{art} – {vertragspartner}"
-  felder:
-    - { key: vertragspartner, label: Vertragspartner, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Contract partner" } }  }
-    - key: art
-      label: Art
-      beschriftungen: { en: { label: "Type", optionen: { "Strom": "Electricity", "Gas": "Gas", "Wasser": "Water", "Internet": "Internet", "Mobilfunk": "Mobile", "Streaming": "Streaming", "Zeitschrift": "Magazine", "Mitgliedschaft": "Membership", "Miete": "Rent", "Sonstiges": "Other" } } }
-      typ: auswahl
-      pflicht: true
-      optionen: [Strom, Gas, Wasser, Internet, Mobilfunk, Streaming, Zeitschrift, Mitgliedschaft, Miete, Sonstiges]
-    # Für die Erkennung (DMS 0.113): Post mit dieser Nummer gehört zu diesem Vertrag.
-    - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Contract number" } }  }
-    - { key: beginn, label: Beginn, typ: datum, beschriftungen: { en: { label: "Start" } }  }
-    - { key: mindestlaufzeit_bis, label: Mindestlaufzeit bis, typ: datum, beschriftungen: { en: { label: "Minimum term until" } }  }
-    - { key: kuendigungsfrist, label: Kündigungsfrist, typ: text, maxLen: 120, hilfe: "Wie im Vertrag, z. B. „3 Monate zum Ende der Laufzeit“", beschriftungen: { en: { label: "Notice period", hilfe: "As in the contract, e.g. “3 months before the end of the term”" } }  }
-    - key: kuendigen_bis
-      label: Kündigen bis
-      beschriftungen: { en: { label: "Cancel by", hilfe: "Last day the cancellation must arrive. The included automation reminds you 30 days before." } }
-      typ: datum
-      hilfe: Letzter Tag, an dem die Kündigung ankommen muss. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
-      frist: { vorlauf: 30, einheit: tage }
-    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, beschriftungen: { en: { label: "Amount" } }  }
-    - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig], beschriftungen: { en: { label: "Payment interval", optionen: { monatlich: "monthly", "vierteljährlich": "quarterly", "halbjährlich": "half-yearly", "jährlich": "yearly", einmalig: "one-off" } } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
-  register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [vertragspartner, art, vertragsnummer, beginn, mindestlaufzeit_bis, kuendigungsfrist, kuendigen_bis, betrag, zahlweise, verbleib_original], beschriftungen: { en: { name: "General" } }  }
-    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
-    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
-  trefferliste: [art, vertragspartner, betrag, kuendigen_bis]
-
-- schluessel: versicherung
-  name: Versicherung
-  beschreibung: Haftpflicht, Hausrat, Kfz, Berufsunfähigkeit und alle anderen Versicherungen.
-  beschriftungen: { en: { name: "Insurance", beschreibung: "Liability, contents, car, occupational disability and all other insurance policies." } }
-  titelVorlage: "{art} – {versicherer}"
-  felder:
-    - { key: versicherer, label: Versicherer, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Insurer" } }  }
-    - key: art
-      label: Art
-      beschriftungen: { en: { label: "Type", optionen: { "Haftpflicht": "Liability", "Hausrat": "Contents", "Wohngebäude": "Buildings", "Kfz": "Car", "Rechtsschutz": "Legal expenses", "Berufsunfähigkeit": "Occupational disability", "Leben": "Life", "Kranken-Zusatz": "Supplementary health", "Reise": "Travel", "Unfall": "Accident", "Sonstige": "Other" } } }
-      typ: auswahl
-      pflicht: true
-      optionen: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz, Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall, Sonstige]
-    - { key: versicherungsnummer, label: Versicherungsnummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Policy number" } }  }
-    # Sachen (z. B. ein Fahrzeug) verweisen selbst auf die Versicherung und stehen dort unter „Verknüpfungen“.
-    - { key: versichert_verweis, label: Versichert, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, aus_text: versichert, hilfe: Versicherte Personen. Ein Fahrzeug verweist selbst auf seine Versicherung und steht hier unter „Verknüpfungen“., beschriftungen: { en: { label: "Insured", hilfe: "Insured people. A vehicle links to its insurance itself and appears here under “Links”." } }  }
-    - { key: beitrag, label: Beitrag, typ: betrag, min: 0, waehrung: EUR, beschriftungen: { en: { label: "Premium" } }  }
-    - { key: zahlweise, label: Zahlweise, typ: auswahl, optionen: [monatlich, vierteljährlich, halbjährlich, jährlich, einmalig], beschriftungen: { en: { label: "Payment interval", optionen: { monatlich: "monthly", "vierteljährlich": "quarterly", "halbjährlich": "half-yearly", "jährlich": "yearly", einmalig: "one-off" } } }  }
-    - key: hauptfaelligkeit
-      label: Hauptfälligkeit
-      beschriftungen: { en: { label: "Renewal date", hilfe: "Day the insurance year starts. The included automation reminds you 6 weeks before, every year." } }
-      typ: datum
-      hilfe: Tag, an dem das Versicherungsjahr beginnt. Die mitgelieferte Automatisierung erinnert jedes Jahr 6 Wochen vorher.
-      frist: { vorlauf: 6, einheit: wochen, wiederholung: 12 }
-    - key: kuendigen_bis
-      label: Kündigen bis
-      beschriftungen: { en: { label: "Cancel by", hilfe: "Usually 3 months before the renewal date. The included automation reminds you 30 days before." } }
-      typ: datum
-      hilfe: Meist 3 Monate vor der Hauptfälligkeit. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
-      frist: { vorlauf: 30, einheit: tage }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Versicherungsschein auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper policy document is kept" } }  }
-  register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [versicherer, art, versicherungsnummer, versichert_verweis, beitrag, zahlweise, hauptfaelligkeit, kuendigen_bis, verbleib_original], beschriftungen: { en: { name: "General" } }  }
-    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
-    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
-  trefferliste: [art, versicherer, versichert_verweis, beitrag, kuendigen_bis]
-
 - schluessel: steuerjahr
   name: Steuerjahr
   beschreibung: Einkommensteuer eines Jahres – Erklärung, Bescheid und die Belege dazu.
@@ -143,6 +72,7 @@
         - { typ: gesundheit, feld: steuerjahr }
         - { typ: bildung, feld: steuerjahr }
         - { typ: arbeitsverhaeltnis, feld: steuerjahr }
+        - { typ: "rechnungen:rechnung", feld: steuerjahr }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
@@ -266,6 +196,12 @@
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the receipt is – no warranty without it" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [gegenstand, haendler, kaufdatum, preis, seriennummer, garantie_bis, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    # Ab 2.0.0: Kassenbon und Rechnung sind Rechnungen (Paket Rechnungen) mit „Betrifft“ = diese Anschaffung.
+    - key: rechnungen
+      name: Rechnungen
+      beschriftungen: { en: { name: "Invoices" } }
+      art: verknuepfungen
+      quellen: [{ typ: "rechnungen:rechnung", feld: betrifft }]
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }

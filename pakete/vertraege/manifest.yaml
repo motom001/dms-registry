@@ -4,7 +4,7 @@ schema: 1
 id: vertraege
 name: Verträge
 herausgeber: app.ablago
-version: 1.0.1
+version: 1.1.0
 beschreibung: Ein Mappentyp für alle Verträge, zu Hause und im Betrieb. Du trägst ein, was es ist, bei wem und wie lange es läuft – das Paket rechnet aus, bis wann du kündigen musst, und erinnert rechtzeitig.
 autor:
   name: Thomas Meissner
@@ -15,7 +15,8 @@ symbol: file-signature
 # 0.238.0: Bedingung „eigene Organisation“ (DMS #995); darin enthalten Zeitraum (0.227.0, #1035), Anzeige-Bedingungen
 # (0.228.0, #1033), mehrere Ziele (0.230.0, #1036), berechnete Felder und Hinweise (0.231.0, #1034), „Paket nach Zeitplan
 # ausführen“ (0.233.0, #1082), Vorbelegen (0.234.0, #1037) und Vorgaben (0.236.0, #1038)
-dms: ">=0.238.0"
+# 0.243.0: Umbau (DMS #1041) – Verträge, Versicherungen und Mietverträge aus Haushalt und Vermietung ziehen hierher
+dms: ">=0.243.0"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
@@ -30,6 +31,27 @@ kurzanleitung:
     - Turn on “Cancel the contract in time” under automations to get a reminder 30 days before.
 abhaengigkeiten:
   basis: ">=1.7.0"
+# Umbau (dms-registry #163, DMS #1041): Haushalt und Vermietung bringen ab 2.0.0 keine eigenen Vertragstypen mehr mit.
+# Ihre Mappen ziehen beim Installieren bzw. Aktualisieren von Verträge hierher, mit allen Werten; was nicht passt, steht
+# danach in einer Notiz an der Mappe. Ist Verträge noch nicht installiert, übernimmt der Vertrag den alten Typ aus Haushalt
+# mit seiner Id (Ansichten, Rechte und Links bleiben). Ablago zeigt vorher, was wohin geht, und fragt nach.
+umbau:
+  - von: "haushalt:vertrag"
+    nach: vertrag
+    # Die Art (Strom, Mobilfunk …) wird die Bezeichnung – die Vertragsart wählst du danach (die Fristen schlägt sie vor).
+    felder: { vertragspartner: von, art: bezeichnung, vertragsnummer: vertragsnummer, beginn: beginn, kuendigungsfrist: kuendigungsfrist,
+              betrag: betrag, zahlweise: zahlweise, verbleib_original: verbleib_original }
+  - von: "haushalt:versicherung"
+    nach: vertrag
+    felder: { versicherer: von, art: versicherung_art, versicherungsnummer: vertragsnummer, versichert_verweis: versicherte_personen,
+              beitrag: betrag, zahlweise: zahlweise, hauptfaelligkeit: hauptfaelligkeit, verbleib_original: verbleib_original }
+    setzen: { art: { vorgabe: versicherung }, bezeichnung: Versicherung }
+  - von: "vermietung:mietvertrag"
+    nach: vertrag
+    felder: { wohnung: betrifft, mieter: an, beginn: beginn, gekuendigt_am: gekuendigt_am, ende: vertragsende, mietart: mietart,
+              kaltmiete: kaltmiete, vorauszahlung: vorauszahlung, sonstiges: sonstiges, mieterhoehung_ab: mieterhoehung_ab,
+              kaution: kaution, kaution_konto: kaution_konto, kaution_zurueck_am: kaution_zurueck_am, verbleib_original: verbleib_original }
+    setzen: { art: { vorgabe: miete }, bezeichnung: Mietvertrag }
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

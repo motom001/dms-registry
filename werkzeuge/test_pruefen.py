@@ -471,7 +471,7 @@ class Inhalt(unittest.TestCase):
         self.assertIn('en', a['beschriftungen'])
         for p in ('haushalt', 'haus', 'vermietung', 'fahrzeuge'):
             m = yaml.safe_load((WURZEL / 'pakete' / p / 'manifest.yaml').read_text(encoding='utf-8'))
-            self.assertEqual(m['abhaengigkeiten']['basis'], '>=1.6.0', p)
+            self.assertIn(m['abhaengigkeiten']['basis'], ('>=1.6.0', '>=1.7.0'), p)
             self.assertIn('basis:ablageort', (WURZEL / 'pakete' / p / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'), p)
 
     def test_unbekannter_dms_typ(self):
@@ -985,6 +985,56 @@ class BeispielDokumente(unittest.TestCase):
             self.assertNotIn('beispieldokumente', katalog.eintrag(ziel, m, 'probe-1.0.0.zip', b'x', '2026-11-08T00:00:00Z')['inhalt'])
 
 
+class Umbau(unittest.TestCase):
+    """dms-registry #163, motom001/dms#1041: Umbau-Schritte im Manifest."""
+
+    ZIEL = {'schluessel': 'vertrag', 'name': 'Vertrag', 'beschreibung': '', 'felder': [
+        {'key': 'von', 'label': 'Anbieter', 'typ': 'text'}, {'key': 'status', 'label': 'Status', 'typ': 'text', 'berechnet': True},
+        {'key': 'frist', 'label': 'Frist', 'typ': 'zeitraum'}, {'key': 'zum', 'label': 'zum', 'typ': 'auswahl', 'optionen': ['a', 'b']}],
+        'register': [{'key': 'r', 'name': 'R', 'art': 'felder', 'felder': ['von', 'status', 'frist', 'zum']},
+                     {'key': 'dokumente', 'name': 'Dokumente', 'art': 'dokumente'}]}
+
+    def pruefe(self, umbau, dms='>=0.243.0', abh=frozenset({'haushalt'})):
+        import copy
+        return pruefen.pruefe_etappe15(Path('.'), {'id': 'probe', 'dms': dms, 'umbau': umbau}, [copy.deepcopy(self.ZIEL)], [], [], set(abh))
+
+    def test_gueltig_und_version(self):
+        u = [{'von': 'haushalt:vertrag', 'nach': 'vertrag', 'felder': {'vertragspartner': 'von'}, 'setzen': {'zum': 'a'}, 'register': {'dokumente': 'dokumente'}}]
+        ohne_code = [x for x in self.pruefe(u) if 'nur ein Paket mit Code' not in x]  # berechnetes Feld im Ziel, hier ohne Code
+        self.assertEqual(ohne_code, [])
+        self.assertTrue(any('Umbau kennt Ablago erst ab 0.243.0' in x for x in self.pruefe(u, dms='>=0.239.0')))
+
+    def test_felder_des_alten_typs(self):
+        # Haushalt hat (heute oder früher) einen Vertrag ohne Feld „gibtsnicht“.
+        f = self.pruefe([{'von': 'haushalt:vertrag', 'nach': 'vertrag', 'felder': {'gibtsnicht': 'von'}}])
+        self.assertTrue(any('„gibtsnicht“ gibt es im alten Typ' in x for x in f), f)
+
+    def test_ziel_und_setzen(self):
+        f = self.pruefe([{'von': 'haushalt:vertrag', 'nach': 'vertrag', 'felder': {'vertragspartner': 'status', 'art': 'fehlt'},
+                          'setzen': {'frist': 'P3M', 'zum': 'c', 'weg': 1}, 'register': {'dokumente': 'r'}}])
+        for teil in ('„status“ ist berechnet', '„fehlt“ gibt es im Zieltyp', 'setzen „frist“ (zeitraum)', '„c“ ist keine Option',
+                     'setzen „weg“ – das Feld gibt es', 'register „r“ ist kein Dokumentenregister'):
+            self.assertTrue(any(teil in x for x in f), (teil, f))
+
+    def test_von_nach(self):
+        self.assertTrue(any('derselbe Typ' in x for x in self.pruefe([{'von': 'vertrag', 'nach': 'probe:vertrag'}])))
+        self.assertTrue(any('bringt das Paket noch mit' in x for x in self.pruefe([{'von': 'vertrag', 'nach': 'haushalt:vertrag'}])))
+        self.assertTrue(any('dms:' in x for x in self.pruefe([{'von': 'dms:benutzer', 'nach': 'vertrag'}])))
+        self.assertTrue(any('unter abhaengigkeiten' in x for x in self.pruefe([{'von': 'haushalt:vertrag', 'nach': 'vertraege:vertrag'}])))
+        self.assertTrue(any('zweimal' in x for x in self.pruefe([{'von': 'haushalt:vertrag', 'nach': 'vertrag'}] * 2)))
+
+    def test_pakete_der_registry(self):
+        for pid in ('vertraege', 'rechnungen'):
+            m = yaml.safe_load((WURZEL / 'pakete' / pid / 'manifest.yaml').read_text(encoding='utf-8'))
+            self.assertTrue(m.get('umbau'), pid)
+            for s in m['umbau']:
+                p, k = s['von'].split(':')
+                alt = pruefen.alter_typ(p, k)
+                self.assertIsNotNone(alt, s['von'])
+                # Jedes Feld des alten Typs hat ein Ziel oder steht bewusst in der Notiz (dann fehlt es hier).
+                self.assertTrue(set(s['felder']) <= {f['key'] for f in alt['felder']}, s['von'])
+
+
 if __name__ == '__main__':
     unittest.main()
 
@@ -1158,10 +1208,8 @@ class Paketsprache(unittest.TestCase):
             h = pruefen.doppelte_typen([Path(tmp) / 'eins', Path(tmp) / 'zwei'])
             self.assertEqual(len(h), 1)
             self.assertIn('eins:vertrag', h[0])
-        # Übergang bis dms-registry #163: Haushalt bringt seinen Vertrag noch mit, bis der Umzug zu Verträge kommt.
-        uebergang = ('Mappentyp „vertrag“ gibt es in haushalt:vertrag, vertraege:vertrag',)
-        rest = [h for h in pruefen.doppelte_typen(sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir())) if not h.startswith(uebergang)]
-        self.assertEqual(rest, [])
+        # Seit dms-registry #163 bringt Haushalt keinen eigenen Vertrag mehr mit – keine Ausnahme mehr.
+        self.assertEqual(pruefen.doppelte_typen(sorted(p for p in (WURZEL / 'pakete').iterdir() if p.is_dir())), [])
 
 
 class Kennungen(unittest.TestCase):
@@ -1279,8 +1327,8 @@ class KennungenNach1084(unittest.TestCase):
             self.assertEqual(pruefen.kennungen_pruefung(o, {**m, 'herausgeber': 'app.ablago'}, None, 'HEAD', False), [])
             self.assertEqual(pruefen.kennungen_pruefung(o, m, None, None, False), [])  # ohne Basis (main): katalog.py prüft
         # Unveränderte Version eines vorhandenen Pakets braucht das Feld nicht (bis zur nächsten Version).
-        haus = yaml.safe_load((WURZEL / 'pakete' / 'haus' / 'manifest.yaml').read_text(encoding='utf-8'))
-        self.assertFalse(pruefen.neue_version(WURZEL / 'pakete' / 'haus', haus, 'HEAD'))
+        pdfa = yaml.safe_load((WURZEL / 'pakete' / 'pdfa' / 'manifest.yaml').read_text(encoding='utf-8'))
+        self.assertFalse(pruefen.neue_version(WURZEL / 'pakete' / 'pdfa', pdfa, 'HEAD'))
 
     def test_lange_schluessel_brauchen_0229(self):
         with tempfile.TemporaryDirectory() as tmp:

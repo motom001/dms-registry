@@ -1,23 +1,12 @@
 # Mitgelieferte Automatisierungen (Ablago #712, dms-registry #108/#113). Nach der Installation aus –
 # beim Installieren fragt Ablago, welche gleich eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellt man selbst ein.
-- schluessel: vertrag_kuendigen
-  name: Kündigung eines Vertrags bald fällig
-  beschreibung: 30 Tage vor „Kündigen bis“ bekommt, wer den Vertrag angelegt hat, eine Frist.
-  wenn: { art: datum, typ: vertrag, feld: kuendigen_bis, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
-  dann:
-    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Kündigen bis {datum}: {titel}" }
+# Ab 2.0.0 erinnert das Paket Verträge an „Kündigen bis“; die Hauptfälligkeit einer Versicherung bleibt hier.
 - schluessel: versicherung_hauptfaelligkeit
   name: Hauptfälligkeit einer Versicherung
   beschreibung: Jedes Jahr 6 Wochen vor der Hauptfälligkeit – Zeit, den Beitrag und die Leistungen zu prüfen.
-  wenn: { art: datum, typ: versicherung, feld: hauptfaelligkeit, vorlauf: 6, einheit: wochen, uhrzeit: "07:00", wiederholung: 12 }
+  wenn: { art: datum, typ: "vertraege:vertrag", feld: hauptfaelligkeit, vorlauf: 6, einheit: wochen, uhrzeit: "07:00", wiederholung: 12 }
   dann:
     - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Hauptfälligkeit am {datum}: {titel}" }
-- schluessel: versicherung_kuendigen
-  name: Kündigung einer Versicherung bald fällig
-  beschreibung: 30 Tage vor „Kündigen bis“ bekommt, wer die Versicherung angelegt hat, eine Frist.
-  wenn: { art: datum, typ: versicherung, feld: kuendigen_bis, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
-  dann:
-    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Kündigen bis {datum}: {titel}" }
 - schluessel: steuer_einspruch
   name: Einspruchsfrist beim Steuerbescheid
   beschreibung: 7 Tage vor dem Ende der Einspruchsfrist.

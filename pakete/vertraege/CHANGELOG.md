@@ -1,5 +1,17 @@
 # Änderungen
 
+## 1.1.0
+
+- **Verträge aus Haushalt und Vermietung ziehen um** (dms-registry #163, Ablago #1041): Beim Installieren oder Aktualisieren von Verträge ziehen die Mappen der Typen *Vertrag* und *Versicherung* (Haushalt bis 1.x) und *Mietvertrag* (Vermietung bis 1.x) in den Vertrag – mit allen Werten, Dokumenten, Verknüpfungen, Ansichten und Rechten. Ablago zeigt vorher, was wohin geht; was nicht passt, steht danach in einer Notiz an der Mappe. Ist Verträge noch nicht installiert, wird der Vertrag aus Haushalt zum Vertrag dieses Pakets (gleiche Id) – dann gibt es auch keinen Namenskonflikt „Vertrag“.
+  - *Vertrag (Haushalt):* Vertragspartner → Anbieter, Art → Bezeichnung (die Vertragsart wählst du danach), Kündigungsfrist („3 Monate …“) → Kündigungsfrist als Zeitraum (der ganze Text steht zusätzlich in der Notiz). „Mindestlaufzeit bis“ und „Kündigen bis“ stehen in der Notiz – trag Mindestlaufzeit und „Danach“ ein, dann rechnet das Paket *Kündigen bis* selbst.
+  - *Versicherung (Haushalt):* Vertragsart Versicherung, Bezeichnung „Versicherung“, Versicherer → Anbieter, Art → Versicherung (Haftpflicht, Kfz …), Versicherungsnummer → Vertragsnummer, Versichert → Versicherte Personen, Beitrag → Betrag, Hauptfälligkeit bleibt.
+  - *Mietvertrag (Vermietung):* Vertragsart Miete, Bezeichnung „Mietvertrag“, Wohnung → Betrifft, Mieter → Kunde, Ende → Vertragsende, Miete und Kaution in den Abschnitt Miete; der Stand („läuft“ …) steht in der Notiz, den Status rechnet das Paket.
+  - Der Umbau läuft nur einzeln (nicht zusammen mit anderen Paketen) und nur mit „Gesamte Verwaltung“; „Vorher sichern“ ist vorausgewählt.
+- Neu am Vertrag: **Betrifft** (unter *Weiteres*) – wofür der Vertrag ist: Fahrzeug, Wohnung, Mietobjekt, Immobilie oder Anschaffung, sobald das Paket dazu installiert ist. Gleiche Kennung wie bei Rechnungen.
+- **Berechnung:** Ist ein Vertrag gekündigt, steht keine Kündigungsfrist, aber ein Vertragsende darin (so kommen gekündigte Mietverträge aus Vermietung 1.x an), gilt das Vertragsende als Ende – sonst endete er am Tag der Kündigung.
+- **Kunde** nimmt jetzt mehrere Personen oder Organisationen (z. B. alle Mieter). Bei einer bestehenden Installation bleibt das Feld, wie es ist.
+- Braucht **Ablago 0.243.0**.
+
 ## 1.0.1
 
 - **Installieren repariert:** Ablago 0.238–0.244 brach die Installation mit „Abschnitt „Miete“: Das Feld „art“ gibt es nicht (mehr)“ ab. Grund: Die Vertragsart stand in `mappentypen.yaml` nach dem Vertrag, und Ablago legt den Verweis darauf erst im zweiten Durchgang an. Jetzt steht die Vertragsart vorn. Inhalt und Berechnung sind unverändert.

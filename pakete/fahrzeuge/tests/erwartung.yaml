@@ -1,6 +1,7 @@
 # Was nach der Installation im DMS vorhanden sein muss.
-mappentypen: [fahrzeug, werkstattrechnung]
+mappentypen: [fahrzeug]
 sichten: [fahrzeuge, alle_fahrzeuge, werkstattrechnungen, hu_faellig]
-beispiele: 3
+beispiele: 4
 wortlisten: 5
 automatisierungen: 1
+vorgaben: 2

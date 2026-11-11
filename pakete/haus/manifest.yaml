@@ -2,7 +2,8 @@
 schema: 1
 id: haus
 name: Haus
-version: 1.4.0
+herausgeber: app.ablago
+version: 1.5.0
 beschreibung: Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.
 autor:
   name: Thomas Meissner
@@ -12,11 +13,12 @@ lizenz: Apache-2.0
 # 0.121.0: Feldformate und Datumsgrenzen (format, landFeld, min/max bei Datum, DMS #535)
 # 0.177.0: mitgelieferte Automatisierungen (inhalt.automatisierungen, Ablago #712) – das Datumsfeld erinnert nicht mehr selbst
 # 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
-dms: ">=0.212.0"
+# 0.243.0: Verträge 1.1.0 (Umbau, DMS #1041) – der Wartungsvertrag ist ein Vertrag aus dem Paket Verträge (dms-registry #163)
+dms: ">=0.243.0"
 abhaengigkeiten:
-  # Ablageort gibt es ab Basis 1.6.0 (dms-registry #138).
+  # Ablageort gibt es ab Basis 1.6.0 (dms-registry #138); ab 1.5.0 Verträge statt Haushalt (dms-registry #163).
   basis: ">=1.6.0"
-  haushalt: ">=1.0.0"
+  vertraege: ">=1.1.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

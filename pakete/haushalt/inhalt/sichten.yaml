@@ -1,15 +1,22 @@
 # Ansichten des Pakets Haushalt. Schema: schema/inhalt.schema.json
 # Ordner „Haushalt“ mit je einer Ansicht pro Mappentyp, dazu Ansichten für anstehende Fristen.
+# Ab 2.0.0: Verträge und Versicherungen sind Verträge aus dem Paket Verträge (vertraege:vertrag).
 
 - schluessel: haushalt
   name: Haushalt
   beschreibung: Alle Unterlagen des Haushalts
   beschriftungen: { en: { name: "Household", beschreibung: "All household documents" } }
-  typen: [konto, vertrag, versicherung, steuerjahr, arbeitsverhaeltnis, vorsorge, ausweis, gesundheit, anschaffung, bildung]
+  typen: [konto, "vertraege:vertrag", steuerjahr, arbeitsverhaeltnis, vorsorge, ausweis, gesundheit, anschaffung, bildung]
 
 - { schluessel: konten, name: Konten, eltern: haushalt, typen: [konto], beschriftungen: { en: { name: "Accounts" } }  }
-- { schluessel: vertraege, name: Verträge, eltern: haushalt, typen: [vertrag], beschriftungen: { en: { name: "Contracts" } }  }
-- { schluessel: versicherungen, name: Versicherungen, eltern: haushalt, typen: [versicherung], beschriftungen: { en: { name: "Insurance policies" } }  }
+- { schluessel: vertraege, name: Verträge, eltern: haushalt, typen: ["vertraege:vertrag"], beschriftungen: { en: { name: "Contracts" } }  }
+- schluessel: versicherungen
+  name: Versicherungen
+  beschriftungen: { en: { name: "Insurance policies" } }
+  eltern: haushalt
+  typen: ["vertraege:vertrag"]
+  bedingungen:
+    - { feld: versicherung_art, operator: nichtLeer }
 - { schluessel: steuerjahre, name: Steuerjahre, eltern: haushalt, typen: [steuerjahr], beschriftungen: { en: { name: "Tax years" } }  }
 - { schluessel: arbeit, name: Arbeitsverhältnisse, eltern: haushalt, typen: [arbeitsverhaeltnis], beschriftungen: { en: { name: "Employments" } }  }
 - { schluessel: vorsorge, name: Vorsorge, eltern: haushalt, typen: [vorsorge], beschriftungen: { en: { name: "Pension" } }  }
@@ -23,16 +30,16 @@
   name: Sachversicherungen
   beschriftungen: { en: { name: "Property insurance" } }
   eltern: versicherungen
-  typen: [versicherung]
+  typen: ["vertraege:vertrag"]
   bedingungen:
-    - { feld: art, operator: einerVon, wert: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz] }
+    - { feld: versicherung_art, operator: einerVon, wert: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz] }
 - schluessel: personenversicherungen
   name: Personenversicherungen
   beschriftungen: { en: { name: "Personal insurance" } }
   eltern: versicherungen
-  typen: [versicherung]
+  typen: ["vertraege:vertrag"]
   bedingungen:
-    - { feld: art, operator: einerVon, wert: [Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall] }
+    - { feld: versicherung_art, operator: einerVon, wert: [Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall] }
 
 # Fristen
 - schluessel: kuendigung_bald
@@ -40,7 +47,7 @@
   beschreibung: Verträge und Versicherungen, die du bald kündigen müsstest, wenn du wechseln willst
   beschriftungen: { en: { name: "Cancellation in the next 3 months", beschreibung: "Contracts and policies you would soon have to cancel if you want to switch" } }
   eltern: haushalt
-  typen: [vertrag, versicherung]
+  typen: ["vertraege:vertrag"]
   bedingungen:
     - { feld: kuendigen_bis, operator: zwischen, wert: [{ art: heute }, { art: heute, versatz: 3, einheit: monate }] }
 - schluessel: laeuft_ab
