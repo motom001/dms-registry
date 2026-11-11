@@ -218,24 +218,24 @@ Packages can bring **templates as text** – e.g. a cancellation letter on a con
 
 ## Building blocks for contracts, invoices and compliance (stage 15/16) { #bausteine-etappe-15 }
 
-> **Partly in Ablago already.** Period, percentage and negative amounts exist from **0.227.0**, “Show if …” with the trait “used for business” from **0.228.0**. `pruefen.py` requires exactly that version per building block. For everything else the version isn't fixed yet (provisionally `dms: ">=0.230.0"`); packages using it are drafts until then.
+> **In Ablago from 0.227.0 to 0.239.0.** Each building block came with its own version (in the table). `pruefen.py` requires exactly the highest one a package needs and names the building blocks – like the `DMS_*_AB` constants in Ablago. Only the permissions for setup and evidence (compliance, dms #1053/#1054) are still open.
 
 | Building block | in the package | Core |
 |---|---|---|
 | **Period** (from 0.227.0) | `typ: zeitraum`, value `{ anzahl: 3, einheit: monate }` (tage, wochen, monate, jahre) or short `P3M` | #1035 |
 | **Percentage** (from 0.227.0) | `typ: prozent`, `nachkomma: 1` | #1035 |
 | **Negative amount** (from 0.227.0) | `typ: betrag`, `negativ: true` (credit note, refund) | #1035 |
-| **Several targets** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; with `mehrfach: true` optionally `gleicherTyp: true`. Targets from packages the package does **not** depend on go into `zielOptional` – Ablago adds them as soon as the type exists (e.g. "betrifft" of an invoice: vehicle, flat, purchase) | #1036 |
-| **Show if …** (from 0.228.0) | `anzeigen: { modus: alle, bedingungen: [...] }` on fields and sections (`register.abschnitte`), as in the core; `modus: eine` means “any one is enough”. Conditions: `{ art: merkmal, merkmal: beruflich }`, `{ art: feld, bedingung: { feld, op, wert: { art: fest, wert } } }` with the operators of views per field type (choice `einerVon` with a list, yes/no `ja`/`nein`, numbers `gleich`/`kleiner`/`groesser` …), `{ art: verweistyp, feld, typ: fahrzeuge:fahrzeug }`; each can be inverted with `nicht: true`. Still a draft: `{ art: vorgabe, feld, vorgabe: [miete] }` (#1038) and `{ art: eigeneOrganisation, feld }` (#995). A hidden section hides all fields up to the next one. **Order, not protection** – values stay stored and visible through API and export. | #1032, #1033 |
-| **Calculated** | `berechnet: true` – only this package's code writes the field, read-only in the interface; needs `code.rechte.schreiben` on its own type, never `pflicht` | #1034 |
-| **Note on a folder** | `code.rechte.schnittstellen: [dms:hinweise]` – set and remove a note; it never prevents saving | #1034 |
-| **On a schedule** | a bundled automation with `wenn: { art: zeitplan, … }` and the action card `{ art: paket, aufgabe: taeglich }` ("run package on schedule"), ideally with `eingeschaltet: true`; the package subscribes to `zeitplan.ausgefuehrt` and receives `aufgabe` and `datum`. Administrators see the run under Automations and can change time and days. It only calls its own package. | #1082 |
-| **Table** | `typ: tabelle`, `quelle: { typ: rechnungsposition, feld: rechnung, trefferliste, neu: "+ Position" }` – no value of its own | #1030 |
-| **Always belongs to** | on the folder type `gehoertZu: rechnung` (reference field to exactly one folder, required) – not in views and search | #1031 |
-| **Composed** | `typ: zusammengesetzt`, `vorlage: "{von} · {rechnungsnummer}"`, often `eindeutig: true` | #1050 |
-| **Prefill** | on a reference field `vorbelegen: [{ von: kuendigungsfrist, nach: kuendigungsfrist }]` – only into empty fields, as a suggestion | #1037 |
-| **Own organisation** | yes/no field with `merkmal: eigeneOrganisation` and `schreibschutz: verwaltung` (changeable only with administration rights) | #995 |
-| **Defaults** | `inhalt.vorgaben: inhalt/vorgaben.yaml` – folders with a fixed `kennung` that stay (e.g. contract types), with `werte`, `beschriftungen` per language and `dokumente` (only [text templates](#text-templates)). Refer to them in values with `{ vorgabe: miete }` or `{ vorgabe: "vertraege:miete" }`. An **add-on** uses `an: "vertraege:pkw_kaufvertrag"` to attach only documents to an existing default. | #1038 |
+| **Several targets** (from 0.230.0) | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; with `mehrfach: true` optionally `gleicherTyp: true`. Targets from packages the package does **not** depend on go into `zielOptional` – Ablago adds them as soon as the type exists (e.g. "betrifft" of an invoice: vehicle, flat, purchase) | #1036 |
+| **Show if …** (from 0.228.0) | `anzeigen: { modus: alle, bedingungen: [...] }` on fields and sections (`register.abschnitte`), as in the core; `modus: eine` means “any one is enough”. Conditions: `{ art: merkmal, merkmal: beruflich }`, `{ art: feld, bedingung: { feld, op, wert: { art: fest, wert } } }` with the operators of views per field type (choice `einerVon` with a list, yes/no `ja`/`nein`, numbers `gleich`/`kleiner`/`groesser` …), `{ art: verweistyp, feld, typ: fahrzeuge:fahrzeug }`; each can be inverted with `nicht: true`. From 0.236.0 `{ art: vorgabe, feld, vorgabe: [miete] }` (points to the bundled folder, #1038), from 0.238.0 `{ art: eigeneOrganisation, feld }` (#995). In views, references with several targets get the operator `zeigtAufTyp` (from 0.230.0). A hidden section hides all fields up to the next one. **Order, not protection** – values stay stored and visible through API and export. | #1032, #1033 |
+| **Calculated** (from 0.231.0) | `berechnet: true` – only this package's code writes the field, read-only in the interface; needs `code.rechte.schreiben` on its own type, never `pflicht` | #1034 |
+| **Note on a folder** (from 0.231.0) | `code.rechte.schnittstellen: [dms:hinweise]` – set and remove a note; it never prevents saving | #1034 |
+| **On a schedule** (from 0.233.0) | a bundled automation with `wenn: { art: zeitplan, … }` and the action card `{ art: paket, aufgabe: taeglich }` ("run package on schedule"), ideally with `eingeschaltet: true`; the package subscribes to `zeitplan.ausgefuehrt` and receives `aufgabe` and `datum`. Administrators see the run under Automations and can change time and days. It only calls its own package. | #1082 |
+| **Table** (from 0.232.0) | `typ: tabelle`, `quelle: { typ: rechnungsposition, feld: rechnung, trefferliste, neu: "+ Position" }` – no value of its own | #1030 |
+| **Always belongs to** (from 0.235.0) | on the folder type `gehoertZu: rechnung` – the key of the **reference field** (exactly one target type, one folder, required, without `zielOptional` and `anzeigen`; no chains) – not in views and search | #1031 |
+| **Composed** (from 0.239.0) | `typ: zusammengesetzt`, `vorlage: "{von} · {rechnungsnummer}"`, often `eindeutig: true` | #1050 |
+| **Prefill** (from 0.234.0) | on a reference field `vorbelegen: [{ von: kuendigungsfrist, nach: kuendigungsfrist }]` – only into empty fields, as a suggestion | #1037 |
+| **Own organisation** (from 0.238.0) | yes/no field with `merkmal: eigeneOrganisation` and `schreibschutz: verwaltung` (changeable only with administration rights) | #995 |
+| **Defaults** (from 0.236.0) | `inhalt.vorgaben: inhalt/vorgaben.yaml` – folders with a fixed `kennung` that stay (e.g. contract types), with `werte`, `beschriftungen` per language and `vorlagen` (only [text templates](#text-templates)). Refer to them in values with `{ vorgabe: miete }` or `{ vorgabe: "vertraege:miete" }`. An **add-on** uses `ergaenzt: "vertraege:pkw_kaufvertrag"` to attach only templates to the default of a package under `abhaengigkeiten`. | #1038 |
 
 ```yaml
 # inhalt/vorgaben.yaml (package Verträge)
@@ -243,7 +243,7 @@ Packages can bring **templates as text** – e.g. a cancellation letter on a con
   typ: vertragsart
   werte: { name: Mobilfunk, mindestlaufzeit: { anzahl: 24, einheit: monate }, kuendigungsfrist: { anzahl: 1, einheit: monate } }
   beschriftungen: { en: { name: Mobile phone } }
-  dokumente:
+  vorlagen:
     - { datei: vorlagen/kuendigung.md, register: vorlagen, titel: Kündigung }
 ```
 

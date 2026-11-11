@@ -220,24 +220,24 @@ Pakete können **Vorlagen als Text** mitbringen – etwa ein Kündigungsschreibe
 
 ## Bausteine für Verträge, Rechnungen und Compliance (Etappe 15/16) { #bausteine-etappe-15 }
 
-> **Teils schon in Ablago.** Zeitraum, Prozent und negative Beträge gibt es ab **0.227.0**, „Anzeigen, wenn …“ mit dem Merkmal „beruflich genutzt“ ab **0.228.0**. `pruefen.py` verlangt je Baustein genau diese Version. Für alles andere steht die Version noch nicht fest (vorläufig `dms: ">=0.230.0"`); Pakete damit entstehen bis dahin nur als Entwurf.
+> **In Ablago ab 0.227.0 bis 0.239.0.** Jeder Baustein kam mit einer eigenen Version (in der Tabelle). `pruefen.py` verlangt genau die höchste, die ein Paket braucht, und nennt die Bausteine dazu – wie die Konstanten `DMS_*_AB` in Ablago. Noch offen sind nur die Rechte für Einrichtung und Nachweise (Compliance, dms #1053/#1054).
 
 | Baustein | so im Paket | Kern |
 |---|---|---|
 | **Zeitraum** (ab 0.227.0) | `typ: zeitraum`, Wert `{ anzahl: 3, einheit: monate }` (tage, wochen, monate, jahre) oder kurz `P3M` | #1035 |
 | **Prozent** (ab 0.227.0) | `typ: prozent`, `nachkomma: 1` | #1035 |
 | **Negativer Betrag** (ab 0.227.0) | `typ: betrag`, `negativ: true` (Gutschrift, Erstattung) | #1035 |
-| **Mehrere Ziele** | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; mit `mehrfach: true` optional `gleicherTyp: true`. Ziele aus Paketen, von denen das Paket **nicht** abhängt, stehen in `zielOptional` – Ablago nimmt sie dazu, sobald es den Typ gibt (z. B. „betrifft“ einer Rechnung: Fahrzeug, Wohnung, Anschaffung) | #1036 |
-| **Anzeigen, wenn …** (ab 0.228.0) | `anzeigen: { modus: alle, bedingungen: [...] }` an Feldern und Abschnitten (`register.abschnitte`), wie im Kern; `modus: eine` heißt „eine davon reicht“. Bedingungen: `{ art: merkmal, merkmal: beruflich }`, `{ art: feld, bedingung: { feld, op, wert: { art: fest, wert } } }` mit den Operatoren der Ansichten je Feldart (Auswahl `einerVon` mit Liste, Ja/Nein `ja`/`nein`, Zahlen `gleich`/`kleiner`/`groesser` …), `{ art: verweistyp, feld, typ: fahrzeuge:fahrzeug }`; jede mit `nicht: true` umkehrbar. Noch Entwurf: `{ art: vorgabe, feld, vorgabe: [miete] }` (#1038) und `{ art: eigeneOrganisation, feld }` (#995). Ein ausgeblendeter Abschnitt blendet alle Felder bis zum nächsten aus. **Ordnung, kein Schutz** – Werte bleiben gespeichert und über API und Export sichtbar. | #1032, #1033 |
-| **Berechnet** | `berechnet: true` – nur der Code dieses Pakets schreibt das Feld, in der Oberfläche nur lesbar; braucht `code.rechte.schreiben` auf den eigenen Typ, nie `pflicht` | #1034 |
-| **Hinweis an der Mappe** | `code.rechte.schnittstellen: [dms:hinweise]` – Hinweis setzen und entfernen, Speichern hindert er nie | #1034 |
-| **Nach Zeitplan** | eine mitgelieferte Automatisierung mit `wenn: { art: zeitplan, … }` und der Dann-Karte `{ art: paket, aufgabe: taeglich }` („Paket nach Zeitplan ausführen“), gern mit `eingeschaltet: true`; das Paket abonniert `zeitplan.ausgefuehrt` und bekommt `aufgabe` und `datum`. Der Admin sieht den Lauf unter Automatisierungen und kann Uhrzeit und Tage ändern. Ruft nur das eigene Paket auf. | #1082 |
-| **Tabelle** | `typ: tabelle`, `quelle: { typ: rechnungsposition, feld: rechnung, trefferliste, neu: "+ Position" }` – kein eigener Wert | #1030 |
-| **Gehört immer zu** | am Mappentyp `gehoertZu: rechnung` (Verweisfeld auf genau eine Mappe, Pflicht) – nicht in Ansichten und Suche | #1031 |
-| **Zusammengesetzt** | `typ: zusammengesetzt`, `vorlage: "{von} · {rechnungsnummer}"`, gern `eindeutig: true` | #1050 |
-| **Vorbelegen** | an einem Verweisfeld `vorbelegen: [{ von: kuendigungsfrist, nach: kuendigungsfrist }]` – nur in leere Felder, als Vorschlag | #1037 |
-| **Eigene Organisation** | Ja/Nein-Feld mit `merkmal: eigeneOrganisation` und `schreibschutz: verwaltung` (nur mit Verwaltungsrecht änderbar) | #995 |
-| **Vorgaben** | `inhalt.vorgaben: inhalt/vorgaben.yaml` – Mappen mit fester `kennung`, die bleiben (z. B. Vertragsarten), mit `werte`, `beschriftungen` je Sprache und `dokumente` (nur [Text-Vorlagen](#text-vorlagen)). Verweis darauf in Werten `{ vorgabe: miete }` bzw. `{ vorgabe: "vertraege:miete" }`. Eine **Ergänzung** hängt mit `an: "vertraege:pkw_kaufvertrag"` nur Dokumente an eine vorhandene Vorgabe. | #1038 |
+| **Mehrere Ziele** (ab 0.230.0) | `ziel: [fahrzeuge:fahrzeug, haus:immobilie]`; mit `mehrfach: true` optional `gleicherTyp: true`. Ziele aus Paketen, von denen das Paket **nicht** abhängt, stehen in `zielOptional` – Ablago nimmt sie dazu, sobald es den Typ gibt (z. B. „betrifft“ einer Rechnung: Fahrzeug, Wohnung, Anschaffung) | #1036 |
+| **Anzeigen, wenn …** (ab 0.228.0) | `anzeigen: { modus: alle, bedingungen: [...] }` an Feldern und Abschnitten (`register.abschnitte`), wie im Kern; `modus: eine` heißt „eine davon reicht“. Bedingungen: `{ art: merkmal, merkmal: beruflich }`, `{ art: feld, bedingung: { feld, op, wert: { art: fest, wert } } }` mit den Operatoren der Ansichten je Feldart (Auswahl `einerVon` mit Liste, Ja/Nein `ja`/`nein`, Zahlen `gleich`/`kleiner`/`groesser` …), `{ art: verweistyp, feld, typ: fahrzeuge:fahrzeug }`, ab 0.236.0 `{ art: vorgabe, feld, vorgabe: [miete] }` (zeigt auf die mitgelieferte Mappe, #1038), ab 0.238.0 `{ art: eigeneOrganisation, feld }` (#995); jede mit `nicht: true` umkehrbar. In Ansichten gibt es für Verweise mit mehreren Zielen den Operator `zeigtAufTyp` (ab 0.230.0). Ein ausgeblendeter Abschnitt blendet alle Felder bis zum nächsten aus. **Ordnung, kein Schutz** – Werte bleiben gespeichert und über API und Export sichtbar. | #1032, #1033 |
+| **Berechnet** (ab 0.231.0) | `berechnet: true` – nur der Code dieses Pakets schreibt das Feld, in der Oberfläche nur lesbar; braucht `code.rechte.schreiben` auf den eigenen Typ, nie `pflicht` | #1034 |
+| **Hinweis an der Mappe** (ab 0.231.0) | `code.rechte.schnittstellen: [dms:hinweise]` – `PUT`/`DELETE /api/v1/mappen/{id}/hinweise/{schluessel}` mit `{ text }`, reiner Text bis 300 Zeichen, höchstens 3 je Paket und Mappe; Speichern hindert er nie | #1034 |
+| **Nach Zeitplan** (ab 0.233.0) | eine mitgelieferte Automatisierung mit `wenn: { art: zeitplan, … }` und der Dann-Karte `{ art: paket, aufgabe: taeglich }` („Paket nach Zeitplan ausführen“), gern mit `eingeschaltet: true`; das Paket abonniert `zeitplan.ausgefuehrt` und bekommt `aufgabe` und `datum`. Der Admin sieht den Lauf unter Automatisierungen und kann Uhrzeit und Tage ändern. Ruft nur das eigene Paket auf. | #1082 |
+| **Tabelle** (ab 0.232.0) | `typ: tabelle`, `quelle: { typ: rechnungsposition, feld: rechnung, trefferliste, neu: "+ Position" }` – kein eigener Wert, nie Pflicht oder berechnet; `neu` höchstens 40 Zeichen, englisch unter `beschriftungen.en.neu` | #1030 |
+| **Gehört immer zu** (ab 0.235.0) | am Mappentyp `gehoertZu: rechnung` – die Kennung des **Verweisfelds** (genau ein Zieltyp, eine Mappe, Pflicht, ohne `zielOptional` und `anzeigen`; keine Ketten) – nicht in Ansichten und Suche | #1031 |
+| **Zusammengesetzt** (ab 0.239.0) | `typ: zusammengesetzt`, `vorlage: "{von} · {rechnungsnummer}"` (höchstens 300 Zeichen), gern `eindeutig: true`; nie Pflicht, berechnet oder mit `standard` – den Wert setzt Ablago, auch nicht in Beispielen | #1050 |
+| **Vorbelegen** (ab 0.234.0) | an einem Verweisfeld `vorbelegen: [{ von: kuendigungsfrist, nach: kuendigungsfrist }]` – nur in leere Felder, als Vorschlag | #1037 |
+| **Eigene Organisation** (ab 0.238.0) | Ja/Nein-Feld mit `merkmal: eigeneOrganisation` und `schreibschutz: verwaltung` (nur mit Verwaltungsrecht änderbar) | #995 |
+| **Vorgaben** (ab 0.236.0) | `inhalt.vorgaben: inhalt/vorgaben.yaml` – Mappen mit fester `kennung`, die bleiben (z. B. Vertragsarten), mit `werte`, `beschriftungen` je Sprache und `vorlagen` (nur [Text-Vorlagen](#text-vorlagen), je `datei`, `titel`, `register`; höchstens 20). Verweis darauf in Werten `{ vorgabe: miete }` bzw. `{ vorgabe: "vertraege:miete" }`. Eine **Ergänzung** hängt mit `ergaenzt: "vertraege:pkw_kaufvertrag"` nur Vorlagen an die Vorgabe eines Pakets unter `abhaengigkeiten`. Höchstens 200 Einträge. | #1038 |
 
 ```yaml
 # inhalt/vorgaben.yaml (Paket Verträge)
@@ -245,7 +245,7 @@ Pakete können **Vorlagen als Text** mitbringen – etwa ein Kündigungsschreibe
   typ: vertragsart
   werte: { name: Mobilfunk, mindestlaufzeit: { anzahl: 24, einheit: monate }, kuendigungsfrist: { anzahl: 1, einheit: monate } }
   beschriftungen: { en: { name: Mobile phone } }
-  dokumente:
+  vorlagen:
     - { datei: vorlagen/kuendigung.md, register: vorlagen, titel: Kündigung }
 ```
 
