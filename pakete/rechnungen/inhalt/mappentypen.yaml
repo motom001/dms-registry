@@ -111,8 +111,8 @@
         - { vor: rechnungsnummer, titel: Einzelheiten, eingeklappt: true, beschriftungen: { en: { titel: "Details" } } }
         - { vor: netto, titel: Beträge im Einzelnen, eingeklappt: true, beschriftungen: { en: { titel: "Amounts in detail" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
         - { vor: zahlungseingang_am, titel: Ausgangsrechnung, beschriftungen: { en: { titel: "Outgoing invoice" } }, anzeigen: { bedingungen: [{ art: eigeneOrganisation, feld: von }] } }
-        - { vor: kilometerstand, titel: Fahrzeug, beschriftungen: { en: { titel: "Vehicle" } }, anzeigen: { bedingungen: [{ art: verweistyp, feld: betrifft, typ: fahrzeuge:fahrzeug }] } }
-        - { vor: umlagefaehig, titel: Vermietung, beschriftungen: { en: { titel: "Letting" } }, anzeigen: { modus: eine, bedingungen: [{ art: verweistyp, feld: betrifft, typ: vermietung:mietobjekt }, { art: verweistyp, feld: betrifft, typ: vermietung:wohnung }] } }
+        - { vor: kilometerstand, titel: Fahrzeug, beschriftungen: { en: { titel: "Vehicle" } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: betrifft, op: zeigtAufTyp, wert: { art: fest, wert: ["fahrzeuge:fahrzeug"] } } }] } }
+        - { vor: umlagefaehig, titel: Vermietung, beschriftungen: { en: { titel: "Letting" } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: betrifft, op: zeigtAufTyp, wert: { art: fest, wert: ["vermietung:mietobjekt", "vermietung:wohnung"] } } }] } }
         - { vor: positionen, titel: Positionen, beschriftungen: { en: { titel: "Items" } } }
     - { key: anlagen, name: Anlagen, art: dokumente, beschriftungen: { en: { name: "Attachments" } } }
     - { key: lieferscheine, name: Lieferscheine, art: verknuepfungen, quellen: [{ typ: lieferschein, feld: rechnung }], beschriftungen: { en: { name: "Delivery notes" } } }

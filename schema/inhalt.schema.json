@@ -140,7 +140,7 @@
               { "type": "object", "required": ["art", "bedingung"], "additionalProperties": false, "properties": { "art": { "const": "feld" }, "nicht": { "type": "boolean" },
                 "bedingung": { "type": "object", "required": ["feld", "op"], "additionalProperties": false, "properties": {
                   "art": { "const": "feld" }, "feld": { "$ref": "#/$defs/schluessel" },
-                  "op": { "enum": ["gleich", "enthaelt", "leer", "nichtLeer", "kleiner", "groesser", "zwischen", "ausserhalb", "imZeitraum", "ja", "nein", "einerVon", "zeigtAuf"] },
+                  "op": { "enum": ["gleich", "enthaelt", "leer", "nichtLeer", "kleiner", "groesser", "zwischen", "ausserhalb", "imZeitraum", "ja", "nein", "einerVon", "zeigtAuf", "zeigtAufTyp"] },
                   "wert": { "$ref": "#/$defs/wertangabe" }, "bis": { "$ref": "#/$defs/wertangabe" } } } }, "description": "Feldwert dieser Mappe, Operatoren je Feldart wie in Ansichten" },
               { "type": "object", "required": ["art", "feld", "typ"], "additionalProperties": false, "properties": { "art": { "const": "verweistyp" }, "feld": { "$ref": "#/$defs/schluessel" }, "typ": { "$ref": "#/$defs/typverweis" }, "nicht": { "type": "boolean" } }, "description": "Verweisfeld zeigt auf eine Mappe dieses Typs (DMS #1036)" },
               { "type": "object", "required": ["art", "feld", "vorgabe"], "additionalProperties": false, "properties": { "art": { "const": "vorgabe" }, "feld": { "$ref": "#/$defs/schluessel" }, "vorgabe": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/vorgabeverweis" } }, "nicht": { "type": "boolean" } }, "description": "DMS #1038 (ab 0.236.0): Verweisfeld zeigt auf eine dieser Vorgabe-Mappen" },

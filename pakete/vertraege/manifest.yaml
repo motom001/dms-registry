@@ -4,7 +4,7 @@ schema: 1
 id: vertraege
 name: Verträge
 herausgeber: app.ablago
-version: 1.0.0
+version: 1.0.1
 beschreibung: Ein Mappentyp für alle Verträge, zu Hause und im Betrieb. Du trägst ein, was es ist, bei wem und wie lange es läuft – das Paket rechnet aus, bis wann du kündigen musst, und erinnert rechtzeitig.
 autor:
   name: Thomas Meissner
