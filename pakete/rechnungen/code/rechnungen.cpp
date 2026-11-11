@@ -3,7 +3,7 @@
 //
 // Ereignisse: mappe.angelegt / mappe.geaendert zu Rechnungen und Positionen, zeitplan.ausgefuehrt (überfällig, Summen).
 // (überfällig). Geschrieben wird nur, was sich ändert, mit „stand“ – ein Mensch gewinnt (409).
-// Hinweis setzen/entfernen: PUT bzw. DELETE /mappen/{id}/hinweise/summe (Schnittstelle aus DMS #1034, Entwurf).
+// Hinweis setzen/entfernen: PUT bzw. DELETE /mappen/{id}/hinweise/summe (Schnittstelle aus DMS #1034, ab Ablago 0.231.0; Text höchstens 300 Zeichen).
 #include <cstdint>
 #include <cstdlib>
 #include <string>
@@ -24,7 +24,8 @@ DMS(ergebnis) int32_t dms_ergebnis(const char *text, int32_t len);
 namespace {
 
 enum Stufe { DEBUG = 0, INFO = 1, WARNUNG = 2, FEHLER = 3 };
-const char *TYP_RECHNUNG = "rechnungen_rechnung", *TYP_POSITION = "rechnungen_rechnungsposition";
+// Kennungen in Ablago ab 0.229.0: <paket>:<schluessel> (DMS #1084)
+const char *TYP_RECHNUNG = "rechnungen:rechnung", *TYP_POSITION = "rechnungen:rechnungsposition";
 const int SEITE = 100, HOECHSTENS = 5000;
 const char *HINWEIS = "summe";
 

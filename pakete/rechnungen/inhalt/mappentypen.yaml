@@ -149,7 +149,8 @@
   name: Rechnungsposition
   beschreibung: Eine Zeile einer Rechnung. Gehört immer zu ihrer Rechnung und erscheint nur dort.
   beschriftungen: { en: { name: "Invoice item", beschreibung: "One line of an invoice. Always belongs to its invoice and only appears there." } }
-  titelVorlage: "{nr}. {beschreibung}"
+  # Ohne Nummer: „{nr}. …“ ergäbe sonst „. Bremsen vorne“ (Fund Entwicklung 11.11.); die Nr. steht in der Tabelle.
+  titelVorlage: "{beschreibung}"
   gehoertZu: rechnung
   felder:
     - { key: rechnung, label: Rechnung, typ: referenz, ziel: rechnung, pflicht: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Invoice" } } }

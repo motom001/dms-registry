@@ -20,7 +20,7 @@ function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = fal
   const json = (status, x) => { antwort = new TextEncoder().encode(JSON.stringify(x)); return status; };
   const api = (q) => {
     aufrufe.push(`${q.methode} ${q.pfad}`);
-    if (q.methode === 'GET' && q.pfad === '/typen') return json(200, [{ id: 't-r', schluessel: 'rechnungen_rechnung' }, { id: 't-p', schluessel: 'rechnungen_rechnungsposition' }]);
+    if (q.methode === 'GET' && q.pfad === '/typen') return json(200, [{ id: 't-r', schluessel: 'rechnungen:rechnung' }, { id: 't-p', schluessel: 'rechnungen:rechnungsposition' }]);
     let h = /^\/mappen\/([^/?]+)\/hinweise\/summe$/.exec(q.pfad);
     if (h) { hinweise[h[1]] = q.methode === 'PUT' ? q.body.text : null; return json(200, {}); }
     let m = /^\/mappen\/([^/?]+)$/.exec(q.pfad);

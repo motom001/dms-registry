@@ -39,7 +39,7 @@ Register: *Rechnung*, *Anlagen*, *Lieferscheine*, *Verknüpfungen*, *Historie*.
 
 ## Voraussetzungen
 
-- Ablago ab 0.230.0 (vorläufig): Prozent, negative Beträge, mehrere Ziele, Anzeige-Bedingungen, berechnete Felder, Hinweise, Tabelle, „gehört immer zu“ und „Paket nach Zeitplan ausführen“ (Etappe 15, DMS #1082).
+- Ablago ab 0.238.0: Prozent, negative Beträge, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „Paket nach Zeitplan ausführen“, „gehört immer zu“ und eigene Organisation (Etappe 15).
 - Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung und Haushalt sind nicht nötig – sind sie installiert, kann *Betrifft* auf ihre Mappen zeigen.
 
 ## Rechte und Netzwerkzugriff

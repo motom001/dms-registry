@@ -12,10 +12,22 @@ autor:
 lizenz: Apache-2.0
 kategorien: [vorlagen]
 symbol: receipt-text
-# 0.230.0 (vorläufig, Etappe 15): Prozent und negativer Betrag (DMS #1035), mehrere Ziele (#1036), Anzeige-Bedingungen
-# (#1032, #1033), berechnete Felder und Hinweise (#1034), Tabelle (#1030), gehört immer zu (#1031), eigene Organisation
-# (#995), „Paket nach Zeitplan ausführen“ (#1082)
-dms: ">=0.230.0"
+# 0.238.0: Bedingung „eigene Organisation“ (DMS #995); darin enthalten Prozent und negativer Betrag (0.227.0, #1035),
+# Anzeige-Bedingungen (0.228.0, #1032/#1033), mehrere Ziele (0.230.0, #1036), berechnete Felder und Hinweise (0.231.0,
+# #1034), Tabelle (0.232.0, #1030), „Paket nach Zeitplan ausführen“ (0.233.0, #1082), gehört immer zu (0.235.0, #1031)
+dms: ">=0.238.0"
+# „So nutzt du es“ (dms-registry #164)
+kurzanleitung:
+  de:
+    - Lege eine Rechnung an oder übernimm sie aus der Post – von wem, wie viel, wann fällig.
+    - Trage „bezahlt am“ ein, sobald sie bezahlt ist; den Status rechnet das Paket jeden Morgen neu.
+    - Unter „Wozu“ ordnest du sie einem Vertrag, Fahrzeug oder einer Wohnung zu – dann findest du sie dort wieder.
+    - "Für Rechnungen mit Positionen: „+ Position“ – passt die Summe nicht zum Betrag, zeigt die Rechnung einen Hinweis."
+  en:
+    - Create an invoice or take it over from the mail – from whom, how much, when due.
+    - Enter “paid on” once it is paid; the package recalculates the status every morning.
+    - Under “What for” you link it to a contract, vehicle or flat – then you find it there too.
+    - "For invoices with items: “+ Item” – if the total does not match the amount, the invoice shows a note."
 abhaengigkeiten:
   basis: ">=1.7.0"
   vertraege: ">=1.0.0"

@@ -6,4 +6,5 @@
 - Neu: **Lieferschein** (Lieferant, Lieferdatum, Nummern, vollständig erhalten, gehört zu Rechnung) und **Rechnungsposition** (gehört immer zu ihrer Rechnung, erscheint nur dort).
 - **Berechnung:** Status in Worten („offen – fällig am …“, „überfällig seit …“, „bezahlt am …“, „Gutschrift – noch nicht erhalten“), bei jeder Änderung und jeden Morgen (Automatisierung „Rechnungen täglich prüfen“, gleich eingeschaltet). An Positionen Gesamtpreis (wenn leer: Menge × Einzelpreis) und Umsatzsteuer. **Summenprüfung:** Passen die Positionen nicht zum Betrag, steht an der Rechnung ein ruhiger Hinweis mit beiden Zahlen – Speichern hindert er nie, Rundung bis 1 Cent je Position zählt nicht.
 - Ansichten *Rechnungen*, *Offen*, *Dieses Jahr*, *Lieferscheine*; gleichbedeutende Wörter (Umsatzsteuer/Mehrwertsteuer …).
-- Braucht Basis ab 1.7.0, Verträge ab 1.0.0 und Ablago ab 0.230.0 (vorläufig).
+- Kurzanleitung „So nutzt du es“ (dms-registry #164).
+- Braucht Basis ab 1.7.0, Verträge ab 1.0.0 und **Ablago 0.238.0**. Herausgeber `app.ablago`.
