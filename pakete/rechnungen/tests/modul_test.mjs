@@ -1,5 +1,6 @@
 // Test des gebauten Moduls (code/modul.wasm) mit einer kleinen Nachbildung von Ablago: Importe dms.* und WASI,
-// Rechnungen und Positionen, Status, Umsatzsteuer, Summenprüfung als Hinweis, zeitplan.ausgefuehrt.
+// Rechnungen und Positionen, Status, Umsatzsteuer, Summenprüfung als Hinweis, zeitplan.ausgefuehrt und die Aktion
+// „Als bezahlt markieren“ (dms_aktion mit dms:mappenaktion, #162).
 //
 //   node tests/modul_test.mjs
 import { readFileSync } from 'node:fs';
@@ -56,6 +57,29 @@ function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = fal
   return { code, ergebnis, protokoll, aufrufe, geschrieben, hinweise };
 }
 
+/** Eine Aktion im Menü „Mappe“ wie im Läufer (DMS #1039): dms_aktion mit Eingabe, Antwort per ergebnis(). `ms`: Uhr (oder null). */
+function aktion(eingabe, ms = Date.UTC(2026, 10, 11, 9, 30)) {
+  let ergebnis = '';
+  const memory = new WebAssembly.Memory({ initial: 32, maximum: 4096 });
+  const u8 = () => new Uint8Array(memory.buffer);
+  const text = (p, l) => new TextDecoder().decode(u8().subarray(p, p + l));
+  const aufrufe = [];
+  const dms = {
+    api: () => { aufrufe.push('api'); return 403; }, antwort_laenge: () => 0, antwort_lesen: () => 0,
+    ergebnis: (p, l) => { ergebnis = text(p, l); return 0; }, log: () => 0,
+  };
+  const importe = { env: { memory }, dms, wasi_snapshot_preview1: {} };
+  for (const i of WebAssembly.Module.imports(modul)) if (i.module === 'wasi_snapshot_preview1') importe.wasi_snapshot_preview1[i.name] = () => 52;
+  if (ms !== null) importe.wasi_snapshot_preview1.clock_time_get = (_id, _gen, aus) => { new DataView(memory.buffer).setBigUint64(aus, BigInt(ms) * 1000000n, true); return 0; };
+  const inst = new WebAssembly.Instance(modul, importe);
+  inst.exports._initialize?.();
+  const e = new TextEncoder().encode(JSON.stringify({ aktion: 'dms:mappenaktion', kennung: 'k-1', paket: { id: 'rechnungen' }, einstellungen: {}, ...eingabe }));
+  const p = inst.exports.dms_puffer(e.length);
+  u8().set(e, p);
+  const code = inst.exports.dms_aktion(p, e.length);
+  return { code, ergebnis, antwort: ergebnis ? JSON.parse(ergebnis) : null, aufrufe };
+}
+
 let fehler = 0;
 function pruefe(name, ok, r) {
   console.log(`${ok ? '✓' : '✗'} ${name}${r?.ergebnis ? `: ${r.ergebnis}` : ''}`);
@@ -95,6 +119,21 @@ pruefe('Summenprüfung aus: kein Hinweis', !('r1' in r.hinweise) && r.geschriebe
 
 r = lauf({ daten: { mappe: 'weg', typ: 't-r' }, mappen: {} });
 pruefe('Gelöscht: nichts zu tun', r.code === 0, r);
+
+
+// Aktion „Als bezahlt markieren“ (#162)
+const mappe = { id: 'r1', typ: 'rechnungen:rechnung', titel: 'Stadtwerke – 01.11.2026', werte: { betrag: E(120.8) } };
+let a = aktion({ mappenaktion: 'bezahlt', schritt: 1, mappe });
+const felder = a.antwort?.dialog?.felder ?? [];
+pruefe('Bezahlt: Dialog mit heute als Vorschlag', a.code === 0 && felder[1]?.art === 'datum' && felder[1].standard === '2026-11-11' && felder[1].pflicht && felder[0].text.includes('120,80 €'), a);
+a = aktion({ mappenaktion: 'bezahlt', schritt: 1, mappe }, null);
+pruefe('Bezahlt: ohne Uhr kein Vorschlag', a.code === 0 && a.antwort?.dialog && !('standard' in a.antwort.dialog.felder[1]), a);
+a = aktion({ mappenaktion: 'bezahlt', schritt: 2, mappe, antworten: { am: '2026-11-03' }, stand: null });
+pruefe('Bezahlt: Ergebnis setzt bezahlt_am', a.antwort?.ergebnis?.felder?.bezahlt_am === '2026-11-03' && a.antwort.ergebnis.meldung === 'Als bezahlt markiert (03.11.2026).' && !a.aufrufe.length, a);
+a = aktion({ mappenaktion: 'bezahlt', schritt: 2, mappe, antworten: { am: 'gestern' } });
+pruefe('Bezahlt: kaputtes Datum ändert nichts', a.antwort?.ergebnis && !a.antwort.ergebnis.felder, a);
+a = aktion({ mappenaktion: 'gibtsnicht', schritt: 1, mappe });
+pruefe('Unbekannte Aktion: Fehler', a.code === 2, a);
 
 if (fehler) { console.log(`${fehler} Fehler`); process.exit(1); }
 console.log('alle Prüfungen bestanden');

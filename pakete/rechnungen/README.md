@@ -31,6 +31,10 @@ Register: *Rechnung*, *Anlagen*, *Lieferscheine*, *Verknüpfungen*, *Historie*.
 - **Positionen:** Ist der Gesamtpreis leer, füllt das Paket Menge × Einzelpreis ein – was du selbst einträgst, bleibt. Mit Umsatzsteuersatz gelten die Preise netto, das Paket rechnet die Umsatzsteuer aus.
 - **Summenprüfung:** Ergeben die Positionen (mit Umsatzsteuer) etwas anderes als der Betrag, steht an der Rechnung „Die Positionen ergeben 118,97 €, die Rechnung sagt 120,80 €.“ Bis 1 Cent je Position zählt als Rundung. Der Hinweis verschwindet, sobald es passt; Speichern hindert er nie.
 
+## Als bezahlt markieren
+
+An der Rechnung trägt **Mappe → Als bezahlt markieren** *Bezahlt am* ein – heute oder ein Datum, das du wählst. Den Status rechnet das Paket danach neu. Ist die Rechnung schon bezahlt, steht das im Menü.
+
 ## Einstellungen
 
 | Einstellung | Vorgabe | Bedeutung |
@@ -43,7 +47,7 @@ Bis Fahrzeuge 1.x und Vermietung 1.x brachten eigene Typen *Werkstattrechnung* u
 
 ## Voraussetzungen
 
-- Ablago ab 0.243.0: Umbau, Prozent, negative Beträge, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „Paket nach Zeitplan ausführen“, „gehört immer zu“ und eigene Organisation (Etappe 15).
+- Ablago ab 0.245.3: Aktionen im Menü „Mappe“, Umbau, Prozent, negative Beträge, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „Paket nach Zeitplan ausführen“, „gehört immer zu“ und eigene Organisation (Etappe 15).
 - Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung und Haushalt sind nicht nötig – sind sie installiert, kann *Betrifft* auf ihre Mappen zeigen.
 
 ## Rechte und Netzwerkzugriff

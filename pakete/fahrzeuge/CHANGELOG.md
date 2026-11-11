@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.0.1
+
+- Vorlage *Kaufvertrag Gebrauchtwagen*: Ablagos Briefsatz kennt keine Tabellen und keine Kästchen-Zeichen – die Fahrzeugdaten stehen jetzt Zeile für Zeile, Ankreuzfelder als „[ ]“, Lücken als Punkte.
+
 ## 2.0.0
 
 - **Breaking Change – Werkstattrechnung zieht ins Paket Rechnungen** (dms-registry #163): Fahrzeuge bringt den Mappentyp *Werkstattrechnung* nicht mehr mit. Rechnungen zum Fahrzeug legst du als **Rechnung** aus dem Paket Rechnungen ab und wählst unter *Betrifft* das Fahrzeug; Kilometerstand und Arbeiten stehen dort im Abschnitt *Fahrzeug*. Bestehende Werkstattrechnungen ziehen beim Installieren bzw. Aktualisieren von **Rechnungen 1.1.0** dorthin um, mit allen Werten und Dokumenten (Ablago 0.243.0, „Umbau“). Deshalb erst Verträge, dann Rechnungen, dann dieses Update.

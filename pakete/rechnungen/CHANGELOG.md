@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.0
+
+- **Aktion „Als bezahlt markieren“** im Menü *Mappe* an der Rechnung (dms-registry #162, Ablago #1039): fragt das Datum (heute vorgeschlagen) und trägt *Bezahlt am* ein; den Status rechnet das Paket danach neu. Ist die Rechnung schon bezahlt, steht das im Menü.
+- Braucht **Ablago 0.245.3** (Aktionen ab 0.245.0; 0.245.1 und 0.245.2 lehnten Pakete mit Anzeige-Bedingungen ab, 0.245.3 kennt Bedingungen auf Fahrzeuge und Vermietung, auch wenn die Pakete fehlen).
+
 ## 1.1.0
 
 - **Rechnungen aus Fahrzeuge und Vermietung ziehen um** (dms-registry #163, Ablago #1041): Beim Installieren oder Aktualisieren von Rechnungen ziehen die Mappen der Typen *Werkstattrechnung* (Fahrzeuge bis 1.x) und *Ausgabe Mietobjekt* (Vermietung bis 1.x) in die Rechnung – mit allen Werten, Dokumenten, Verknüpfungen, Ansichten und Rechten. Ablago zeigt vorher, was wohin geht; was nicht passt, steht danach in einer Notiz an der Mappe.

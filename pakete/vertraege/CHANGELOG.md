@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.2.0
+
+- **Aktion „Vorlage hinzufügen“** im Menü *Mappe* am Vertrag (dms-registry #160, Ablago #1039): öffnet „Brief aus Vorlage“ mit den Vorlagen dieses Pakets an der Vertragsart und legt das fertige PDF in den Vertrag – mit deinen Rechten, ohne eigenen Code. Solange keine Vertragsart gewählt ist, steht im Menü, warum die Aktion noch nicht geht.
+- **Vorlage „Kündigung“** an jeder mitgelieferten Vertragsart: Anschrift des Anbieters, Bezeichnung, Vertragsnummer, Kundennummer, „zum nächstmöglichen Termin, das ist der …“ (das berechnete *Frühestens zu Ende am*), Bitte um Bestätigung, Platz für die Unterschrift. Ein Muster ohne Gewähr. Bei einer bestehenden Installation kommen die Vorlagen an unveränderte Vertragsarten dazu.
+- Wenn du die Kündigung abgeschickt hast, trag *Gekündigt am* ein – dann rechnet das Paket das Ende.
+- Braucht **Ablago 0.245.3** (Aktionen ab 0.245.0; 0.245.1 und 0.245.2 lehnten Pakete mit Anzeige-Bedingungen ab).
+
 ## 1.1.0
 
 - **Verträge aus Haushalt und Vermietung ziehen um** (dms-registry #163, Ablago #1041): Beim Installieren oder Aktualisieren von Verträge ziehen die Mappen der Typen *Vertrag* und *Versicherung* (Haushalt bis 1.x) und *Mietvertrag* (Vermietung bis 1.x) in den Vertrag – mit allen Werten, Dokumenten, Verknüpfungen, Ansichten und Rechten. Ablago zeigt vorher, was wohin geht; was nicht passt, steht danach in einer Notiz an der Mappe. Ist Verträge noch nicht installiert, wird der Vertrag aus Haushalt zum Vertrag dieses Pakets (gleiche Id) – dann gibt es auch keinen Namenskonflikt „Vertrag“.

@@ -4,7 +4,7 @@ schema: 1
 id: vertraege
 name: Verträge
 herausgeber: app.ablago
-version: 1.1.0
+version: 1.2.0
 beschreibung: Ein Mappentyp für alle Verträge, zu Hause und im Betrieb. Du trägst ein, was es ist, bei wem und wie lange es läuft – das Paket rechnet aus, bis wann du kündigen musst, und erinnert rechtzeitig.
 autor:
   name: Thomas Meissner
@@ -16,7 +16,9 @@ symbol: file-signature
 # (0.228.0, #1033), mehrere Ziele (0.230.0, #1036), berechnete Felder und Hinweise (0.231.0, #1034), „Paket nach Zeitplan
 # ausführen“ (0.233.0, #1082), Vorbelegen (0.234.0, #1037) und Vorgaben (0.236.0, #1038)
 # 0.243.0: Umbau (DMS #1041) – Verträge, Versicherungen und Mietverträge aus Haushalt und Vermietung ziehen hierher
-dms: ">=0.243.0"
+# 0.245.0: Aktionen im Menü „Mappe“ (DMS #1039); 0.245.3: Bedingungen auf zielOptional-Ziele (DMS #1122) –
+# 0.245.1/0.245.2 lehnten Pakete mit Bedingungen ab
+dms: ">=0.245.3"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
@@ -58,6 +60,19 @@ inhalt:
   vorgaben: inhalt/vorgaben.yaml
   beispiele: inhalt/beispiele.yaml
   automatisierungen: inhalt/automatisierungen.yaml
+# Aktion im Menü „Mappe“ (dms-registry #160, DMS #1039): öffnet „Brief aus Vorlage“ von Ablago mit den Vorlagen dieses
+# Pakets an der Vertragsart (z. B. „Kündigung“) – ohne eigenen Code, Ablago legt das PDF mit dem Zugriff der Person ab.
+mappenaktionen:
+  - schluessel: vorlage_hinzufuegen
+    name: Vorlage hinzufügen
+    beschreibung: Kündigung und andere Briefe aus den Vorlagen der Vertragsart als PDF in den Vertrag legen. Wenn du die Kündigung abgeschickt hast, trag „Gekündigt am“ ein.
+    mappentypen: [vertrag]
+    rechte: [dokument_hinzufuegen]
+    dialog: dms:vorlage
+    bedingung:
+      modus: alle
+      bedingungen: [{ art: feld, bedingung: { feld: art, op: nichtLeer } }]
+      grund: Erst eine Vertragsart wählen – ihre Vorlagen stehen dann hier.
 code:
   sprache: c
   quelle: code/

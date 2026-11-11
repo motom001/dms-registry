@@ -1326,6 +1326,9 @@ DMS_ARCHIV_PAKET_AB = (0, 237, 0)     # #1051 archiv am Mappentyp
 DMS_ORGANISATION_AB = (0, 238, 0)     # #995 merkmal: eigeneOrganisation, schreibschutz, Bedingung eigeneOrganisation
 DMS_ZUSAMMENGESETZT_AB = (0, 239, 0)  # #1050 Feldart zusammengesetzt
 DMS_UMBAU_AB = (0, 243, 0)            # #1041 umbau im Manifest
+DMS_MAPPENAKTIONEN_AB = (0, 245, 0)   # #1039 mappenaktionen (oberste Ebene)
+AKTION_RECHTE = ('lesen', 'dokument_hinzufuegen', 'aendern', 'mappen_anlegen', 'herausgeben')
+KERN_DIALOGE = ('dms:vorlage',)
 FELDART_AB = {'zeitraum': DMS_FELDARTEN_AB, 'prozent': DMS_FELDARTEN_AB, 'tabelle': DMS_TABELLE_AB,
               'zusammengesetzt': DMS_ZUSAMMENGESETZT_AB}
 # Operatoren je Feldart in Bedingungen – wie OPERATOREN_JE_ART in shared/src/sichten.ts.
@@ -1658,6 +1661,61 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
             if isinstance(w, dict) and 'vorgabe' in w:
                 braucht(DMS_VORGABEN_AB, 'Vorgaben')
                 vorgabe_ok(str(w['vorgabe']), f'beispiele ({b.get("typ")}.{k})')
+
+    # Aktionen im Menü „Mappe“ (#1039) – wie server/src/paketaktionen/manifest.ts.
+    aktionen = m.get('mappenaktionen')
+    if aktionen is not None:
+        braucht(DMS_MAPPENAKTIONEN_AB, 'mappenaktionen')
+    lesen = set(rechte.get('lesen') or [])
+    gesehen_aktion: set = set()
+    for i, a in enumerate(aktionen if isinstance(aktionen, list) else []):
+        wo = f'manifest.yaml: mappenaktionen[{i + 1}]'
+        if not isinstance(a, dict):
+            continue
+        s = str(a.get('schluessel', ''))
+        if s in gesehen_aktion:
+            fehler.append(f'{wo}: Schlüssel „{s}“ doppelt')
+        gesehen_aktion.add(s)
+        aktion_rechte = [str(x) for x in a.get('rechte') or []]
+        anlegen = [str(x) for x in a.get('anlegen') or []]
+        if 'mappen_anlegen' in aktion_rechte and not anlegen:
+            fehler.append(f'{wo}: mappen_anlegen braucht anlegen (Mappentypen, die die Aktion anlegt)')
+        if anlegen and 'mappen_anlegen' not in aktion_rechte:
+            fehler.append(f'{wo}: anlegen gibt es nur mit dem Recht mappen_anlegen')
+        dialog = a.get('dialog')
+        if dialog is None and not code:
+            fehler.append(f'{wo}: Ohne Code (code:) geht nur eine Aktion mit dialog ({", ".join(KERN_DIALOGE)})')
+        if dialog is not None and ('dokument_hinzufuegen' not in aktion_rechte or any(r not in ('dokument_hinzufuegen', 'herausgeben') for r in aktion_rechte)):
+            fehler.append(f'{wo}: dialog dms:vorlage braucht das Recht dokument_hinzufuegen (dazu höchstens herausgeben)')
+        for v in [str(x) for x in a.get('mappentypen') or []] + anlegen:
+            p, k = (v.split(':', 1) if ':' in v else (pid, v))
+            if p == pid and k not in eigene:
+                fehler.append(f'{wo}: Mappentyp „{v}“ gibt es in diesem Paket nicht')
+            elif p != pid and p not in abh:
+                fehler.append(f'{wo}: Mappentyp „{v}“ – das Paket „{p}“ muss unter abhaengigkeiten stehen')
+        # Ablago gibt dem Paket die Werte der Mappe – mit Code muss es die Mappentypen lesen dürfen.
+        for v in [str(x) for x in a.get('mappentypen') or []] if code else []:
+            k = v.split(':', 1)[1] if v.startswith(f'{pid}:') else v
+            if '*' not in lesen and v not in lesen and k not in lesen:
+                fehler.append(f'{wo}: code.rechte.lesen nennt „{v}“ nicht – Ablago gibt der Aktion die Werte der Mappe')
+        for r in aktion_rechte:
+            if r in ('aendern', 'dokument_hinzufuegen') and dialog is None and code:
+                schreiben = set(rechte.get('schreiben') or [])
+                for v in [str(x) for x in a.get('mappentypen') or []]:
+                    k = v.split(':', 1)[1] if v.startswith(f'{pid}:') else v
+                    if '*' not in schreiben and v not in schreiben and k not in schreiben:
+                        fehler.append(f'{wo}: Recht {r} – code.rechte.schreiben nennt „{v}“ nicht (das Paket bräuchte es an der Mappe)')
+        b = a.get('bedingung')
+        if isinstance(b, dict):
+            regel = b.get('bedingungen') or []
+            if any(isinstance(x, dict) and (x.get('art') == 'verweistyp' or (x.get('art') == 'feld' and (x.get('bedingung') or {}).get('op') == 'zeigtAuf'))
+                   for x in regel):
+                fehler.append(f'{wo}: bedingung – nur Feldwerte und Merkmale, keine Verweise auf bestimmte Mappen oder Typen')
+            for v in [str(x) for x in a.get('mappentypen') or []]:
+                k = v.split(':', 1)[1] if v.startswith(f'{pid}:') else (v if ':' not in v else None)
+                if k in felder_je:
+                    typ_jetzt[0] = k
+                    bedingungen(b, felder_je[k], f'{wo}: bedingung ({v})')
 
     # Umbau (#1041): Mappen eines alten Typs ziehen in einen Typ dieses Pakets oder einer Abhängigkeit.
     umbau = m.get('umbau')
