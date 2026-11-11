@@ -1035,6 +1035,44 @@ class Umbau(unittest.TestCase):
                 self.assertTrue(set(s['felder']) <= {f['key'] for f in alt['felder']}, s['von'])
 
 
+class Mappenaktionen(unittest.TestCase):
+    """motom001/dms#1039, dms-registry #160/#162: mappenaktionen im Manifest."""
+
+    TYP = {'schluessel': 'rechnung', 'name': 'Rechnung', 'beschreibung': '', 'felder': [
+        {'key': 'bezahlt_am', 'label': 'Bezahlt am', 'typ': 'datum'}],
+        'register': [{'key': 'r', 'name': 'R', 'art': 'felder', 'felder': ['bezahlt_am']}]}
+
+    def pruefe(self, aktionen, code=True, dms='>=0.245.3', lesen=('rechnung',), schreiben=('rechnung',)):
+        import copy
+        m = {'id': 'probe', 'dms': dms, 'mappenaktionen': aktionen}
+        if code:
+            m['code'] = {'rechte': {'lesen': list(lesen), 'schreiben': list(schreiben)}}
+        return pruefen.pruefe_etappe15(Path('.'), m, [copy.deepcopy(self.TYP)], [], [], set())
+
+    def test_gueltig(self):
+        a = [{'schluessel': 'bezahlt', 'name': 'Als bezahlt markieren', 'mappentypen': ['rechnung'], 'rechte': ['aendern'],
+              'bedingung': {'modus': 'alle', 'bedingungen': [{'art': 'feld', 'bedingung': {'feld': 'bezahlt_am', 'op': 'leer'}}], 'grund': 'schon bezahlt'}}]
+        self.assertEqual(self.pruefe(a), [])
+        self.assertTrue(any('mappenaktionen kennt Ablago erst ab 0.245.0' in x for x in self.pruefe(a, dms='>=0.243.0')))
+
+    def test_fehler(self):
+        f = self.pruefe([{'schluessel': 'x', 'name': 'X', 'mappentypen': ['gibtsnicht', 'fremd:typ'], 'rechte': ['mappen_anlegen']},
+                         {'schluessel': 'x', 'name': 'Y', 'mappentypen': ['rechnung'], 'rechte': ['aendern', 'lesen'], 'dialog': 'dms:vorlage',
+                          'bedingung': {'modus': 'alle', 'bedingungen': [{'art': 'verweistyp', 'feld': 'bezahlt_am', 'typ': 'a'}], 'grund': 'g'}}],
+                        lesen=(), schreiben=())
+        for teil in ('braucht anlegen', 'gibt es in diesem Paket nicht', '„fremd“ muss unter abhaengigkeiten', 'doppelt',
+                     'dms:vorlage braucht das Recht dokument_hinzufuegen', 'code.rechte.lesen nennt', 'keine Verweise auf bestimmte Mappen'):
+            self.assertTrue(any(teil in x for x in f), (teil, f))
+        f = self.pruefe([{'schluessel': 'b', 'name': 'B', 'mappentypen': ['rechnung'], 'rechte': ['aendern']}], schreiben=())
+        self.assertTrue(any('code.rechte.schreiben nennt' in x for x in f), f)
+        f = self.pruefe([{'schluessel': 'b', 'name': 'B', 'mappentypen': ['rechnung'], 'rechte': ['aendern']}], code=False)
+        self.assertTrue(any('Ohne Code' in x for x in f), f)
+
+    def test_vorlage_ohne_code(self):
+        a = [{'schluessel': 'v', 'name': 'Vorlage', 'mappentypen': ['rechnung'], 'rechte': ['dokument_hinzufuegen'], 'dialog': 'dms:vorlage'}]
+        self.assertEqual(self.pruefe(a, code=False), [])
+
+
 if __name__ == '__main__':
     unittest.main()
 
