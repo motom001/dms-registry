@@ -302,7 +302,7 @@ umbau:
 - Nur einzeln (nicht im Ablauf mehrerer Pakete), nur mit „Gesamte Verwaltung“. Ein Schritt, dessen alter Typ nicht (mehr) da ist, entfällt still – Umbau-Schritte dürfen also in späteren Versionen stehen bleiben.
 - **Das abgebende Paket** bekommt eine **Major-Version** ohne den Typ (Breaking Change im CHANGELOG), hängt vom aufnehmenden Paket in der Version mit dem Umbau ab und verweist auf dessen Typ. So kommt das Update erst, wenn der Umbau gelaufen ist.
 - Werte zieht Ablago nur in passende Felder um (gleiche Feldart, Text → Zeitraum/Zahl/Datum/Auswahl, Verweise nur auf erlaubte Typen). Mehrere alte Felder auf ein neues: Der erste gefüllte Wert in der Reihenfolge des alten Typs gilt. `setzen` schreibt Werte so, wie sie sind – Text, Zahl, Ja/Nein, Liste oder `{ vorgabe: … }`, kein Zeitraum und kein Betrag.
-- `pruefen.py` prüft Form, Zieltyp, die neuen Felder (vorhanden, nicht berechnet), `setzen` gegen Feldart und Optionen und die alten Feldkennungen gegen den Typ, wie er zuletzt in der Registry stand (auch aus der git-Geschichte).
+- `pruefen.py` prüft Form, Zieltyp, die neuen Felder (vorhanden, nicht berechnet), `setzen` gegen Feldart und Optionen und die alten Feldkennungen gegen den Typ, wie er zuletzt in der Registry stand (auch aus der git-Geschichte). Die CI installiert außerdem alle Pakete mit dem echten Installer einer festen Ablago-Version (`pakete-pruefen` im Image `ghcr.io/motom001/dms`, motom001/dms#1124) – im Pull Request als Update vom Stand des Ziel-Zweigs aus, Umbau eingeschlossen. Lokal: `docker run --rm -v "$PWD/pakete:/neu:ro" ghcr.io/motom001/dms:<version> pakete-pruefen /neu`.
 
 ## Beschriftungen je Sprache
 
