@@ -1440,3 +1440,68 @@ class Etappe15(unittest.TestCase):
         for teil_text in ('ist ein Zeitraum', '„gibtsnicht“ gibt es', 'fehlt.md fehlt', 'kein Dokumentenregister', 'Kennung doppelt',
                           '„fremd“ muss unter abhaengigkeiten', 'Vorgabe eines anderen Pakets', 'Vorgabe „unbekannt“' if False else 'Vorgabe „miete“'):
             self.assertIn(teil_text, f)
+
+
+class Etappe16(unittest.TestCase):
+    """Rechte und Archivmodus am Mappentyp, Konfiguration und Nachweise lesen (Registry #166)."""
+
+    def manifest(self, **code):
+        c = {'sprache': 'c', 'quelle': 'code/', 'ereignisse': ['zeitplan.ausgefuehrt'], 'netz': [],
+             'rechte': {'lesen': ['stand'], 'schreiben': ['stand'], 'dokumente': 'schreiben'}}
+        c.update(code)
+        return {'id': 'pruef', 'dms': '>=0.237.0', 'code': c}
+
+    def typ(self, **x):
+        t = {'schluessel': 'stand', 'name': 'Stand', 'beschreibung': '', 'felder': [{'key': 'ab', 'label': 'Ab', 'typ': 'datum'}],
+             'register': [{'key': 'daten', 'name': 'Daten', 'art': 'felder', 'felder': ['ab']}]}
+        t.update(x)
+        return t
+
+    def test_gut(self):
+        t = self.typ(rechte={'lesen': 'verwaltung', 'aendern': 'paket', 'anlegen': 'paket'},
+                     archiv={'jahre': 2, 'jahreBeruflich': 10, 'stichtag': 'ab', 'leererStichtag': 'laeuftNicht'})
+        t['register'].append({'key': 'dateien', 'name': 'Dateien', 'art': 'dokumente', 'versionierung': True})
+        # Rechte am Typ, Versionen und Konfiguration/Nachweise kennt Ablago noch nicht (DMS #1053/#1054): nur diese Meldung.
+        noch_nicht = 'gibt es in Ablago noch nicht'
+        f = pruefen.pruefe_etappe16(self.manifest(einrichtung=None), [t])
+        self.assertEqual(len(f), 1, f)
+        self.assertIn(noch_nicht, f[0])
+        m = self.manifest()
+        m['code']['rechte']['einrichtung'] = ['sicherung']
+        self.assertEqual([x for x in pruefen.pruefe_etappe16(m, [t]) if noch_nicht not in x], [])
+        # Nur der Archivmodus ist schon da (0.237.0).
+        self.assertEqual(pruefen.pruefe_etappe16(self.manifest(), [self.typ(archiv={'jahre': 2, 'stichtag': 'ab', 'leererStichtag': 'laeuftNicht'})]), [])
+
+    def test_paket_ohne_schreibrecht(self):
+        m = self.manifest()
+        m['code']['rechte']['schreiben'] = []
+        f = pruefen.pruefe_etappe16(m, [self.typ(rechte={'anlegen': 'paket', 'aendern': 'paket'})])
+        self.assertTrue(any('code.rechte.schreiben' in x for x in f), f)
+
+    def test_anlegen_paket_aendern_alle(self):
+        f = pruefen.pruefe_etappe16(self.manifest(), [self.typ(rechte={'anlegen': 'paket'})])
+        self.assertTrue(any('aendern „alle“' in x for x in f), f)
+
+    def test_archiv(self):
+        f = pruefen.pruefe_etappe16(self.manifest(), [self.typ(archiv={'jahre': 10, 'jahreBeruflich': 2, 'stichtag': 'fehlt', 'leererStichtag': 'anlage'})])
+        self.assertTrue(any('Datumsfeld' in x for x in f), f)
+        self.assertTrue(any('jahreBeruflich' in x for x in f), f)
+        f = pruefen.pruefe_etappe16(self.manifest(), [self.typ(archiv={'jahre': 2, 'leererStichtag': 'laeuftNicht'})])
+        self.assertTrue(any('nur mit archiv.stichtag' in x for x in f), f)
+
+    def test_versionierung_nur_dokumente(self):
+        t = self.typ()
+        t['register'][0]['versionierung'] = True
+        self.assertTrue(pruefen.pruefe_etappe16(self.manifest(), [t]))
+
+    def test_einrichtung_nie_mit_netz(self):
+        m = self.manifest(netz=['https://example.org'])
+        m['code']['rechte']['nachweise'] = ['zugang']
+        f = pruefen.pruefe_etappe16(m, [])
+        self.assertTrue(any('ohne Netz' in x for x in f), f)
+
+    def test_version(self):
+        m = self.manifest()
+        m['dms'] = '>=0.200.0'
+        f = pruefen.pruefe_etappe16(m, [self.typ(archiv={'jahre': 2})])
+        self.assertTrue(any('archiv am Mappentyp kennt Ablago erst ab 0.237.0' in x for x in f), f)

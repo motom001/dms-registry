@@ -1,0 +1,12 @@
+# Beispiel-Mappen (erfunden, auf Wunsch bei der Installation). Konfiguration und Nachweise legt nur das Paket an.
+- typ: verfahren
+  schluessel: belegeingang
+  werte:
+    bereich: Belegeingang und Scannen
+    gueltig_ab: "2026-11-01"
+    beschreibung: "Post kommt per Scanner im Flur und über das Postfach rechnungen@example.org herein. Lena scannt einmal pro Woche, sonntags."
+    eingangswege: "Scanner im Flur (Eingangsordner), E-Mail-Postfach rechnungen@example.org, Handy-App"
+    kontrolle: "Nach dem Scannen ein kurzer Blick auf jede Seite: vollständig, lesbar, richtig gedreht."
+    papier: Papier weg nach einer Frist
+    papier_frist: { anzahl: 3, einheit: monate }
+    ausnahmen: "Urkunden, Zeugnisse, Verträge mit Unterschrift, alles mit Siegel"

@@ -232,6 +232,7 @@
       "description": "Optional (#98, #80 Stufe 2): Symbol im Katalog statt des Anfangsbuchstabens – Name eines Lucide-Symbols aus werkzeuge/symbole/ (REGELN.md, „Symbol“). Ein neues Symbol kommt nur über ein Issue dazu. Das DMS liest das Feld nicht.",
       "enum": [
         "car",
+        "clipboard-check",
         "cloud-upload",
         "contact",
         "file-signature",
@@ -411,6 +412,16 @@
                 "lesen",
                 "schreiben"
               ]
+            },
+            "einrichtung": {
+              "type": "array", "uniqueItems": true, "minItems": 1,
+              "items": { "enum": ["allgemeines", "belegeingang", "ablage", "zugang", "betrieb", "sicherung", "unveraenderbarkeit", "datenschutz", "betriebspruefung"] },
+              "description": "DMS #1053/#1054 (Etappe 16, Entwurf): Bereiche, deren Konfiguration das Paket lesen möchte (GET /einrichtung/{bereich}). Der Admin hakt sie in den Paket-Einstellungen einzeln an, Vorgabe: nichts. Nur für Pakete ohne Netz."
+            },
+            "nachweise": {
+              "type": "array", "uniqueItems": true, "minItems": 1,
+              "items": { "enum": ["allgemeines", "belegeingang", "ablage", "zugang", "betrieb", "sicherung", "unveraenderbarkeit", "datenschutz", "betriebspruefung"] },
+              "description": "DMS #1053/#1054 (Etappe 16, Entwurf): Bereiche, deren Nachweise je Monat das Paket lesen möchte (GET /nachweise?monat=JJJJ-MM) – enthält Benutzer und Fehlanmeldungen. Vorgabe: nichts angehakt. Nur für Pakete ohne Netz."
             },
             "schnittstellen": {
               "type": "array",

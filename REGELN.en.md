@@ -105,6 +105,7 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 | `mail` | post, e-mail |
 | `message-circle-question-mark` | questions, assistant |
 | `receipt-text` | invoices, receipts |
+| `clipboard-check` | compliance, self-checks |
 | `scan-barcode` | separator sheets, barcodes |
 | `scan-text` | text recognition |
 | `wallet` | money, household |
@@ -238,6 +239,10 @@ Packages can bring **templates as text** – e.g. a cancellation letter on a con
 | **Prefill** (from 0.234.0) | on a reference field `vorbelegen: [{ von: kuendigungsfrist, nach: kuendigungsfrist }]` – only into empty fields, as a suggestion | #1037 |
 | **Own organisation** (from 0.238.0) | yes/no field with `merkmal: eigeneOrganisation` and `schreibschutz: verwaltung` (changeable only with administration rights) | #995 |
 | **Defaults** (from 0.236.0) | `inhalt.vorgaben: inhalt/vorgaben.yaml` – folders with a fixed `kennung` that stay (e.g. contract types), with `werte`, `beschriftungen` per language and `vorlagen` (only [text templates](#text-templates)). Refer to them in values with `{ vorgabe: miete }` or `{ vorgabe: "vertraege:miete" }`. An **add-on** uses `ergaenzt: "vertraege:pkw_kaufvertrag"` to attach only templates to the default of a package under `abhaengigkeiten`. | #1038 |
+| **Permissions of a type** | on the folder type `rechte: { lesen: verwaltung, aendern: paket, anlegen: paket }` – Ablago creates the type with them, afterwards the admin changes them as usual. `alle` (default), `verwaltung` (full administration), `paket` (only the package's system account, needs `code.rechte.schreiben`) | #1054, decision 10 Nov |
+| **Archive mode** (from 0.237.0) | on the folder type `archiv: { jahre: 2, jahreBeruflich: 10, stichtag: abgeloest_am, leererStichtag: laeuftNicht }` – suggested in the wizard, can be changed at any time; with `laeuftNicht` the period starts only once the key date is filled in | #1051 |
+| **Versions** | on a documents tab `versionierung: true` – a file with the same name becomes a new version | #194 |
+| **Read configuration and evidence** | `code.rechte.einrichtung: [sicherung, …]` and `code.rechte.nachweise: [...]` – areas `allgemeines`, `belegeingang`, `ablage`, `zugang`, `betrieb`, `sicherung`, `unveraenderbarkeit`, `datenschutz`, `betriebspruefung`. The admin ticks each area themselves (default: none). **Only for packages without network access.** | #1053, #1054 |
 
 ```yaml
 # inhalt/vorgaben.yaml (package Verträge)
@@ -249,7 +254,7 @@ Packages can bring **templates as text** – e.g. a cancellation letter on a con
     - { datei: vorlagen/kuendigung.md, register: vorlagen, titel: Kündigung }
 ```
 
-`pruefen.py` checks what can be checked inside the package: fields and defaults referred to, the source of a table, the placeholders of a composition, write permission for calculated fields, period values, files of the defaults.
+`pruefen.py` checks what can be checked inside the package: fields and defaults referred to, the source of a table, the placeholders of a composition, write permission for calculated fields and for `paket` permissions, the key date of the archive mode, period values, files of the defaults, and that a package reading configuration or evidence has no network access.
 
 ## Add-ons (`ergaenzt`)
 

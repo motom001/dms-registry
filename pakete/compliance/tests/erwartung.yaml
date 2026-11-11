@@ -1,0 +1,5 @@
+# Was nach der Installation in Ablago vorhanden sein muss.
+mappentypen: [verfahren, konfiguration, nachweise]
+sichten: [aktueller_stand, verfahren, nachweise, konfigurationen]
+beispiele: 1
+automatisierungen: 1

@@ -112,6 +112,7 @@
         "felder": { "type": "array", "items": { "$ref": "#/$defs/schluessel" } },
         "quellen": { "type": "array", "items": { "type": "object", "required": ["typ", "feld"], "properties": { "typ": { "$ref": "#/$defs/typverweis" }, "feld": { "$ref": "#/$defs/schluessel" } } } },
         "volltext": { "type": "boolean" },
+        "versionierung": { "type": "boolean", "description": "Nur bei art dokumente: neue Dateien gleichen Namens werden Versionen (DMS #194), ältere Fassungen bleiben" },
         "beschriftungen": { "$ref": "#/$defs/beschriftungen_register" },
         "abschnitte": {
           "description": "Feldregister (DMS #890): Abschnitte zwischen den Feldern; anzeigen (DMS #1033) blendet den Abschnitt mit allen Feldern bis zum nächsten aus",
@@ -165,7 +166,26 @@
         "register": { "type": "array", "items": { "$ref": "#/$defs/register" }, "minItems": 1 },
         "trefferliste": { "type": "array", "items": { "type": "string" } },
         "beschriftungen": { "$ref": "#/$defs/beschriftungen_name" },
-        "gehoertZu": { "$ref": "#/$defs/schluessel", "description": "DMS #1031: Mappen dieses Typs gehören immer zu einer anderen Mappe – Kennung des Verweisfelds (Pflicht), nicht in Ansichten und Suche" }
+        "gehoertZu": { "$ref": "#/$defs/schluessel", "description": "DMS #1031: Mappen dieses Typs gehören immer zu einer anderen Mappe – Kennung des Verweisfelds (Pflicht), nicht in Ansichten und Suche" },
+        "rechte": {
+          "type": "object", "additionalProperties": false,
+          "description": "Etappe 16 (Registry #166, Entscheidung Thomas 10.11.2026 11:28, Entwurf): Rechte, mit denen Ablago den Mappentyp anlegt – danach ändert sie der Admin wie bei jedem Typ. alle = wie bisher, verwaltung = nur Personen mit Gesamter Verwaltung, paket = nur das Systemkonto dieses Pakets (braucht code.rechte.schreiben auf den Typ). Ohne Angabe: alle.",
+          "properties": {
+            "lesen": { "enum": ["alle", "verwaltung"] },
+            "aendern": { "enum": ["alle", "verwaltung", "paket"] },
+            "anlegen": { "enum": ["alle", "verwaltung", "paket"] }
+          }
+        },
+        "archiv": {
+          "type": "object", "additionalProperties": false, "required": ["jahre"],
+          "description": "Etappe 16 (Registry #166, DMS #1051, Entwurf): Archivmodus, den der Assistent beim Installieren vorschlägt – der Admin kann ihn am Mappentyp jederzeit ändern. Frist ab dem 31.12. des Jahres mit dem Stichtag.",
+          "properties": {
+            "jahre": { "type": "integer", "minimum": 1, "maximum": 30, "description": "Aufbewahrung in Jahren" },
+            "jahreBeruflich": { "type": "integer", "minimum": 1, "maximum": 30, "description": "Mit dem Merkmal „beruflich genutzt“ (DMS #1032), z. B. 10" },
+            "stichtag": { "$ref": "#/$defs/schluessel", "description": "Datumsfeld des Typs, ab dem die Frist läuft; ohne: Anlagedatum" },
+            "leererStichtag": { "enum": ["anlage", "laeuftNicht"], "description": "DMS #1051: Ist der Stichtag leer – ab Anlagedatum (Standard) oder die Frist läuft noch nicht" }
+          }
+        }
       }
     },
     "vorgabe": {

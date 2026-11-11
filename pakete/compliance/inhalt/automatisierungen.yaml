@@ -1,0 +1,9 @@
+# Mitgelieferte Automatisierung (Ablago #712, „Paket nach Zeitplan ausführen“ DMS #1082). Gleich eingeschaltet – ohne sie
+# hält das Paket nichts fest. Uhrzeit und Tage kann der Admin ändern.
+- schluessel: taeglich_festhalten
+  name: Konfiguration und Nachweise festhalten
+  beschreibung: Jeden Morgen vergleicht das Paket die Einrichtung der freigegebenen Bereiche mit dem letzten Stand und legt eine neue Version an, wenn sich etwas geändert hat, das zählt. Am ersten Lauf eines Monats entstehen die Nachweise des Vormonats; verpasste Monate holt der nächste Lauf nach.
+  eingeschaltet: true
+  wenn: { art: zeitplan, uhrzeit: "04:30", tage: [1, 2, 3, 4, 5, 6, 7] }
+  dann:
+    - { art: paket, aufgabe: taeglich }

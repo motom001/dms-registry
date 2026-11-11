@@ -1,0 +1,357 @@
+# Mappentypen des Pakets Compliance (dms-registry #166). Schema: schema/inhalt.schema.json
+# Verfahren beschreibt der Mensch. Konfiguration und Nachweise legt nur das Paket an (rechte.anlegen: paket,
+# Entscheidung Thomas 10.11.2026 11:28); alle ihre Felder sind berechnet, lesen dürfen sie nur Personen mit Gesamter
+# Verwaltung. Die Bereiche sind dieselben neun Texte wie in code/bereiche.h.
+
+- schluessel: verfahren
+  name: Verfahren
+  beschreibung: So machen wir es – je Bereich eine Mappe, die ihr beschreibt und bei Bedarf ändert. Die Historie hält jede Fassung fest.
+  beschriftungen: { en: { name: "Procedure", beschreibung: "This is how we do it – one folder per area that you describe and change when needed. The history keeps every version." } }
+  titelVorlage: "Verfahren · {bereich}"
+  rechte: { lesen: alle, aendern: verwaltung, anlegen: verwaltung }
+  # Ein Verfahren gilt, bis es durch ein anderes ersetzt ist – erst dann läuft die Frist (DMS #1051).
+  archiv: { jahre: 2, jahreBeruflich: 10, stichtag: gilt_nicht_mehr_seit, leererStichtag: laeuftNicht }
+  felder:
+    - key: bereich
+      label: Bereich
+      beschriftungen:
+        en: { label: "Area", optionen: { Allgemeines: General, Belegeingang und Scannen: Incoming documents and scanning, Ablage: Filing, Zugang und Berechtigungen: Access and permissions, Betrieb: Operation, Sicherung: Backup, Unveränderbarkeit: Immutability, Datenschutz: Data protection, Betriebsprüfung: Tax audit } }
+      typ: auswahl
+      optionen: [Allgemeines, Belegeingang und Scannen, Ablage, Zugang und Berechtigungen, Betrieb, Sicherung, Unveränderbarkeit, Datenschutz, Betriebsprüfung]
+      pflicht: true
+      eindeutig: true
+      hilfe: Für jeden Bereich gibt es ein Verfahren. „Betriebsprüfung“ braucht ihr nur, wenn Ablago beruflich genutzt wird.
+    - key: zustaendig
+      label: Zuständig
+      beschriftungen: { en: { label: "Responsible" } }
+      typ: referenz
+      ziel: "dms:benutzer"
+      mehrfach: true
+    - key: gueltig_ab
+      label: Gilt ab
+      beschriftungen: { en: { label: "Valid from" } }
+      typ: datum
+    - key: beschreibung
+      label: So machen wir es
+      beschriftungen: { en: { label: "How we do it", hilfe: "In your own words – short is fine. Others should be able to follow it." } }
+      typ: formatiert
+      hilfe: In euren Worten – kurz reicht. Andere sollen danach arbeiten können.
+    # Allgemeines
+    - key: taetigkeit
+      label: Was wir tun
+      beschriftungen: { en: { label: "What we do", hilfe: "e.g. “Joinery with 6 staff, invoices and quotes are kept in Ablago” or “Household of the Wagner family”" } }
+      typ: langtext
+      hilfe: z. B. „Tischlerei mit 6 Mitarbeitenden, Rechnungen und Angebote liegen in Ablago“ oder „Haushalt der Familie Wagner“
+    - key: weitere_programme
+      label: Weitere Programme
+      beschriftungen: { en: { label: "Other software", hilfe: "Accounting, cash register, online banking – what works together with Ablago" } }
+      typ: langtext
+      hilfe: Buchhaltung, Kasse, Onlinebanking – was mit Ablago zusammenarbeitet
+    # Belegeingang und Scannen
+    - key: eingangswege
+      label: Wie Post hereinkommt
+      beschriftungen: { en: { label: "How mail comes in", hilfe: "Scanner, e-mail mailbox, app, upload – and who takes care of it" } }
+      typ: langtext
+      hilfe: Scanner, E-Mail-Postfach, App, Hochladen – und wer sich darum kümmert
+    - key: scanablauf
+      label: Scanablauf
+      beschriftungen: { en: { label: "Scanning process" } }
+      typ: formatiert
+      hilfe: Schritt für Schritt – vom Briefkasten bis zur Mappe
+    - key: kontrolle
+      label: Kontrolle
+      beschriftungen: { en: { label: "Check", hilfe: "Who checks that the scan is complete and readable, and when" } }
+      typ: langtext
+      hilfe: Wer prüft, ob der Scan vollständig und lesbar ist, und wann
+    - key: papier
+      label: Papier danach
+      beschriftungen:
+        en: { label: "Paper afterwards", optionen: { Papier bleibt: Paper is kept, Papier weg nach der Kontrolle: Paper goes after the check, Papier weg nach einer Frist: Paper goes after a period } }
+      typ: auswahl
+      optionen: [Papier bleibt, Papier weg nach der Kontrolle, Papier weg nach einer Frist]
+    - key: papier_frist
+      label: Papier weg nach
+      beschriftungen: { en: { label: "Paper goes after" } }
+      typ: zeitraum
+      anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: papier, op: einerVon, wert: { art: fest, wert: [Papier weg nach einer Frist] } } }] }
+    - key: ausnahmen
+      label: Bleibt im Original
+      beschriftungen: { en: { label: "Kept as original", hilfe: "e.g. certificates, notarial deeds, documents with a seal" } }
+      typ: langtext
+      hilfe: z. B. Urkunden, Zeugnisse, notarielle Verträge, Dokumente mit Siegel
+    - key: scannen_freigabe
+      label: Freigegeben von
+      beschriftungen: { en: { label: "Approved by", hilfe: "Who approved that scans replace the paper" } }
+      typ: langtext
+      hilfe: Wer freigegeben hat, dass der Scan das Papier ersetzt
+    # Ablage
+    - key: ablageregeln
+      label: Ablageregeln
+      beschriftungen: { en: { label: "Filing rules", hilfe: "Which folder type for what, how titles are written, what goes where" } }
+      typ: langtext
+      hilfe: Welcher Mappentyp wofür, wie Titel heißen, was wohin gehört
+    # Zugang und Berechtigungen
+    - key: zugangsregeln
+      label: Wer welchen Zugang bekommt
+      beschriftungen: { en: { label: "Who gets which access", hilfe: "Who gets an account and administration rights, and when an account is removed" } }
+      typ: langtext
+      hilfe: Wer ein Konto und Verwaltungsrechte bekommt, und wann ein Konto entfernt wird
+    # Betrieb
+    - key: updates
+      label: Updates und Wartung
+      beschriftungen: { en: { label: "Updates and maintenance" } }
+      typ: langtext
+      hilfe: Wer Updates einspielt, wie oft, und wer bei Störungen hilft
+    # Sicherung
+    - key: kopie_ausser_haus
+      label: Kopie außer Haus
+      beschriftungen: { en: { label: "Copy off-site" } }
+      typ: janein
+    - key: kopie_wo
+      label: Wo liegt die Kopie?
+      beschriftungen: { en: { label: "Where is the copy?" } }
+      typ: text
+      maxLen: 200
+      anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: kopie_ausser_haus, op: ja } }] }
+    - key: probe_wiederherstellung
+      label: Probe-Wiederherstellung alle
+      beschriftungen: { en: { label: "Test restore every" } }
+      typ: zeitraum
+      hilfe: Wie oft ihr ausprobiert, ob sich die Sicherung zurückholen lässt
+    # Unveränderbarkeit
+    - key: unveraenderbarkeit
+      label: So bleibt nichts unbemerkt geändert
+      beschriftungen: { en: { label: "How nothing changes unnoticed" } }
+      typ: langtext
+      hilfe: z. B. Versionierung, Archivmodus, „Alle Dateien prüfen“ – und wer die Ergebnisse ansieht
+    # Datenschutz
+    - key: loeschung
+      label: Wann gelöscht wird
+      beschriftungen: { en: { label: "When things are deleted" } }
+      typ: langtext
+      hilfe: Wer nach Ablauf der Fristen löscht und wie oft der Papierkorb geleert wird
+    - key: auskunft
+      label: Fragen zu gespeicherten Daten
+      beschriftungen: { en: { label: "Questions about stored data" } }
+      typ: langtext
+      hilfe: Wer antwortet, wenn jemand wissen will, was über ihn gespeichert ist
+    # Betriebsprüfung
+    - key: prueferzugang
+      label: Zugang für Prüfer
+      beschriftungen: { en: { label: "Access for auditors" } }
+      typ: langtext
+      hilfe: Wie ein Prüfer lesend Zugriff bekommt und wer ihn begleitet
+    - key: datenherausgabe
+      label: Daten herausgeben
+      beschriftungen: { en: { label: "Handing over data" } }
+      typ: langtext
+      hilfe: In welchem Format und auf welchem Weg ihr Daten an Prüfer gebt
+    # Unten
+    - key: gilt_nicht_mehr_seit
+      label: Gilt nicht mehr seit
+      beschriftungen: { en: { label: "No longer valid since", hilfe: "Only when this procedure is no longer used – from then on the retention period runs" } }
+      typ: datum
+      hilfe: Nur, wenn ihr dieses Verfahren nicht mehr nutzt – ab dann läuft die Aufbewahrungsfrist
+    - key: notiz
+      label: Notiz
+      beschriftungen: { en: { label: "Note" } }
+      typ: langtext
+  register:
+    - key: angaben
+      name: Verfahren
+      beschriftungen: { en: { name: "Procedure" } }
+      art: felder
+      felder: [bereich, zustaendig, gueltig_ab, beschreibung, taetigkeit, weitere_programme, eingangswege, scanablauf, kontrolle, papier, papier_frist, ausnahmen, scannen_freigabe,
+               ablageregeln, zugangsregeln, updates, kopie_ausser_haus, kopie_wo, probe_wiederherstellung, unveraenderbarkeit, loeschung, auskunft, prueferzugang, datenherausgabe,
+               gilt_nicht_mehr_seit, notiz]
+      abschnitte:
+        - { vor: taetigkeit, titel: Allgemeines, beschriftungen: { en: { titel: General } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Allgemeines] } } }] } }
+        - { vor: weitere_programme, titel: Weitere Programme, beschriftungen: { en: { titel: Other software } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Allgemeines] } } }, { art: merkmal, merkmal: beruflich }] } }
+        - { vor: eingangswege, titel: Belegeingang und Scannen, beschriftungen: { en: { titel: Incoming documents and scanning } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Belegeingang und Scannen] } } }] } }
+        - { vor: scannen_freigabe, titel: Ersetzendes Scannen, beschriftungen: { en: { titel: Replacing paper by scans } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Belegeingang und Scannen] } } }, { art: merkmal, merkmal: beruflich }] } }
+        - { vor: ablageregeln, titel: Ablage, beschriftungen: { en: { titel: Filing } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Ablage] } } }] } }
+        - { vor: zugangsregeln, titel: Zugang und Berechtigungen, beschriftungen: { en: { titel: Access and permissions } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Zugang und Berechtigungen] } } }] } }
+        - { vor: updates, titel: Betrieb, beschriftungen: { en: { titel: Operation } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Betrieb] } } }] } }
+        - { vor: kopie_ausser_haus, titel: Sicherung, beschriftungen: { en: { titel: Backup } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Sicherung] } } }] } }
+        - { vor: unveraenderbarkeit, titel: Unveränderbarkeit, beschriftungen: { en: { titel: Immutability } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Unveränderbarkeit] } } }] } }
+        - { vor: loeschung, titel: Datenschutz, beschriftungen: { en: { titel: Data protection } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Datenschutz] } } }] } }
+        - { vor: prueferzugang, titel: Betriebsprüfung, beschriftungen: { en: { titel: Tax audit } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: bereich, op: einerVon, wert: { art: fest, wert: [Betriebsprüfung] } } }, { art: merkmal, merkmal: beruflich }] } }
+        - { vor: gilt_nicht_mehr_seit, titel: Gültigkeit, beschriftungen: { en: { titel: Validity } }, eingeklappt: true }
+    - key: unterlagen
+      name: Unterlagen
+      beschriftungen: { en: { name: "Documents" } }
+      art: dokumente
+      versionierung: true
+    - key: historie
+      name: Historie
+      beschriftungen: { en: { name: "History" } }
+      art: protokoll
+  trefferliste: [bereich, zustaendig, gueltig_ab]
+
+- schluessel: konfiguration
+  name: Konfiguration
+  beschreibung: So ist Ablago in diesem Monat eingerichtet – eine Mappe je Bereich und Monat, angelegt vom Paket Compliance. Jede Änderung, die zählt, kommt als neue Version dazu. Nur lesbar.
+  beschriftungen: { en: { name: "Configuration", beschreibung: "This is how Ablago is set up this month – one folder per area and month, created by the Compliance package. Every change that counts is added as a new version. Read only." } }
+  titelVorlage: "Konfiguration · {bereich} · {zeitraum}"
+  rechte: { lesen: verwaltung, aendern: paket, anlegen: paket }
+  # Der aktuelle Stand läuft nicht ab; die Frist beginnt mit „Abgelöst am“ (DMS #1051).
+  archiv: { jahre: 2, jahreBeruflich: 10, stichtag: abgeloest_am, leererStichtag: laeuftNicht }
+  felder:
+    - key: kennung
+      label: Kennung
+      beschriftungen: { en: { label: "Identifier" } }
+      typ: zusammengesetzt
+      vorlage: "{bereich} · {zeitraum}"
+      eindeutig: true
+    - key: bereich
+      label: Bereich
+      beschriftungen:
+        en: { label: "Area", optionen: { Allgemeines: General, Belegeingang und Scannen: Incoming documents and scanning, Ablage: Filing, Zugang und Berechtigungen: Access and permissions, Betrieb: Operation, Sicherung: Backup, Unveränderbarkeit: Immutability, Datenschutz: Data protection, Betriebsprüfung: Tax audit } }
+      typ: auswahl
+      optionen: [Allgemeines, Belegeingang und Scannen, Ablage, Zugang und Berechtigungen, Betrieb, Sicherung, Unveränderbarkeit, Datenschutz, Betriebsprüfung]
+      berechnet: true
+    - key: zeitraum
+      label: Monat
+      beschriftungen: { en: { label: "Month" } }
+      typ: text
+      maxLen: 7
+      muster: "^\\d{4}-(0[1-9]|1[0-2])$"
+      berechnet: true
+    - key: status
+      label: Status
+      beschriftungen:
+        en: { label: "Status", optionen: { aktuell: current, abgelöst: superseded } }
+      typ: auswahl
+      optionen: [aktuell, abgelöst]
+      berechnet: true
+    - key: aenderung
+      label: Änderung
+      beschriftungen: { en: { label: "Change", hilfe: "What changed with the latest version, in words" } }
+      typ: langtext
+      berechnet: true
+      hilfe: Was sich mit der neuesten Version geändert hat, in Worten
+    - key: stand_vom
+      label: Stand vom
+      beschriftungen: { en: { label: "As of" } }
+      typ: datum
+      berechnet: true
+    - key: versionen
+      label: Stände in diesem Monat
+      beschriftungen: { en: { label: "Versions this month" } }
+      typ: zahl
+      berechnet: true
+    - key: abgeloest_am
+      label: Abgelöst am
+      beschriftungen: { en: { label: "Superseded on", hilfe: "From this date the retention period runs" } }
+      typ: datum
+      berechnet: true
+      hilfe: Ab diesem Tag läuft die Aufbewahrungsfrist
+    - key: vorgaenger
+      label: Vorheriger Monat
+      beschriftungen: { en: { label: "Previous month" } }
+      typ: referenz
+      ziel: konfiguration
+      verweisart: bezug
+      berechnet: true
+    - key: nachfolger
+      label: Abgelöst durch
+      beschriftungen: { en: { label: "Superseded by" } }
+      typ: referenz
+      ziel: konfiguration
+      verweisart: bezug
+      berechnet: true
+    - key: ablago_version
+      label: Ablago-Version
+      beschriftungen: { en: { label: "Ablago version" } }
+      typ: text
+      maxLen: 40
+      berechnet: true
+    - key: pruefwert
+      label: Prüfwert (SHA-256)
+      beschriftungen: { en: { label: "Checksum (SHA-256)", hilfe: "Of the JSON file of the latest version – the history keeps every value" } }
+      typ: text
+      maxLen: 64
+      berechnet: true
+      hilfe: Der JSON-Datei der neuesten Version – die Historie hält jeden Wert fest
+  register:
+    - key: stand
+      name: Stand
+      beschriftungen: { en: { name: "State" } }
+      art: felder
+      felder: [kennung, bereich, zeitraum, status, aenderung, stand_vom, versionen, abgeloest_am, vorgaenger, nachfolger, ablago_version, pruefwert]
+      abschnitte:
+        - { vor: abgeloest_am, titel: Verlauf, beschriftungen: { en: { titel: Timeline } } }
+        - { vor: ablago_version, titel: Technisch, beschriftungen: { en: { titel: Technical } }, eingeklappt: true }
+    - key: dateien
+      name: Dateien
+      beschriftungen: { en: { name: "Files" } }
+      art: dokumente
+      versionierung: true
+      volltext: false
+    - key: historie
+      name: Historie
+      beschriftungen: { en: { name: "History" } }
+      art: protokoll
+  trefferliste: [bereich, zeitraum, status, aenderung]
+
+- schluessel: nachweise
+  name: Nachweise
+  beschreibung: Was in einem Monat passiert ist – Sicherungen, Prüfungen, Anmeldungen, Rechte, Updates und Löschungen, angelegt vom Paket Compliance. Enthält Benutzer und Fehlanmeldungen, deshalb nur für die Gesamte Verwaltung. Nur lesbar.
+  beschriftungen: { en: { name: "Evidence", beschreibung: "What happened in a month – backups, checks, sign-ins, permissions, updates and deletions, created by the Compliance package. Contains users and failed sign-ins, so only for full administration. Read only." } }
+  titelVorlage: "Nachweise · {monat}"
+  rechte: { lesen: verwaltung, aendern: paket, anlegen: paket }
+  archiv: { jahre: 2, stichtag: stichtag }
+  felder:
+    - key: monat
+      label: Monat
+      beschriftungen: { en: { label: "Month" } }
+      typ: text
+      maxLen: 7
+      muster: "^\\d{4}-(0[1-9]|1[0-2])$"
+      eindeutig: true
+      berechnet: true
+    - key: stichtag
+      label: Stichtag
+      beschriftungen: { en: { label: "Key date", hilfe: "Last day of the month" } }
+      typ: datum
+      berechnet: true
+      hilfe: Letzter Tag des Monats
+    - key: zusammenfassung
+      label: Zahlen je Bereich
+      beschriftungen: { en: { label: "Figures per area" } }
+      typ: langtext
+      berechnet: true
+    - key: benutzer
+      label: Benutzer zum Stichtag
+      beschriftungen: { en: { label: "Users on the key date" } }
+      typ: zahl
+      berechnet: true
+    - key: bereiche
+      label: Enthaltene Bereiche
+      beschriftungen: { en: { label: "Areas included" } }
+      typ: text
+      maxLen: 300
+      berechnet: true
+    - key: pruefwert
+      label: Prüfwert (SHA-256)
+      beschriftungen: { en: { label: "Checksum (SHA-256)" } }
+      typ: text
+      maxLen: 64
+      berechnet: true
+  register:
+    - key: bericht
+      name: Bericht
+      beschriftungen: { en: { name: "Report" } }
+      art: felder
+      felder: [monat, stichtag, zusammenfassung, benutzer, bereiche, pruefwert]
+    - key: dateien
+      name: Dateien
+      beschriftungen: { en: { name: "Files" } }
+      art: dokumente
+      versionierung: true
+      volltext: false
+    - key: historie
+      name: Historie
+      beschriftungen: { en: { name: "History" } }
+      art: protokoll
+  trefferliste: [monat, benutzer, bereiche]
