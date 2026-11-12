@@ -136,6 +136,17 @@ VORLAGEN_KARTEN = {'aufgabe'}
 VORLAGEN_EMPFAENGER = {'frage', 'selbst', 'ersteller', 'feld'}
 KERN_VORLAGEN = {'aufgabe_vergeben', 'erinnern'}
 DANN_KARTEN = {'aufgabe', 'feld', 'stopp', 'zusammenfassung', 'favoriten', 'anmeldeschutz', 'paket'}
+# Post von Ablago in mitgelieferten Automatisierungen (DMS #1001, Registry #153): wenn.typ dms:post und wenn.angelegt
+# („Mappe gespeichert“ auch beim Anlegen), ab DMS 0.257.0 (DMS shared/src/automatisierung.ts DMS_POST_AUTOMATISIERUNG_AB).
+DMS_POST_AUTOMATISIERUNG_AB = (0, 257, 0)
+DMS_POST = 'dms:post'
+# Systemfelder der Post (DMS shared/src/model.ts, systemFelder('post')), soweit Automatisierungen sie nennen.
+POST_FELDER = [
+    {'key': 'betreff', 'typ': 'text'}, {'key': 'stand', 'typ': 'auswahl'}, {'key': 'kanal', 'typ': 'auswahl'},
+    {'key': 'richtung', 'typ': 'auswahl'}, {'key': 'datum', 'typ': 'datum'}, {'key': 'von', 'typ': 'text'},
+    {'key': 'an', 'typ': 'referenz', 'ziel': 'dms:benutzer'}, {'key': 'an_adresse', 'typ': 'text'},
+    {'key': 'bezug', 'typ': 'referenz'}, {'key': 'nachricht', 'typ': 'langtext'},
+]
 # Schnittstelle dms:texterkennung (DMS #458): das Paket übernimmt die Texterkennung, ab DMS 0.133.0.
 DMS_TEXTERKENNUNG_AB = (0, 133, 0)
 # Schnittstelle dms:umwandeln, code.umwandeln und Ereignis datei.umwandeln (DMS #577): Dateien umwandeln, ab DMS 0.137.0.
@@ -724,6 +735,7 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
     fehler: list[str] = []
     gesehen: set[str] = set()
     neu = False  # Karten aus DMS #678 (Zeitplan, Favorit geändert, Benachrichtigungen)
+    post = False  # dms:post und wenn.angelegt (DMS #1001)
     _ab = dms_untergrenze(dms_bereich)
     ab_zeitplan_paket_fehlt = _ab is None or _ab < DMS_ZEITPLAN_PAKET_AB
     for i, a in enumerate(liste, 1):
@@ -739,7 +751,10 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
         felder: list | None = None
         if typ is not None:
             t = str(typ)
-            if ':' in t:
+            if t == DMS_POST:
+                post = True
+                felder = POST_FELDER
+            elif ':' in t:
                 pk = t.split(':', 1)[0]
                 if pk == 'dms' or (pk != paket_id and pk not in abh):
                     fehler.append(f'{wo}: wenn.typ „{t}“ – nur Mappentypen des Pakets oder seiner Abhängigkeiten')
@@ -780,6 +795,20 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
                 fehler.append(f'{wo}: „{art}“ hat keinen Mappentyp – wenn.typ weglassen')
         else:
             fehler.append(f'{wo}: unbekannte Wenn-Karte „{art}“')
+        if art in WENN_MAPPE and art != 'mappe.geaendert' and (w.get('felder') is not None or w.get('angelegt') is not None):
+            fehler.append(f'{wo}: wenn.felder und wenn.angelegt gibt es nur bei „mappe.geaendert“')
+        if art == 'mappe.geaendert':
+            if w.get('angelegt') is not None:
+                post = True
+                if not isinstance(w.get('angelegt'), bool):
+                    fehler.append(f'{wo}: wenn.angelegt ist true oder false')
+            fl = w.get('felder')
+            if fl is not None and (not isinstance(fl, list) or any(not isinstance(x, str) for x in fl)):
+                fehler.append(f'{wo}: wenn.felder als Liste von Feldschlüsseln')
+            elif fl and pruefbar:
+                for x in fl:
+                    if x not in feldnamen:
+                        fehler.append(f'{wo}: wenn.felder – Feld „{x}“ gibt es an „{typ}“ nicht')
         for j, k in enumerate(a.get('dann') or [], 1):
             if not isinstance(k, dict):
                 continue
@@ -803,6 +832,8 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
                     fehler.append(f'{kw}: „Tägliche Zusammenfassung senden“ braucht wenn: zeitplan mit jeBenutzer: true')
                 if k['art'] == 'favoriten' and art != 'favorit.geaendert':
                     fehler.append(f'{kw}: „Favoriten-Änderungen melden“ braucht wenn: favorit.geaendert')
+                if k['art'] == 'favoriten' and k.get('rollen'):
+                    fehler.append(f'{kw}: rollen – feste Rollen gibt es in Paketen nicht; der Admin wählt sie in der Automatisierung (DMS #1001)')
                 if k['art'] == 'anmeldeschutz':
                     was = k.get('was', 'sammel')
                     if was not in ('sammel', 'konto'):
@@ -849,6 +880,8 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
             fehler.append('inhalt.automatisierungen: Automatisierungen in Paketen kennt Ablago erst ab 0.177.0 – bitte dms: ">=0.177.0" angeben')
         elif neu and ab < DMS_BENACHRICHTIGUNGEN_AB:
             fehler.append('inhalt.automatisierungen: „Zeitplan“, „Favorit geändert“ und die Karten der Benachrichtigungen kennt Ablago erst ab 0.181.0 – bitte dms: ">=0.181.0" angeben')
+        elif post and ab < DMS_POST_AUTOMATISIERUNG_AB:
+            fehler.append('inhalt.automatisierungen: wenn.typ dms:post und wenn.angelegt kennt Ablago erst ab 0.257.0 – bitte dms: ">=0.257.0" angeben')
     # Ab 0.177.0 erinnert ein Datumsfeld mit frist nicht mehr selbst: Jede Frist braucht eine mitgelieferte Automatisierung.
     ab = dms_untergrenze(dms_bereich)
     if ab is not None and ab >= DMS_AUTOMATISIERUNGEN_AB:
