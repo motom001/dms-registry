@@ -1034,6 +1034,16 @@ class Umbau(unittest.TestCase):
         self.assertEqual(ohne_code, [])
         self.assertTrue(any('Umbau kennt Ablago erst ab 0.243.0' in x for x in self.pruefe(u, dms='>=0.239.0')))
 
+    def test_setzen_zeitraum(self):
+        # #1125: Zeitraum in setzen ab Ablago 0.248.0 – als { anzahl, einheit }, „P3M“ oder „3 Monate“.
+        frei = lambda f: [x for x in f if 'nur ein Paket mit Code' not in x]
+        for w in ({'anzahl': 3, 'einheit': 'monate'}, 'P3M', '3 Monate'):
+            u = [{'von': 'haushalt:vertrag', 'nach': 'vertrag', 'setzen': {'frist': w}}]
+            self.assertEqual(frei(self.pruefe(u, dms='>=0.248.0')), [], w)
+            self.assertTrue(any('erst ab 0.248.0' in x for x in self.pruefe(u, dms='>=0.247.0')), w)
+        u = [{'von': 'haushalt:vertrag', 'nach': 'vertrag', 'setzen': {'frist': 'bald'}}]
+        self.assertTrue(any('setzen „frist“ (zeitraum)' in x for x in self.pruefe(u, dms='>=0.248.0')))
+
     def test_felder_des_alten_typs(self):
         # Haushalt hat (heute oder früher) einen Vertrag ohne Feld „gibtsnicht“.
         f = self.pruefe([{'von': 'haushalt:vertrag', 'nach': 'vertrag', 'felder': {'gibtsnicht': 'von'}}])
@@ -1042,7 +1052,8 @@ class Umbau(unittest.TestCase):
     def test_ziel_und_setzen(self):
         f = self.pruefe([{'von': 'haushalt:vertrag', 'nach': 'vertrag', 'felder': {'vertragspartner': 'status', 'art': 'fehlt'},
                           'setzen': {'frist': 'P3M', 'zum': 'c', 'weg': 1}, 'register': {'dokumente': 'r'}}])
-        for teil in ('„status“ ist berechnet', '„fehlt“ gibt es im Zieltyp', 'setzen „frist“ (zeitraum)', '„c“ ist keine Option',
+        # setzen „frist“ mit Zeitraum geht seit #1125 – hier nur mit dms >=0.243.0, also der Hinweis auf 0.248.0.
+        for teil in ('„status“ ist berechnet', '„fehlt“ gibt es im Zieltyp', 'setzen „frist“ mit Zeitraum kennt Ablago erst ab 0.248.0', '„c“ ist keine Option',
                      'setzen „weg“ – das Feld gibt es', 'register „r“ ist kein Dokumentenregister'):
             self.assertTrue(any(teil in x for x in f), (teil, f))
 
