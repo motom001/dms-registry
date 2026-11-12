@@ -433,6 +433,8 @@ SCHNITTSTELLEN = {
     # DMS #631, ab 0.149.0 – dahinter die Dateitypen aus code.archivfassung.typen
     # DMS #939, ab 0.226.0
     'dms:klassifizieren': ('Mappentyp vorschlagen („Wohin gehört das?“) – nur aus dem Anfang des Dokuments und der Liste der Mappentypen, die Ablago mitgibt (dms:klassifizieren)', 'recht-klassifizieren', 'Mappentyp vorschlagen'),
+    # DMS #997, ab 0.255.0
+    'dms:leerseiten': ('Markiert leere Seiten in neuer Post – löscht nichts; weggelassen werden sie erst, wenn jemand die Post in eine Mappe übernimmt (dms:leerseiten)', 'recht-leerseiten', 'Leerseiten markieren'),
     'dms:archivfassung': ('Archivfassung (PDF/A) ablegen – das Paket liest Dokumente mit ihrem Volltext und den Wortpositionen und legt daneben ein durchsuchbares PDF/A ab; das Original bleibt unverändert, ändern, ersetzen oder löschen kann es nichts (dms:archivfassung)', 'recht-archivfassung', 'Archivfassung ablegen'),
 }
 # Kurze Namen der Dateitypen hinter dms:umwandeln, dms:volltext und dms:archivfassung (wie DATEITYP_NAMEN im DMS,

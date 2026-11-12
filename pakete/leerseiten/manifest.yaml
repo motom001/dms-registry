@@ -1,0 +1,60 @@
+# Paket Leerseiten – leere Seiten in neuer Post erkennen und markieren (dms #997). Schema: schema/manifest.schema.json
+schema: 1
+id: leerseiten
+name: Leerseiten
+version: 1.0.0
+beschreibung: Erkennt leere Seiten in neuer Post, etwa die Rückseiten beidseitiger Scans – auch ohne Trennblatt – und markiert sie. Gelöscht wird nichts; beim Übernehmen in eine Mappe fallen die markierten Seiten weg, das Original bleibt als frühere Version. Läuft abgeschottet im Paket-Läufer, ohne Netz.
+autor:
+  name: Thomas Meissner
+  github: motom001
+herausgeber: app.ablago
+lizenz: Apache-2.0
+kategorien: [post]
+symbol: file-text
+kurzanleitung:
+  de:
+    - Scanne Briefe beidseitig wie gewohnt in den Eingangsordner oder lade sie über „+ Post“ hoch.
+    - Öffne die neue Post – leere Seiten sind in der Seitenleiste blass und tragen „Leerseite – fällt beim Übernehmen weg“.
+    - Ist eine Seite doch nicht leer, wähle „Doch behalten“; eine andere Seite soll weg, dann „Auch weglassen“.
+    - Übernimm die Post in eine Mappe – das Dokument dort hat die leeren Seiten nicht mehr, das Original bleibt als frühere Version.
+  en:
+    - Scan letters on both sides as usual into the inbox folder or upload them with “+ Post”.
+    - Open the new post – blank pages are faded in the page strip and say “Blank page – left out when filing”.
+    - If a page is not blank after all, choose “Keep after all”; if another page should go, choose “Leave out too”.
+    - Take the post over into a folder – the document there no longer has the blank pages, the original stays as an earlier version.
+# 0.255.0: Schnittstelle dms:leerseiten (dms #997) – Seiten in Post als leer markieren
+dms: ">=0.255.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: [dokument.hochgeladen]
+  rechte:
+    # Nur Post (dms:post): Das Paket liest die Post, in die das Dokument kam, und deren Seiten als Bild. Andere Mappen
+    # sieht es nicht, schreiben kann es keine Mappe.
+    lesen: ["dms:post"]
+    dokumente: lesen                     # nur die Seiten als Graustufenbild; das Paket ändert keine Datei
+    schnittstellen: ["dms:leerseiten"]   # Seiten als leer markieren – gelöscht wird erst beim Übernehmen durch eine Person
+  netz: []
+  einstellungen:
+    - abschnitt: Leerseiten
+      felder:
+        - schluessel: empfindlichkeit
+          name: Empfindlichkeit
+          typ: auswahl
+          optionen: [vorsichtig, normal, streng]
+          standard: vorsichtig
+          hilfe: vorsichtig – nur Seiten, die wirklich leer sind; eine Bleistiftnotiz, ein Stempel oder durchscheinende Schrift lassen die Seite stehen. normal – Rauschen und durchscheinende Schrift zählen nicht. streng – auch einzelne Striche und kleine Flecken zählen nicht. Lochung und Schatten am Rand zählen nie.
+        - schluessel: kanaele
+          name: Nur Post aus diesen Kanälen
+          typ: mehrfachauswahl
+          optionen: [Eingangsordner, E-Mail-Postfach, Hochgeladen, Scan, WebDAV, API, Import]
+          standard: [Scan, Eingangsordner, Hochgeladen]
+          hilfe: Leer – Post aus allen Kanälen. E-Mails bringen selten leere Seiten mit.
+        - schluessel: max_seiten
+          name: Höchstens so viele Seiten
+          typ: zahl
+          min: 1
+          max: 400
+          standard: 100
+          hilfe: Längere Dokumente prüft das Paket nicht (Zeitgrenze des Paket-Läufers).

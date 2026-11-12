@@ -10,7 +10,7 @@ Das Paket läuft im **Paket-Läufer** von Ablago: abgeschottet als WebAssembly, 
 
 1. **Trennblatt drucken:** [`vorlage/trennblatt.pdf`](vorlage/trennblatt.pdf) (A4, mit 100 % drucken). Ein paar Blätter reichen, du kannst sie immer wieder verwenden.
 2. **Stapel vorbereiten:** Lege zwischen je zwei Briefe ein Trennblatt. Vor den ersten Brief brauchst du keins, schadet aber auch nicht.
-3. **Scannen:** Scanne den ganzen Stapel in ein PDF. Scannst du beidseitig, ist das kein Problem: Die leere Rückseite eines Trennblatts fällt mit weg.
+3. **Scannen:** Scanne den ganzen Stapel in ein PDF. Scannst du beidseitig, ist das kein Problem: Die leere Rückseite eines Trennblatts fällt mit weg. Leere Rückseiten der Briefe selbst markiert das Paket [Leerseiten](../leerseiten/) – sie fallen weg, wenn du die Post in eine Mappe übernimmst.
 4. **In Ablago:** Das PDF kommt wie jede andere Post in Ablago, über den Eingangsordner, das E-Mail-Postfach oder **+ Post**.
 5. **Fertig:** Nach ein paar Sekunden siehst du unter **Post** für jeden Brief eine neue Post „*Betreff* (Teil 1)“, „(Teil 2)“ … mit Stand **Neu**. Die ursprüngliche Post hat danach Stand **Erledigt**, behält den ganzen Scan und verweist auf die neuen Posts. Es geht also nichts verloren.
 
@@ -57,7 +57,7 @@ Unter **Werkbank → Pakete → Trennblatt → Einstellungen**:
 | --- | --- | --- |
 | Barcode auf dem Trennblatt | `DMS-TRENNEN` | Inhalt des Barcodes, an dem das Paket teilt. Groß- und Kleinschreibung zählen nicht. |
 | Trennblatt behalten | Nein | Ja: Jedes Trennblatt bleibt als erste Seite der neuen Post. |
-| Leere Rückseite mit entfernen | Ja | Eine leere Seite direkt nach einem Trennblatt (beidseitiger Scan) fällt mit weg. |
+| Leere Rückseite mit entfernen | Ja | Eine leere Seite direkt nach einem Trennblatt (beidseitiger Scan) fällt mit weg. Leer heißt wie beim Paket [Leerseiten](../leerseiten/) in der Stufe „vorsichtig“: Lochung, Staub und Schatten am Rand zählen nicht, eine Bleistiftnotiz oder ein Stempel schon. |
 | Nur Post aus diesen Kanälen | leer (alle) | Eingangsordner, E-Mail-Postfach, Hochgeladen, Scan, WebDAV, API, Import |
 | Archivnummer aus dem Aufkleber übernehmen | Ja | Barcode `DMS-ASN:<nummer>` auf einer Seite setzt die Archivnummer. |
 | Auflösung (dpi) | 300 | 150–400. Für Trennblätter reichen 150 dpi, kleine Archivnummer-Aufkleber brauchen 300. |
@@ -101,10 +101,11 @@ Den größten Teil der Zeit braucht Ablago, um die Seiten zu rastern. Mit dem St
 | [`code/trennblatt.cpp`](code/trennblatt.cpp) | das Modul (Ablago-Paket-ABI 1): Ereignis → Seiten über die API → Barcodes → Post teilen, Archivnummer setzen |
 | [`code/barcode.c`](code/barcode.c), [`code/barcode.h`](code/barcode.h) | eigener, kleiner Code-128-Leser (Zeichensätze A, B, C) für Graustufenbilder: tastet Zeilen und Spalten ab, örtliche Schwelle, Kanten auf Bruchteile eines Bildpunkts, liest in beide Richtungen, Prüfziffer |
 | [`code/json.h`](code/json.h) | kleiner JSON-Leser (aus dem Paket Texterkennung) |
+| [`gemeinsam/leerseite/leerseite.h`](../../gemeinsam/leerseite/leerseite.h) | leere Rückseite erkennen – dieselbe Erkennung wie das Paket [Leerseiten](../leerseiten/) (Stufe „vorsichtig“), beim Bau mit `-I` eingebunden |
 | [`code/bauen.sh`](code/bauen.sh) | Bau mit dem WASI-SDK, ohne fremde Bibliotheken; danach der Test des Barcode-Lesers, wenn ein C-Compiler da ist |
 | [`vorlage/trennblatt.py`](vorlage/trennblatt.py), [`vorlage/pdf.py`](vorlage/pdf.py) | erzeugen [`vorlage/trennblatt.pdf`](vorlage/trennblatt.pdf), nur mit der Standardbibliothek |
 | [`tests/barcode_test.c`](tests/barcode_test.c) | künstliche Scans: schief, verrauscht, unscharf, verlaufene Tinte, auf dem Kopf, quer, kleinste Aufkleber; Textseiten ohne Fehllesung |
-| [`tests/beispiel.py`](tests/beispiel.py) | Beispiel-PDFs: 3 Briefe mit 2 Trennblättern, dasselbe beidseitig und schief „gescannt“, ein Scan ohne Trennblatt |
+| [`tests/beispiel.py`](tests/beispiel.py) | Beispiel-PDFs: 3 Briefe mit 2 Trennblättern, dasselbe beidseitig und schief „gescannt“, ein Scan ohne Trennblatt, eine Trennblatt-Rückseite mit Bleistiftnotiz |
 | [`tests/modul_test.mjs`](tests/modul_test.mjs) | das gebaute Modul in Node mit einer Nachbildung der Ablago-Importe und der API |
 | [`tests/pruefen.sh`](tests/pruefen.sh) | alles zusammen |
 

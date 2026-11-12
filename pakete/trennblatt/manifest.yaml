@@ -2,12 +2,26 @@
 schema: 1
 id: trennblatt
 name: Trennblatt
-version: 1.0.2
+version: 1.1.0
 beschreibung: Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
+herausgeber: app.ablago
 lizenz: Apache-2.0
+kategorien: [post]
+symbol: scan-barcode
+kurzanleitung:
+  de:
+    - Drucke das Trennblatt aus vorlage/trennblatt.pdf (A4, 100 %) ein paar Mal aus.
+    - Lege zwischen je zwei Briefe ein Trennblatt und scanne den ganzen Stapel in ein PDF.
+    - Bring das PDF wie jede Post in Ablago – über den Eingangsordner, das E-Mail-Postfach oder „+ Post“.
+    - Nach ein paar Sekunden ist jeder Brief eine eigene Post mit Stand „Neu“; die Trennblätter sind weg.
+  en:
+    - Print the separator sheet from vorlage/trennblatt.pdf (A4, 100 %) a few times.
+    - Put a separator sheet between every two letters and scan the whole stack into one PDF.
+    - Bring the PDF into Ablago like any post – via the inbox folder, the email mailbox or “+ Post”.
+    - After a few seconds every letter is a post of its own with status “New”; the separator sheets are gone.
 # 0.88.0: Paket-Läufer, Seite als Graustufenbild, PDF teilen per API (Post teilen), Archivnummer per API
 # 0.94.0: Recht nur für Post (dms:post in code.rechte)
 dms: ">=0.94.0"
@@ -41,7 +55,7 @@ code:
           name: Leere Rückseite mit entfernen
           typ: janein
           standard: true
-          hilfe: Beim beidseitigen Scan folgt auf jedes Trennblatt seine leere Rückseite. Ja – eine leere Seite direkt nach einem Trennblatt fällt mit weg.
+          hilfe: Beim beidseitigen Scan folgt auf jedes Trennblatt seine leere Rückseite. Ja – eine leere Seite direkt nach einem Trennblatt fällt mit weg (erkannt wie beim Paket Leerseiten, Stufe „vorsichtig“ – eine Bleistiftnotiz oder ein Stempel bleiben). Leere Seiten an anderen Stellen markiert das Paket Leerseiten.
         - schluessel: kanaele
           name: Nur Post aus diesen Kanälen
           typ: mehrfachauswahl

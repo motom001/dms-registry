@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Baut code/modul.wasm (die CI ruft das über werkzeuge/bauen.py auf; WASI_SDK zeigt auf das WASI-SDK).
-# Keine fremden Bibliotheken: Der Barcode-Leser steht in code/barcode.c.
+# Keine fremden Bibliotheken: Der Barcode-Leser steht in code/barcode.c; leere Rückseiten erkennt das Paket wie
+# „Leerseiten“ mit gemeinsam/leerseite/ (dms #997).
 set -euo pipefail
 : "${WASI_SDK:?WASI_SDK fehlt}"
 CODE="$(cd "$(dirname "$0")" && pwd)"
+GEMEINSAM="$(cd "$CODE/../../../gemeinsam/leerseite" && pwd)"
 BAU="${BAU:-$(mktemp -d)}"
 
 "$WASI_SDK/bin/clang" --target=wasm32-wasip1 -O2 -Wall -Werror -c "$CODE/barcode.c" -o "$BAU/barcode.o"
-"$WASI_SDK/bin/clang++" --target=wasm32-wasip1 -O2 -Wall -Werror -fno-exceptions -mexec-model=reactor \
+"$WASI_SDK/bin/clang++" --target=wasm32-wasip1 -O2 -Wall -Werror -fno-exceptions -mexec-model=reactor -I "$GEMEINSAM" \
   "$CODE/trennblatt.cpp" "$BAU/barcode.o" \
   -Wl,--import-memory -Wl,--strip-all -o "$CODE/modul.wasm"
 

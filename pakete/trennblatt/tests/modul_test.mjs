@@ -112,6 +112,8 @@ try {
   pruefe('Gescannt mit 150 dpi (ohne Archivnummer)', lauf({ pdf: 'sammelscan-gescannt.pdf', einstellungen: { dpi: 150, archivnummer: false } }), { seiten: [1, 4, 7, 8], teile: [1, 2] });
   pruefe('Trennblatt behalten', lauf({ pdf: 'sammelscan.pdf', einstellungen: { behalten: true } }), { seiten: [1, 2, 3, 4, 5], teile: [1, 3], asn: ['neu-2=A-000123'] });
   pruefe('Leere Rückseite behalten', lauf({ pdf: 'sammelscan-gescannt.pdf', einstellungen: { rueckseite: false, archivnummer: false } }), { seiten: [1, 3, 4, 6, 7, 8], teile: [1, 3] });
+  // Seit 1.1.0 (dms #997): leer wie beim Paket Leerseiten, Stufe „vorsichtig“ – eine Bleistiftnotiz bleibt.
+  pruefe('Rückseite mit Bleistiftnotiz bleibt', lauf({ pdf: 'rueckseite-notiz.pdf', einstellungen: { archivnummer: false } }), { seiten: [1, 3, 4], teile: [1] });
   pruefe('Ohne Trennblatt: nur Archivnummer', lauf({ pdf: 'ohne-trennblatt.pdf' }), { asn: ['dok-1=A-000123'] });
   pruefe('Anderer Barcode-Inhalt', lauf({ pdf: 'sammelscan.pdf', einstellungen: { barcode: 'ANDERS', archivnummer: false } }), {});
   pruefe('Kanal nicht gewählt', lauf({ pdf: 'sammelscan.pdf', einstellungen: { kanaele: ['Eingangsordner', 'E-Mail-Postfach'] } }), {});

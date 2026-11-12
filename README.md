@@ -15,7 +15,7 @@ In Ablago installierst du Pakete unter **Werkbank → Pakete**. Die Paketverwalt
 
 ```
 pakete/<paket>/        ein Ordner je Paket, Name = Paket-Id
-gemeinsam/<ordner>/    Quellcode, den mehrere Pakete beim Bau einbinden (z. B. mail/: E-Mails zerlegen für Office und E-Mail und PDF/A)
+gemeinsam/<ordner>/    Quellcode, den mehrere Pakete beim Bau einbinden (z. B. mail/: E-Mails zerlegen für Office und E-Mail und PDF/A; leerseite/: leere Seiten erkennen für Leerseiten und Trennblatt)
 vorlage/               Vorlage für ein neues Paket – kopieren und loslegen
 schema/                JSON-Schemas für manifest.yaml und die Inhalte
 werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py, sprachen.py (laufen auch in der CI)
