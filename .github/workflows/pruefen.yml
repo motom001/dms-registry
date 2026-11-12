@@ -55,7 +55,7 @@ jobs:
       # ABLAGO beim Kern-Update hochziehen.
       - name: Pakete mit dem Installer von Ablago prüfen
         env:
-          ABLAGO: ghcr.io/motom001/dms:0.247.1
+          ABLAGO: ghcr.io/motom001/dms:0.257.0
         run: |
           git worktree add -q "$RUNNER_TEMP/neu" HEAD
           if [ "${{ github.event_name }}" = pull_request ]; then
