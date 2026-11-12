@@ -81,11 +81,12 @@ function lauf({ datei, daten = {}, archiv = 404, ablegen = 200, vorhanden = null
     }
     if (q.methode === 'GET' && q.pfad === '/dokumente/dok-1/wortpositionen') return json(200, wortpositionen(datei, mime));
     if (q.methode === 'GET' && (q.pfad === '/dokumente/dok-1/inhalt' || q.pfad === '/dokumente/dok-1/fassung')) { antwort = new Uint8Array(readFileSync(pfad)); return 200; }
-    const s = /^\/dokumente\/dok-1\/seiten\/(\d+)\/scan\?dpi=(\d+)$/.exec(q.pfad);
+    // Wie im DMS: mit farbe=1 ein Farbbild (PPM, #716), sonst Graustufen (PGM).
+    const s = /^\/dokumente\/dok-1\/seiten\/(\d+)\/scan\?dpi=(\d+)(&farbe=1)?$/.exec(q.pfad);
     if (q.methode === 'GET' && s && mime === 'application/pdf') {
       const nr = Number(s[1]);
       if (nr > seitenzahl(pfad)) return json(404, { fehler: `Seite ${nr} gibt es nicht.` });
-      antwort = new Uint8Array(execFileSync('pdftoppm', ['-gray', '-r', s[2], '-f', String(nr), '-l', String(nr), pfad], { maxBuffer: 256 << 20 }));
+      antwort = new Uint8Array(execFileSync('pdftoppm', [...(s[3] ? [] : ['-gray']), '-r', s[2], '-f', String(nr), '-l', String(nr), pfad], { maxBuffer: 256 << 20 }));
       return 200;
     }
     if (q.methode === 'PUT' && q.pfad === `/dokumente/dok-1/archivfassung?sha256=${SHA}`) {
@@ -139,7 +140,7 @@ function pruefe(name, ok, r) {
 }
 const kopf = (b) => b && b.subarray(0, 5).toString('latin1') === '%PDF-';
 
-const DATEIEN = ['foto.jpg', 'exif6.jpg', 'cmyk.jpg', 'durchsichtig.png', 'grau.png', 'rechnung.pdf', 'extern.pdf', 'scan.pdf', 'lang.pdf'];
+const DATEIEN = ['foto.jpg', 'exif6.jpg', 'cmyk.jpg', 'durchsichtig.png', 'grau.png', 'rechnung.pdf', 'extern.pdf', 'scan.pdf', 'farbe.pdf', 'lang.pdf'];
 if (process.argv[3] === '--messen') {
   for (const datei of DATEIEN) {
     const r = lauf({ datei });
@@ -157,6 +158,14 @@ let r = lauf({ datei: 'foto.jpg' });
 pruefe('JPEG kommt unverändert ins PDF/A', r.ergebnis.includes('JPEG unverändert übernommen'), r);
 r = lauf({ datei: 'cmyk.jpg' });
 pruefe('CMYK-JPEG wird umgerechnet', r.ergebnis.includes('JPEG umgerechnet'), r);
+// Farbe (registry #189): Seitenbilder mit farbe=1; farbige Seiten als RGB-JPEG, graue als Graustufen-JPEG.
+const info = (x) => ({ code: 0, ergebnis: JSON.stringify(x), aufrufe: [], protokoll: [] });
+const farben = (datei) => execFileSync('pdfimages', ['-list', join(ordner, `${datei}.pdfa.pdf`)]).toString().split('\n').slice(2).filter(Boolean).map((z) => z.trim().split(/\s+/)[5]);
+r = lauf({ datei: 'farbe.pdf' });
+pruefe('Farbiges PDF: Seiten mit farbe=1 geholt', r.aufrufe.filter((a) => a.includes('/scan?')).every((a) => a.endsWith('&farbe=1')), r);
+pruefe('Farbiges PDF: Seite 1 in Farbe, Seite 2 grau', JSON.stringify(farben('farbe.pdf')) === '["rgb","gray"]' && r.ergebnis.includes('1 von 2 Seiten in Farbe'), info({ farben: farben('farbe.pdf'), ergebnis: r.ergebnis }));
+pruefe('Grauer Scan bleibt grau', JSON.stringify(farben('scan.pdf')) === '["gray","gray"]' && lauf({ datei: 'scan.pdf' }).ergebnis.includes('in Graustufen'), info(farben('scan.pdf')));
+pruefe('Online-Rechnung mit blauem Logo: in Farbe', farben('rechnung.pdf').every((f) => f === 'rgb'), info(farben('rechnung.pdf')));
 r = lauf({ datei: 'lang.pdf' });
 pruefe('60 Seiten: 200 dpi', r.ergebnis.includes('60 Seiten') && r.ergebnis.includes('200 dpi'), r);
 r = lauf({ datei: 'extern.pdf' });

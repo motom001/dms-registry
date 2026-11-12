@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.3.0
+
+- **PDFs in Farbe** (dms-registry #189): Das Paket holt die Seitenbilder mit `farbe=1` (Ablago DMS #716). Farbige Seiten kommen als Farb-JPEG in die Archivfassung, so bleiben Logos, Stempel, Markierungen und farbige Tabellen erhalten. Seiten ohne Farbe (kein Bildpunkt weicht zwischen Rot, Grün und Blau um mehr als 6 ab) bleiben Graustufen-JPEG und werden nicht größer. Am Dokument steht z. B. „Seiten als Bild mit 300 dpi, 1 von 2 Seiten in Farbe“.
+- Seiten größer als A3 holt das Paket in Farbe mit weniger dpi, damit das Bild in den Speicher des Läufers passt.
+- Vorhandene Archivfassungen bleiben grau, bis sie neu entstehen; ein Update erstellt sie nicht neu.
+- Manifest: Herausgeber `app.ablago`. Ablago-Version unverändert (0.221.0; Farbbilder gibt es seit 0.174.0).
+
 ## 1.2.0
 
 - **E-Mails als Archivfassung** (dms-registry #143, Stufe 1; Ablago mit der Art `emails`, DMS #946): `.eml` und Outlook `.msg` setzt das Paket **selbst zu Seiten** – ohne Browser, ohne Netz, ohne Wortpositionen. Oben ein **Kopfblock** wie ein Briefkopf (Betreff, Von, An, Cc, Datum in der Zeitzone der Ablage), darunter der Text: Klartext mit eingerückten Zitaten oder einfaches HTML (Absätze, Überschriften, Listen, Fett, Kursiv, einfache Tabellen, Links als Text mit Adresse). **Bilder aus der Mail** (`cid:`) stehen an ihrer Stelle; **Bilder aus dem Internet werden nie geladen** – an ihrer Stelle steht „externes Bild nicht geladen“, Zählpixel bleiben wirkungslos. **Anhänge** stehen am Ende als Liste (Name, Art, Größe), ihr Inhalt nicht; **weitergeleitete Mails** folgen darunter, bis zur dritten Ebene. Verschlüsselte Teile (S/MIME, PGP/MIME) bleiben verschlüsselt. Kopf- und Fußzeile mit „Seite 1 von 3“.

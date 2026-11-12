@@ -19,7 +19,7 @@ Das Paket schreibt **PDF/A-2b** – „b“ heißt: Das Aussehen ist gesichert. 
    | --- | --- |
    | **JPEG** (Foto, Scan) | Das Bild kommt **unverändert** hinein (keine zweite JPEG-Kompression, kein Qualitätsverlust); nur Metadaten wie Aufnahmeort und Gerät (EXIF) fallen weg. Hochkant fotografierte Bilder stehen aufrecht, wie Ablago sie zeigt. JPEG in CMYK und andere seltene Varianten rechnet es in sRGB um. |
    | **PNG** (Bildschirmfoto, Grafik) | **verlustfrei**; Durchsichtiges kommt auf Weiß |
-   | **PDF** (Scan, Online-Rechnung, Formular) | jede Seite als **Bild mit 300 dpi in Graustufen** (ab 51 Seiten 200 dpi, ab 201 Seiten 150 dpi), darüber die Textebene. Formularfelder sind damit eingefroren (die Werte sind zu sehen, ausfüllen lässt sich nichts mehr); JavaScript, Aktionen und Verweise auf externe Inhalte kommen nie mit. |
+   | **PDF** (Scan, Online-Rechnung, Formular) | jede Seite als **Bild mit 300 dpi** (ab 51 Seiten 200 dpi, ab 201 Seiten 150 dpi), darüber die Textebene. Farbige Seiten bleiben **farbig** (Logos, Stempel, Markierungen), graue Seiten werden als Graustufenbild abgelegt und damit nicht größer. Formularfelder sind damit eingefroren (die Werte sind zu sehen, ausfüllen lässt sich nichts mehr); JavaScript, Aktionen und Verweise auf externe Inhalte kommen nie mit. |
    | **TIFF, WebP, GIF, BMP** | aus der Lesefassung des Pakets [Bildformate](../bildformate/), wie oben |
    | **E-Mail** (`.eml`, Outlook `.msg`) | als Text gesetzt, mit Kopfblock, Bildern aus der Mail und der Liste der Anhänge – siehe [E-Mails](#e-mails) |
 
@@ -78,18 +78,22 @@ Am Dokument steht danach z. B. „PDF/A-2b, 2 Seiten, 45 KB; E-Mail mit Kopf und
 ## Platz und Qualität
 
 - **Fotos und Bild-Scans** (JPEG, PNG): Die Archivfassung ist kaum größer als das Original (Textebene, Schrift und Farbprofil: einige KB).
-- **PDFs** werden neu als Bild aufgebaut. Bei **Scans** ist das fast verlustfrei; bei **PDFs aus dem Computer** (Online-Rechnung, Kontoauszug) wird die Archivfassung **größer** als das Original (je Seite etwa 100–400 KB statt weniger KB), etwas **unschärfer** als die Vektorschrift und **grau** statt farbig – die Seitenbilder liefert Ablago nur in Graustufen. Der Text bleibt über die Textebene genau durchsuchbar, und das Original bleibt daneben erhalten. Wer Platz sparen will, wählt „PDFs mit Text“ ab.
+- **PDFs** werden neu als Bild aufgebaut. Bei **Scans** ist das fast verlustfrei; bei **PDFs aus dem Computer** (Online-Rechnung, Kontoauszug) wird die Archivfassung **größer** als das Original (je Seite etwa 100–400 KB statt weniger KB), etwas **unschärfer** als die Vektorschrift. Farbige Seiten werden etwa ein Viertel größer als graue. Der Text bleibt über die Textebene genau durchsuchbar, und das Original bleibt daneben erhalten. Wer Platz sparen will, wählt „PDFs mit Text“ ab.
 
-Gemessen am 03.11.2026 auf amd64 mit 2 Kernen, Node 22, mit den erfundenen Testdateien aus `tests/beispiele.py` (`node tests/modul_test.mjs <ordner> --messen`; bei PDFs mit dem Rendern der Seiten durch Poppler wie in Ablago):
+Gemessen am 03.11.2026 (PDFs am 12.11.2026, mit Farbe) auf amd64 mit 2 Kernen, Node 22, mit den erfundenen Testdateien aus `tests/beispiele.py` (`node tests/modul_test.mjs <ordner> --messen`; bei PDFs mit dem Rendern der Seiten durch Poppler wie in Ablago):
 
 | Dokument | Original | Archivfassung | Zeit | Speicher |
 | --- | ---: | ---: | ---: | ---: |
 | Foto, JPEG 1240 × 1754 | 84 KB | 88 KB | 0,01 s | 3 MB |
 | CMYK-JPEG 620 × 877 (umgerechnet) | 86 KB | 25 KB | 0,1 s | 6 MB |
 | PNG 1240 × 1754, Graustufen | 28 KB | 31 KB | 0,1 s | 13 MB |
-| Online-Rechnung, 2 Seiten A4 (wenig Text) | 1 KB | 181 KB | 0,5 s | 29 MB |
-| Scan-PDF, 2 Seiten A4 | 97 KB | 178 KB | 0,7 s | 29 MB |
-| PDF mit 60 Seiten (200 dpi) | 23 KB | 1,7 MB | 7,3 s | 50 MB |
+| Online-Rechnung, 2 Seiten A4 (wenig Text, farbiges Logo) | 1 KB | 217 KB (grau: 181 KB) | 0,5 s | 55 MB |
+| Scan-PDF, 2 Seiten A4, grau | 97 KB | 178 KB | 0,7 s | 46 MB |
+| Scan-PDF, 2 Seiten A4, Seite 1 farbig | 113 KB | 190 KB | 0,7 s | 55 MB |
+| Prospekt, 1 Seite A4 ganz farbig | 332 KB | 224 KB | 0,4 s | 54 MB |
+| PDF mit 60 Seiten (200 dpi, farbiges Logo) | 23 KB | 2,2 MB (grau: 1,7 MB) | 7,2 s | 61 MB |
+
+Farbige Seiten brauchen gegenüber Graustufen etwa 25 MB mehr Speicher und rund die Hälfte mehr Zeit; die Grenzen des Läufers (256 MB, 120 s) reichen weiter. Die Auflösungsstufen (300/200/150 dpi) bleiben deshalb gleich. Größere Seiten als A3 (Pläne) holt das Paket in Farbe mit weniger dpi, damit das Bild in den Speicher passt.
 
 Das Modul ist 0,7 MB groß. Eine E-Mail mit einer Seite wird als Archivfassung etwa 30–50 KB groß (die Teilmengen der Schriften stecken darin), dazu kommen ihre Bilder.
 
@@ -99,7 +103,7 @@ E-Mails aus den Testdateien (`tests/beispiele.py`): eine Seite in 10–25 ms, di
 
 - Eine Archivfassung entsteht in **einem Aufruf** des Läufers (höchstens 100 Sekunden) – ein halbes PDF lässt sich nicht als Zwischenstand weitergeben. Sehr lange PDFs (mehrere hundert Seiten) bekommen deshalb unter Umständen keine; der Grund steht am Dokument.
 - Höchstens 1000 Seiten und 100 MB je Archivfassung (Grenze von Ablago); Bilder, die das Paket dekodieren muss (PNG, CMYK-JPEG), höchstens 20 Millionen Bildpunkte.
-- Seiten von PDFs nur in **Graustufen** (siehe oben).
+- **Vorhandene Archivfassungen** von PDFs bleiben grau, bis sie neu entstehen – z. B. wenn sich das Original oder sein Text ändert. Ein Update des Pakets erstellt sie nicht neu.
 - **E-Mails** (Stufe 1): HTML wird vereinfacht gesetzt – keine Spalten, Farben oder Schriften aus dem Layout der Mail, Tabellen mit mehr als sechs Spalten und verschachtelte Tabellen werden nacheinander gesetzt. Eine bessere HTML-Darstellung folgt mit Stufe 2 ([dms-registry #144](https://github.com/motom001/dms-registry/issues/144)). Fotos in Mails stehen so, wie sie gespeichert sind (EXIF-Ausrichtung wird bei Mails nicht ausgewertet). Fehlt die Zeitzone im Ereignis, gilt Europe/Berlin; kennt das Paket den Namen der Zeitzone nicht, zeigt es UTC mit dem Zusatz „(UTC)“.
 - Scans brauchen die **Wortpositionen** der Texterkennung – das Paket [Texterkennung](../texterkennung/) ab 2.2.0. Bei sehr langen Scans (über etwa 150 dicht beschriebene Seiten) schickt die Texterkennung sie nicht für alle Seiten; dann gibt es keine Archivfassung.
 

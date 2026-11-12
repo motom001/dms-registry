@@ -5,8 +5,8 @@
 // → schon vorhanden? → Wortpositionen über die API → Seiten bauen:
 //   - JPEG: das Bild unverändert übernehmen (ohne EXIF/XMP-Metadaten), Ausrichtung nach EXIF;
 //   - PNG: verlustfrei (Flate mit PNG-Prädiktoren), Durchsichtiges auf Weiß;
-//   - PDF: jede Seite als Graustufenbild vom DMS (GET …/seiten/{nr}/scan, 300 dpi; bei langen Dokumenten weniger),
-//     als JPEG – so kommt nichts aus dem Original mit, das PDF/A verbietet (JavaScript, Aktionen, externe Inhalte,
+//   - PDF: jede Seite als Bild vom DMS (GET …/seiten/{nr}/scan?farbe=1, 300 dpi; bei langen Dokumenten weniger), farbige
+//     Seiten als Farb-JPEG, graue als Graustufen-JPEG (registry #189) – so kommt nichts aus dem Original mit, das PDF/A verbietet (JavaScript, Aktionen, externe Inhalte,
 //     nicht eingebettete Schriften, Transparenz, Formularfelder: alles wird zu dem, was man sieht);
 //   - TIFF und Co. (quelle lesefassung): die Lesefassung des Pakets Bildformate, wie oben;
 // → darüber die Wörter → PUT /dokumente/{id}/archivfassung?sha256=…
@@ -68,6 +68,12 @@ constexpr size_t QUELLE_MAX = 50u * 1024u * 1024u;
 constexpr size_t PUNKTE_MAX = 20u * 1000u * 1000u;
 // Qualität der JPEG-Seiten (Seitenbilder von PDFs, umgerechnete JPEG).
 constexpr int JPEG_QUALITAET = 80;
+// Seitenbilder von PDFs in Farbe (registry #189): höchstens so viele Bildpunkte je Seite (A4 mit 300 dpi: 8,7 Mio.,
+// A3: 17,4 Mio.). Größere Seiten (Pläne) holt das Paket mit weniger dpi, damit das Farbbild (3 Byte je Punkt) in den
+// Speicher des Läufers passt.
+constexpr double FARBE_PUNKTE_MAX = 18e6;
+// Weicht kein Bildpunkt um mehr als das zwischen Rot, Grün und Blau ab, ist die Seite grau (Rundung, JPEG im Original).
+constexpr int GRAU_TOLERANZ = 6;
 // Zeit je Aufruf (Zeitgrenze des Läufers: 120 s). Eine Archivfassung entsteht in einem Aufruf – ein Zwischenstand
 // (das halbe PDF) passt nicht in die Fortsetzung des Läufers (höchstens 4 MB).
 constexpr long ZEIT_MS = 100000;
@@ -296,13 +302,25 @@ Gebaut bildSeite(std::vector<uint8_t> datei, const std::string &mime, const WpSe
   return g;
 }
 
-// PGM (P5, 8 Bit) aus GET …/seiten/{nr}/scan.
-bool pgm(const std::vector<uint8_t> &b, int &w, int &h, size_t &start) {
+// PGM (P5) oder PPM (P6), 8 Bit, aus GET …/seiten/{nr}/scan (mit farbe=1 PPM, DMS #716).
+bool pnm(const std::vector<uint8_t> &b, int &w, int &h, int &kanaele, size_t &start) {
   int mx = 0, n = 0;
+  char art = 0;
   std::string kopf(b.begin(), b.begin() + (long)std::min<size_t>(b.size(), 64));
-  if (sscanf(kopf.c_str(), "P5 %d %d %d%n", &w, &h, &mx, &n) != 3 || mx != 255 || w <= 0 || h <= 0) return false;
+  if (sscanf(kopf.c_str(), "P%c %d %d %d%n", &art, &w, &h, &mx, &n) != 4 || (art != '5' && art != '6') || mx != 255 || w <= 0 || h <= 0) return false;
+  kanaele = art == '6' ? 3 : 1;
   start = (size_t)n + 1;
-  return b.size() >= start + (size_t)w * (size_t)h;
+  return b.size() >= start + (size_t)w * (size_t)h * (size_t)kanaele;
+}
+
+// Farbbild grau? Dann an Ort und Stelle auf einen Kanal zusammenschieben (die Seite wird nicht größer als bisher).
+bool machGrau(uint8_t *px, size_t punkte) {
+  for (size_t i = 0; i < punkte; i++) {
+    const int r = px[i * 3], g = px[i * 3 + 1], b = px[i * 3 + 2];
+    if (std::abs(r - g) > GRAU_TOLERANZ || std::abs(g - b) > GRAU_TOLERANZ || std::abs(r - b) > GRAU_TOLERANZ) return false;
+  }
+  for (size_t i = 0; i < punkte; i++) px[i] = (uint8_t)((299 * px[i * 3] + 587 * px[i * 3 + 1] + 114 * px[i * 3 + 2] + 500) / 1000);
+  return true;
 }
 
 // Auflösung der Seitenbilder: 300 dpi, bei langen Dokumenten weniger (Zeit je Aufruf, höchstens 100 MB).
@@ -515,6 +533,7 @@ int verarbeite(const Json &e) {
     const int n = (int)wp.seiten.size();
     const int dpi = dpiFuer(n);
     pdf.beginne(ang, icc, schrift, std::min<size_t>(ARCHIV_MAX + 1024 * 1024, (size_t)n * 600 * 1024 + 1024 * 1024));
+    int farbig = 0;
     for (int nr = 1; nr <= n; nr++) {
       if (jetztMs() - start > ZEIT_MS) {
         ergebnis("Keine Archivfassung: Das Dokument ist zu lang für einen Durchgang (" + std::to_string(nr - 1) + " von " + std::to_string(n) + " Seiten in " +
@@ -522,33 +541,39 @@ int verarbeite(const Json &e) {
         return 0;
       }
       // Große Seiten (Pläne, A0) liefert das DMS bei hoher Auflösung nicht: dann mit weniger.
+      // In Farbe nur so groß, dass das Bild in den Speicher passt (Größe der Seite aus den Wortpositionen, in pt).
+      const WpSeite &x = wp.seiten[(size_t)nr - 1];
       Antwort b{0, {}};
       int mit = dpi;
       for (int versuch : {dpi, 150, 72}) {
         if (versuch > dpi) continue;
         mit = versuch;
-        b = get("/dokumente/" + dok + "/seiten/" + std::to_string(nr) + "/scan?dpi=" + std::to_string(versuch));
+        const double punkte = x.breite * versuch / 72.0 * x.hoehe * versuch / 72.0;
+        if (punkte > FARBE_PUNKTE_MAX && versuch != 72) continue;
+        b = get("/dokumente/" + dok + "/seiten/" + std::to_string(nr) + "/scan?dpi=" + std::to_string(versuch) + "&farbe=1");
         if (b.status != 422) break;
       }
       if (b.status == 404 && nr == 1) { ergebnis("Das Dokument gibt es nicht mehr – nichts zu tun"); return 0; }
       if (b.status == 404 || b.status == 422) { ergebnis("Keine Archivfassung: Seite " + std::to_string(nr) + " nicht lesbar: " + grundAus(b.body)); return 0; }
       if (b.status != 200) { log(FEHLER, "Seite " + std::to_string(nr) + ": HTTP " + std::to_string(b.status) + " " + grundAus(b.body)); return 2; }
-      int pw = 0, ph = 0;
+      int pw = 0, ph = 0, k = 0;
       size_t ab = 0;
-      if (!pgm(b.body, pw, ph, ab)) { log(FEHLER, "Seite " + std::to_string(nr) + ": kein Graustufenbild"); return 3; }
+      if (!pnm(b.body, pw, ph, k, ab)) { log(FEHLER, "Seite " + std::to_string(nr) + ": kein Seitenbild"); return 3; }
+      if (k == 3 && machGrau(b.body.data() + ab, (size_t)pw * (size_t)ph)) k = 1;
+      if (k == 3) farbig++;
       pdfa::Seite s;
-      const WpSeite &x = wp.seiten[(size_t)nr - 1];
       s.breite = x.breite > 0 ? x.breite : pw * 72.0 / mit;
       s.hoehe = x.hoehe > 0 ? x.hoehe : ph * 72.0 / mit;
-      s.bild.breite = pw; s.bild.hoehe = ph; s.bild.kanaele = 1; s.bild.jpeg = true;
-      s.bild.daten = jpeg(b.body.data() + ab, pw, ph, 1);
+      s.bild.breite = pw; s.bild.hoehe = ph; s.bild.kanaele = k; s.bild.jpeg = true;
+      s.bild.daten = jpeg(b.body.data() + ab, pw, ph, k);
       std::vector<uint8_t>().swap(b.body);
       s.woerter = x.woerter;
       pdf.seite(s);
       if (mit != dpi) hinweise.push_back("Seite " + std::to_string(nr) + " mit " + std::to_string(mit) + " dpi");
       if (pdf.o.size() > ARCHIV_MAX) { ergebnis("Keine Archivfassung: größer als 100 MB (nach " + std::to_string(nr) + " von " + std::to_string(n) + " Seiten)"); return 0; }
     }
-    wie = "Seiten als Bild mit " + std::to_string(dpi) + " dpi in Graustufen";
+    wie = "Seiten als Bild mit " + std::to_string(dpi) + " dpi, " +
+          (farbig == 0 ? std::string("in Graustufen") : farbig == n ? std::string("in Farbe") : std::to_string(farbig) + " von " + std::to_string(n) + " Seiten in Farbe");
     if (d["formular"].wahr()) hinweise.push_back("Formularfelder eingefroren");
     if (d["extern"].wahr()) hinweise.push_back("externe Inhalte weggelassen");
   } else {
