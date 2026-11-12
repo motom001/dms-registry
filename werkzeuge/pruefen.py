@@ -1447,6 +1447,7 @@ DMS_ARCHIV_PAKET_AB = (0, 237, 0)     # #1051 archiv am Mappentyp
 DMS_ORGANISATION_AB = (0, 238, 0)     # #995 merkmal: eigeneOrganisation, schreibschutz, Bedingung eigeneOrganisation
 DMS_ZUSAMMENGESETZT_AB = (0, 239, 0)  # #1050 Feldart zusammengesetzt
 DMS_UMBAU_AB = (0, 243, 0)            # #1041 umbau im Manifest
+DMS_UMBAU_ZUORDNUNG_AB = (0, 248, 0)  # #1125 setzen mit Zeitraum, Auswahl/Text → Verweis über den Titel
 DMS_MAPPENAKTIONEN_AB = (0, 245, 0)   # #1039 mappenaktionen (oberste Ebene)
 AKTION_RECHTE = ('lesen', 'dokument_hinzufuegen', 'aendern', 'mappen_anlegen', 'herausgeben')
 KERN_DIALOGE = ('dms:vorlage',)
@@ -1882,6 +1883,12 @@ def pruefe_etappe15(ordner: Path, m: dict, typen: list, vorgaben: list, beispiel
                 vorgabe_ok(str(w['vorgabe']), f'{wo}: setzen „{k}“')
                 continue
             ft = f.get('typ') if f else None
+            if ft == 'zeitraum' and not f.get('berechnet'):
+                # #1125: Zeitraum als { anzahl, einheit } oder Text („P3M“, „3 Monate“), ab Ablago 0.248.0.
+                braucht(DMS_UMBAU_ZUORDNUNG_AB, f'Umbau: setzen „{k}“ mit Zeitraum')
+                if not (ist_zeitraum(w) or (isinstance(w, str) and re.fullmatch(r'\d{1,4} ?(tage?|wochen?|monate?|jahre?)', w.strip(), re.I))):
+                    fehler.append(f'{wo}: setzen „{k}“ (zeitraum) – als {{ anzahl, einheit }}, „P3M“ oder „3 Monate“')
+                continue
             if f and (f.get('berechnet') or ft in ('zeitraum', 'betrag', 'referenz', 'tabelle', 'zusammengesetzt', 'passwort')):
                 fehler.append(f'{wo}: setzen „{k}“ ({ft}) – setzen schreibt Text, Zahl, Ja/Nein oder Liste so, wie sie sind')
             elif f and ft == 'auswahl' and f.get('optionen') and any(x not in f['optionen'] for x in (w if isinstance(w, list) else [w])):

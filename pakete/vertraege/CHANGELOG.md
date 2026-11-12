@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.3.0
+
+- **Umzug mit Fristen** (Ablago #1125): Versicherungen aus *Haushalt* bekommen beim Umzug gleich die üblichen Werte der Vertragsart *Versicherung* (12 Monate Laufzeit, verlängert sich um 12 Monate, 3 Monate zum Laufzeitende), Mietverträge aus *Vermietung* die der Vertragsart *Miete* (läuft unbefristet weiter, 3 Monate zum Monatsende). Gesetzt wird nur, was leer ist; danach rechnet das Paket *Kündigen bis* gleich richtig.
+- Verträge aus *Haushalt* behalten ihre Art als Bezeichnung, die Vertragsart wählst du danach. Alle zehn Arten aus *Haushalt* gibt es als Vertragsart.
+- Braucht **Ablago 0.248.0**.
+
 ## 1.2.0
 
 - **Aktion „Vorlage hinzufügen“** im Menü *Mappe* am Vertrag (dms-registry #160, Ablago #1039): öffnet „Brief aus Vorlage“ mit den Vorlagen dieses Pakets an der Vertragsart und legt das fertige PDF in den Vertrag – mit deinen Rechten, ohne eigenen Code. Solange keine Vertragsart gewählt ist, steht im Menü, warum die Aktion noch nicht geht.

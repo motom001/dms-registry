@@ -4,7 +4,7 @@ schema: 1
 id: vertraege
 name: Verträge
 herausgeber: app.ablago
-version: 1.2.0
+version: 1.3.0
 beschreibung: Ein Mappentyp für alle Verträge, zu Hause und im Betrieb. Du trägst ein, was es ist, bei wem und wie lange es läuft – das Paket rechnet aus, bis wann du kündigen musst, und erinnert rechtzeitig.
 autor:
   name: Thomas Meissner
@@ -17,8 +17,8 @@ symbol: file-signature
 # ausführen“ (0.233.0, #1082), Vorbelegen (0.234.0, #1037) und Vorgaben (0.236.0, #1038)
 # 0.243.0: Umbau (DMS #1041) – Verträge, Versicherungen und Mietverträge aus Haushalt und Vermietung ziehen hierher
 # 0.245.0: Aktionen im Menü „Mappe“ (DMS #1039); 0.245.3: Bedingungen auf zielOptional-Ziele (DMS #1122) –
-# 0.245.1/0.245.2 lehnten Pakete mit Bedingungen ab
-dms: ">=0.245.3"
+# 0.245.1/0.245.2 lehnten Pakete mit Bedingungen ab; 0.248.0: Umbau setzt Zeiträume (DMS #1125)
+dms: ">=0.248.0"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
@@ -47,13 +47,17 @@ umbau:
     nach: vertrag
     felder: { versicherer: von, art: versicherung_art, versicherungsnummer: vertragsnummer, versichert_verweis: versicherte_personen,
               beitrag: betrag, zahlweise: zahlweise, hauptfaelligkeit: hauptfaelligkeit, verbleib_original: verbleib_original }
-    setzen: { art: { vorgabe: versicherung }, bezeichnung: Versicherung }
+    # Ab 1.3.0 (Ablago 0.248.0, #1125) gleich die üblichen Fristen der Vertragsart – nur in leere Felder.
+    setzen: { art: { vorgabe: versicherung }, bezeichnung: Versicherung, mindestlaufzeit: { anzahl: 12, einheit: monate },
+              verlaengerung: verlängert sich um, verlaengerung_um: { anzahl: 12, einheit: monate },
+              kuendigungsfrist: { anzahl: 3, einheit: monate }, kuendigung_zum: Laufzeitende }
   - von: "vermietung:mietvertrag"
     nach: vertrag
     felder: { wohnung: betrifft, mieter: an, beginn: beginn, gekuendigt_am: gekuendigt_am, ende: vertragsende, mietart: mietart,
               kaltmiete: kaltmiete, vorauszahlung: vorauszahlung, sonstiges: sonstiges, mieterhoehung_ab: mieterhoehung_ab,
               kaution: kaution, kaution_konto: kaution_konto, kaution_zurueck_am: kaution_zurueck_am, verbleib_original: verbleib_original }
-    setzen: { art: { vorgabe: miete }, bezeichnung: Mietvertrag }
+    setzen: { art: { vorgabe: miete }, bezeichnung: Mietvertrag, verlaengerung: läuft unbefristet weiter,
+              kuendigungsfrist: { anzahl: 3, einheit: monate }, kuendigung_zum: Monatsende }
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml
