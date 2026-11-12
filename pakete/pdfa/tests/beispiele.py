@@ -146,6 +146,11 @@ def erzeuge(ordner: Path):
     s2, ws2 = brief(1240, 1754, farbe=False, zeilen=['Anlage zur Rechnung', 'Herr Özdemir Hausmeisterdienst'])
     s1.convert('L').save(ordner / 'scan.pdf', save_all=True, append_images=[s2.convert('L')], resolution=150)
     speichere_woerter(ordner / 'scan.pdf.woerter.json', [ws1, ws2])
+    # Farbiger Scan (registry #189): Seite 1 mit blauem Logo, Seite 2 grau – nur Seite 1 kommt in Farbe ins PDF/A.
+    f1, wf1 = brief(1240, 1754)
+    f2, wf2 = brief(1240, 1754, farbe=False, zeilen=['Seite 2 ohne Farbe', 'Petra Beispiel'])
+    f1.save(ordner / 'farbe.pdf', save_all=True, append_images=[f2], resolution=150)
+    speichere_woerter(ordner / 'farbe.pdf.woerter.json', [wf1, wf2])
     # Ein langes Dokument: 60 Seiten mit Textebene (ab 51 Seiten 200 dpi).
     text_pdf([[f'Kontoauszug Seite {i}', 'Petra Beispiel Girokonto'] for i in range(1, 61)], ordner / 'lang.pdf')
 
@@ -160,6 +165,7 @@ def erzeuge(ordner: Path):
     bild('grau.png', w4, 1240, 1754, 150)
     sw, sh = 1240 * 72 / 150, 1754 * 72 / 150
     erwarte('scan.pdf', [(sw, sh)] * 2, [(i, t, x * sw, y * sh, b * sw, h * sh) for i, ws in ((1, ws1), (2, ws2)) for t, x, y, b, h in ws])
+    erwarte('farbe.pdf', [(sw, sh)] * 2, [(i, t, x * sw, y * sh, b * sw, h * sh) for i, ws in ((1, wf1), (2, wf2)) for t, x, y, b, h in ws])
     mails(ordner)
     for name in ('rechnung.pdf', 'extern.pdf', 'lang.pdf'):
         erwarte(name, seiten_im_pdf(ordner / name), [(s, t, x, y, x2 - x, y2 - y) for s, t, x, y, x2, y2 in woerter_im_pdf(ordner / name)])

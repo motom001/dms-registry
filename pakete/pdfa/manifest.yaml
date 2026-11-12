@@ -3,17 +3,19 @@
 schema: 1
 id: pdfa
 name: PDF/A
-version: 1.2.0
+version: 1.3.0
 beschreibung: Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Auch E-Mails (.eml, .msg) werden so zu Seiten. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
+herausgeber: app.ablago
 lizenz: Apache-2.0
 kategorien: [dateiformate]
 symbol: file-text
 # 0.149.0: Recht dms:archivfassung, code.archivfassung, Ereignis datei.archivfassung, Wortpositionen,
 # PUT /dokumente/{id}/archivfassung (DMS #631); 0.176.0: code.archivfassung.auswahl (DMS #660);
-# 0.221.0: Art emails und Feld zeitzone in datei.archivfassung (DMS #946)
+# 0.221.0: Art emails und Feld zeitzone in datei.archivfassung (DMS #946); farbige Seitenbilder (scan?farbe=1) gibt es
+# seit 0.174.0 (DMS #716)
 dms: ">=0.221.0"
 inhalt: {}
 code:
