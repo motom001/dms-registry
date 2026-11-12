@@ -284,7 +284,9 @@
             "tage": { "type": "array", "minItems": 1, "maxItems": 7, "items": { "type": "integer", "minimum": 1, "maximum": 7 }, "description": "Zeitplan (DMS #678): Wochentage 1 = Montag … 7 = Sonntag" },
             "feiertage": { "type": "boolean", "description": "Zeitplan: nicht an Feiertagen" },
             "jeBenutzer": { "type": "boolean", "description": "Zeitplan: für jeden aktiven Benutzer einmal" },
-            "profilzeit": { "type": "boolean", "description": "Zeitplan je Benutzer: Uhrzeit, Wochentage und Feiertage aus dem Profil" }
+            "profilzeit": { "type": "boolean", "description": "Zeitplan je Benutzer: Uhrzeit, Wochentage und Feiertage aus dem Profil" },
+            "felder": { "type": "array", "items": { "$ref": "#/$defs/schluessel" }, "description": "mappe.geaendert: nur bei Änderung dieser Felder" },
+            "angelegt": { "type": "boolean", "description": "mappe.geaendert: auch beim Anlegen (DMS #1001, ab 0.257.0)" }
           }
         },
         "und": { "type": "object", "additionalProperties": false, "properties": { "modus": { "enum": ["alle", "eine"] }, "karten": { "type": "array" } } },
@@ -295,6 +297,7 @@
             "properties": {
               "art": { "enum": ["aufgabe", "feld", "stopp", "zusammenfassung", "favoriten", "anmeldeschutz", "paket"], "description": "paket: „Paket nach Zeitplan ausführen“ (DMS #1082, ab 0.233.0) – nur mit wenn: zeitplan, ruft nur das eigene Paket auf" }, "aufgabe": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$", "description": "Nur bei art paket: Kennung, die das Paket im Ereignis zeitplan.ausgefuehrt bekommt (z. B. taeglich, monatlich)" }, "was": { "enum": ["sammel", "konto"] }, "als": { "enum": ["aufgabe", "benachrichtigung"] },
               "text": { "type": "string", "maxLength": 2000 }, "faellig": { "type": ["integer", "null"] }, "werte": { "type": "object" },
+              "vorgabe": { "type": "boolean", "description": "favoriten (DMS #1001): false = neue Benutzer zunächst ohne Benachrichtigung" },
               "empfaenger": { "type": "array", "items": { "type": "object", "required": ["art"], "additionalProperties": false,
                 "properties": { "art": { "type": "string" }, "feld": { "type": "string" }, "sonst": { "enum": ["ersteller"] } } } }
             }

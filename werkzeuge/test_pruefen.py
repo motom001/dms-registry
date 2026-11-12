@@ -859,6 +859,21 @@ class Automatisierungen(unittest.TestCase):
         tage = self.auto(schluessel='t', wenn={'art': 'zeitplan', 'tage': [0, 8]}, dann=[{'art': 'anmeldeschutz', 'was': 'sammel'}])
         self.assertTrue(any('wenn.tage' in x for x in self.pruefe([self.auto(), tage], dms='>=0.181.0')))
 
+    def test_post_fuer_dich(self):
+        """„Post für dich“ (DMS #1001, Registry #153): dms:post, felder und angelegt, ab 0.257.0."""
+        p = self.auto(schluessel='p', wenn={'art': 'mappe.geaendert', 'typ': 'dms:post', 'felder': ['an', 'stand'], 'angelegt': True},
+                      dann=[{'art': 'aufgabe', 'als': 'aufgabe', 'empfaenger': [{'art': 'feld', 'feld': 'an'}], 'text': 'Post für dich – bitte zuordnen'}])
+        self.assertEqual(self.pruefe([self.auto(), p], dms='>=0.257.0'), [])
+        self.assertTrue(any('0.257.0' in x for x in self.pruefe([self.auto(), p], dms='>=0.256.0')))
+        andere = self.auto(schluessel='a', wenn={'art': 'mappe.geaendert', 'typ': 'dms:rolle'})
+        self.assertTrue(any('nur Mappentypen des Pakets' in x for x in self.pruefe([self.auto(), andere], dms='>=0.257.0')))
+        feld = self.auto(schluessel='f', wenn={'art': 'mappe.geaendert', 'typ': 'dms:post', 'felder': ['gibtsnicht']})
+        self.assertTrue(any('gibtsnicht' in x for x in self.pruefe([self.auto(), feld], dms='>=0.257.0')))
+        falsch = self.auto(schluessel='x', wenn={'art': 'mappe.angelegt', 'typ': 'dms:post', 'angelegt': True})
+        self.assertTrue(any('nur bei „mappe.geaendert“' in x for x in self.pruefe([self.auto(), falsch], dms='>=0.257.0')))
+        rollen = self.auto(schluessel='r', wenn={'art': 'favorit.geaendert'}, dann=[{'art': 'favoriten', 'rollen': ['x']}])
+        self.assertTrue(any('feste Rollen' in x for x in self.pruefe([self.auto(), rollen], dms='>=0.257.0')))
+
     def test_unbekannte_karten(self):
         self.assertTrue(any('unbekannte Wenn-Karte' in f for f in self.pruefe([self.auto(wenn={'art': 'zaehler.geaendert'})])))
         self.assertTrue(any('unbekannte Dann-Karte' in f for f in self.pruefe([self.auto(dann=[{'art': 'email', 'text': 'x'}])])))

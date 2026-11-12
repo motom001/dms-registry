@@ -24,6 +24,20 @@
   wenn: { art: benutzer.vertretung_zurueckgezogen }
   dann:
     - { art: aufgabe, als: benachrichtigung, empfaenger: [{ art: ereignis, feld: vertreter }], text: "Hallo {vertreter}, {benutzer} hat die Vertretung zurückgezogen. Du bist nicht mehr Vertreter für {benutzer}." }
+- schluessel: post_fuer_dich
+  name: Post für dich
+  beschreibung: Wer bei neuer Post unter „An“ steht, bekommt eine Aufgabe „Post für dich – bitte zuordnen“ – bei Abwesenheit die Vertretung. Sie erledigt sich, sobald die Post zugeordnet oder erledigt ist oder an jemand anderen geht; je Post und Person gibt es nur eine.
+  # Ablago #1001: bis 0.256 fest eingebaut. Wenn neue Post eingeht oder sich „An“ bzw. der Stand ändert …
+  wenn: { art: mappe.geaendert, typ: "dms:post", felder: [an, stand], angelegt: true }
+  # … solange jemand in „An“ steht und die Post neu ist …
+  und:
+    modus: alle
+    karten:
+      - { art: bedingung, bedingung: { art: feld, feld: an, op: nichtLeer } }
+      - { art: bedingung, bedingung: { art: feld, feld: stand, op: einerVon, wert: { art: fest, wert: [Neu] } } }
+  # … Aufgabe an diese Person. Ablago gibt ihr die Art „Post für dich“ und erledigt sie selbst.
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: feld, feld: an }], text: "Post für dich – bitte zuordnen" }
 - schluessel: anmeldeschutz_sammelmeldung
   name: Sammelmeldung Anmeldeschutz
   beschreibung: Kurz nach Mitternacht eine Mail an die Administratoren über die Sperren seit der letzten Meldung – nur, wenn es welche gab. Angriffsversuche aus dem Internet sind normal; schalte sie ein, wenn du trotzdem Bescheid wissen willst.
