@@ -22,6 +22,7 @@ The full licence text is in the package folder as `LICENSE`. Third-party code in
 - Views across **all Mappe types** with `typen: ["*"]` – including future ones, e.g. a "Favoriten" view (alone in `typen`, from Ablago 0.182.0, `dms: ">=0.182.0"`)
 - Word lists: synonyms for the search (see [Word lists](#word-lists))
 - Ready-made automations (see [Automations](#automations))
+- Automation templates for the “Folder” menu, with tasks and notifications only (see [Automation templates](#automation-templates))
 - Code that works through Ablago API (as soon as the package runner is available)
 - Access to the network/internet only to addresses listed in the manifest (`code.netz`) whose purpose the README explains. Without `code.netz`, a package has no access to the network or the internet.
 
@@ -471,6 +472,30 @@ A package can bring **ready-made automations** (from Ablago 0.177.0, Ablago #712
 - **No fixed people or roles:** the recipient is a field of the Mappe that points to users (`ziel: dms:benutzer`), optionally with `sonst: ersteller`, or `ersteller` (whoever created the Mappe).
 - **Every deadline reminds:** since Ablago 0.177.0 a date field with `frist` no longer creates tasks itself. A package with `dms: ">=0.177.0"` therefore brings a *Date reached* automation for every deadline field; `frist.vorlauf` is only the default. `pruefen.py` reports deadlines without an automation.
 - `tests/erwartung.yaml` states the number: `automatisierungen: 3`.
+
+## Automation templates
+
+A package can bring **automation templates** (from Ablago 0.256.0, Ablago #1044): runs that someone applies to *one* Mappe from the **Folder ▾** menu – like “Assign task” and “Remind”. The manifest contains `inhalt.ablaufvorlagen: inhalt/ablaufvorlagen.yaml` and `dms: ">=0.256.0"`.
+
+```yaml
+- schluessel: wiedervorlage
+  name: Wiedervorlage
+  beschreibung: In sechs Monaten steht die Mappe wieder unter „Zu erledigen“.
+  wann: { art: in, anzahl: 6, einheit: monate }
+  fragen: []
+  karten:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: selbst }], text: "Wiedervorlage: {titel}" }
+```
+
+- **When (`wann`):** `sofort`, `datum` (the date is asked when applying) or `in` with `anzahl` and `einheit` tage/wochen/monate.
+- **Questions (`fragen`)** when applying: `empfaenger`, `datum`, `text`. `datum` exactly when `wann.art: datum`; `empfaenger` exactly when a card has the recipient `frage`; `text` needs `{eingabe}` in a card text.
+- **Only the `aufgabe` card** (task or notification). Cards that send data outside (email, calling an address) or set fields do not exist in templates – not in updates either. When installing, Ablago shows every template with its cards and rejects what is not allowed.
+- **Recipients:** `frage` (the person chosen when applying), `selbst` (whoever applies it), `ersteller` (whoever created the Mappe) or `feld` (a field of the Mappe with `ziel: dms:benutzer`, only with `typen`). There are no fixed people or roles.
+- **Placeholders** as in automations, plus `{eingabe}`, `{person}` and `{empfaenger}`. Ablago fills them with the recipient’s rights.
+- **`typen`** (own keys or `paket:typ` of a dependency): offered only on these folder types; without `typen` on all. **`reihenfolge`** 1–99 (lower is higher up).
+- **`ersetzt: aufgabe_vergeben`** or **`ersetzt: erinnern`** overlays Ablago’s template (at most once per package). Removing the package brings Ablago’s back. If an administrator changed the template or another package already overlays it, it stays as it is.
+- An update replaces only unchanged templates; removing the package takes them along – except those with open runs, which stay as the administrator’s own.
+- `tests/erwartung.yaml` states the number: `ablaufvorlagen: 3`.
 
 ## Converting files
 

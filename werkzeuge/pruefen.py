@@ -129,6 +129,12 @@ PERSONEN_IM_EREIGNIS = {
     'benutzer.deaktiviert': {'benutzer'}, 'benutzer.aktiviert': {'benutzer'}, 'favorit.neu': {'benutzer'},
 }
 VORLAUF_EINHEITEN = {'tage', 'wochen', 'monate'}
+# Automatisierungsvorlagen (inhalt.ablaufvorlagen, DMS #1044), ab DMS 0.256.0: nur die Karte „Aufgabe / Benachrichtigung“
+# (Sicherheit: keine Karte schickt Daten nach außen), Empfänger ohne feste Personen oder Rollen.
+DMS_ABLAUFVORLAGEN_AB = (0, 256, 0)
+VORLAGEN_KARTEN = {'aufgabe'}
+VORLAGEN_EMPFAENGER = {'frage', 'selbst', 'ersteller', 'feld'}
+KERN_VORLAGEN = {'aufgabe_vergeben', 'erinnern'}
 DANN_KARTEN = {'aufgabe', 'feld', 'stopp', 'zusammenfassung', 'favoriten', 'anmeldeschutz', 'paket'}
 # Schnittstelle dms:texterkennung (DMS #458): das Paket übernimmt die Texterkennung, ab DMS 0.133.0.
 DMS_TEXTERKENNUNG_AB = (0, 133, 0)
@@ -635,6 +641,80 @@ def pruefe_wortlisten(gruppen: list, dms_bereich: str) -> list[str]:
         ab = dms_untergrenze(dms_bereich)
         if ab is None or ab < DMS_WORTLISTEN_AB:
             fehler.append('inhalt.wortlisten: Wortlisten kennt das DMS erst ab 0.127.0 – bitte dms: ">=0.127.0" angeben')
+    return fehler
+
+
+def _vorlage_fragen(v: dict, wo: str) -> list[str]:
+    """Fragen passen zu Wann und Karten (wie vorlagenProbleme in Ablago)."""
+    fehler: list[str] = []
+    wann = (v.get('wann') or {}).get('art', 'sofort')
+    fragen = set(v.get('fragen') or [])
+    karten = [k for k in v.get('karten') or [] if isinstance(k, dict)]
+    if (wann == 'datum') != ('datum' in fragen):
+        fehler.append(f'{wo}: „datum“ fragen genau dann, wenn wann.art datum ist')
+    fragt_empfaenger = any(isinstance(e, dict) and e.get('art') == 'frage' for k in karten for e in k.get('empfaenger') or [])
+    if fragt_empfaenger != ('empfaenger' in fragen):
+        fehler.append(f'{wo}: Empfänger „frage“ braucht fragen: [empfaenger] – und umgekehrt')
+    if 'text' in fragen and not any('{eingabe}' in str(k.get('text', '')) for k in karten):
+        fehler.append(f'{wo}: fragen: [text] braucht {{eingabe}} in einem Kartentext')
+    if wann == 'in' and not isinstance((v.get('wann') or {}).get('anzahl'), int):
+        fehler.append(f'{wo}: wann.art in braucht anzahl (und einheit)')
+    return fehler
+
+
+def pruefe_ablaufvorlagen(liste: list, typen: dict, paket_id: str, abh: set, dms_bereich: str) -> list[str]:
+    """inhalt.ablaufvorlagen (DMS #1044): nur erlaubte Karten und Empfänger, Fragen passend zum Wann, Empfänger-Felder
+    verweisen auf Benutzer (nur mit typen), ersetzt nur Vorlagen von Ablago (je höchstens einmal), passende DMS-Version.
+    typen: Schlüssel → Liste der Felder."""
+    fehler: list[str] = []
+    gesehen: set[str] = set()
+    ersetzt: set[str] = set()
+    for i, v in enumerate(liste, 1):
+        if not isinstance(v, dict):
+            continue
+        wo = f'ablaufvorlagen/{v.get("schluessel") or i}'
+        if v.get('schluessel') in gesehen:
+            fehler.append(f'ablaufvorlagen: Schlüssel „{v.get("schluessel")}“ doppelt')
+        gesehen.add(v.get('schluessel'))
+        if v.get('ersetzt') is not None:
+            if v['ersetzt'] not in KERN_VORLAGEN:
+                fehler.append(f'{wo}: ersetzt „{v["ersetzt"]}“ – ersetzen lassen sich nur {", ".join(sorted(KERN_VORLAGEN))}')
+            elif v['ersetzt'] in ersetzt:
+                fehler.append(f'{wo}: „{v["ersetzt"]}“ wird mehrmals ersetzt')
+            ersetzt.add(v['ersetzt'])
+        felder: dict = {}
+        typen_v = [str(t) for t in v.get('typen') or []]
+        for t in typen_v:
+            pk, sl = t.split(':', 1) if ':' in t else (paket_id, t)
+            if pk == 'dms' or (pk != paket_id and pk not in abh):
+                fehler.append(f'{wo}: typen „{t}“ – nur Mappentypen des Pakets oder seiner Abhängigkeiten')
+            elif pk == paket_id:
+                if sl not in typen:
+                    fehler.append(f'{wo}: Mappentyp „{t}“ gibt es in diesem Paket nicht')
+                else:
+                    felder[sl] = {f.get('key'): f for f in typen[sl] or [] if isinstance(f, dict)}
+        fehler += _vorlage_fragen(v, wo)
+        for j, k in enumerate(v.get('karten') or [], 1):
+            if not isinstance(k, dict):
+                continue
+            kw = f'{wo}/karten[{j}]'
+            if k.get('art') not in VORLAGEN_KARTEN:
+                fehler.append(f'{kw}: „{k.get("art")}“ gibt es in Automatisierungsvorlagen nicht – nur „aufgabe“ (Aufgabe oder Benachrichtigung)')
+            for e in k.get('empfaenger') or []:
+                ea = e.get('art') if isinstance(e, dict) else None
+                if ea not in VORLAGEN_EMPFAENGER:
+                    fehler.append(f'{kw}: Empfänger „{ea}“ – möglich: {", ".join(sorted(VORLAGEN_EMPFAENGER))}; feste Personen oder Rollen gibt es nicht')
+                elif ea == 'feld':
+                    if not typen_v:
+                        fehler.append(f'{kw}: ein Feld als Empfänger braucht typen')
+                    for t, fs in felder.items():
+                        fe = fs.get(e.get('feld'))
+                        if not fe or fe.get('typ') != 'referenz' or fe.get('ziel') != 'dms:benutzer':
+                            fehler.append(f'{kw}: Empfänger-Feld „{e.get("feld")}“ in „{t}“ muss ein Verweis auf Benutzer sein (ziel: dms:benutzer)')
+    if liste:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_ABLAUFVORLAGEN_AB:
+            fehler.append('inhalt.ablaufvorlagen: Automatisierungsvorlagen kennt Ablago erst ab 0.256.0 – bitte dms: ">=0.256.0" angeben')
     return fehler
 
 
@@ -1860,7 +1940,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     # Inhalte gegen das Schema; lokale Schlüssel eindeutig; Verweise auflösbar.
     inhalte = m.get('inhalt') or {}
     geladen: dict[str, list] = {}
-    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten', 'automatisierungen', 'vorgaben'):
+    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten', 'automatisierungen', 'vorgaben', 'ablaufvorlagen'):
         if art not in inhalte:
             continue
         pfad = ordner / str(inhalte[art])
@@ -1960,6 +2040,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     typfelder = {t.get('schluessel'): t.get('felder') or [] for t in geladen.get('mappentypen', []) if isinstance(t, dict)}
     fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')),
                                        tuple((m.get('code') or {}).get('ereignisse') or []) if isinstance(m.get('code'), dict) else ())
+    fehler += pruefe_ablaufvorlagen(geladen.get('ablaufvorlagen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')))
 
     # tests/erwartung.yaml stimmt mit dem Inhalt überein.
     erw_pfad = ordner / 'tests' / 'erwartung.yaml'
@@ -1977,6 +2058,8 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             fehler.append('tests/erwartung.yaml: Anzahl automatisierungen passt nicht')
         if erw.get('vorgaben', 0) != len(geladen.get('vorgaben', [])):
             fehler.append('tests/erwartung.yaml: Anzahl vorgaben passt nicht')
+        if erw.get('ablaufvorlagen', 0) != len(geladen.get('ablaufvorlagen', [])):
+            fehler.append('tests/erwartung.yaml: Anzahl ablaufvorlagen passt nicht')
         if 'sprache' in m and erw.get('sprache') != (m.get('sprache') or {}).get('kennung'):
             fehler.append('tests/erwartung.yaml: sprache passt nicht zu manifest.yaml (sprache.kennung)')
     elif not vorlage:
@@ -2110,7 +2193,7 @@ def lange_schluessel(ordner: Path, m: dict) -> list[str]:
     """Schlüssel über 40 Zeichen (bis Ablago 0.228 die Grenze) in Mappentypen, Feldern, Registern, Ansichten, Beispielen
     und Automatisierungen."""
     lang = []
-    for art in ('mappentypen', 'sichten', 'beispiele', 'automatisierungen'):
+    for art in ('mappentypen', 'sichten', 'beispiele', 'automatisierungen', 'ablaufvorlagen'):
         rel = (m.get('inhalt') or {}).get(art)
         try:
             liste = yaml.safe_load((ordner / str(rel)).read_text(encoding='utf-8')) or [] if rel else []

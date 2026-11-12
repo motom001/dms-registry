@@ -15,16 +15,26 @@ Das Paket **Benachrichtigungen** bringt vorgefertigte [Automatisierungen](https:
 
 Im Einrichtungsassistenten ist das Paket vorausgewählt. Beim Installieren fragt Ablago, welche Automatisierungen gleich eingeschaltet werden sollen – vorausgewählt sind alle; die beiden Meldungen des Anmeldeschutzes wählst du ab, wenn du keine Mails über Angriffsversuche willst. Hat dein Ablago diese Abläufe beim Update schon als eigene Automatisierungen übernommen, ersetzen die mitgelieferten sie, solange du sie nicht geändert hast – an oder aus bleibt dabei erhalten.
 
+Dazu bringt das Paket **Automatisierungsvorlagen** fürs Menü **Mappe ▾** mit (unter **Werkbank → Ablage aufbauen → Automatisierungsvorlagen**):
+
+| Vorlage | Wann | Fragt | Dann |
+| --- | --- | --- | --- |
+| Aufgabe vergeben | sofort | Empfänger, Text | Aufgabe an die gewählte Person – ersetzt die Vorlage von Ablago mit denselben Werten |
+| Erinnern | am gewählten Datum | Datum, Empfänger, Text | Erinnerung an die gewählte Person – ersetzt die Vorlage von Ablago mit denselben Werten |
+| Wiedervorlage | in 6 Monaten | – | Aufgabe „Wiedervorlage: {titel}“ an dich |
+
+Entfernst du das Paket, gelten wieder „Aufgabe vergeben“ und „Erinnern“ von Ablago; geplante Erinnerungen laufen weiter.
+
 ## Voraussetzungen
 
-- Ablago ab Version 0.188
+- Ablago ab Version 0.256
 
 ## Rechte und Netz
 
-Dieses Paket enthält keinen Code. Es legt nur Automatisierungen an; sie laufen mit dem Systemkonto „Automatisierung“.
+Dieses Paket enthält keinen Code. Es legt nur Automatisierungen an; sie laufen mit dem Systemkonto „Automatisierung“. Die Automatisierungsvorlagen legen nur Aufgaben an und laufen mit den Rechten der Person, die sie an einer Mappe anwendet.
 
 ---
 
 # Notifications (English)
 
-The **Notifications** package brings ready-made automations that Ablago used to have built in: the **daily summary** of open tasks (schedule per user, time from the profile), **favourite changes**, **Substitute entered** and **Substitution withdrawn**, and the **login protection** mails (daily summary of blocks, immediate mail when an account is locked). It is preselected in the setup wizard; while installing, Ablago asks which automations to switch on (all preselected). Requires Ablago 0.188 or later. No code, no network access.
+The **Notifications** package brings ready-made automations that Ablago used to have built in: the **daily summary** of open tasks (schedule per user, time from the profile), **favourite changes**, **Substitute entered** and **Substitution withdrawn**, and the **login protection** mails (daily summary of blocks, immediate mail when an account is locked). It is preselected in the setup wizard; while installing, Ablago asks which automations to switch on (all preselected). It also brings the automation templates **Assign task**, **Remind** (both replacing Ablago’s with the same values) and **Follow-up** (a task for you in six months) for the **Folder** menu – tasks only. Requires Ablago 0.256 or later. No code, no network access.

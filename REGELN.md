@@ -22,6 +22,7 @@ Der vollständige Lizenztext liegt als `LICENSE` im Paketordner. Fremder Code im
 - Sichten über **alle Mappentypen** mit `typen: ["*"]` – auch künftige, z. B. eine Ansicht „Favoriten“ (allein in `typen`, ab Ablago 0.182.0, `dms: ">=0.182.0"`)
 - Wortlisten: gleichbedeutende Wörter für die Suche (siehe [Wortlisten](#wortlisten))
 - Vorgefertigte Automatisierungen (siehe [Automatisierungen](#automatisierungen))
+- Automatisierungsvorlagen fürs Menü „Mappe“, nur mit Aufgaben und Benachrichtigungen (siehe [Automatisierungsvorlagen](#automatisierungsvorlagen))
 - Code, der über die API von Ablago arbeitet (sobald der Paket-Läufer verfügbar ist)
 - Zugriff auf Netzwerk/Internet nur zu Adressen, die im Manifest stehen (`code.netz`) und deren Zweck das README erklärt. Ohne `code.netz` hat ein Paket keinen Zugriff auf Netzwerk und Internet.
 
@@ -495,6 +496,30 @@ Ein Paket kann **vorgefertigte Automatisierungen** mitbringen (ab Ablago 0.177.0
 - **Keine festen Personen oder Rollen:** Empfänger ist ein Feld der Mappe, das auf Benutzer verweist (`ziel: dms:benutzer`), optional mit `sonst: ersteller`, oder `ersteller` (wer die Mappe angelegt hat).
 - **Jede Frist erinnert:** Seit Ablago 0.177.0 legt ein Datumsfeld mit `frist` keine Aufgaben mehr selbst an. Ein Paket mit `dms: ">=0.177.0"` bringt deshalb für jedes Frist-Feld eine Automatisierung *Datum erreicht* mit; `frist.vorlauf` ist nur noch die Vorgabe. `pruefen.py` meldet Fristen ohne Automatisierung.
 - `tests/erwartung.yaml` nennt die Zahl: `automatisierungen: 3`.
+
+## Automatisierungsvorlagen
+
+Ein Paket kann **Automatisierungsvorlagen** mitbringen (ab Ablago 0.256.0, Ablago #1044): Abläufe, die man im Menü **Mappe ▾** an *einer* Mappe anwendet – wie „Aufgabe vergeben“ und „Erinnern“. Im Manifest steht `inhalt.ablaufvorlagen: inhalt/ablaufvorlagen.yaml`, dazu `dms: ">=0.256.0"`.
+
+```yaml
+- schluessel: wiedervorlage
+  name: Wiedervorlage
+  beschreibung: In sechs Monaten steht die Mappe wieder unter „Zu erledigen“.
+  wann: { art: in, anzahl: 6, einheit: monate }
+  fragen: []
+  karten:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: selbst }], text: "Wiedervorlage: {titel}" }
+```
+
+- **Wann:** `sofort`, `datum` (das Datum wird beim Anwenden gefragt) oder `in` mit `anzahl` und `einheit` tage/wochen/monate.
+- **Fragen** beim Anwenden: `empfaenger`, `datum`, `text`. `datum` genau dann, wenn `wann.art: datum`; `empfaenger` genau dann, wenn eine Karte den Empfänger `frage` hat; `text` braucht `{eingabe}` in einem Kartentext.
+- **Nur die Karte `aufgabe`** (Aufgabe oder Benachrichtigung). Karten, die Daten nach außen schicken (E-Mail, Adresse aufrufen) oder Felder setzen, gibt es in Vorlagen nicht – auch nicht in Updates. Ablago zeigt beim Installieren jede Vorlage mit ihren Karten und weist zurück, was nicht erlaubt ist.
+- **Empfänger:** `frage` (die beim Anwenden gewählte Person), `selbst` (wer anwendet), `ersteller` (wer die Mappe angelegt hat) oder `feld` (ein Feld der Mappe mit `ziel: dms:benutzer`, nur mit `typen`). Feste Personen oder Rollen gibt es nicht.
+- **Platzhalter** wie in Automatisierungen, dazu `{eingabe}`, `{person}` und `{empfaenger}`. Ablago füllt sie mit den Rechten des Empfängers.
+- **`typen`** (eigene Schlüssel oder `paket:typ` einer Abhängigkeit): nur an diesen Mappentypen im Menü; ohne `typen` an allen. **`reihenfolge`** 1–99 (kleiner weiter oben).
+- **`ersetzt: aufgabe_vergeben`** bzw. **`ersetzt: erinnern`** überlagert die Vorlage von Ablago (je Paket höchstens einmal). Entfernt man das Paket, gilt wieder die von Ablago. Hat ein Administrator die Vorlage geändert oder überlagert schon ein anderes Paket, bleibt sie, wie sie ist.
+- Ein Update ersetzt nur unveränderte Vorlagen; beim Entfernen gehen sie mit – außer solchen mit offenen Abläufen, die als eigene Vorlage bleiben.
+- `tests/erwartung.yaml` nennt die Zahl: `ablaufvorlagen: 3`.
 
 ## Dateien umwandeln
 

@@ -324,6 +324,10 @@
           "type": "string",
           "description": "Mitgelieferte Automatisierungen (ab Ablago 0.177.0, dms: \">=0.177.0\"), nach der Installation aus"
         },
+        "ablaufvorlagen": {
+          "type": "string",
+          "description": "Automatisierungsvorlagen fürs Menü „Mappe“ (DMS #1044, ab Ablago 0.256.0, dms: \">=0.256.0\") – nur Aufgaben und Benachrichtigungen"
+        },
         "vorgaben": {
           "type": "string",
           "description": "Mitgelieferte Mappen mit fester Kennung (DMS #1038, ab Ablago 0.236.0) – bleiben nach der Installation, z. B. Vertragsarten"
