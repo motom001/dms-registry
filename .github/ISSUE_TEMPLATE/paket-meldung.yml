@@ -27,6 +27,7 @@ body:
         - Haushalt (haushalt)
         - KI lokal – Ähnlichkeit (ki_aehnlich)
         - KI-Assistent (ki_assistent)
+        - Leerseiten (leerseiten)
         - Office und E-Mail (office_email)
         - PDF/A (pdfa)
         - QR-Code lesen (qrcode)

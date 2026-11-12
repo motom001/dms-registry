@@ -160,6 +160,21 @@ class Einstellungen(unittest.TestCase):
         alt = self.paket(c, dms='>=0.225.0')
         self.assertTrue(any('dms:klassifizieren kennt das DMS erst ab 0.226.0' in f for f in alt), alt)
 
+    def test_schnittstelle_leerseiten(self):
+        # dms:leerseiten (DMS #997): ab DMS 0.255.0, nur mit Lesen von Post und ihren Dokumenten.
+        import copy
+        c = copy.deepcopy(GUELTIG)
+        c['rechte'] = {'lesen': ['dms:post'], 'dokumente': 'lesen', 'schnittstellen': ['dms:leerseiten']}
+        self.assertEqual(self.paket(c, dms='>=0.255.0'), [])
+        alt = self.paket(c, dms='>=0.254.0')
+        self.assertTrue(any('dms:leerseiten kennt das DMS erst ab 0.255.0' in f for f in alt), alt)
+        ohne = copy.deepcopy(c)
+        ohne['rechte'] = {'lesen': ['dms:post'], 'schnittstellen': ['dms:leerseiten']}
+        self.assertTrue(any('dms:leerseiten braucht' in f for f in self.paket(ohne, dms='>=0.255.0')))
+        fremd = copy.deepcopy(c)
+        fremd['rechte'] = {'lesen': ['basis:person'], 'dokumente': 'lesen', 'schnittstellen': ['dms:leerseiten']}
+        self.assertTrue(any('dms:leerseiten braucht' in f for f in self.paket(fremd, dms='>=0.255.0')))
+
     def test_schnittstelle_antworten(self):
         # dms:antworten und Einstellung adresse (DMS #444): ab DMS 0.124.0; adresse ohne Vorgabe, nur im Abschnitt, höchstens eine.
         import copy

@@ -9,6 +9,7 @@ Legt an:
   sammelscan-gescannt.pdf  dasselbe beidseitig gescannt: nach jedem Trennblatt seine leere Rückseite, Brief C mit zwei
                            Seiten; jede Seite als Bild (300 dpi), leicht schief, grauer Hintergrund, Staub
   ohne-trennblatt.pdf      Brief A · Brief B (mit Aufkleber) – nichts zu teilen
+  rueckseite-notiz.pdf     gescannt: Brief A · Trennblatt · Rückseite mit Bleistiftnotiz · Brief B – die Notiz bleibt
 """
 import random
 import subprocess
@@ -56,6 +57,13 @@ def brief(absender: str, betreff: str, seite: int = 1, asn: str | None = None) -
 
 def leer() -> Seite:
     return Seite()
+
+
+def notiz() -> Seite:
+    """Rückseite eines Trennblatts mit einer kleinen Bleistiftnotiz – nicht leer (Erkennung wie im Paket Leerseiten)."""
+    s = Seite()
+    s.text(140 * MM, A4[1] - 60 * MM, 9, 'erledigt 3.11.', grau=0.55)
+    return s
 
 
 def sammelscan() -> list[Seite]:
@@ -125,6 +133,8 @@ def main():
     (ziel / 'sammelscan.pdf').write_bytes(schreibe(sammelscan(), 'Sammelscan'))
     (ziel / 'ohne-trennblatt.pdf').write_bytes(schreibe([sammelscan()[0], sammelscan()[2]], 'Ohne Trennblatt'))
     (ziel / 'sammelscan-gescannt.pdf').write_bytes(schreibe(scanne(gescannt_vorlage(), ziel), 'Sammelscan gescannt'))
+    notiz_vorlage = [brief('Stadtwerke Beispiel', 'Jahresabrechnung Strom'), trennblatt(), notiz(), brief('Versicherung Muster AG', 'Beitragsrechnung')]
+    (ziel / 'rueckseite-notiz.pdf').write_bytes(schreibe(scanne(notiz_vorlage, ziel), 'Rückseite mit Notiz'))
     print(ziel)
 
 

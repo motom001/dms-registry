@@ -3,7 +3,7 @@
 // Ablauf: Ereignis „Dokument hochgeladen“ in einer neuen Post → Seiten als Graustufenbild über die API holen →
 // Code-128-Barcodes suchen (code/barcode.c) → an jedem Trennblatt teilen (POST /dokumente/{id}/seiten mit
 // teile: je Teil eine neue Post, die Ausgangspost ist danach erledigt). Trennblätter und ihre leeren Rückseiten
-// fallen weg. Ein Aufkleber „DMS-ASN:<nummer>“ auf einer Seite setzt die Archivnummer des jeweiligen Teils.
+// fallen weg (leer wie beim Paket Leerseiten, gemeinsam/leerseite/leerseite.h). Ein Aufkleber „DMS-ASN:<nummer>“ auf einer Seite setzt die Archivnummer des jeweiligen Teils.
 // Kein Netz, kein Dateisystem.
 #include <cctype>
 #include <cstdint>
@@ -15,6 +15,7 @@
 
 #include "barcode.h"
 #include "json.h"
+#include "leerseite.h"
 
 #define DMS(name) __attribute__((import_module("dms"), import_name(#name)))
 extern "C" {
@@ -29,8 +30,6 @@ namespace {
 
 enum Stufe { DEBUG = 0, INFO = 1, WARNUNG = 2, FEHLER = 3 };
 const char *const ASN_PRAEFIX = "DMS-ASN:";
-// Leere Seite: weniger dunkle Bildpunkte als das (Anteil im Inneren der Seite).
-const double LEER = 0.002;
 
 void log(int stufe, const std::string &t) { dms_log(stufe, t.data(), (int32_t)t.size()); }
 void ergebnis(const std::string &t) { dms_ergebnis(t.data(), (int32_t)t.size()); }
@@ -230,8 +229,9 @@ int verarbeite(const Json &e) {
       else if (mitAsn && s.asn.empty() && gross.rfind(ASN_PRAEFIX, 0) == 0)
         s.asn = ohneRand(ohneRand(text).substr(strlen(ASN_PRAEFIX))); // Aufkleber: „DMS-ASN:<nummer>“
     }
-    // Leere Rückseite nur direkt nach einem Trennblatt prüfen (beidseitiger Scan).
-    if (!s.trenn && !seiten.empty() && seiten.back().trenn) s.leer = bc_dunkelanteil(px, bw, bh, bw) < LEER;
+    // Leere Rückseite nur direkt nach einem Trennblatt prüfen (beidseitiger Scan) – mit derselben Erkennung wie das
+    // Paket Leerseiten (gemeinsam/leerseite/), Stufe „vorsichtig“: Bleistift, Stempel und Durchscheinendes bleiben.
+    if (!s.trenn && !seiten.empty() && seiten.back().trenn) s.leer = ls_pruefe(px, bw, bh, bw, dpi, LS_VORSICHTIG, nullptr) == 1;
     if (s.trenn) trennblaetter++;
     if (n) log(DEBUG, "Seite " + zahl(nr) + ": " + gesehen);
     seiten.push_back(s);
