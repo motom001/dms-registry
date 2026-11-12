@@ -2,8 +2,9 @@
 schema: 1
 id: benachrichtigungen
 name: Benachrichtigungen
-version: 1.1.0
-beschreibung: Tägliche Zusammenfassung, Favoriten, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte.
+herausgeber: app.ablago
+version: 1.2.0
+beschreibung: Tägliche Zusammenfassung, Favoriten, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -11,7 +12,9 @@ lizenz: Apache-2.0
 kategorien: [post]
 symbol: mail
 # 0.181.0: Wenn-Karte „Zeitplan“, „Favorit geändert“ und die Karten der Benachrichtigungen (Ablago #678)
-dms: ">=0.181.0"
+# 0.256.0: Automatisierungsvorlagen (inhalt.ablaufvorlagen, Ablago #1044)
+dms: ">=0.256.0"
 abhaengigkeiten: {}
 inhalt:
   automatisierungen: inhalt/automatisierungen.yaml
+  ablaufvorlagen: inhalt/ablaufvorlagen.yaml

@@ -1,0 +1,29 @@
+# Automatisierungsvorlagen fürs Menü „Mappe“ (Ablago #1044). „Aufgabe vergeben“ und „Erinnern“ überlagern die
+# Vorgaben von Ablago mit denselben Werten – entfernt man das Paket, gelten wieder die von Ablago. Nur Aufgaben und
+# Benachrichtigungen, nichts verlässt Ablago.
+- schluessel: aufgabe_vergeben
+  ersetzt: aufgabe_vergeben
+  name: Aufgabe vergeben
+  beschreibung: Jemandem eine Aufgabe zu dieser Mappe geben – sie steht sofort unter „Zu erledigen“.
+  reihenfolge: 10
+  wann: { art: sofort }
+  fragen: [empfaenger, text]
+  karten:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: frage }], text: "{eingabe}" }
+- schluessel: erinnern
+  ersetzt: erinnern
+  name: Erinnern
+  beschreibung: Am gewählten Tag steht eine Erinnerung unter „Zu erledigen“ – für dich oder jemand anderen.
+  reihenfolge: 20
+  wann: { art: datum }
+  fragen: [datum, empfaenger, text]
+  karten:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: frage }], text: "{eingabe}" }
+- schluessel: wiedervorlage
+  name: Wiedervorlage
+  beschreibung: In sechs Monaten steht die Mappe wieder unter „Zu erledigen“ – für dich.
+  reihenfolge: 30
+  wann: { art: in, anzahl: 6, einheit: monate }
+  fragen: []
+  karten:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: selbst }], text: "Wiedervorlage: {titel}" }

@@ -840,6 +840,28 @@ def auto_block(autos: list, pid: str, index: dict) -> str:
             'eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellst du selbst ein.</p><ul class="autos">' + ''.join(zeilen) + '</ul>')
 
 
+EMPFAENGER_TEXT = {'frage': 'die gewählte Person', 'selbst': 'dich', 'ersteller': 'wer die Mappe angelegt hat'}
+
+
+def vorlagen_block(vorlagen: list) -> str:
+    """Automatisierungsvorlagen (DMS #1044) in Klartext: Wann, Karten, Fragen – wie in der Rechte-Vorschau von Ablago."""
+    zeilen = []
+    for v in vorlagen:
+        if not isinstance(v, dict):
+            continue
+        w = v.get('wann') or {}
+        wann = {'sofort': 'sofort', 'datum': 'am gewählten Datum'}.get(w.get('art', 'sofort')) or f'in {w.get("anzahl")} {w.get("einheit", "tage").replace("tage", "Tagen").replace("wochen", "Wochen").replace("monate", "Monaten")}'
+        karten = ', '.join(('Aufgabe' if k.get('als', 'aufgabe') == 'aufgabe' else 'Benachrichtigung') + ' an '
+                           + ', '.join(EMPFAENGER_TEXT.get(x.get('art'), f'Feld „{x.get("feld")}“') for x in k.get('empfaenger') or [])
+                           for k in v.get('karten') or [] if isinstance(k, dict))
+        ersetzt = f' <span class="leise klein">(ersetzt „{e({"aufgabe_vergeben": "Aufgabe vergeben", "erinnern": "Erinnern"}[v["ersetzt"]])}“ von Ablago)</span>' if v.get('ersetzt') in ('aufgabe_vergeben', 'erinnern') else ''
+        text = f'<p>{e(v["beschreibung"])}</p>' if v.get('beschreibung') else ''
+        zeilen.append(f'<li><strong>{e(str(v.get("name", "")))}</strong>{ersetzt}{text}<p class="ablauf"><span class="leise">Läuft</span> {e(wann)} '
+                      f'<span aria-hidden="true">→</span><span class="unsichtbar">, dann:</span> {e(karten)}</p></li>')
+    return ('<h3>Automatisierungsvorlagen</h3><p class="leise klein">Im Menü „Mappe“: Sie legen nur Aufgaben und Benachrichtigungen an '
+            '– mit den Rechten der Person, die sie anwendet.</p><ul class="autos">' + ''.join(zeilen) + '</ul>')
+
+
 def vorgaben_block(vorgaben: list, pid: str, index: dict) -> str:
     """Mitgelieferte Mappen (Vorgaben, DMS #1038 – erscheint, sobald das Schema sie kennt)."""
     je_typ: dict = {}
@@ -990,6 +1012,10 @@ def detail(p: dict, pakete: list) -> str:
     autos = lies_yaml(ordner, (m.get('inhalt') or {}).get('automatisierungen')) if vorhanden else []
     n_auto = len(autos)
     auto_html = auto_block(autos, p['id'], index) if n_auto else ''
+    # Automatisierungsvorlagen (DMS #1044): fürs Menü „Mappe“.
+    vorlagen_aa = lies_yaml(ordner, (m.get('inhalt') or {}).get('ablaufvorlagen')) if vorhanden else []
+    n_vorl = len(vorlagen_aa)
+    auto_html += vorlagen_block(vorlagen_aa) if n_vorl else ''
     # Vorgaben (DMS #1038) und Einstellungen (#164): erscheinen, sobald ein Paket sie mitbringt.
     vorgaben = lies_yaml(ordner, (m.get('inhalt') or {}).get('vorgaben')) if vorhanden else []
     vorgabe_html = vorgaben_block(vorgaben, p['id'], index) if vorgaben else ''
@@ -1007,7 +1033,7 @@ def detail(p: dict, pakete: list) -> str:
                        'Auswahlwerte und Ansichten in dieser Sprache.</p>' if fuer else '')
                     + '<p class="leise klein">Nach der Installation erlaubst du die Sprache unter Werkbank → Sprachen; jede Person wählt sie dann in Mein Konto.</p>')
         kurz_mit = 'Sprachpaket, nur Texte'
-    elif n_typen or n_sichten or n_bsp or n_wort or n_auto or vorgabe_html or einst_html:
+    elif n_typen or n_sichten or n_bsp or n_wort or n_auto or n_vorl or vorgabe_html or einst_html:
         mit_dok = f' und {mehrzahl(n_dok, "Beispiel-Dokument", "Beispiel-Dokumenten")}' if n_dok else ''
         bsp = (f'<h3>Beispiele</h3><p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")}{mit_dok} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
                if n_bsp else '')
@@ -1025,6 +1051,7 @@ def detail(p: dict, pakete: list) -> str:
                                           (mehrzahl(n_bsp, 'Beispielmappe', 'Beispielmappen') + (f' ({mehrzahl(n_dok, "Dokument", "Dokumente")})' if n_dok else '')) if n_bsp else '',
                                           mehrzahl(n_wort, 'Wortgruppe', 'Wortgruppen') + ' für die Suche' if n_wort else '',
                                           mehrzahl(n_auto, 'Automatisierung', 'Automatisierungen') if n_auto else '',
+                                          mehrzahl(n_vorl, 'Automatisierungsvorlage', 'Automatisierungsvorlagen') if n_vorl else '',
                                           mehrzahl(n_einst, 'Einstellung', 'Einstellungen') if n_einst else ''] if t)
         if leer and m.get('code'):
             kurz_mit = 'legt nichts in der Ablage an · ' + kurz_mit

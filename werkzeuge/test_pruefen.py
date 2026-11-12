@@ -1576,3 +1576,63 @@ class InstallierenWieAblago(unittest.TestCase):
         t['register'][0]['abschnitte'][0]['anzeigen'] = {'bedingungen': [{'art': 'feld', 'bedingung': {'feld': 'betrifft', 'op': 'zeigtAufTyp', 'wert': {'art': 'fest', 'wert': ['fahrzeuge:fahrzeug']}}}]}
         self.assertEqual(pruefen.pruefe_etappe15(Path('.'), m, [t], [], [], set()), [])
         self.assertEqual(list(pruefen.inhalt_validator('mappentypen').iter_errors([t])), [])
+
+
+class Ablaufvorlagen(unittest.TestCase):
+    """inhalt.ablaufvorlagen (DMS #1044): nur die Karte „aufgabe“, Empfänger ohne feste Personen, Fragen passend zum
+    Wann, ersetzt nur Vorlagen von Ablago, ab 0.256.0."""
+
+    TYPEN = {'akte': [{'key': 'zustaendig', 'typ': 'referenz', 'ziel': 'dms:benutzer'}, {'key': 'name', 'typ': 'text'}]}
+
+    def vorlage(self, **x):
+        v = {'schluessel': 'wiedervorlage', 'name': 'Wiedervorlage', 'wann': {'art': 'in', 'anzahl': 6, 'einheit': 'monate'}, 'fragen': [],
+             'karten': [{'art': 'aufgabe', 'als': 'aufgabe', 'empfaenger': [{'art': 'selbst'}], 'text': 'Wiedervorlage: {titel}'}]}
+        v.update(x)
+        return v
+
+    def lauf(self, liste, dms='>=0.256.0', abh=frozenset()):
+        return pruefen.pruefe_ablaufvorlagen(liste, self.TYPEN, 'probe', set(abh), dms)
+
+    def test_paket_benachrichtigungen(self):
+        self.assertEqual(pruefen.pruefe(WURZEL / 'pakete' / 'benachrichtigungen', None), [])
+
+    def test_gueltig_und_schema(self):
+        liste = [self.vorlage(), self.vorlage(schluessel='erinnern', ersetzt='erinnern', wann={'art': 'datum'}, fragen=['datum', 'empfaenger', 'text'],
+                                              karten=[{'art': 'aufgabe', 'empfaenger': [{'art': 'frage'}], 'text': '{eingabe}'}])]
+        self.assertEqual(list(pruefen.inhalt_validator('ablaufvorlagen').iter_errors(liste)), [])
+        self.assertEqual(self.lauf(liste), [])
+
+    def test_nur_karte_aufgabe(self):
+        v = self.vorlage(karten=[{'art': 'mail', 'empfaenger': [{'art': 'selbst'}], 'text': 'x'}])
+        self.assertTrue(list(pruefen.inhalt_validator('ablaufvorlagen').iter_errors([v])))
+        self.assertTrue(any('nur „aufgabe“' in f for f in self.lauf([v])))
+
+    def test_keine_festen_personen(self):
+        v = self.vorlage(karten=[{'art': 'aufgabe', 'empfaenger': [{'art': 'person', 'id': 'x'}], 'text': 'x'}])
+        self.assertTrue(list(pruefen.inhalt_validator('ablaufvorlagen').iter_errors([v])))
+        self.assertTrue(any('feste Personen' in f for f in self.lauf([v])))
+
+    def test_fragen_passen_zum_wann(self):
+        f = '\n'.join(self.lauf([self.vorlage(wann={'art': 'datum'})]))
+        self.assertIn('„datum“ fragen', f)
+        f = '\n'.join(self.lauf([self.vorlage(fragen=['text'])]))
+        self.assertIn('{eingabe}', f)
+        f = '\n'.join(self.lauf([self.vorlage(fragen=['empfaenger'])]))
+        self.assertIn('Empfänger „frage“', f)
+
+    def test_feld_als_empfaenger(self):
+        karte = lambda feld: [{'art': 'aufgabe', 'empfaenger': [{'art': 'feld', 'feld': feld}], 'text': 'x'}]
+        self.assertEqual(self.lauf([self.vorlage(typen=['akte'], karten=karte('zustaendig'))]), [])
+        self.assertTrue(any('Verweis auf Benutzer' in f for f in self.lauf([self.vorlage(typen=['akte'], karten=karte('name'))])))
+        self.assertTrue(any('braucht typen' in f for f in self.lauf([self.vorlage(karten=karte('zustaendig'))])))
+        self.assertTrue(any('nur Mappentypen' in f for f in self.lauf([self.vorlage(typen=['fremd:akte'])])))
+        self.assertEqual(self.lauf([self.vorlage(typen=['fremd:akte'])], abh={'fremd'}), [])
+
+    def test_ersetzt(self):
+        self.assertTrue(any('mehrmals ersetzt' in f for f in self.lauf([self.vorlage(ersetzt='erinnern'), self.vorlage(schluessel='zwei', ersetzt='erinnern')])))
+        self.assertTrue(any('ersetzen lassen sich nur' in f for f in self.lauf([self.vorlage(ersetzt='wiedervorlage')])))
+        self.assertTrue(any('doppelt' in f for f in self.lauf([self.vorlage(), self.vorlage()])))
+
+    def test_braucht_0256(self):
+        self.assertTrue(any('0.256.0' in f for f in self.lauf([self.vorlage()], dms='>=0.181.0')))
+        self.assertEqual(self.lauf([], dms='>=0.181.0'), [])

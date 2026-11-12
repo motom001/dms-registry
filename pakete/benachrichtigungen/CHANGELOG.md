@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.0
+
+- Neu: **Automatisierungsvorlagen** fürs Menü „Mappe“ (Ablago #1044): **Aufgabe vergeben** und **Erinnern** – dieselben Werte wie die Vorgaben von Ablago, die das Paket damit ersetzt – und **Wiedervorlage** (in sechs Monaten eine Aufgabe „Wiedervorlage: {titel}“ an dich). Nur Aufgaben, nichts verlässt Ablago. Entfernst du das Paket, gelten wieder die Vorlagen von Ablago.
+- Braucht Ablago ab 0.256.0.
+
 ## 1.1.0
 
 - Neu: **Tägliche Zusammenfassung** (Zeitplan für jeden Benutzer, Uhrzeit aus dem Profil), **Favoriten-Änderungen melden**, **Sammelmeldung Anmeldeschutz** und **Kontosperre sofort melden** – so, wie Ablago es bis 0.187 von selbst machte (Ablago #678).
