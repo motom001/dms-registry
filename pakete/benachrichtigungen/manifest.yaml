@@ -3,8 +3,8 @@ schema: 1
 id: benachrichtigungen
 name: Benachrichtigungen
 herausgeber: app.ablago
-version: 1.3.1
-beschreibung: Tägliche Zusammenfassung, Favoriten, „Post für dich“, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.
+version: 1.3.2
+beschreibung: Ablago erinnert dich an offene Aufgaben und meldet Post für dich, Änderungen an Favoriten, Vertretungen und gesperrte Konten – als Automatisierungen, die du anpassen kannst. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ im Menü „Mappe“.
 autor:
   name: Thomas Meissner
   github: motom001

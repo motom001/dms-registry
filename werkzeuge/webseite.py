@@ -843,6 +843,107 @@ def auto_block(autos: list, pid: str, index: dict) -> str:
 EMPFAENGER_TEXT = {'frage': 'die gewählte Person', 'selbst': 'dich', 'ersteller': 'wer die Mappe angelegt hat'}
 
 
+# Mappen-Aktionen (DMS #1039): Rechte in Alltagssprache, wie in der Rechte-Vorschau von Ablago.
+AKTION_RECHTE = {'lesen': 'liest die Mappe', 'dokument_hinzufuegen': 'fügt ein Dokument hinzu', 'aendern': 'ändert Felder',
+                 'mappen_anlegen': 'legt Mappen an', 'herausgeben': 'gibt Inhalte heraus'}
+
+
+def aktionen_block(aktionen: list, typen: dict) -> str:
+    """Mappen-Aktionen (DMS #1039) im Menü „Mappe“: Name, an welchen Mappen, was sie tun darf – mit deinen Rechten."""
+    zeilen = []
+    for a in aktionen:
+        if not isinstance(a, dict):
+            continue
+        wo = ', '.join(typen.get(str(t).split(':')[-1], str(t)) for t in a.get('mappentypen') or [])
+        darf = ', '.join(AKTION_RECHTE.get(r, r) for r in a.get('rechte') or [])
+        wie = 'öffnet „Brief aus Vorlage“ mit den Vorlagen dieses Pakets' if a.get('dialog') == 'dms:vorlage' else ''
+        text = f'<p>{e(a["beschreibung"])}</p>' if a.get('beschreibung') else ''
+        zeilen.append(f'<li><strong>{e(str(a.get("name", "")))}</strong> <span class="leise klein">an: {e(wo)}</span>{text}'
+                      f'<p class="ablauf"><span class="leise">Darf</span> {e(darf)}{" · " + e(wie) if wie else ""}</p></li>')
+    return ('<h3>Mappen-Aktionen</h3><p class="leise klein">Im Menü „Mappe“. Sie laufen mit den Rechten der Person, die sie anklickt; '
+            'ohne passendes Recht fehlt die Aktion.</p><ul class="autos">' + ''.join(zeilen) + '</ul>')
+
+
+def umbau_block(umbau: list, index: dict, typen: dict) -> str:
+    """Umbau (DMS #1041): welche Mappen dieses Paket beim Installieren oder Update aus anderen Paketen übernimmt."""
+    zeilen = []
+    for u in umbau:
+        if not isinstance(u, dict) or not u.get('von'):
+            continue
+        alt = index.get(str(u['von']))
+        paket, _, schluessel = str(u['von']).rpartition(':')
+        # Den alten Typ gibt es nach dem Umzug meist nicht mehr: dann der Schlüssel als Name, dazu das Paket.
+        paketname = alt['paketname'] if alt else next((x['paketname'] for x in index.values() if x['paket'] == paket), paket)
+        alt_name = f'{alt["name"] if alt else schluessel.replace("_", " ").capitalize()} (aus {paketname})'
+        neu = typen.get(str(u.get('nach', '')).split(':')[-1], str(u.get('nach', '')))
+        zeilen.append(f'<li>{e(alt_name)} <span aria-hidden="true">→</span><span class="unsichtbar"> wird zu </span> {e(neu)}</li>')
+    return ('<h3>Übernimmt Mappen aus anderen Paketen</h3><p class="leise klein">Hast du diese Mappen schon, zieht Ablago sie beim Installieren '
+            'in dieses Paket um – mit Dokumenten, Historie und Verweisen. Die Update-Vorschau zeigt vorher genau, was passiert.</p><ul>'
+            + ''.join(zeilen) + '</ul>')
+
+
+# ---------- „Was das Paket tut“ (#80): rein → Paket → raus ----------
+# Aus den Schnittstellen im Manifest abgeleitet, nichts von Hand gepflegt. Je Schnittstelle: was das Paket tut, was
+# hineingeht (fest oder aus den Dateitypen im Manifest), was herauskommt und ein Hinweis auf ein Paket, das dazugehört.
+FORMATE = [('image/tiff', 'TIFF'), ('image/webp', 'WebP'), ('image/gif', 'GIF'), ('image/bmp', 'BMP'), ('application/pdf', 'PDF'),
+           ('image/jpeg', 'JPEG'), ('image/png', 'PNG'), ('wordprocessingml', 'Word'), ('ms-word', 'Word'), ('spreadsheetml', 'Excel'),
+           ('ms-excel', 'Excel'), ('presentationml', 'PowerPoint'), ('ms-powerpoint', 'PowerPoint'), ('opendocument', 'OpenDocument'),
+           ('rtf', 'RTF'), ('text/plain', 'Textdatei'), ('message/rfc822', 'E-Mail (.eml)'), ('ms-outlook', 'Outlook (.msg)')]
+
+
+def formate(typen) -> list[str]:
+    """MIME-Typen aus dem Manifest als kurze Namen, ohne Dopplungen; application/octet-stream fällt weg."""
+    namen = []
+    for t in typen or []:
+        name = next((n for k, n in FORMATE if k in str(t)), None)
+        if name and name not in namen:
+            namen.append(name)
+    return namen
+
+
+FLUSS = {
+    'dms:umwandeln': ('wandelt um', lambda c: formate(c.get('umwandeln')), ['Vorschaubild', 'Fassung für den Volltext'],
+                      ('texterkennung', 'Den Text aus Scans liest erst das Paket {}.')),
+    'dms:volltext': ('liest den Text', lambda c: formate(c.get('volltext')), ['Text für die Suche'], None),
+    'dms:texterkennung': ('erkennt den Text', lambda c: ['gescannte PDFs', 'Fotos und Bilder'], ['Text für die Suche', 'Lage jedes Worts'],
+                          ('bildformate', 'TIFF-Scans und andere Bildformate liest es zusammen mit dem Paket {}.')),
+    'dms:archivfassung': ('baut die Archivfassung', lambda c: formate((c.get('archivfassung') or {}).get('typen')), ['PDF/A, durchsuchbar'],
+                          ('texterkennung', 'Für Scans und Fotos braucht es zusätzlich das Paket {}.')),
+    'dms:leerseiten': ('findet leere Seiten', lambda c: ['neue Post'], ['leere Seiten markiert'], None),
+    'dms:vektoren': ('vergleicht Inhalte', lambda c: ['Text der Dokumente'], ['ähnliche Dokumente', 'ähnliche Treffer in der Suche'],
+                     ('texterkennung', 'Bei Scans braucht es dafür den Text aus dem Paket {}.')),
+}
+
+
+def fluss_html(p: dict, m: dict, pakete: list) -> str:
+    """„Was das Paket tut“ (#80) für Verarbeitungs-Pakete: Was hineingeht → das Paket → was herauskommt, je Schnittstelle."""
+    c = m.get('code') if isinstance(m.get('code'), dict) else {}
+    if not c:
+        return ''
+    namen = {x['id']: x['name'] for x in pakete}
+    reihen, hinweise = [], []
+    for s in (c.get('rechte') or {}).get('schnittstellen') or []:
+        if s not in FLUSS:
+            continue
+        verb, rein, raus, dazu = FLUSS[s]
+        rein = rein(c)
+        if not rein:
+            continue
+        liste = lambda xs: ''.join(f'<li>{e(x)}</li>' for x in xs)
+        reihen.append(f'<div class="fluss-reihe"><ul class="fluss-rein"><li class="unsichtbar">Hinein:</li>{liste(rein)}</ul>'
+                      f'<span class="pfeil" aria-hidden="true">→</span>'
+                      f'<p class="fluss-mitte">{symbol(p)}<span>{e(p["name"])} {e(verb)}</span></p>'
+                      f'<span class="pfeil" aria-hidden="true">→</span>'
+                      f'<ul class="fluss-raus"><li class="unsichtbar">Heraus:</li>{liste(raus)}</ul></div>')
+        if dazu and dazu[0] in namen and dazu[0] != p['id']:
+            hinweise.append(dazu[1].format(f'<a href="../{e(dazu[0])}/">{e(namen[dazu[0]])}</a>'))
+    if not reihen:
+        return ''
+    fuss = ''.join(f'<p class="leise klein">{h}</p>' for h in dict.fromkeys(hinweise))
+    return ('<section class="fluss"><h2>Was das Paket tut</h2>' + ''.join(reihen)
+            + '<p class="leise klein">Das Original bleibt immer unverändert.</p>' + fuss + '</section>\n    ')
+
+
 def vorlagen_block(vorlagen: list) -> str:
     """Automatisierungsvorlagen (DMS #1044) in Klartext: Wann, Karten, Fragen – wie in der Rechte-Vorschau von Ablago."""
     zeilen = []
@@ -1016,6 +1117,13 @@ def detail(p: dict, pakete: list) -> str:
     vorlagen_aa = lies_yaml(ordner, (m.get('inhalt') or {}).get('ablaufvorlagen')) if vorhanden else []
     n_vorl = len(vorlagen_aa)
     auto_html += vorlagen_block(vorlagen_aa) if n_vorl else ''
+    # Mappen-Aktionen (DMS #1039) und Umbau (DMS #1041): stehen im Manifest.
+    typnamen = {t['schluessel']: t['name'] for t in typen if isinstance(t, dict) and 'schluessel' in t}
+    aktionen = [a for a in (m.get('mappenaktionen') or []) if isinstance(a, dict)] if vorhanden else []
+    n_akt = len(aktionen)
+    auto_html += aktionen_block(aktionen, typnamen) if n_akt else ''
+    umbau = [u for u in (m.get('umbau') or []) if isinstance(u, dict)] if vorhanden else []
+    auto_html += umbau_block(umbau, index, typnamen) if umbau else ''
     # Vorgaben (DMS #1038) und Einstellungen (#164): erscheinen, sobald ein Paket sie mitbringt.
     vorgaben = lies_yaml(ordner, (m.get('inhalt') or {}).get('vorgaben')) if vorhanden else []
     vorgabe_html = vorgaben_block(vorgaben, p['id'], index) if vorgaben else ''
@@ -1033,7 +1141,7 @@ def detail(p: dict, pakete: list) -> str:
                        'Auswahlwerte und Ansichten in dieser Sprache.</p>' if fuer else '')
                     + '<p class="leise klein">Nach der Installation erlaubst du die Sprache unter Werkbank → Sprachen; jede Person wählt sie dann in Mein Konto.</p>')
         kurz_mit = 'Sprachpaket, nur Texte'
-    elif n_typen or n_sichten or n_bsp or n_wort or n_auto or n_vorl or vorgabe_html or einst_html:
+    elif n_typen or n_sichten or n_bsp or n_wort or n_auto or n_vorl or n_akt or umbau or vorgabe_html or einst_html:
         mit_dok = f' und {mehrzahl(n_dok, "Beispiel-Dokument", "Beispiel-Dokumenten")}' if n_dok else ''
         bsp = (f'<h3>Beispiele</h3><p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")}{mit_dok} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
                if n_bsp else '')
@@ -1052,6 +1160,7 @@ def detail(p: dict, pakete: list) -> str:
                                           mehrzahl(n_wort, 'Wortgruppe', 'Wortgruppen') + ' für die Suche' if n_wort else '',
                                           mehrzahl(n_auto, 'Automatisierung', 'Automatisierungen') if n_auto else '',
                                           mehrzahl(n_vorl, 'Automatisierungsvorlage', 'Automatisierungsvorlagen') if n_vorl else '',
+                                          mehrzahl(n_akt, 'Mappen-Aktion', 'Mappen-Aktionen') if n_akt else '',
                                           mehrzahl(n_einst, 'Einstellung', 'Einstellungen') if n_einst else ''] if t)
         if leer and m.get('code'):
             kurz_mit = 'legt nichts in der Ablage an · ' + kurz_mit
@@ -1108,7 +1217,7 @@ def detail(p: dict, pakete: list) -> str:
               + '</p>\n'
               f'        <p class="chips">{kats}</p></div>\n'
               f'    </div>\n'
-              f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + (sprach_hinweis(p) + '\n    ' if sprach_hinweis(p) else '') + anleitung + '\n    '.join(teile) + passt_html + '\n')
+              f'    <div id="dms-passt" class="dms-passt"></div>\n    ' + (sprach_hinweis(p) + '\n    ' if sprach_hinweis(p) else '') + (fluss_html(p, m, pakete) if vorhanden else '') + anleitung + '\n    '.join(teile) + passt_html + '\n')
     return seite(f'{p["name"]} – Ablago-Pakete', inhalt, 2, p['beschreibung'])
 
 
@@ -1248,6 +1357,16 @@ ul.autos > li:first-child { border-top: 0; }
 ul.autos p { margin: 2px 0; }
 p.ablauf { font-size: .92rem; }
 .unsichtbar { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+section.fluss { margin: 0 0 16px; }
+section.fluss h2 { font-size: 1.05rem; border: 0; padding: 0; margin: 0 0 6px; }
+.fluss-reihe { display: grid; grid-template-columns: 1fr auto auto auto 1fr; align-items: center; gap: 8px; margin: 6px 0; }
+.fluss-reihe ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+.fluss-rein { justify-content: flex-end; }
+.fluss-reihe li:not(.unsichtbar) { padding: 2px 8px; border: 1px solid var(--linie); border-radius: 999px; background: var(--flaeche); font-size: .88rem; }
+.fluss-raus li:not(.unsichtbar) { border-color: var(--a); }
+.fluss-mitte { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 0; text-align: center; font-size: .86rem; max-width: 9em; }
+.fluss-reihe .pfeil { color: var(--leise); font-size: 1.3rem; }
+@media (max-width: 640px) { .fluss-reihe { grid-template-columns: 1fr; justify-items: center; } .fluss-rein, .fluss-raus { justify-content: center; } .fluss-reihe .pfeil { transform: rotate(90deg); } }
 section.anleitung { margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--linie); background: var(--flaeche); }
 section.anleitung h2 { font-size: 1.05rem; border: 0; padding: 0; margin: 0 0 4px; }
 section.anleitung ol { margin: 0; padding-left: 1.4em; }

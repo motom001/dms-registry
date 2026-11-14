@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.1
+
+- Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).
+
 ## 1.1.0
 
 - Leere Rückseite eines Trennblatts: dieselbe Erkennung wie das neue Paket **Leerseiten** (`gemeinsam/leerseite/`, dms #997), Stufe „vorsichtig“. Lochung, Staub und Schatten am Rand zählen nicht, eine Bleistiftnotiz, ein Stempel oder durchscheinende Schrift schon – solche Rückseiten bleiben jetzt im Brief, statt wegzufallen. Die Einstellung „Leere Rückseite mit entfernen“ bleibt (keine Doppelung: *Leerseiten* sieht nach dem Teilen nur noch die Seiten der Briefe).

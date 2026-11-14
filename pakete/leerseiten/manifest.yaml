@@ -2,8 +2,8 @@
 schema: 1
 id: leerseiten
 name: Leerseiten
-version: 1.0.0
-beschreibung: Erkennt leere Seiten in neuer Post, etwa die Rückseiten beidseitiger Scans – auch ohne Trennblatt – und markiert sie. Gelöscht wird nichts; beim Übernehmen in eine Mappe fallen die markierten Seiten weg, das Original bleibt als frühere Version. Läuft abgeschottet im Paket-Läufer, ohne Netz.
+version: 1.0.1
+beschreibung: Erkennt leere Seiten in neuer Post, etwa die Rückseiten beidseitiger Scans, und markiert sie. Beim Übernehmen in eine Mappe fallen sie weg; gelöscht wird nichts, das Original bleibt als frühere Version. Ohne Internet.
 autor:
   name: Thomas Meissner
   github: motom001

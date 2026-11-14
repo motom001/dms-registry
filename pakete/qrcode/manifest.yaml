@@ -3,8 +3,8 @@
 schema: 1
 id: qrcode
 name: QR-Code lesen
-version: 1.0.1
-beschreibung: Liest den QR-Code einer Visitenkarte (vCard) und schlägt Name, Funktion, Telefon, E-Mail, Internetseite und Anschrift für „Aus Dokument ausfüllen“ vor – zuverlässiger als die Texterkennung. Ohne Visitenkarte im Bild liest Ablago wie gewohnt den Text. Läuft abgeschottet im Paket-Läufer, ohne Netz.
+version: 1.0.2
+beschreibung: Liest den QR-Code auf Visitenkarten und trägt Name, Telefon, E-Mail und Anschrift bei „Aus Dokument ausfüllen“ ein – zuverlässiger als der erkannte Text. Ohne QR-Code liest Ablago wie gewohnt den Text.
 autor:
   name: Thomas Meissner
   github: motom001

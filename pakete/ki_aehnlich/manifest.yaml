@@ -2,8 +2,8 @@
 schema: 1
 id: ki_aehnlich
 name: KI lokal – Ähnlichkeit
-version: 1.1.1
-beschreibung: Findet ähnliche Dokumente, sucht mit eigenen Worten und schlägt vor, wohin neue Post gehört – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.
+version: 1.1.2
+beschreibung: Findet ähnliche Dokumente, sucht auch mit eigenen Worten und schlägt vor, wohin neue Post gehört. Rechnet direkt in Ablago, ohne Internet und ohne zusätzlichen Dienst.
 autor:
   name: Thomas Meissner
   github: motom001

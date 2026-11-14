@@ -2,8 +2,8 @@
 schema: 1
 id: trennblatt
 name: Trennblatt
-version: 1.1.0
-beschreibung: Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.
+version: 1.1.1
+beschreibung: Teilt einen Stapel Briefe, die du in einem Rutsch gescannt hast, an ausgedruckten Trennblättern in einzelne Post auf; die Trennblätter fallen weg. Ein Aufkleber mit Archivnummer auf einem Brief trägt die Nummer gleich ein. Ohne Internet.
 autor:
   name: Thomas Meissner
   github: motom001
