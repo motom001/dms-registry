@@ -69,6 +69,7 @@
         },
         "lizenz": { "type": "string" },
         "herausgeber": { "type": "string", "const": "app.ablago", "description": "#173, motom001/dms#1084 (ab Ablago 0.229.0): Herausgeber – im offiziellen Katalog immer app.ablago. Ältere Ablago-Versionen lesen das Feld nicht." },
+        "passtZu": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["privat", "beruflich"] }, "description": "#198: Für wen das Paket passt (aus dem Manifest der neuesten Version). Fehlt es, passt das Paket für alle. Ablago empfiehlt ein Paket mit [beruflich] nur, wenn das Merkmal „beruflich genutzt“ gesetzt ist; ältere Versionen übergehen das Feld." },
         "ersetzt": { "type": "array", "minItems": 1, "maxItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/id" }, "description": "#173, motom001/dms#1084: frühere Ids dieses Pakets (Umzug, z. B. texterkennung_fra → texterkennung.fra). Ablago ab 0.229.0 findet darüber das Update einer Installation unter der alten Id; die alte Id steht nicht mehr im Katalog." },
         "downloads": { "type": "integer", "minimum": 0, "description": "Optional (#156): Downloads aller Versionen zusammen laut GitHub (Release-Dateien) – Downloads, nicht Installationen; Updates und Tests zählen mit. Ändert sich täglich." },
         "aktuell": { "$ref": "#/$defs/version" },
@@ -84,6 +85,7 @@
     "erstellt": { "type": "string", "format": "date-time", "description": "Zeitpunkt des Baus; das DMS lehnt signierte Kataloge ab, die älter sind als der zuletzt gesehene" },
     "quelle": { "type": "string", "format": "uri" },
     "signatur": { "type": ["null", "object"], "description": "Immer null: Die Signatur (Ed25519 über die Bytes dieser Datei) steht getrennt in katalog.sig daneben" },
-    "pakete": { "type": "array", "items": { "$ref": "#/$defs/paket" } }
+    "pakete": { "type": "array", "items": { "$ref": "#/$defs/paket" } },
+    "empfohlen": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "$ref": "#/$defs/id" }, "description": "#198, motom001/dms#1048: „Für dich empfohlen“ – Paket-Ids in dieser Reihenfolge, aus werkzeuge/empfohlen.yaml, nur Ids, die im Katalog stehen. Ablago zeigt sie in Werkbank → Pakete zuerst und lässt Pakete mit passtZu weg, die nicht zur Nutzung passen; ältere Versionen übergehen das Feld." }
   }
 }

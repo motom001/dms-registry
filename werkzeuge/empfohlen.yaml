@@ -1,6 +1,7 @@
-# „Für den Anfang“ auf der Startseite des Katalogs (Registry #165): 6–8 Pakete, die fast jeder braucht, in dieser
-# Reihenfolge. Ids, die es (noch) nicht im Katalog gibt, überspringt die Webseite – Verträge und Rechnungen stehen
-# deshalb schon hier.
+# „Für den Anfang“ auf der Startseite des Katalogs (Registry #165) und „Für dich empfohlen“ in Ablago (`empfohlen` in
+# katalog.json, #198, motom001/dms#1048): 6–8 Pakete, die fast jeder braucht, in dieser Reihenfolge. Rein berufliche
+# Pakete sagen das im Manifest (`passtZu: [beruflich]`); Ablago lässt sie ohne „beruflich genutzt“ weg. Ids, die es
+# (noch) nicht im Katalog gibt, überspringen Webseite und katalog.json.
 - basis
 - haushalt
 - texterkennung
