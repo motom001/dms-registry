@@ -134,6 +134,20 @@ kurzanleitung:
 - Vorlagen-Pakete (mit Mappentypen) und Funktions-Pakete (mit Code) bringen eine Kurzanleitung mit; ohne gibt `pruefen.py` einen **Hinweis** – später wird sie Pflicht. Sprachpakete und Ergänzungen brauchen keine.
 - `en` ist optional, hat aber gleich viele Schritte wie `de`. Ältere Ablago-Versionen übergehen das Feld.
 
+## Für wen das Paket passt { #passt-zu }
+
+Ablago zeigt in Werkbank → Pakete zuerst **„Für dich empfohlen“** (motom001/dms#1048). Die Liste steht in `werkzeuge/empfohlen.yaml` und landet als `empfohlen` oben in `katalog.json` (#198), in derselben Reihenfolge wie „Für den Anfang“ auf der Katalog-Webseite. Es gibt **eine** Liste für alle.
+
+Passt ein Paket nur zu einer bestimmten Nutzung, sagt es das selbst:
+
+```yaml
+passtZu: [beruflich]   # z. B. Compliance
+```
+
+- Ablago empfiehlt ein Paket mit `passtZu: [beruflich]` nur, wenn das Merkmal **„beruflich genutzt“** gesetzt ist. Installieren kann man es trotzdem immer.
+- Ohne `passtZu` passt das Paket für alle. Möglich sind `privat` und `beruflich`.
+- Der Katalog übernimmt `passtZu` aus dem Manifest der neuesten Version. Ein neues, rein berufliches Paket braucht dafür kein Ablago-Update. Ältere Ablago-Versionen übergehen beide Felder.
+
 ## Namen
 
 Schlüssel von Mappentypen, Feldern und Registern sind **im Paket lokal**, z. B. `versicherung`. Ablago legt sie mit der Paket-Id davor an – ab 0.229.0 als `haushalt:versicherung` (Paket und Schlüssel getrennt, motom001/dms#1084), bis 0.228 als `haushalt_versicherung` –, damit sich zwei Pakete nicht in die Quere kommen. Angezeigt wird nur der Name („Versicherung“). Verweise auf Typen anderer Pakete schreibst du als `<paket>:<schluessel>`, z. B. `basis:organisation`. Das andere Paket muss dann unter `abhaengigkeiten` stehen. Auf Mappentypen, die Ablago selbst mitbringt, verweist du mit `dms:` – ohne Abhängigkeit: `dms:benutzer` und `dms:rolle`. Dafür muss im Manifest `dms: ">=0.75.0"` stehen. Den **Ablageort** (wo ein Original liegt) bringt seit Ablago 0.212.0 das Paket Basis mit: `basis:ablageort` mit `basis: ">=1.6.0"` unter `abhaengigkeiten` (Ablago #883, Registry #138). Das frühere `dms:ablageort` versteht Ablago bis 1.0 noch als Alias; `pruefen.py` warnt davor. Die Paket-Id `dms` ist deshalb vergeben.

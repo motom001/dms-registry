@@ -157,6 +157,13 @@ def ergaenzt_von(m: dict) -> dict:
     return {'paket': e} if isinstance(e, str) else {k: e[k] for k in ('paket', 'gruppe') if k in e}
 
 
+def empfehlungen(pakete: dict) -> list[str]:
+    """„Für dich empfohlen“ (#198, motom001/dms#1048): werkzeuge/empfohlen.yaml in dieser Reihenfolge, nur Ids, die es
+    im Katalog gibt – dieselbe Liste wie „Für den Anfang“ auf der Katalog-Webseite (#165)."""
+    liste = yaml.safe_load((WURZEL / 'werkzeuge' / 'empfohlen.yaml').read_text(encoding='utf-8')) or []
+    return list(dict.fromkeys(str(x) for x in liste if str(x) in pakete))[:20]
+
+
 def versionsschluessel(v: str):
     return tuple(int(x) for x in v.split('.'))
 
@@ -168,6 +175,12 @@ def herausgeber_und_umzug(pakete: dict, manifeste: dict) -> list[str]:
     fehler = []
     for pid, p in pakete.items():
         p['herausgeber'] = HERAUSGEBER
+        # Für wen das Paket passt (#198): aus dem Manifest der neuesten Version, sonst wie bisher im Katalog.
+        z = manifeste[pid].get('passtZu') if pid in manifeste else p.get('passtZu')
+        if z:
+            p['passtZu'] = list(z)
+        else:
+            p.pop('passtZu', None)
         e = manifeste[pid].get('ersetzt') if pid in manifeste else p.get('ersetzt')
         e = [e] if isinstance(e, str) else list(e or [])
         if e:
@@ -276,6 +289,8 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         # Die Signatur steht getrennt in katalog.sig (werkzeuge/signieren.py, #74), damit ältere DMS-Versionen
         # diesen Katalog unverändert lesen; das Feld bleibt null.
         'signatur': None,
+        # „Für dich empfohlen“ (#198) oben, damit man es beim Lesen gleich sieht; fehlt, wenn die Liste leer ist.
+        **({'empfohlen': e} if (e := empfehlungen(pakete)) else {}),
         'pakete': sorted(pakete.values(), key=lambda p: p['id']),
     }
     schema = json.loads((WURZEL / 'schema/katalog.schema.json').read_text(encoding='utf-8'))

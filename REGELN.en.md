@@ -132,6 +132,20 @@ kurzanleitung:
 - Template packages (with folder types) and function packages (with code) bring a quick guide; without one `pruefen.py` prints a **hint** – it will become mandatory later. Language packages and add-ons need none.
 - `en` is optional but has as many steps as `de`. Older Ablago versions skip the field.
 
+## Who the package suits { #passt-zu }
+
+Under Workbench → Packages, Ablago first shows **“Recommended for you”** (motom001/dms#1048). The list is in `werkzeuge/empfohlen.yaml` and ends up as `empfohlen` at the top of `katalog.json` (#198), in the same order as “To get started” on the catalogue website. There is **one** list for everyone.
+
+If a package only suits a particular use, it says so itself:
+
+```yaml
+passtZu: [beruflich]   # e.g. Compliance
+```
+
+- Ablago recommends a package with `passtZu: [beruflich]` only if the attribute **“used for work”** is set. It can always be installed anyway.
+- Without `passtZu`, the package suits everyone. Possible values are `privat` and `beruflich`.
+- The catalogue takes `passtZu` from the manifest of the newest version. A new, purely business package therefore needs no Ablago update. Older Ablago versions ignore both fields.
+
 ## Names
 
 Keys of Mappe types, fields and tabs are **local to the package**, e.g. `versicherung`. Ablago creates them with the package id in front – from 0.229.0 as `haushalt:versicherung` (package and key stored separately, motom001/dms#1084), up to 0.228 as `haushalt_versicherung` – so that two packages do not get in each other's way. Only the name ("Versicherung") is displayed. You write references to types of other packages as `<paket>:<schluessel>`, e.g. `basis:organisation`. The other package must then be listed under `abhaengigkeiten` (dependencies). To Mappe types that Ablago brings itself, you refer with `dms:` – without a dependency: `dms:benutzer` (user) and `dms:rolle` (role). This requires `dms: ">=0.75.0"` in the manifest. The **storage location** (where an original is kept) comes with the Basis package since Ablago 0.212.0: `basis:ablageort` with `basis: ">=1.6.0"` under `abhaengigkeiten` (Ablago #883, Registry #138). Ablago still understands the former `dms:ablageort` as an alias until 1.0; `pruefen.py` warns about it. The package id `dms` is therefore taken.
