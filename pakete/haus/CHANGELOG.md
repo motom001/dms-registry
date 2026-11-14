@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.5.1
+
+- Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).
+
 ## 1.5.0
 
 - Der **Wartungsvertrag** an der Wartung ist ein **Vertrag** aus dem Paket Verträge (bisher Vertrag aus Haushalt, dms-registry #163). In einer bestehenden Ablage zeigt das Feld von selbst dorthin, sobald Verträge 1.1.0 die Verträge aus Haushalt übernommen hat.

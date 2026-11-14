@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.3.1
+
+- Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).
+
 ## 1.3.0
 
 - **PDFs in Farbe** (dms-registry #189): Das Paket holt die Seitenbilder mit `farbe=1` (Ablago DMS #716). Farbige Seiten kommen als Farb-JPEG in die Archivfassung, so bleiben Logos, Stempel, Markierungen und farbige Tabellen erhalten. Seiten ohne Farbe (kein Bildpunkt weicht zwischen Rot, Grün und Blau um mehr als 6 ab) bleiben Graustufen-JPEG und werden nicht größer. Am Dokument steht z. B. „Seiten als Bild mit 300 dpi, 1 von 2 Seiten in Farbe“.

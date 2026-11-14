@@ -3,12 +3,23 @@ schema: 1
 id: benachrichtigungen
 name: Benachrichtigungen
 herausgeber: app.ablago
-version: 1.3.0
+version: 1.3.1
 beschreibung: Tägliche Zusammenfassung, Favoriten, „Post für dich“, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Sieh unter Werkbank → Ablage aufbauen → Automatisierungen nach, welche Benachrichtigungen eingeschaltet sind, und schalte ab, was du nicht brauchst.
+    - Steht bei neuer Post jemand unter „An“, bekommt diese Person die Aufgabe „Post für dich – bitte zuordnen“.
+    - Die Uhrzeit der täglichen Zusammenfassung stellt jede Person unter „Mein Konto“ ein.
+    - Im Menü „Mappe“ findest du die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“.
+  en:
+    - Check under Workbench → Build the Library → Automations which notifications are on, and switch off what you don't need.
+    - If someone is under “To” on new post, that person gets the task “Post for you – please assign”.
+    - Everyone sets the time of their daily summary under “My account”.
+    - In the “Folder” menu you find the templates “Assign task”, “Remind” and “Follow-up”.
 kategorien: [post]
 symbol: mail
 # 0.181.0: Wenn-Karte „Zeitplan“, „Favorit geändert“ und die Karten der Benachrichtigungen (Ablago #678)

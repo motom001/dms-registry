@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.3.1
+
+- Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).
+
 ## 1.3.0
 
 - Neu: **Post für dich** (Ablago #1001, Registry #153): Wer bei neuer Post unter „An“ steht, bekommt die Aufgabe „Post für dich – bitte zuordnen“ – bei Abwesenheit die Vertretung. Sie löst aus, wenn Post eingeht oder sich „An“ bzw. der Stand ändert, und erledigt sich, sobald die Post zugeordnet oder erledigt ist oder an jemand anderen geht; je Post und Person gibt es nur eine. Bis Ablago 0.256 war das fest eingebaut. Beim Installieren vorausgewählt; hat dein Ablago sie beim Update schon als eigene Automatisierung übernommen, ersetzt die mitgelieferte sie, solange du sie nicht geändert hast (an oder aus bleibt).

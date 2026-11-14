@@ -3,12 +3,22 @@
 schema: 1
 id: bildformate
 name: Bildformate
-version: 1.0.2
+version: 1.0.3
 beschreibung: Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.
 autor:
   name: Thomas Meissner
   github: motom001
+herausgeber: app.ablago
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Lade TIFF-Scans, WebP-, GIF- oder BMP-Dateien wie gewohnt hoch – das Paket macht daraus eine Fassung mit Vorschaubild.
+    - Für durchsuchbaren Text in Scans installiere zusätzlich das Paket „Texterkennung“.
+    - Am Dokument zeigt „Fassung ansehen“, was das Paket erzeugt hat; das Original bleibt unverändert.
+  en:
+    - Upload TIFF scans, WebP, GIF or BMP files as usual – the package turns them into a version with a preview.
+    - For searchable text in scans, also install the package “Texterkennung”.
+    - On the document, “View version” shows what the package created; the original stays unchanged.
 # 0.137.0: Schnittstelle dms:umwandeln, code.umwandeln, Ereignis datei.umwandeln, PUT /dokumente/{id}/fassung (DMS #577)
 dms: ">=0.137.0"
 inhalt: {}
