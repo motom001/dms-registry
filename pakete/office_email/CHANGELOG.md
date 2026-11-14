@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.4
+
+- Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).
+
 ## 1.1.3
 
 - Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).

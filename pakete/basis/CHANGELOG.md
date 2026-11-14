@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.7.1
+
+- Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).
+
 ## 1.7.0
 
 - Organisation: **Eigene Organisation** (Ja/Nein, Vorgabe nein, dms-registry #158, DMS #995) – so weiß Ablago, wer „wir“ sind: für Datenschutz-Auskünfte, den Briefkopf von Vorlagen und die Erkennung (die eigene Organisation ist nie Absender eingehender Post). Ändern kann es nur, wer Ablago verwaltet. Mehrere eigene Organisationen sind möglich (privat und Gewerbe, zwei Firmen) – das ist nur eine Zuordnung.

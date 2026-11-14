@@ -115,6 +115,17 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 - **Existing packages:** their icons are listed under `symbole:` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml) for the time being; with the next version the icon moves into the manifest. The manifest wins. Like `kategorien`, Ablago does not read `symbol` and `kuerzel`; older Ablago versions keep installing such packages.
 - **View symbol** (dms #428): in `sichten.yaml` each view may have `symbol: <name>` – a Lucide name from the fixed list in Ablago ([`shared/src/ansichtsymbole.ts`](https://github.com/motom001/dms/blob/main/shared/src/ansichtsymbole.ts)), e.g. `house`, `car`, `euro`, `mail`. Ablago shows it before the view name; an unknown name is shown without a symbol. Older Ablago versions ignore the field.
 
+## How to write the description { #beschreibung }
+
+`beschreibung` is the short text at the top of the package page; its **first sentence** appears alone on the tile in the overview (#80, #165). The test: **Does Lena understand it without a manual?**
+
+- **First sentence: what the package does for you**, in everyday words – not how it is built. “Makes scanned PDFs and photos searchable”, not “base package for text recognition”.
+- **No jargon** such as embedding, adapter, package runner, full text, vCard or folder type. If a term is needed (PDF/A, WebDAV), explain it in the same sentence or put it in brackets after the everyday word.
+- **What it doesn't do**, if people easily expect it, with the package that does: “Scans and photos need the package “Texterkennung”.”
+- **Trust in half a sentence** where it matters: “without internet”, “the original stays unchanged”, “only sees the encrypted backup”.
+- Informal “du”, at most 300 characters, two or three sentences. Names as they appear in Ablago.
+- Technical details, measurements and limits belong in the README; the package page shows them at the bottom under “For advanced users and developers”. What the package does with files, the page shows itself as the picture “What the package does” (derived from the interfaces in the manifest).
+
 ## Quick guide
 
 At the top of a package page in the catalogue there is **“How to use it”**: 3 to 5 short steps on using the package after installing it (#164). Later Ablago will show them once right after installation, too (motom001/dms#1047). It is **not a manual** – big topics belong in a guided tour.

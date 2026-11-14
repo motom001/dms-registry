@@ -116,6 +116,17 @@ kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unte
 - **Bestehende Pakete:** Ihre Symbole stehen übergangsweise unter `symbole:` in [`werkzeuge/kategorien.yaml`](werkzeuge/kategorien.yaml); mit der nächsten Version wandert das Symbol ins Manifest. Das Manifest gewinnt. Wie `kategorien` liest Ablago `symbol` und `kuerzel` nicht; ältere Ablago-Versionen installieren solche Pakete weiter.
 - **Symbol einer Ansicht** (dms #428): In `sichten.yaml` darf jede Ansicht `symbol: <name>` tragen – ein Lucide-Name aus der festen Liste in Ablago ([`shared/src/ansichtsymbole.ts`](https://github.com/motom001/dms/blob/main/shared/src/ansichtsymbole.ts)), z. B. `house`, `car`, `euro`, `mail`. Ablago zeigt es in der Ablage vor dem Namen; einen unbekannten Namen zeigt es ohne Symbol. Ältere Ablago-Versionen ignorieren das Feld.
 
+## So schreibst du die Beschreibung { #beschreibung }
+
+`beschreibung` ist der Kurztext oben auf der Paketseite; der **erste Satz** steht allein auf der Kachel in der Übersicht (#80, #165). Prüfmaßstab: **Versteht Lena es ohne Handbuch?**
+
+- **Erster Satz: was das Paket für dich tut**, in Alltagssprache – nicht, wie es gebaut ist. „Macht gescannte PDFs und Fotos durchsuchbar“, nicht „Grundpaket für die Texterkennung“.
+- **Keine Fachwörter** wie Embedding, Adapter, Paket-Läufer, Volltext, vCard oder Mappentyp. Muss ein Begriff sein (PDF/A, WebDAV), erklär ihn im selben Satz oder setz ihn in Klammern hinter das Alltagswort.
+- **Was es nicht tut**, wenn man es leicht erwartet, mit dem Paket, das es tut: „Für Scans und Fotos braucht es das Paket „Texterkennung“.“
+- **Vertrauen in einem Halbsatz**, wo es zählt: „ohne Internet“, „Das Original bleibt unverändert“, „sieht nur die verschlüsselte Sicherung“.
+- Du-Form, höchstens 300 Zeichen, zwei bis drei Sätze. Namen so, wie man sie in Ablago sieht („Aus Dokument ausfüllen“, Menü „Mappe“).
+- Technik, Messungen und Grenzen gehören ins README; die Paketseite zeigt sie unten unter „Für Fortgeschrittene und Entwickler“. Was das Paket mit Dateien macht, zeigt die Seite selbst als Bild „Was das Paket tut“ (aus den Schnittstellen im Manifest).
+
 ## Kurzanleitung
 
 Oben auf der Paketseite im Katalog steht **„So nutzt du es“**: 3 bis 5 kurze Schritte, wie man das Paket nach der Installation benutzt (#164). Später zeigt Ablago sie auch einmal direkt nach der Installation (motom001/dms#1047). Das ist **kein Handbuch** – große Themen gehören in einen Rundgang.

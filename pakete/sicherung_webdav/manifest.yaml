@@ -4,8 +4,8 @@
 schema: 1
 id: sicherung_webdav
 name: Sicherungsziel WebDAV
-version: 1.1.1
-beschreibung: Bringt jede Ablago-Sicherung außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.
+version: 1.1.2
+beschreibung: Bringt jede Sicherung von Ablago außer Haus – auf eine Nextcloud, ein NAS oder einen Speicher beim Hoster (WebDAV) – und prüft, dass sie heil angekommen ist. Das Paket sieht nur die verschlüsselte Sicherung.
 autor:
   name: Thomas Meissner
   github: motom001

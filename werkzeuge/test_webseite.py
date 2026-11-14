@@ -199,6 +199,41 @@ class WasMitkommt(unittest.TestCase):
         self.assertEqual(pruefen.kurzanleitung_hinweise({'kurzanleitung': {'de': ['a', 'b', 'c']}}), [])
 
 
+class WasDasPaketTut(unittest.TestCase):
+    """#80: Bild „rein → Paket → raus“ aus den Schnittstellen im Manifest."""
+
+    PAKETE = [{'id': 'bildformate', 'name': 'Bildformate'}, {'id': 'texterkennung', 'name': 'Texterkennung'}]
+
+    def test_formate(self):
+        self.assertEqual(w.formate(['image/tiff', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                    'application/vnd.ms-word.document.macroenabled.12', 'application/octet-stream', 'message/rfc822']),
+                         ['TIFF', 'Word', 'E-Mail (.eml)'])
+
+    def test_umwandeln_mit_hinweis(self):
+        m = {'code': {'umwandeln': ['image/tiff', 'image/webp'], 'rechte': {'schnittstellen': ['dms:umwandeln']}}}
+        h = w.fluss_html(self.PAKETE[0], m, self.PAKETE)
+        self.assertIn('<li>TIFF</li><li>WebP</li>', h)
+        self.assertIn('Vorschaubild', h)
+        self.assertIn('href="../texterkennung/"', h)  # was es nicht tut, mit dem Paket, das es tut
+
+    def test_ohne_passende_schnittstelle_nichts(self):
+        self.assertEqual(w.fluss_html(self.PAKETE[0], {'code': {'rechte': {'schnittstellen': ['dms:antworten']}}}, self.PAKETE), '')
+        self.assertEqual(w.fluss_html(self.PAKETE[0], {}, self.PAKETE), '')
+
+
+class AktionenUndUmbau(unittest.TestCase):
+    def test_aktion_mit_rechten(self):
+        h = w.aktionen_block([{'name': 'Als bezahlt markieren', 'mappentypen': ['rechnung'], 'rechte': ['aendern']}], {'rechnung': 'Rechnung'})
+        self.assertIn('Als bezahlt markieren', h)
+        self.assertIn('an: Rechnung', h)
+        self.assertIn('ändert Felder', h)
+
+    def test_umbau_alter_typ_ohne_index(self):
+        index = {'fahrzeuge:fahrzeug': {'name': 'Fahrzeug', 'paket': 'fahrzeuge', 'paketname': 'Fahrzeuge'}}
+        h = w.umbau_block([{'von': 'fahrzeuge:werkstattrechnung', 'nach': 'rechnung'}], index, {'rechnung': 'Rechnung'})
+        self.assertIn('Werkstattrechnung (aus Fahrzeuge)', h)
+
+
 class Zusammenhaenge(unittest.TestCase):
     """Diagramm als Inline-SVG (#115 Punkt 4): beim Bauen erzeugt, nichts von Dritten, Farben aus der Seite."""
 

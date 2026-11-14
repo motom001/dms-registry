@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.0.1
+
+- Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).
+
 ## 1.0.0
 
 - Erste Fassung (dms #997): erkennt leere Seiten in neuer Post (PDF, JPEG, PNG) und markiert sie über die Schnittstelle `dms:leerseiten` von Ablago 0.255.0. Das Paket löscht nichts; die Seiten fallen erst weg, wenn eine Person die Post in eine Mappe übernimmt.
