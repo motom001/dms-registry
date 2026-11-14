@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KI lokal – Ähnlichkeit – Ablago-Pakete</title>
+  <meta name="description" content="Findet ähnliche Dokumente, sucht mit eigenen Worten und schlägt vor, wohin neue Post gehört – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../stil.css?v=892b9e42ae">
+  <script src="../../dms.js?v=892b9e42ae" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke"><img src="../../ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="../../sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf" data-paket="ki_aehnlich" data-versionen="[[&quot;1.1.0&quot;,&quot;&gt;=0.226.0&quot;],[&quot;1.0.1&quot;,&quot;&gt;=0.122.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.122.0&quot;]]">
+      <span class="symbol gross bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/><path d="M16.706 2.706A2.4 2.4 0 0 0 15 2v5a1 1 0 0 0 1 1h5a2.4 2.4 0 0 0-.706-1.706z"/><path d="M5 7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 1.732-1"/></svg></span>
+      <div class="titel"><h1>KI lokal – Ähnlichkeit</h1>
+        <button type="button" class="knopf primaer installieren" data-installieren="ki_aehnlich@1.1.0">In meinem Ablago installieren</button>
+        <p class="kurztext">Findet ähnliche Dokumente, sucht mit eigenen Worten und schlägt vor, wohin neue Post gehört – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.</p>
+        <p class="leise klein">Version 1.1.0 · von <a href="../../autor/motom001/">Thomas Meissner</a></p>
+        <p class="chips"><a class="chip" href="../../?kategorie=ki">KI</a><a class="chip" href="../../?kategorie=suche">Suche</a></p></div>
+    </div>
+    <div id="dms-passt" class="dms-passt"></div>
+    <details class="bereich "><summary><h2>Was mitkommt</h2> <span class="leise kurz">legt nichts in der Ablage an</span></summary><div class="innen"><p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, keine Beispielmappen. Es bringt nur eine Funktion mit (siehe „Was das Paket darf“).</p></div></details>
+    <details class="bereich "><summary><h2>Was das Paket darf</h2> <span class="leise kurz">kein Zugriff auf Netzwerk und Internet</span></summary><div class="innen"><ul class="rechte"><li>Mappen lesen: alle Mappentypen <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Dokumente lesen <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-dokumente" title="Erklärung: Dokumente lesen" aria-label="Erklärung: Dokumente lesen (Administratorhandbuch)">?</a></li><li>Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren) <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-vektoren" title="Erklärung: Vektoren zu Dokumenten" aria-label="Erklärung: Vektoren zu Dokumenten (Administratorhandbuch)">?</a></li><li>Mappentyp vorschlagen („Wohin gehört das?“) – nur aus dem Anfang des Dokuments und der Liste der Mappentypen, die Ablago mitgibt (dms:klassifizieren) <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-klassifizieren" title="Erklärung: Mappentyp vorschlagen" aria-label="Erklärung: Mappentyp vorschlagen (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Der Volltext eines Dokuments ist da <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignis-volltext-fertig" title="Erklärung: Der Volltext eines Dokuments ist da" aria-label="Erklärung: Der Volltext eines Dokuments ist da (Administratorhandbuch)">?</a></li></ul></li></ul></div></details>
+    <details class="bereich readme"><summary><h2>Beschreibung</h2> <span class="leise kurz">ausführlich</span></summary><div class="innen"><p>Das Paket <strong>KI lokal – Ähnlichkeit</strong> lässt Ablago <strong>ähnliche Dokumente</strong> finden und <strong>mit eigenen Worten</strong> suchen: „Rechnung für die Heizung“ findet so auch die Mappe mit „Wartung Gastherme“, obwohl kein Wort übereinstimmt. Es rechnet mit einem kleinen mehrsprachigen Embedding-Modell im <strong>Paket-Läufer</strong> von Ablago – abgeschottet, <strong>ohne Netz</strong> und ohne zusätzlichen Dienst. Deine Daten verlassen Ablago nicht.</p>
+<p>In Ablago siehst du danach:</p>
+<ul>
+<li>an jeder Mappe mit Dokumenten <strong>„Ähnliche Dokumente“</strong> aus anderen Mappen,</li>
+<li>in der Suche der Startseite mit <strong>„auch in Dokumenten“</strong> zusätzlich <strong>„Ähnliche Treffer“</strong> mit dem Kennzeichen <strong>ähnlich</strong>,</li>
+<li>ab 1.1.0 auf der Seite <strong>Dokument übernehmen</strong> unter <strong>Wohin gehört das?</strong> einen Vorschlag für den Mappentyp aus ähnlichen, schon abgelegten Mappen (siehe <em>Wohin gehört das?</em> unten),</li>
+<li>unter <strong>Werkbank → Pakete → KI lokal – Ähnlichkeit</strong> den Abschnitt <strong>Ähnlichkeit</strong>: wie viele Dokumente schon berechnet sind, die Einstellung „Ähnliche Treffer in der Suche zeigen“ und <strong>Neu berechnen</strong>.</li>
+</ul>
+<p>Jeder sieht nur Mappen, die er lesen darf. Was die KI tut, ist ein Vorschlag: Sie ändert keine Mappe und kein Dokument.</p>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Mappen lesen: alle Mappentypen</strong> – Dokumente liegen in Mappen beliebiger Typen; das Paket liest nur deren Volltext.</li>
+<li><strong>Dokumente lesen</strong> – den Volltext eines Dokuments. Dateien und Volltext ändert es nicht.</li>
+<li><strong>Vektoren zu Dokumenten speichern und ähnliche Dokumente finden (dms:vektoren)</strong> – zu jedem Dokument eine Liste von Zahlen, die seinen Inhalt beschreibt. Ablago vergleicht sie; die Suche fragt das Paket nach dem Vektor des Suchbegriffs.</li>
+<li><strong>Mappentyp vorschlagen („Wohin gehört das?“) – nur aus dem Anfang des Dokuments und der Liste der Mappentypen, die Ablago mitgibt (dms:klassifizieren)</strong> – neu in 1.1.0; beim Update zeigt Ablago das neue Recht und lässt es dich bestätigen.</li>
+<li><strong>kein Zugriff auf Netzwerk und Internet.</strong> Das Modell liegt im Paket.</li>
+<li>Es reagiert auf <strong>Der Volltext eines Dokuments ist da</strong> – für neue Dokumente und, gedrosselt, für den Bestand.</li>
+</ul>
+<p><strong>Speicher und Zeit:</strong> Das Paket kommt mit den Standardgrenzen des Läufers aus (256 MB, 2 Minuten je Aufruf) und verlangt deshalb keine höheren. Ein Aufruf braucht etwa 31 MB, davon 28 MB für das Modell (siehe <a href="#messung">Messung</a>).</p>
+<h3>So arbeitet es</h3>
+<ol>
+<li>Steht der Volltext eines Dokuments fest (eingebaute Texterkennung, Textebene des PDFs oder ein Paket wie <strong>Texterkennung</strong>), holt das Paket ihn, zerlegt ihn in Wortteile (Tokens) und bildet den Mittelwert ihrer Vektoren. Den Vektor legt es in Ablago ab.</li>
+<li>Den <strong>Bestand</strong> schickt Ablago nach der Installation gedrosselt nach (alle 30 Sekunden bis zu 50 Dokumente, solange das Paket nichts anderes zu tun hat). Den Fortschritt zeigt die Werkbank.</li>
+<li>In der Suche fragt Ablago das Paket nach dem Vektor des Suchbegriffs (höchstens 1,5 Sekunden) und vergleicht ihn mit den gespeicherten.</li>
+</ol>
+<p>Berücksichtigt wird höchstens der erste Megabyte Volltext eines Dokuments.</p>
+<h3>Wohin gehört das?</h3>
+<p>Ab 1.1.0 (Ablago 0.226.0) gibt das Paket auf der Seite <em>Dokument übernehmen</em> einen ersten Hinweis, <strong>wo vergleichbare Post liegt</strong> – lokal, schnell und gelernt aus deiner eigenen Ablage:</p>
+<ol>
+<li>Ablago fragt das Paket nach dem Vektor des neuen Dokuments (wie bei der Suche) und sucht die <strong>ähnlichsten schon abgelegten Mappen</strong> (je Mappe das beste Dokument, höchstens 10, ab der Schwelle des Modells) – <strong>nur Mappen, die du lesen darfst und die das Paket lesen darf</strong>, und nur aus Mappentypen, die man aus Post anlegen kann, in denen du anlegen darfst und die für KI-Dienste zugelassen sind.</li>
+<li>Davon bekommt das Paket <strong>nur den Mappentyp und das Maß der Ähnlichkeit</strong> – keine Titel, keine Inhalte, keine Ids.</li>
+<li>Das Paket zählt: „8 von 10 ähnlichen Mappen liegen in Rechnung“ – daraus werden bis zu drei Mappentypen mit Sicherheit (der Anteil, bei weniger als fünf Treffern gedämpft).</li>
+<li>Ablago verbindet das mit seinen übrigen Hinweisen (Überschrift im Text, wiedergefundene Mappen, ein KI-Dienst) zu <strong>einem</strong> Vorschlag.</li>
+</ol>
+<p>Gibt es noch keine ähnlichen Mappen – etwa in einer leeren Ablage –, schlägt das Paket <strong>nichts</strong> vor statt zu raten. Dafür lädt es das Modell nicht und braucht weder Netz noch Sprachmodell.</p>
+<h3>Das Modell</h3>
+<p><a href="https://huggingface.co/sentence-transformers/static-similarity-mrl-multilingual-v1">static-similarity-mrl-multilingual-v1</a> von sentence-transformers, <strong>Apache-2.0</strong>, ohne Nutzungsbeschränkungen. Es ist ein <em>statisches</em> Embedding-Modell: je Wortteil ein fester Vektor, der Text ist ihr Mittelwert. Zur Laufzeit rechnet kein neuronales Netz – deshalb ist es in WebAssembly ohne Threads und ohne Grafikkarte schnell genug. Es kennt 50 Sprachen, darunter Deutsch und Englisch, und ist auf Ähnlichkeit von Texten trainiert (Matryoshka: die ersten Dimensionen allein taugen schon).</p>
+<p>Im Paket stecken die ersten <strong>256 von 1024 Dimensionen</strong>, auf 8 Bit gerundet: 28 MB statt 433 MB. Das passt unter die Grenze von 32 MB je Paket.</p>
+<p><strong>Warum nicht ein anderes Modell?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Modell</th>
+<th>Lizenz</th>
+<th>Größe (8 Bit)</th>
+<th>warum nicht</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>multilingual-e5-small (Transformer)</td>
+<td>MIT</td>
+<td>≈ 118 MB</td>
+<td>zu groß für 32 MB; ein Transformer in WebAssembly ohne Threads rechnet je Dokument Sekunden</td>
+</tr>
+<tr>
+<td>paraphrase-multilingual-MiniLM-L12-v2</td>
+<td>Apache-2.0</td>
+<td>≈ 118 MB</td>
+<td>wie oben</td>
+</tr>
+<tr>
+<td>all-MiniLM-L6-v2, gte-small</td>
+<td>Apache-2.0 / MIT</td>
+<td>23–34 MB</td>
+<td>nur Englisch</td>
+</tr>
+<tr>
+<td>potion-multilingual-128M (statisch)</td>
+<td>MIT</td>
+<td>≈ 128 MB</td>
+<td>500 000 Wortteile – zu groß</td>
+</tr>
+<tr>
+<td><strong>static-similarity-mrl-multilingual-v1</strong></td>
+<td><strong>Apache-2.0</strong></td>
+<td><strong>28 MB</strong> (256 Dim.)</td>
+<td>gewählt</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Grenzen:</strong> Ein statisches Modell achtet nicht auf die Reihenfolge der Wörter und erreicht nicht ganz die Qualität eines Transformers wie multilingual-e5-small. Die Modellkarte nennt es ausdrücklich für Ähnlichkeit, nicht für Suche über lange Dokumente. Für „ähnliche Dokumente“ und „mit eigenen Worten suchen“ im Haushalt reicht das; für Fragen an die Ablage kommt Stufe 2 (Adapter zu einem lokalen KI-Dienst, #45).</p>
+<h3>Messung</h3>
+<p>Gemessen mit <code>tests/modul_test.mjs</code> und im Paket-Läufer von Ablago (Ablago 0.122.0, Standardgrenzen) auf <strong>amd64 mit 2 Kernen</strong> – mit einem Zufallsmodell gleicher Größe (105 879 Wortteile × 256), denn die Rechenzeit hängt nicht von den Zahlen ab:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Modul allein</th>
+<th>im Paket-Läufer (mit Start des Workers und Laden des Modells)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vektor eines Suchbegriffs</td>
+<td>50 ms</td>
+<td>≈ 200 ms; die ganze Suche mit Ähnlichkeit 0,2–0,5 s</td>
+</tr>
+<tr>
+<td>Dokument mit 49 000 Zeichen</td>
+<td>60–85 ms</td>
+<td>≈ 230 ms</td>
+</tr>
+<tr>
+<td>Speicher je Aufruf</td>
+<td>30 MB</td>
+<td>31 MB</td>
+</tr>
+</tbody>
+</table>
+<p>Auf einem <strong>Intel N100</strong> erwarten wir ähnliche Werte, also deutlich unter einer Sekunde für den Suchbegriff – gemessen ist das noch nicht. Messungen auf <strong>N100, Raspberry Pi 5 und einem NAS</strong> stehen noch aus und kommen hier dazu. Wie gut das echte Modell auf Deutsch trennt, prüft die CI nach jedem Bau (<code>tests/ci.sh</code>, z. B. „Rechnung für die Heizung“ näher an „Wartung der Gastherme“ als an „Kündigung des Handyvertrags“).</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>Ablago <strong>0.226.0</strong> oder neuer (Schnittstelle <code>dms:klassifizieren</code>; seit 0.122.0 <code>dms:vektoren</code> und das Ereignis „Der Volltext eines Dokuments ist da“).</li>
+<li>Dokumente mit Volltext – ohne Volltext gibt es keinen Vektor.</li>
+</ul>
+<h3>Für Entwickler</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/aehnlich.cpp"><code>code/aehnlich.cpp</code></a></td>
+<td>das Modul (Ablago-Paket-ABI 1): Tokenizer (BertNormalizer, BertPreTokenizer, WordPiece wie in <code>tokenizers</code>), Mittelwert der Vektoren, Ereignis und Aktion <code>dms:vektor</code>, ab 1.1.0 Aktion <code>dms:klassifizieren</code> (zählt die Typen ähnlicher Mappen)</td>
+</tr>
+<tr>
+<td><a href="code/umwandeln.py"><code>code/umwandeln.py</code></a></td>
+<td>beim Bau: Modell und Tokenizer → <code>code/daten/</code> (256 Dimensionen, 8 Bit), Zeichentabellen aus Unicode</td>
+</tr>
+<tr>
+<td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
+<td>Bau: Modul mit wasi-sdk; Modell von Hugging Face auf einem festen Commit, große Datei gegen die SHA-256 aus ihrem Git-LFS-Zeiger geprüft (feste Prüfsummen lassen sich zusätzlich eintragen)</td>
+</tr>
+<tr>
+<td><a href="code/json.h"><code>code/json.h</code></a></td>
+<td>kleiner JSON-Leser (wie bei Trennblatt)</td>
+</tr>
+<tr>
+<td><a href="code/lizenzen/"><code>code/lizenzen/</code></a></td>
+<td>Herkunft und Lizenzen von Modell, Vokabular und Zeichentabellen</td>
+</tr>
+<tr>
+<td><a href="tests/"><code>tests/</code></a></td>
+<td><code>pruefen.sh</code> ohne Netz (kleines Testmodell, Laufzeit mit Zufallsmodell), <code>ci.sh</code> mit dem echten Modell</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/ki_aehnlich   # lädt das Modell (433 MB) einmal
+pakete/ki_aehnlich/tests/pruefen.sh                                                 # ohne Netz
+</code></pre>
+<p>Die Schnittstelle beschreibt das Entwicklerhandbuch von Ablago unter <a href="https://help.ablago.app/entwickler/aktuell/pakete-code/#vektoren-und-ahnlichkeit">Pakete mit Code → Vektoren und Ähnlichkeit</a>.</p>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>). Das Modell und sein Vokabular stehen ebenfalls unter Apache-2.0, die Zeichentabellen stammen aus der Unicode-Datenbank – Einzelheiten in <a href="code/lizenzen/README.md"><code>code/lizenzen/README.md</code></a>.</p></div></details>
+    <details class="bereich changelog"><summary><h2>Änderungen</h2> <span class="leise kurz">Version 1.1.0</span></summary><div class="innen"><h3>1.1.0</h3>
+<ul>
+<li><strong>Wohin gehört das?</strong> – neue Schnittstelle <code>dms:klassifizieren</code> (dms-registry #142, Ablago #939): Auf der Seite <em>Dokument übernehmen</em> schlägt das Paket vor, zu welchem Mappentyp neue Post gehört – aus den ähnlichsten schon abgelegten Mappen („8 von 10 ähnlichen Mappen liegen in Rechnung“), bis zu drei Typen mit Sicherheit. Ablago rechnet die ähnlichen Mappen selbst – nur solche, die die Person <strong>und</strong> das Paket lesen dürfen, nur aus Mappentypen, die in Frage kommen und für KI-Dienste zugelassen sind – und gibt dem Paket nur Typ und Ähnlichkeit, <strong>keine Titel und keine Inhalte</strong>. Die Begründung nennt deshalb nur Zahlen und den Mappentyp.</li>
+<li>Ohne ähnliche Mappen (leere Ablage) gibt es keinen Vorschlag statt eines geratenen; bei wenigen Treffern ist die Sicherheit geringer.</li>
+<li>Kein Netz, kein Sprachmodell, das Modell wird dafür nicht geladen; die Grenzen des Läufers (256 MB je Aufruf) reichen.</li>
+<li>Braucht <strong>Ablago ab 0.226.0</strong>. Beim Update zeigt Ablago das neue Recht <em>Mappentyp vorschlagen</em> und lässt es dich bestätigen.</li>
+</ul>
+<h3>1.0.1</h3>
+<ul>
+<li>Texte: Das Programm heißt jetzt <strong>Ablago</strong> (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.</li>
+</ul>
+<h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: Vektoren aus dem Volltext mit static-similarity-mrl-multilingual-v1 (256 Dimensionen, 8 Bit), Vektor eines Suchbegriffs für die Suche des DMS, Tokenizer von bert-base-multilingual-uncased in C.</li>
+</ul></div></details>
+    <details class="bereich klein"><summary><h2>Für Fortgeschrittene und Entwickler</h2> <span class="leise kurz">Version, Lizenz, Quellcode, Downloads</span></summary><div class="innen"><dl class="eckdaten"><dt>Version</dt><dd>1.1.0 vom 08.11.2026</dd><dt>Herausgeber</dt><dd>app.ablago <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd><dt>Lizenz</dt><dd>Apache-2.0</dd><dt>Nötige Ablago-Version</dt><dd>&gt;=0.226.0</dd><dt>Abhängigkeiten</dt><dd>keine</dd><dt>Quellcode</dt><dd><a href="https://github.com/motom001/dms-registry/tree/main/pakete/ki_aehnlich">auf GitHub ansehen</a></dd></dl><h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead><tbody><tr><td>1.1.0</td><td>08.11.2026</td><td>&gt;=0.226.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/ki_aehnlich-v1.1.0/ki_aehnlich-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_aehnlich@1.1.0">installieren</button></td></tr><tr><td>1.0.1</td><td>03.11.2026</td><td>&gt;=0.122.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/ki_aehnlich-v1.0.1/ki_aehnlich-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_aehnlich@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.122.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/ki_aehnlich-v1.0.0/ki_aehnlich-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="ki_aehnlich@1.0.0">installieren</button></td></tr></tbody></table></div><p><a href="https://github.com/motom001/dms-registry/issues/new?template=paket-meldung.yml&amp;title=%5BKI%20lokal%20%E2%80%93%20%C3%84hnlichkeit%5D%20&amp;paket=KI%20lokal%20%E2%80%93%20%C3%84hnlichkeit%20%28ki_aehnlich%29">Fehler oder Wunsch zu diesem Paket melden</a> <span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p></div></details>
+    <section class="passt"><h2>Passt dazu</h2><h3><a class="weiter" href="../../?kategorie=ki">Ähnliche Pakete <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/ki_assistent/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span><span><strong>KI-Assistent</strong><br><span class="leise kurzfassung">Beantwortet Fragen an die Ablage, füllt Felder aus Dokumenten und schlägt vor, wohin neue Post gehört – mit einem KI-Dienst, den du selbst betreibst oder bewusst wählst, z. B. Ollama auf deinem Heimserver. Adapter für Dienste mit OpenAI-kompatibler Schnittstelle; rechnet nicht selbst.</span></span></a><a class="mini" href="../../paket/texterkennung/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg></span><span><strong>Texterkennung (Deutsch und Englisch)</strong><br><span class="leise kurzfassung">Das Grundpaket für die Texterkennung von Ablago – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.</span></span></a></div><h3><a class="weiter" href="../../autor/motom001/">Weitere Pakete von Thomas Meissner <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/basis/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>Basis</strong><br><span class="leise kurzfassung">Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.</span></span></a><a class="mini" href="../../paket/benachrichtigungen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Benachrichtigungen</strong><br><span class="leise kurzfassung">Tägliche Zusammenfassung, Favoriten, „Post für dich“, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.</span></span></a><a class="mini" href="../../paket/bildformate/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span><strong>Bildformate</strong><br><span class="leise kurzfassung">Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.</span></span></a></div></section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="../../katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>

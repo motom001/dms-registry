@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trennblatt – Ablago-Pakete</title>
+  <meta name="description" content="Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../stil.css?v=892b9e42ae">
+  <script src="../../dms.js?v=892b9e42ae" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke"><img src="../../ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="../../sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf" data-paket="trennblatt" data-versionen="[[&quot;1.1.0&quot;,&quot;&gt;=0.94.0&quot;],[&quot;1.0.2&quot;,&quot;&gt;=0.94.0&quot;],[&quot;1.0.1&quot;,&quot;&gt;=0.94.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.88.0&quot;]]">
+      <span class="symbol gross bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 7v10"/><path d="M12 7v10"/><path d="M17 7v10"/></svg></span>
+      <div class="titel"><h1>Trennblatt</h1>
+        <button type="button" class="knopf primaer installieren" data-installieren="trennblatt@1.1.0">In meinem Ablago installieren</button>
+        <p class="kurztext">Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.</p>
+        <p class="leise klein">Version 1.1.0 · von <a href="../../autor/motom001/">Thomas Meissner</a> · <span title="Downloads laut GitHub, nicht Installationen – Updates und Tests zählen mit">über 10 Downloads</span></p>
+        <p class="chips"><a class="chip" href="../../?kategorie=post">Post und Scannen</a></p></div>
+    </div>
+    <div id="dms-passt" class="dms-passt"></div>
+    <section class="anleitung"><h2>So nutzt du es</h2><ol><li>Drucke das Trennblatt aus vorlage/trennblatt.pdf (A4, 100 %) ein paar Mal aus.</li><li>Lege zwischen je zwei Briefe ein Trennblatt und scanne den ganzen Stapel in ein PDF.</li><li>Bring das PDF wie jede Post in Ablago – über den Eingangsordner, das E-Mail-Postfach oder „+ Post“.</li><li>Nach ein paar Sekunden ist jeder Brief eine eigene Post mit Stand „Neu“; die Trennblätter sind weg.</li></ol></section>
+    <details class="bereich "><summary><h2>Was mitkommt</h2> <span class="leise kurz">legt nichts in der Ablage an · 7 Einstellungen</span></summary><div class="innen"><p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, keine Beispielmappen. Es bringt eine Funktion mit (siehe „Was das Paket darf“).</p><h3>Einstellungen</h3><p class="leise klein">In Ablago unter Werkbank → Pakete → Trennblatt → Einstellungen.</p><details class="typ"><summary><strong>Trennblatt</strong> <span class="leise klein">4 Einstellungen</span></summary><ul class="felder"><li><strong>Barcode auf dem Trennblatt</strong><span class="art">Text</span><span class="leise mehr">Inhalt des Barcodes (Code 128), an dem das Paket teilt. Groß- und Kleinschreibung zählen nicht. Ein Trennblatt mit eigenem Inhalt erzeugt vorlage/trennblatt.py.</span></li><li><strong>Trennblatt behalten</strong><span class="art">Ja/Nein</span><span class="leise mehr">Nein – die Trennblätter fallen weg. Ja – jedes Trennblatt bleibt als erste Seite der neuen Post.</span></li><li><strong>Leere Rückseite mit entfernen</strong><span class="art">Ja/Nein</span><span class="leise mehr">Beim beidseitigen Scan folgt auf jedes Trennblatt seine leere Rückseite. Ja – eine leere Seite direkt nach einem Trennblatt fällt mit weg (erkannt wie beim Paket Leerseiten, Stufe „vorsichtig“ – eine Bleistiftnotiz oder ein Stempel bleiben). Leere Seiten an anderen Stellen markiert das Paket Leerseiten.</span></li><li><strong>Nur Post aus diesen Kanälen</strong><span class="art">Mehrfachauswahl</span><span class="leise mehr">Leer – Post aus allen Kanälen. Geteilt wird nur neue Post mit genau einem PDF.</span></li></ul></details><details class="typ"><summary><strong>Archivnummer</strong> <span class="leise klein">1 Einstellung</span></summary><ul class="felder"><li><strong>Archivnummer aus dem Aufkleber übernehmen</strong><span class="art">Ja/Nein</span><span class="leise mehr">Klebt auf einem Brief ein Archivnummer-Aufkleber von Ablago (Barcode „DMS-ASN:…“), bekommt das Dokument der neuen Post diese Archivnummer.</span></li></ul></details><details class="typ"><summary><strong>Erkennung</strong> <span class="leise klein">2 Einstellungen</span></summary><ul class="felder"><li><strong>Auflösung (dpi)</strong><span class="art">Zahl</span><span class="leise mehr">Für Trennblätter reichen 150 dpi; kleine Archivnummer-Aufkleber brauchen 300.</span></li><li><strong>Höchstens so viele Seiten</strong><span class="art">Zahl</span><span class="leise mehr">Längere Scans prüft das Paket nicht (Zeitgrenze des Paket-Läufers).</span></li></ul></details></div></details>
+    <details class="bereich "><summary><h2>Was das Paket darf</h2> <span class="leise kurz">kein Zugriff auf Netzwerk und Internet</span></summary><div class="innen"><ul class="rechte"><li>Mappen lesen: Post <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Mappen anlegen und ändern: Post <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-anlegen-und-andern" title="Erklärung: Mappen anlegen und ändern" aria-label="Erklärung: Mappen anlegen und ändern (Administratorhandbuch)">?</a></li><li>Dokumente lesen und Volltext schreiben <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-dokumente" title="Erklärung: Dokumente lesen und Volltext schreiben" aria-label="Erklärung: Dokumente lesen und Volltext schreiben (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Ein Dokument wurde hochgeladen <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignis-dokument-hochgeladen" title="Erklärung: Ein Dokument wurde hochgeladen" aria-label="Erklärung: Ein Dokument wurde hochgeladen (Administratorhandbuch)">?</a></li></ul></li></ul></div></details>
+    <details class="bereich readme"><summary><h2>Beschreibung</h2> <span class="leise kurz">ausführlich</span></summary><div class="innen"><p>Mit dem Paket <strong>Trennblatt</strong> scannst du einen ganzen Stapel Briefe auf einmal, und in Ablago wird trotzdem <strong>jeder Brief eine eigene Post</strong>. Du legst zwischen zwei Briefe ein Trennblatt mit Barcode. Der Sammelscan kommt wie gewohnt als eine Post in Ablago. Das Paket findet die Trennblätter, teilt den Scan dort und lässt die Trennblätter weg.</p>
+<p>Klebt auf einem Brief ein <strong>Archivnummer-Aufkleber</strong> von Ablago, bekommt das Dokument der neuen Post gleich diese Archivnummer.</p>
+<p>Das Paket läuft im <strong>Paket-Läufer</strong> von Ablago: abgeschottet als WebAssembly, ohne Netz.</p>
+<h3>So geht’s</h3>
+<ol>
+<li><strong>Trennblatt drucken:</strong> <a href="vorlage/trennblatt.pdf"><code>vorlage/trennblatt.pdf</code></a> (A4, mit 100 % drucken). Ein paar Blätter reichen, du kannst sie immer wieder verwenden.</li>
+<li><strong>Stapel vorbereiten:</strong> Lege zwischen je zwei Briefe ein Trennblatt. Vor den ersten Brief brauchst du keins, schadet aber auch nicht.</li>
+<li><strong>Scannen:</strong> Scanne den ganzen Stapel in ein PDF. Scannst du beidseitig, ist das kein Problem: Die leere Rückseite eines Trennblatts fällt mit weg. Leere Rückseiten der Briefe selbst markiert das Paket <a href="../leerseiten/">Leerseiten</a> – sie fallen weg, wenn du die Post in eine Mappe übernimmst.</li>
+<li><strong>In Ablago:</strong> Das PDF kommt wie jede andere Post in Ablago, über den Eingangsordner, das E-Mail-Postfach oder <strong>+ Post</strong>.</li>
+<li><strong>Fertig:</strong> Nach ein paar Sekunden siehst du unter <strong>Post</strong> für jeden Brief eine neue Post „<em>Betreff</em> (Teil 1)“, „(Teil 2)“ … mit Stand <strong>Neu</strong>. Die ursprüngliche Post hat danach Stand <strong>Erledigt</strong>, behält den ganzen Scan und verweist auf die neuen Posts. Es geht also nichts verloren.</li>
+</ol>
+<pre><code>Brief A · Trennblatt · Brief B · Trennblatt · Brief C (2 Seiten)
+   → Post „Scan (Teil 1)“: Brief A
+   → Post „Scan (Teil 2)“: Brief B
+   → Post „Scan (Teil 3)“: Brief C, beide Seiten
+</code></pre>
+<h4>Archivnummer gleich mit</h4>
+<p>Hast du in der Werkbank unter <strong>Nummernkreise</strong> Archivnummer-Aufkleber gedruckt (Barcode <code>DMS-ASN:&lt;nummer&gt;</code>), dann klebe einen davon auf den Brief, bevor du scannst. Das Paket liest den Aufkleber und setzt die Nummer am Dokument der neuen Post. Später findest du das Papieroriginal über diese Nummer, und ein Handscanner springt im Suchfeld direkt zum Dokument. Ein Aufkleber auf dem Trennblatt selbst gilt für den Brief danach.</p>
+<p>Liegt kein Trennblatt im Scan, setzt das Paket nur die Archivnummer am Dokument (ein Brief, ein Aufkleber). Gibt es die Nummer schon an einem anderen Dokument, lässt das Paket sie weg und schreibt eine Warnung ins Protokoll.</p>
+<h3>Wann das Paket teilt</h3>
+<p>Das Paket schaut sich ein hochgeladenes PDF an, wenn alles davon stimmt:</p>
+<ul>
+<li>Es liegt in einer <strong>Post</strong> mit Stand <strong>Neu</strong>, die <strong>eingeht</strong> (keine versendete E-Mail).</li>
+<li>Die Post hat <strong>genau dieses eine Dokument</strong>, also einen Sammelscan. Eine E-Mail mit mehreren Anhängen bleibt, wie sie ist.</li>
+<li>Der <strong>Kanal</strong> der Post ist unter „Nur Post aus diesen Kanälen“ gewählt, oder dort ist nichts gewählt.</li>
+<li>Das PDF hat höchstens so viele Seiten wie eingestellt.</li>
+</ul>
+<p>Findet es kein Trennblatt oder nur einen Brief, ändert es nichts.</p>
+<h3>Was das Paket darf</h3>
+<p>Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Mappen lesen, anlegen und ändern: Post.</strong> Das Paket liest die Post, in die der Scan kam, und legt beim Teilen neue Posts an. Andere Mappen sieht es nicht. Löschen kann ein Paket nie.</li>
+<li><strong>Dokumente schreiben.</strong> Das Paket holt die Seiten als Graustufenbild, teilt das PDF und setzt die Archivnummer.</li>
+<li><strong>Kein Netz.</strong></li>
+<li>Es reagiert auf <strong>Dokument hochgeladen</strong>.</li>
+</ul>
+<p>In der Historie der Posts steht „Paket Trennblatt“ als Urheber.</p>
+<h3>Einstellungen</h3>
+<p>Unter <strong>Werkbank → Pakete → Trennblatt → Einstellungen</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Standard</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Barcode auf dem Trennblatt</td>
+<td><code>DMS-TRENNEN</code></td>
+<td>Inhalt des Barcodes, an dem das Paket teilt. Groß- und Kleinschreibung zählen nicht.</td>
+</tr>
+<tr>
+<td>Trennblatt behalten</td>
+<td>Nein</td>
+<td>Ja: Jedes Trennblatt bleibt als erste Seite der neuen Post.</td>
+</tr>
+<tr>
+<td>Leere Rückseite mit entfernen</td>
+<td>Ja</td>
+<td>Eine leere Seite direkt nach einem Trennblatt (beidseitiger Scan) fällt mit weg. Leer heißt wie beim Paket <a href="../leerseiten/">Leerseiten</a> in der Stufe „vorsichtig“: Lochung, Staub und Schatten am Rand zählen nicht, eine Bleistiftnotiz oder ein Stempel schon.</td>
+</tr>
+<tr>
+<td>Nur Post aus diesen Kanälen</td>
+<td>leer (alle)</td>
+<td>Eingangsordner, E-Mail-Postfach, Hochgeladen, Scan, WebDAV, API, Import</td>
+</tr>
+<tr>
+<td>Archivnummer aus dem Aufkleber übernehmen</td>
+<td>Ja</td>
+<td>Barcode <code>DMS-ASN:&lt;nummer&gt;</code> auf einer Seite setzt die Archivnummer.</td>
+</tr>
+<tr>
+<td>Auflösung (dpi)</td>
+<td>300</td>
+<td>150–400. Für Trennblätter reichen 150 dpi, kleine Archivnummer-Aufkleber brauchen 300.</td>
+</tr>
+<tr>
+<td>Höchstens so viele Seiten</td>
+<td>60</td>
+<td>Längere Scans prüft das Paket nicht.</td>
+</tr>
+</tbody>
+</table>
+<h4>Eigener Barcode</h4>
+<p>Du willst einen anderen Inhalt als <code>DMS-TRENNEN</code>, zum Beispiel weil ein anderes Programm schon so ein Trennblatt nutzt? Dann trag ihn in den Einstellungen ein und erzeuge dein Trennblatt so:</p>
+<pre><code class="language-sh">python3 vorlage/trennblatt.py --text MEIN-TRENNBLATT mein-trennblatt.pdf
+</code></pre>
+<p>Das Skript braucht nur Python 3, keine weiteren Pakete. Jedes Trennblatt mit einem Code-128-Barcode dieses Inhalts funktioniert.</p>
+<h3>Messung</h3>
+<p>In Ablago 0.91 (Paket-Läufer mit Standardgrenzen: 256 MB, 120 s) auf amd64 mit 300 dpi:</p>
+<table>
+<thead>
+<tr>
+<th>Scan</th>
+<th>Dauer eines Aufrufs</th>
+<th>Speicher</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5 Seiten (3 Briefe, 2 Trennblätter)</td>
+<td>1,8 s</td>
+<td>9 MB</td>
+</tr>
+<tr>
+<td>8 Seiten, beidseitig und schief gescannt</td>
+<td>etwa 6 s</td>
+<td>9 MB</td>
+</tr>
+</tbody>
+</table>
+<p>Den größten Teil der Zeit braucht Ablago, um die Seiten zu rastern. Mit dem Standard von 60 Seiten bleibt ein Aufruf deutlich unter der Zeitgrenze. Willst du längere Stapel teilen, setz die Auflösung auf 150 dpi (Archivnummer-Aufkleber werden dann oft nicht mehr gelesen).</p>
+<h3>Grenzen</h3>
+<ul>
+<li>Das Paket liest <strong>Code 128</strong>, so wie Ablago seine Aufkleber druckt. QR-Codes liest es nicht.</li>
+<li>Barcodes auf stark schiefen Seiten (mehr als etwa 15°) oder auf sehr kleinen Aufklebern bei niedriger Auflösung findet es unter Umständen nicht. Dann bleibt der Scan ungeteilt, und du kannst ihn in Ablago von Hand teilen (<strong>Post → Dokument → Seiten bearbeiten</strong>).</li>
+<li>Eine Post mit mehreren Dokumenten teilt das Paket nicht.</li>
+</ul>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>Ablago <strong>0.94.0</strong> oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API, Recht nur für Post).</li>
+</ul>
+<h3>Für Entwickler</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/trennblatt.cpp"><code>code/trennblatt.cpp</code></a></td>
+<td>das Modul (Ablago-Paket-ABI 1): Ereignis → Seiten über die API → Barcodes → Post teilen, Archivnummer setzen</td>
+</tr>
+<tr>
+<td><a href="code/barcode.c"><code>code/barcode.c</code></a>, <a href="code/barcode.h"><code>code/barcode.h</code></a></td>
+<td>eigener, kleiner Code-128-Leser (Zeichensätze A, B, C) für Graustufenbilder: tastet Zeilen und Spalten ab, örtliche Schwelle, Kanten auf Bruchteile eines Bildpunkts, liest in beide Richtungen, Prüfziffer</td>
+</tr>
+<tr>
+<td><a href="code/json.h"><code>code/json.h</code></a></td>
+<td>kleiner JSON-Leser (aus dem Paket Texterkennung)</td>
+</tr>
+<tr>
+<td><a href="../../gemeinsam/leerseite/leerseite.h"><code>gemeinsam/leerseite/leerseite.h</code></a></td>
+<td>leere Rückseite erkennen – dieselbe Erkennung wie das Paket <a href="../leerseiten/">Leerseiten</a> (Stufe „vorsichtig“), beim Bau mit <code>-I</code> eingebunden</td>
+</tr>
+<tr>
+<td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
+<td>Bau mit dem WASI-SDK, ohne fremde Bibliotheken; danach der Test des Barcode-Lesers, wenn ein C-Compiler da ist</td>
+</tr>
+<tr>
+<td><a href="vorlage/trennblatt.py"><code>vorlage/trennblatt.py</code></a>, <a href="vorlage/pdf.py"><code>vorlage/pdf.py</code></a></td>
+<td>erzeugen <a href="vorlage/trennblatt.pdf"><code>vorlage/trennblatt.pdf</code></a>, nur mit der Standardbibliothek</td>
+</tr>
+<tr>
+<td><a href="tests/barcode_test.c"><code>tests/barcode_test.c</code></a></td>
+<td>künstliche Scans: schief, verrauscht, unscharf, verlaufene Tinte, auf dem Kopf, quer, kleinste Aufkleber; Textseiten ohne Fehllesung</td>
+</tr>
+<tr>
+<td><a href="tests/beispiel.py"><code>tests/beispiel.py</code></a></td>
+<td>Beispiel-PDFs: 3 Briefe mit 2 Trennblättern, dasselbe beidseitig und schief „gescannt“, ein Scan ohne Trennblatt, eine Trennblatt-Rückseite mit Bleistiftnotiz</td>
+</tr>
+<tr>
+<td><a href="tests/modul_test.mjs"><code>tests/modul_test.mjs</code></a></td>
+<td>das gebaute Modul in Node mit einer Nachbildung der Ablago-Importe und der API</td>
+</tr>
+<tr>
+<td><a href="tests/pruefen.sh"><code>tests/pruefen.sh</code></a></td>
+<td>alles zusammen</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/trennblatt   # Modul und Test des Barcode-Lesers
+pakete/trennblatt/tests/pruefen.sh                                                # alle Tests (braucht node und Poppler)
+</code></pre>
+<p>Die Schnittstelle beschreibt das Entwicklerhandbuch von Ablago unter <a href="https://help.ablago.app/entwickler/aktuell/pakete-code/">Pakete mit Code</a>.</p>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>). Das Paket enthält keinen fremden Code.</p></div></details>
+    <details class="bereich changelog"><summary><h2>Änderungen</h2> <span class="leise kurz">Version 1.1.0</span></summary><div class="innen"><h3>1.1.0</h3>
+<ul>
+<li>Leere Rückseite eines Trennblatts: dieselbe Erkennung wie das neue Paket <strong>Leerseiten</strong> (<code>gemeinsam/leerseite/</code>, dms #997), Stufe „vorsichtig“. Lochung, Staub und Schatten am Rand zählen nicht, eine Bleistiftnotiz, ein Stempel oder durchscheinende Schrift schon – solche Rückseiten bleiben jetzt im Brief, statt wegzufallen. Die Einstellung „Leere Rückseite mit entfernen“ bleibt (keine Doppelung: <em>Leerseiten</em> sieht nach dem Teilen nur noch die Seiten der Briefe).</li>
+<li>Manifest: Herausgeber <code>app.ablago</code>, Kategorie, Symbol und Kurzanleitung stehen jetzt im Manifest. Rechte und Ablago-Version unverändert.</li>
+</ul>
+<h3>1.0.2</h3>
+<ul>
+<li>Texte: Das Programm heißt jetzt <strong>Ablago</strong> (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.</li>
+</ul>
+<h3>1.0.1</h3>
+<ul>
+<li>Rechte: nur noch <strong>Post</strong> lesen, anlegen und ändern (<code>dms:post</code>) statt aller Mappentypen (<code>"*"</code>). Andere Mappen sieht das Paket nicht mehr. Braucht DMS <strong>0.94.0</strong> oder neuer. Verhalten sonst unverändert.</li>
+</ul>
+<h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: teilt einen Sammelscan in einer neuen Post an Trennblättern mit Code-128-Barcode (<code>DMS-TRENNEN</code>) in mehrere Posts; Trennblätter und ihre leeren Rückseiten fallen weg.</li>
+<li>Archivnummer-Aufkleber (<code>DMS-ASN:&lt;nummer&gt;</code>) setzen die Archivnummer am Dokument der neuen Post.</li>
+<li>Einstellungen: Barcode-Inhalt, Trennblatt behalten, leere Rückseite, Kanäle, Archivnummer, Auflösung, Seitenzahl.</li>
+<li>Eigener Code-128-Leser ohne fremde Bibliotheken; Trennblatt zum Ausdrucken (<code>vorlage/trennblatt.pdf</code>).</li>
+</ul></div></details>
+    <details class="bereich klein"><summary><h2>Für Fortgeschrittene und Entwickler</h2> <span class="leise kurz">Version, Lizenz, Quellcode, Downloads</span></summary><div class="innen"><dl class="eckdaten"><dt>Version</dt><dd>1.1.0 vom 12.11.2026</dd><dt>Herausgeber</dt><dd>app.ablago <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd><dt>Lizenz</dt><dd>Apache-2.0</dd><dt>Nötige Ablago-Version</dt><dd>&gt;=0.94.0</dd><dt>Downloads</dt><dd>über 10 <span class="leise">– Downloads aller Versionen laut GitHub, nicht Installationen; Updates und Tests zählen mit</span></dd><dt>Abhängigkeiten</dt><dd>keine</dd><dt>Quellcode</dt><dd><a href="https://github.com/motom001/dms-registry/tree/main/pakete/trennblatt">auf GitHub ansehen</a></dd></dl><h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead><tbody><tr><td>1.1.0</td><td>12.11.2026</td><td>&gt;=0.94.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/trennblatt-v1.1.0/trennblatt-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="trennblatt@1.1.0">installieren</button></td></tr><tr><td>1.0.2</td><td>03.11.2026</td><td>&gt;=0.94.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/trennblatt-v1.0.2/trennblatt-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="trennblatt@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>01.11.2026</td><td>&gt;=0.94.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/trennblatt-v1.0.1/trennblatt-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="trennblatt@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>01.11.2026</td><td>&gt;=0.88.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/trennblatt-v1.0.0/trennblatt-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="trennblatt@1.0.0">installieren</button></td></tr></tbody></table></div><p><a href="https://github.com/motom001/dms-registry/issues/new?template=paket-meldung.yml&amp;title=%5BTrennblatt%5D%20&amp;paket=Trennblatt%20%28trennblatt%29">Fehler oder Wunsch zu diesem Paket melden</a> <span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p></div></details>
+    <section class="passt"><h2>Passt dazu</h2><h3><a class="weiter" href="../../?kategorie=post">Ähnliche Pakete <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/benachrichtigungen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Benachrichtigungen</strong><br><span class="leise kurzfassung">Tägliche Zusammenfassung, Favoriten, „Post für dich“, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.</span></span></a><a class="mini" href="../../paket/leerseiten/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span><strong>Leerseiten</strong><br><span class="leise kurzfassung">Erkennt leere Seiten in neuer Post, etwa die Rückseiten beidseitiger Scans – auch ohne Trennblatt – und markiert sie. Gelöscht wird nichts; beim Übernehmen in eine Mappe fallen die markierten Seiten weg, das Original bleibt als frühere Version. Läuft abgeschottet im Paket-Läufer, ohne Netz.</span></span></a><a class="mini" href="../../paket/qrcode/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>QR-Code lesen</strong><br><span class="leise kurzfassung">Liest den QR-Code einer Visitenkarte (vCard) und schlägt Name, Funktion, Telefon, E-Mail, Internetseite und Anschrift für „Aus Dokument ausfüllen“ vor – zuverlässiger als die Texterkennung. Ohne Visitenkarte im Bild liest Ablago wie gewohnt den Text. Läuft abgeschottet im Paket-Läufer, ohne Netz.</span></span></a></div><h3><a class="weiter" href="../../autor/motom001/">Weitere Pakete von Thomas Meissner <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/basis/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>Basis</strong><br><span class="leise kurzfassung">Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.</span></span></a><a class="mini" href="../../paket/bildformate/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span><strong>Bildformate</strong><br><span class="leise kurzfassung">Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.</span></span></a><a class="mini" href="../../paket/fahrzeuge/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span><span><strong>Fahrzeuge</strong><br><span class="leise kurzfassung">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.</span></span></a></div></section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="../../katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>

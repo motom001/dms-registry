@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leerseiten – Ablago-Pakete</title>
+  <meta name="description" content="Erkennt leere Seiten in neuer Post, etwa die Rückseiten beidseitiger Scans – auch ohne Trennblatt – und markiert sie. Gelöscht wird nichts; beim Übernehmen in eine Mappe fallen die markierten Seiten weg, das Original bleibt als frühere Version. Läuft abgeschottet im Paket-Läufer, ohne Netz.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../stil.css?v=892b9e42ae">
+  <script src="../../dms.js?v=892b9e42ae" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke"><img src="../../ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="../../sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf" data-paket="leerseiten" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.255.0&quot;]]">
+      <span class="symbol gross bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+      <div class="titel"><h1>Leerseiten</h1>
+        <button type="button" class="knopf primaer installieren" data-installieren="leerseiten@1.0.0">In meinem Ablago installieren</button>
+        <p class="kurztext">Erkennt leere Seiten in neuer Post, etwa die Rückseiten beidseitiger Scans – auch ohne Trennblatt – und markiert sie. Gelöscht wird nichts; beim Übernehmen in eine Mappe fallen die markierten Seiten weg, das Original bleibt als frühere Version. Läuft abgeschottet im Paket-Läufer, ohne Netz.</p>
+        <p class="leise klein">Version 1.0.0 · von <a href="../../autor/motom001/">Thomas Meissner</a></p>
+        <p class="chips"><a class="chip" href="../../?kategorie=post">Post und Scannen</a></p></div>
+    </div>
+    <div id="dms-passt" class="dms-passt"></div>
+    <section class="anleitung"><h2>So nutzt du es</h2><ol><li>Scanne Briefe beidseitig wie gewohnt in den Eingangsordner oder lade sie über „+ Post“ hoch.</li><li>Öffne die neue Post – leere Seiten sind in der Seitenleiste blass und tragen „Leerseite – fällt beim Übernehmen weg“.</li><li>Ist eine Seite doch nicht leer, wähle „Doch behalten“; eine andere Seite soll weg, dann „Auch weglassen“.</li><li>Übernimm die Post in eine Mappe – das Dokument dort hat die leeren Seiten nicht mehr, das Original bleibt als frühere Version.</li></ol></section>
+    <details class="bereich "><summary><h2>Was mitkommt</h2> <span class="leise kurz">legt nichts in der Ablage an · 3 Einstellungen</span></summary><div class="innen"><p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, keine Beispielmappen. Es bringt eine Funktion mit (siehe „Was das Paket darf“).</p><h3>Einstellungen</h3><p class="leise klein">In Ablago unter Werkbank → Pakete → Leerseiten → Einstellungen.</p><details class="typ"><summary><strong>Leerseiten</strong> <span class="leise klein">3 Einstellungen</span></summary><ul class="felder"><li><strong>Empfindlichkeit</strong><span class="art">Auswahl</span><span class="leise mehr">vorsichtig – nur Seiten, die wirklich leer sind; eine Bleistiftnotiz, ein Stempel oder durchscheinende Schrift lassen die Seite stehen. normal – Rauschen und durchscheinende Schrift zählen nicht. streng – auch einzelne Striche und kleine Flecken zählen nicht. Lochung und Schatten am Rand zählen nie.</span></li><li><strong>Nur Post aus diesen Kanälen</strong><span class="art">Mehrfachauswahl</span><span class="leise mehr">Leer – Post aus allen Kanälen. E-Mails bringen selten leere Seiten mit.</span></li><li><strong>Höchstens so viele Seiten</strong><span class="art">Zahl</span><span class="leise mehr">Längere Dokumente prüft das Paket nicht (Zeitgrenze des Paket-Läufers).</span></li></ul></details></div></details>
+    <details class="bereich "><summary><h2>Was das Paket darf</h2> <span class="leise kurz">kein Zugriff auf Netzwerk und Internet</span></summary><div class="innen"><ul class="rechte"><li>Mappen lesen: Post <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Dokumente lesen <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-dokumente" title="Erklärung: Dokumente lesen" aria-label="Erklärung: Dokumente lesen (Administratorhandbuch)">?</a></li><li>Markiert leere Seiten in neuer Post – löscht nichts; weggelassen werden sie erst, wenn jemand die Post in eine Mappe übernimmt (dms:leerseiten) <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-leerseiten" title="Erklärung: Leerseiten markieren" aria-label="Erklärung: Leerseiten markieren (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Ein Dokument wurde hochgeladen <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignis-dokument-hochgeladen" title="Erklärung: Ein Dokument wurde hochgeladen" aria-label="Erklärung: Ein Dokument wurde hochgeladen (Administratorhandbuch)">?</a></li></ul></li></ul></div></details>
+    <details class="bereich readme"><summary><h2>Beschreibung</h2> <span class="leise kurz">ausführlich</span></summary><div class="innen"><p>Beidseitig gescannte Briefe haben oft leere Rückseiten. Das Paket <strong>Leerseiten</strong> prüft jede Seite neuer Post und <strong>markiert leere Seiten</strong> – auch ohne Trennblatt. In der Post und auf der Seite <em>Dokument übernehmen</em> zeigt Ablago dann eine Seitenleiste mit allen Seiten; markierte sind blass und tragen „Leerseite – fällt beim Übernehmen weg“. Übernimmst du die Post in eine Mappe, hat das Dokument dort diese Seiten nicht mehr. <strong>Gelöscht wird nichts:</strong> Das Original bleibt als frühere Version am Dokument.</p>
+<p>Das Paket läuft im <strong>Paket-Läufer</strong> von Ablago: abgeschottet als WebAssembly, ohne Netz.</p>
+<h3>So geht’s</h3>
+<ol>
+<li><strong>Scannen</strong> wie gewohnt, gern beidseitig – über den Eingangsordner, <strong>+ Post</strong> oder deinen Scanner.</li>
+<li><strong>Post öffnen:</strong> Über dem Dokument steht „3 leere Seiten erkannt · 3 fallen beim Übernehmen weg“, daneben die Seitenleiste.</li>
+<li><strong>Prüfen:</strong> Ist eine Seite doch nicht leer, wähle <strong>Doch behalten</strong>. Soll eine andere Seite weg (z. B. ein Deckblatt), wähle <strong>Auch weglassen</strong>.</li>
+<li><strong>Übernehmen</strong> in eine Mappe: Das Dokument dort hat die markierten Seiten nicht mehr, die Historie sagt „3 leere Seiten entfernt“, Texterkennung und Archivfassung arbeiten mit der neuen Fassung.</li>
+</ol>
+<pre><code>Scan mit 8 Seiten: Brief · leer · leer (Lochung) · Bleistiftnotiz · Stempel · durchscheinend · Staub · Brief
+   vorsichtig → markiert 2, 3, 7
+   normal     → markiert 2, 3, 6, 7
+   streng     → markiert 2, 3, 4, 6, 7
+</code></pre>
+<p>Nichts fällt weg, solange die Post Post bleibt, beim automatischen Zuordnen und wenn alle Seiten leer sind (ein Dokument fällt nie ganz weg).</p>
+<h3>Wann das Paket prüft</h3>
+<p>Das Paket schaut sich ein hochgeladenes Dokument an, wenn alles davon stimmt:</p>
+<ul>
+<li>Es ist ein <strong>PDF</strong>, <strong>JPEG</strong> oder <strong>PNG</strong> und liegt in einer <strong>Post</strong> mit Stand <strong>Neu</strong>, die <strong>eingeht</strong> (keine versendete E-Mail).</li>
+<li>Der <strong>Kanal</strong> der Post ist unter „Nur Post aus diesen Kanälen“ gewählt (Vorgabe: Scan, Eingangsordner, Hochgeladen), oder dort ist nichts gewählt (alle Kanäle).</li>
+<li>Das Dokument hat höchstens so viele Seiten wie eingestellt.</li>
+</ul>
+<p>Findet es keine leere Seite, lässt es die Post, wie sie ist. Im Protokoll des Pakets steht je Seite, was es gesehen hat (Fläche der Tinte, größter Fleck, Löcher, Staub).</p>
+<h3>Was als leer gilt</h3>
+<p>Die Erkennung schätzt zuerst den Ton des Papiers und sucht dann Flecken, die deutlich dunkler sind. Nicht als Inhalt zählen:</p>
+<ul>
+<li><strong>Rauschen und Staub</strong> – sehr kleine Flecken,</li>
+<li><strong>Lochung</strong> – runde Flecken von 4–9 mm nahe am Rand,</li>
+<li><strong>Schatten am Rand</strong> – schmale Flecken am Bildrand, wie sie ein Einzugsscanner macht.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Empfindlichkeit</th>
+<th>als Inhalt zählt</th>
+<th>gut für</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>vorsichtig</strong> (Vorgabe)</td>
+<td>schon schwache Spuren: Bleistiftnotiz, kleiner Stempel, durchscheinende Schrift von der Vorderseite</td>
+<td>alle – im Zweifel bleibt eine Seite</td>
+</tr>
+<tr>
+<td><strong>normal</strong></td>
+<td>kräftigere Striche; durchscheinende Schrift zählt nicht</td>
+<td>dünnes Papier, beidseitig bedruckte Briefe</td>
+</tr>
+<tr>
+<td><strong>streng</strong></td>
+<td>nur mehr als ein paar Striche oder kleine Flecken</td>
+<td>sehr dünnes Papier – prüfe die Markierungen</td>
+</tr>
+</tbody>
+</table>
+<p>Im Zweifel ist eine Seite nicht leer. Lieber einmal <strong>Auch weglassen</strong> wählen als etwas verlieren.</p>
+<h3>Was das Paket darf</h3>
+<p>Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Mappen lesen: Post.</strong> Das Paket liest die Post, in die das Dokument kam. Andere Mappen sieht es nicht; ändern kann es keine Mappe.</li>
+<li><strong>Dokumente lesen.</strong> Das Paket holt die Seiten als Graustufenbild (100 dpi). Es ändert keine Datei.</li>
+<li><strong>Markiert leere Seiten in neuer Post – löscht nichts; weggelassen werden sie erst, wenn jemand die Post in eine Mappe übernimmt (dms:leerseiten).</strong> Die Markierung ändert weder Datei noch Post (kein „zuletzt geändert“, kein Eintrag in der Historie). Ob eine Seite wegfällt, entscheidet eine Person beim Übernehmen.</li>
+<li><strong>kein Zugriff auf Netzwerk und Internet</strong></li>
+<li>Es reagiert auf <strong>Dokument hochgeladen</strong>.</li>
+</ul>
+<h3>Einstellungen</h3>
+<p>Unter <strong>Werkbank → Pakete → Leerseiten → Einstellungen</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Standard</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Empfindlichkeit</td>
+<td>vorsichtig</td>
+<td>vorsichtig, normal oder streng (siehe oben)</td>
+</tr>
+<tr>
+<td>Nur Post aus diesen Kanälen</td>
+<td>Scan, Eingangsordner, Hochgeladen</td>
+<td>leer = alle Kanäle; E-Mails bringen selten leere Seiten mit</td>
+</tr>
+<tr>
+<td>Höchstens so viele Seiten</td>
+<td>100</td>
+<td>1–400. Längere Dokumente prüft das Paket nicht (Zeitgrenze des Paket-Läufers).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Trennblatt:</strong> Das Paket <a href="../trennblatt/">Trennblatt</a> erkennt die leere Rückseite eines Trennblatts seit seiner Version 1.1.0 mit derselben Erkennung (Stufe „vorsichtig“) und lässt sie gleich beim Teilen weg. Das doppelt sich nicht: <em>Leerseiten</em> sieht danach nur noch die Seiten der Briefe.</p>
+<p><strong>Ausprobieren:</strong> Einen Reiter „Ausprobieren“ (Dokument hochladen, ohne dass sich etwas ändert) gibt es in Ablago noch nicht (dms #1004). Bis dahin: eine Probeseite als neue Post hochladen und die Markierung ansehen – solange du nicht übernimmst, ändert sich nichts.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>Ablago <strong>0.255.0</strong> oder neuer (Schnittstelle <code>dms:leerseiten</code>, Seitenleiste in der Post und auf <em>Dokument übernehmen</em>).</li>
+</ul>
+<h3>Für Entwickler</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/leerseiten.cpp"><code>code/leerseiten.cpp</code></a></td>
+<td>das Modul (Ablago-Paket-ABI 1): Ereignis → Post und Kanal prüfen → Seiten über die API → Erkennung → <code>PUT /dokumente/{id}/leerseiten</code></td>
+</tr>
+<tr>
+<td><a href="../../gemeinsam/leerseite/leerseite.h"><code>gemeinsam/leerseite/leerseite.h</code></a></td>
+<td>die Erkennung leerer Seiten, ohne Bibliotheken – auch im Paket Trennblatt</td>
+</tr>
+<tr>
+<td><a href="code/json.h"><code>code/json.h</code></a></td>
+<td>kleiner JSON-Leser (aus dem Paket Trennblatt)</td>
+</tr>
+<tr>
+<td><a href="code/bauen.sh"><code>code/bauen.sh</code></a></td>
+<td>Bau mit dem WASI-SDK</td>
+</tr>
+<tr>
+<td><a href="tests/scans.py"><code>tests/scans.py</code></a></td>
+<td>künstliche Scans (immer dieselben Bytes, nur Standardbibliothek): leer, Lochung und Schatten, Bleistiftnotiz, Stempel, durchscheinende Schrift, Staub, Briefseiten</td>
+</tr>
+<tr>
+<td><a href="tests/modul_test.mjs"><code>tests/modul_test.mjs</code></a></td>
+<td>das gebaute Modul in Node mit einer Nachbildung der Ablago-Importe und der API – je Empfindlichkeit, Kanal und Stand</td>
+</tr>
+<tr>
+<td><a href="tests/pruefen.sh"><code>tests/pruefen.sh</code></a>, <a href="tests/ci.sh"><code>tests/ci.sh</code></a></td>
+<td>alles zusammen bzw. die Tests in der CI</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sh">WASI_SDK=$(werkzeuge/wasi-sdk.sh) python3 werkzeuge/bauen.py pakete/leerseiten
+pakete/leerseiten/tests/pruefen.sh        # braucht node und Poppler (pdftoppm, pdfinfo)
+</code></pre>
+<p>Die Schnittstelle beschreibt das Entwicklerhandbuch von Ablago unter <a href="https://help.ablago.app/entwickler/aktuell/pakete-code/#leerseiten">Leerseiten markieren</a>.</p>
+<h3>Pflege</h3>
+<p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit dem Paketnamen im Titel.</p>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>). Das Paket enthält keinen fremden Code.</p></div></details>
+    <details class="bereich changelog"><summary><h2>Änderungen</h2> <span class="leise kurz">Version 1.0.0</span></summary><div class="innen"><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung (dms #997): erkennt leere Seiten in neuer Post (PDF, JPEG, PNG) und markiert sie über die Schnittstelle <code>dms:leerseiten</code> von Ablago 0.255.0. Das Paket löscht nichts; die Seiten fallen erst weg, wenn eine Person die Post in eine Mappe übernimmt.</li>
+<li>Erkennung ohne fremde Bibliotheken (<code>gemeinsam/leerseite/</code>, auch im Paket Trennblatt): Papierton, Tinte je nach Empfindlichkeit, Staub, Lochung und Schatten am Rand zählen nicht.</li>
+<li>Einstellungen: Empfindlichkeit (vorsichtig, normal, streng; Vorgabe vorsichtig), Kanäle (Vorgabe Scan, Eingangsordner, Hochgeladen), höchstens so viele Seiten.</li>
+<li>Tests mit künstlichen Scans: leer, Lochung und Schatten, Bleistiftnotiz, Stempel, durchscheinende Schrift, Staub.</li>
+</ul></div></details>
+    <details class="bereich klein"><summary><h2>Für Fortgeschrittene und Entwickler</h2> <span class="leise kurz">Version, Lizenz, Quellcode, Downloads</span></summary><div class="innen"><dl class="eckdaten"><dt>Version</dt><dd>1.0.0 vom 12.11.2026</dd><dt>Herausgeber</dt><dd>app.ablago <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd><dt>Lizenz</dt><dd>Apache-2.0</dd><dt>Nötige Ablago-Version</dt><dd>&gt;=0.255.0</dd><dt>Abhängigkeiten</dt><dd>keine</dd><dt>Quellcode</dt><dd><a href="https://github.com/motom001/dms-registry/tree/main/pakete/leerseiten">auf GitHub ansehen</a></dd></dl><h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead><tbody><tr><td>1.0.0</td><td>12.11.2026</td><td>&gt;=0.255.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/leerseiten-v1.0.0/leerseiten-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="leerseiten@1.0.0">installieren</button></td></tr></tbody></table></div><p><a href="https://github.com/motom001/dms-registry/issues/new?template=paket-meldung.yml&amp;title=%5BLeerseiten%5D%20&amp;paket=Leerseiten%20%28leerseiten%29">Fehler oder Wunsch zu diesem Paket melden</a> <span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p></div></details>
+    <section class="passt"><h2>Passt dazu</h2><h3><a class="weiter" href="../../?kategorie=post">Ähnliche Pakete <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/benachrichtigungen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Benachrichtigungen</strong><br><span class="leise kurzfassung">Tägliche Zusammenfassung, Favoriten, „Post für dich“, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.</span></span></a><a class="mini" href="../../paket/qrcode/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>QR-Code lesen</strong><br><span class="leise kurzfassung">Liest den QR-Code einer Visitenkarte (vCard) und schlägt Name, Funktion, Telefon, E-Mail, Internetseite und Anschrift für „Aus Dokument ausfüllen“ vor – zuverlässiger als die Texterkennung. Ohne Visitenkarte im Bild liest Ablago wie gewohnt den Text. Läuft abgeschottet im Paket-Läufer, ohne Netz.</span></span></a><a class="mini" href="../../paket/trennblatt/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 7v10"/><path d="M12 7v10"/><path d="M17 7v10"/></svg></span><span><strong>Trennblatt</strong><br><span class="leise kurzfassung">Teilt einen Sammelscan an Trennblättern mit Barcode in mehrere Posts und lässt die Trennblätter weg. Ein Archivnummer-Aufkleber auf einem Brief setzt gleich dessen Archivnummer. Läuft abgeschottet im Paket-Läufer, ohne Netz.</span></span></a></div><h3><a class="weiter" href="../../autor/motom001/">Weitere Pakete von Thomas Meissner <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/basis/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>Basis</strong><br><span class="leise kurzfassung">Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.</span></span></a><a class="mini" href="../../paket/bildformate/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span><strong>Bildformate</strong><br><span class="leise kurzfassung">Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.</span></span></a><a class="mini" href="../../paket/fahrzeuge/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span><span><strong>Fahrzeuge</strong><br><span class="leise kurzfassung">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.</span></span></a></div></section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="../../katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>

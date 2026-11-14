@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pakete herunterladen – Ablago-Pakete</title>
+  <meta name="description" content="Mehrere Pakete als eine Sammeldatei für Ablago ohne Internet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="stil.css?v=892b9e42ae">
+  <script src="dms.js?v=892b9e42ae" defer></script>
+  <script src="sammeldatei.js?v=892b9e42ae" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="index.html" class="marke"><img src="ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <h1>Pakete herunterladen</h1>
+    <p><strong>Für Ablago ohne Internetzugang:</strong> mehrere Pakete als eine Datei, die du in Ablago hochlädst.</p>
+    <p class="leise">Kommt dein Ablago nicht ins Internet? Wähle hier die Pakete aus und lade sie als <strong>eine Sammeldatei</strong> herunter.
+      In Ablago lädst du sie unter <strong>Werkbank → Pakete → „Ohne Internet …“</strong> hoch (oder im Einrichtungsassistenten, Schritt „Pakete dazuholen“).
+      Ablago prüft jedes Paket gegen seine Prüfsumme und installiert dann eins nach dem anderen.</p>
+    <noscript><p class="fehler">Die Sammeldatei entsteht in deinem Browser – dafür braucht die Seite JavaScript.</p></noscript>
+    <form id="sammel" class="stapel" hidden>
+      <div class="sammel-dms">
+        <label for="dms-version"><strong>Ablago-Version</strong> <span class="leise">– dazu passende Paketversionen</span></label>
+        <input id="dms-version" inputmode="decimal" placeholder="z. B. 0.107.1" pattern="\d+\.\d+\.\d+" autocomplete="off" aria-describedby="dms-version-hilfe">
+        <p id="dms-version-hilfe" class="leise klein">Steht in Ablago unter „Über Ablago“ (der Link aus Ablago bringt sie mit). Sie bleibt nur in diesem Browser. Vorgabe: die neueste Version. Leer: die neueste Version jedes Pakets.</p>
+      </div>
+      <fieldset class="sammel-pakete"><legend><strong>Pakete</strong> <span class="leise">– Abhängigkeiten kommen automatisch mit</span></legend>
+        <ul id="sammel-liste" class="sammel-liste"></ul>
+      </fieldset>
+      <div id="sammel-probleme" class="hinweis-warn" role="status" hidden></div>
+      <div class="knoepfe"><button type="submit" class="knopf primaer" id="sammel-los">Sammeldatei herunterladen</button><span id="sammel-zusammenfassung" class="leise"></span></div>
+      <div id="sammel-ergebnis" role="status" aria-live="polite"></div>
+    </form>
+    <p id="sammel-laden" class="leise">Lade den Katalog …</p>
+    <section><h2>So prüft Ablago die Sammeldatei</h2>
+      <ul>
+        <li>Die Sammeldatei enthält die Archive aus diesem Katalog Byte für Byte unverändert, dazu das Verzeichnis <code>sammeldatei.json</code> mit Größe und SHA-256 je Archiv und eine Kopie des signierten Katalogs (<code>katalog.json</code> mit <code>katalog.sig</code>). Diese Seite prüft jedes Archiv schon beim Zusammenstellen gegen <code>katalog.json</code>.</li>
+        <li>Ablago nimmt die Datei nur an, wenn jedes Archiv genau zu seiner Prüfsumme passt, nichts anderes darin liegt und jedes Paket gültig ist – sonst installiert es gar nichts. Kennt es den offiziellen Katalog schon, vergleicht es die Prüfsummen auch damit.</li>
+        <li>Ablago prüft die Signatur des Katalogs auch ohne Internet. Ist sie gültig und steht jedes Archiv mit seiner Prüfsumme darin, zeigt es „aus dem offiziellen Katalog vom …“, und du musst die Herkunft nicht bestätigen. Ist der Katalog nicht signiert, beweisen die Prüfsummen nur, dass die Datei vollständig und unverändert ist – nicht, wer sie zusammengestellt hat; dann bestätigst du die Herkunft in Ablago. Zum Vergleich zeigt diese Seite den SHA-256 der ganzen Datei, Ablago nach dem Hochladen ebenfalls.</li>
+        <li>Rechte von Paketen mit Code bestätigst du in Ablago je Paket – eine Sammelbestätigung gibt es nicht.</li>
+      </ul>
+    </section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>

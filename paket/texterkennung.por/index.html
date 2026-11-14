@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Texterkennung – Zusatzsprache Portugiesisch – Ablago-Pakete</title>
+  <meta name="description" content="Zusatzsprache Portugiesisch für das Grundpaket Texterkennung – damit auch portugiesische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../stil.css?v=892b9e42ae">
+  <script src="../../dms.js?v=892b9e42ae" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke"><img src="../../ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="../../sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf" data-paket="texterkennung.por" data-versionen="[[&quot;1.1.0&quot;,&quot;&gt;=0.229.0&quot;]]">
+      <span class="symbol gross bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span class="kuerzel">PT</span></span>
+      <div class="titel"><h1>Texterkennung – Zusatzsprache Portugiesisch</h1>
+        <button type="button" class="knopf primaer installieren" data-installieren="texterkennung.por@1.1.0">In meinem Ablago installieren</button>
+        <p class="kurztext">Zusatzsprache Portugiesisch für das Grundpaket Texterkennung – damit auch portugiesische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.</p>
+        <p class="leise klein">Version 1.1.0 · von <a href="../../autor/motom001/">Thomas Meissner</a></p>
+        <p class="chips"><a class="chip" href="../../?kategorie=sprachen">Sprachen</a><a class="chip" href="../../?kategorie=volltext">Texterkennung und Volltext</a></p></div>
+    </div>
+    <div id="dms-passt" class="dms-passt"></div>
+    <details class="bereich "><summary><h2>Was mitkommt</h2> <span class="leise kurz">legt nichts in der Ablage an</span></summary><div class="innen"><p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, keine Beispielmappen. Es bringt nur eine Funktion mit (siehe „Was das Paket darf“).</p></div></details>
+    <details class="bereich "><summary><h2>Was das Paket darf</h2> <span class="leise kurz">kein Zugriff auf Netzwerk und Internet</span></summary><div class="innen"><ul class="rechte"><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li></ul></div></details>
+    <details class="bereich readme"><summary><h2>Beschreibung</h2> <span class="leise kurz">ausführlich</span></summary><div class="innen"><p>Dieses <strong>Zusatzpaket</strong> bringt dem Grundpaket <a href="../texterkennung/">Texterkennung</a> (Deutsch und Englisch) Portugiesisch bei. Es enthält nur die Sprachdaten (<code>por.traineddata</code> aus <a href="https://github.com/tesseract-ocr/tessdata_fast">tessdata_fast</a>, 2,0 MB) und ein Modul, das nichts tut.</p>
+<p>Mit <strong>Sprache: Automatisch</strong> erkennt das Paket Texterkennung, wenn eine Seite portugiesisch ist, und liest sie dann ein zweites Mal auf Portugiesisch – das bessere Ergebnis gilt. Ohne dieses Zusatzpaket meldet es „Sprachdaten fehlen: por (Zusatzpaket texterkennung.por)“ im Protokoll des Pakets und am Ergebnis des Aufrufs.</p>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt Ablago:</p>
+<ul>
+<li><strong>kein Zugriff auf Netzwerk und Internet</strong></li>
+<li>keine Rechte an Mappen und Dokumenten, keine Ereignisse</li>
+</ul>
+<p>Das Paket Texterkennung liest die Sprachdaten, weil dieses Paket von ihm abhängt (Ablago ab 0.133.0: ein Paket liest die Daten der Pakete, die von ihm abhängen, als <code>texterkennung.por/por.traineddata</code>). Wird das Zusatzpaket installiert oder entfernt, lädt der Paket-Läufer die Texterkennung neu – du musst nichts weiter tun. Dokumente, die schon ohne Portugiesisch erkannt wurden, erkennt <strong>Werkbank → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente</strong> neu.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>Ablago <strong>0.133.0</strong> oder neuer</li>
+<li>Paket <strong>Texterkennung 2.0.0</strong> oder neuer (kommt als Abhängigkeit mit)</li>
+</ul>
+<h3>Lizenz</h3>
+<p>Apache-2.0 (siehe <code>LICENSE</code>); die Sprachdaten stammen aus tessdata_fast (Apache-2.0).</p></div></details>
+    <details class="bereich changelog"><summary><h2>Änderungen</h2> <span class="leise kurz">Version 1.1.0</span></summary><div class="innen"><h3>1.1.0</h3>
+<ul>
+<li><strong>Neue Id <code>texterkennung.por</code></strong> (bisher <code>texterkennung_por</code>, dms-registry #173, motom001/dms#1084): Der Punkt heißt „ergänzt die Texterkennung“. Ablago ab 0.229.0 nimmt das als gewöhnliches Update – die Vorschau sagt „Das Paket heißt jetzt …“, danach steht dieselbe Installation unter der neuen Id da. Braucht <strong>Ablago 0.229.0</strong> und <strong>Texterkennung 2.5.0</strong> (liest die Sprachdaten unter beiden Namen). Ältere Ablago-Versionen behalten 1.0.3 unter der alten Id.</li>
+<li>Herausgeber <code>app.ablago</code> im Manifest. Die Sprachdaten sind unverändert.</li>
+</ul>
+<h3>1.0.3</h3>
+<ul>
+<li>Texte: Das Programm heißt jetzt <strong>Ablago</strong> (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.</li>
+</ul>
+<h3>1.0.2</h3>
+<ul>
+<li>Im Manifest steht jetzt <code>ergaenzt: { paket: texterkennung, gruppe: Weitere Sprachen }</code> (motom001/dms#405): Ab DMS 0.151.0 erscheint die Sprache beim Installieren der Texterkennung als Häkchen unter „Weitere Sprachen?“ – im selben Schritt, auch nachträglich und im Einrichtungsassistenten. Ältere DMS ignorieren das Feld; am Paket ändert sich sonst nichts.</li>
+</ul>
+<h3>1.0.1</h3>
+<ul>
+<li>Symbol im Katalog jetzt im Manifest: <code>symbol: languages</code> mit <code>kuerzel: PT</code> (ISO-639-1-Code der Sprache). Nur Anzeige im Katalog; das DMS liest die Felder nicht, am Paket ändert sich nichts.</li>
+</ul>
+<h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung: Portugiesisch (<code>por.traineddata</code> aus tessdata_fast, derselbe Stand wie im Paket Texterkennung) für das Paket Texterkennung ab 2.0.0.</li>
+</ul></div></details>
+    <details class="bereich klein"><summary><h2>Für Fortgeschrittene und Entwickler</h2> <span class="leise kurz">Version, Lizenz, Quellcode, Downloads</span></summary><div class="innen"><dl class="eckdaten"><dt>Version</dt><dd>1.1.0 vom 10.11.2026</dd><dt>Herausgeber</dt><dd>app.ablago <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd><dt>Lizenz</dt><dd>Apache-2.0</dd><dt>Nötige Ablago-Version</dt><dd>&gt;=0.229.0</dd><dt>Abhängigkeiten</dt><dd><a href="../texterkennung/">texterkennung</a> &gt;=2.5.0</dd><dt>Quellcode</dt><dd><a href="https://github.com/motom001/dms-registry/tree/main/pakete/texterkennung.por">auf GitHub ansehen</a></dd></dl><h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead><tbody><tr><td>1.1.0</td><td>10.11.2026</td><td>&gt;=0.229.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/texterkennung.por-v1.1.0/texterkennung.por-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="texterkennung.por@1.1.0">installieren</button></td></tr></tbody></table></div><p><a href="https://github.com/motom001/dms-registry/issues/new?template=paket-meldung.yml&amp;title=%5BTexterkennung%20%E2%80%93%20Zusatzsprache%20Portugiesisch%5D%20&amp;paket=Texterkennung%20%E2%80%93%20Zusatzsprache%20Portugiesisch%20%28texterkennung.por%29">Fehler oder Wunsch zu diesem Paket melden</a> <span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p></div></details>
+    <section class="passt"><h2>Passt dazu</h2><h3>Braucht</h3><div class="minis"><a class="mini" href="../../paket/texterkennung/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg></span><span><strong>Texterkennung (Deutsch und Englisch)</strong><br><span class="leise kurzfassung">Das Grundpaket für die Texterkennung von Ablago – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.</span></span></a></div><h3><a class="weiter" href="../../?kategorie=sprachen">Ähnliche Pakete <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/office_email/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span><strong>Office und E-Mail</strong><br><span class="leise kurzfassung">Macht Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und E-Mails (.eml, .msg) im Volltext durchsuchbar. Makros und eingebettete Objekte führt es nie aus. Abgeschottet im Paket-Läufer, ohne Netz.</span></span></a><a class="mini" href="../../paket/sprache_fr/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span class="kuerzel">FR</span></span><span><strong>Sprache: Französisch (Français)</strong><br><span class="leise kurzfassung">Ablago auf Französisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.</span></span></a><a class="mini" href="../../paket/sprache_it/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span class="kuerzel">IT</span></span><span><strong>Sprache: Italienisch (Italiano)</strong><br><span class="leise kurzfassung">Ablago auf Italienisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.</span></span></a></div><h3><a class="weiter" href="../../autor/motom001/">Weitere Pakete von Thomas Meissner <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/basis/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>Basis</strong><br><span class="leise kurzfassung">Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.</span></span></a><a class="mini" href="../../paket/benachrichtigungen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Benachrichtigungen</strong><br><span class="leise kurzfassung">Tägliche Zusammenfassung, Favoriten, „Post für dich“, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.</span></span></a><a class="mini" href="../../paket/bildformate/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span><strong>Bildformate</strong><br><span class="leise kurzfassung">Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.</span></span></a></div></section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="../../katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>

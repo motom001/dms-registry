@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rechnungen – Ablago-Pakete</title>
+  <meta name="description" content="Rechnungen, Quittungen, Kassenbons und Gutschriften – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, und meldet, wenn die Positionen nicht zum Betrag passen.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../stil.css?v=892b9e42ae">
+  <script src="../../dms.js?v=892b9e42ae" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke"><img src="../../ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="../../sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf" data-paket="rechnungen" data-versionen="[[&quot;1.2.0&quot;,&quot;&gt;=0.245.3&quot;],[&quot;1.1.0&quot;,&quot;&gt;=0.243.0&quot;],[&quot;1.0.1&quot;,&quot;&gt;=0.238.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.238.0&quot;]]">
+      <span class="symbol gross bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M13 16H8"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"/></svg></span>
+      <div class="titel"><h1>Rechnungen</h1>
+        <button type="button" class="knopf primaer installieren" data-installieren="rechnungen@1.2.0">In meinem Ablago installieren</button>
+        <p class="kurztext">Rechnungen, Quittungen, Kassenbons und Gutschriften – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, und meldet, wenn die Positionen nicht zum Betrag passen.</p>
+        <p class="leise klein">Version 1.2.0 · von <a href="../../autor/motom001/">Thomas Meissner</a></p>
+        <p class="chips"><a class="chip" href="../../?kategorie=vorlagen">Vorlagen für die Ablage</a></p></div>
+    </div>
+    <div id="dms-passt" class="dms-passt"></div>
+    <section class="anleitung"><h2>So nutzt du es</h2><ol><li>Lege eine Rechnung an oder übernimm sie aus der Post – von wem, wie viel, wann fällig.</li><li>Trage „bezahlt am“ ein, sobald sie bezahlt ist; den Status rechnet das Paket jeden Morgen neu.</li><li>Unter „Wozu“ ordnest du sie einem Vertrag, Fahrzeug oder einer Wohnung zu – dann findest du sie dort wieder.</li><li>Für Rechnungen mit Positionen: „+ Position“ – passt die Summe nicht zum Betrag, zeigt die Rechnung einen Hinweis.</li></ol></section>
+    <details class="bereich "><summary><h2>Was mitkommt</h2> <span class="leise kurz">3 Mappentypen · 4 Ansichten · 3 Wortgruppen für die Suche · 1 Automatisierung · 1 Einstellung</span></summary><div class="innen"><div class="spalten"><div><h3>Mappentypen</h3><details class="typ" id="typ-rechnung"><summary><strong>Rechnung</strong> <span class="leise klein">29 Felder</span><span class="typtext leise">Rechnung, Quittung, Kassenbon, Gutschrift oder Erstattung – eingehend oder ausgehend. Eine Gutschrift trägst du mit Minus ein.</span></summary><ul class="felder"><li><strong>Rechnungssteller</strong><span class="art">Verweis</span><span class="leise mehr">→ <code>[&#x27;basis:organisation&#x27;, &#x27;basis:person&#x27;]</code> · Bezug</span></li><li><strong>Betrag</strong><span class="art">Betrag</span></li><li><strong>Rechnungsdatum</strong><span class="art">Datum</span></li><li><strong>Fällig am</strong><span class="art">Datum</span></li><li><strong>Bezahlt am</strong><span class="art">Datum</span></li><li><strong>Status</strong><span class="art">Text</span></li><li><strong>Betrifft</strong><span class="art">Verweis</span><span class="leise mehr">→ <a href="../vertraege/#typ-vertrag">Vertrag</a> <span class="leise">(Verträge)</span> · Bezug · mehrere</span></li><li><strong>Gehört zu Vertrag</strong><span class="art">Verweis</span><span class="leise mehr">→ <a href="../vertraege/#typ-vertrag">Vertrag</a> <span class="leise">(Verträge)</span> · gehört zu</span></li><li><strong>Steuerjahr</strong><span class="art">Verweis</span></li><li><strong>Rechnungsnummer</strong><span class="art">Text</span></li><li><strong>Kunden- oder Vertragsnummer</strong><span class="art">Text</span></li><li><strong>Bezahlt per</strong><span class="art">Auswahl</span><span class="leise mehr">Überweisung · Lastschrift · Karte · bar · PayPal und Co. · Rechnung</span></li><li><strong>Bezahlt von</strong><span class="art">Verweis</span><span class="leise mehr">→ <a href="../basis/#typ-person">Person</a> <span class="leise">(Basis)</span> · Bezug</span></li><li><strong>Rechnungsempfänger</strong><span class="art">Verweis</span><span class="leise mehr">→ <code>[&#x27;basis:organisation&#x27;, &#x27;basis:person&#x27;]</code> · Bezug</span></li><li><strong>Netto</strong><span class="art">Betrag</span></li><li><strong>Umsatzsteuersatz</strong><span class="art">prozent</span></li><li><strong>Umsatzsteuer</strong><span class="art">Betrag</span></li><li><strong>Skonto</strong><span class="art">Betrag</span></li><li><strong>Skonto bis</strong><span class="art">Datum</span></li><li><strong>Zahlungseingang am</strong><span class="art">Datum</span></li><li><strong>Mahnstufe</strong><span class="art">Auswahl</span><span class="leise mehr">keine · Erinnerung · 1. Mahnung · 2. Mahnung · Inkasso</span></li><li><strong>Interne Nummer</strong><span class="art">Text</span></li><li><strong>Kilometerstand</strong><span class="art">Zahl</span></li><li><strong>Arbeiten</strong><span class="art">Langtext</span></li><li><strong>Umlagefähig</strong><span class="art">Ja/Nein</span></li><li><strong>Kostenart</strong><span class="art">Auswahl</span><span class="leise mehr">Grundsteuer · Wasser und Abwasser · Heizung und Warmwasser · Müll · Straßenreinigung · Hausreinigung · …</span></li><li><strong>Positionen</strong><span class="art">tabelle</span></li><li><strong>Verbleib Original</strong><span class="art">Verweis</span><span class="leise mehr">→ <a href="../basis/#typ-ablageort">Ablageort</a> <span class="leise">(Basis)</span> · Bezug</span></li><li><strong>Bemerkungen</strong><span class="art">Langtext</span></li></ul><p class="bezug"><span class="leise">Verweist auf:</span> <code>[&#x27;basis:organisation&#x27;, &#x27;basis:person&#x27;]</code> · <a href="../vertraege/#typ-vertrag">Vertrag</a> <span class="leise">(Verträge)</span> · <a href="../basis/#typ-person">Person</a> <span class="leise">(Basis)</span> · <a href="../basis/#typ-ablageort">Ablageort</a> <span class="leise">(Basis)</span></p><p class="bezug"><span class="leise">Wird verwendet von:</span> <a href="#typ-lieferschein">Lieferschein</a> · <a href="#typ-rechnungsposition">Rechnungsposition</a> · <a href="../vermietung/#typ-nebenkostenabrechnung">Nebenkostenabrechnung</a> <span class="leise">(Vermietung)</span></p></details><details class="typ" id="typ-lieferschein"><summary><strong>Lieferschein</strong> <span class="leise klein">9 Felder</span><span class="typtext leise">Lieferschein zu einer Bestellung – was geliefert wurde, und ob es vollständig war.</span></summary><ul class="felder"><li><strong>Lieferant</strong><span class="art">Verweis</span><span class="leise mehr">→ <code>[&#x27;basis:organisation&#x27;, &#x27;basis:person&#x27;]</code> · Bezug</span></li><li><strong>Empfänger</strong><span class="art">Verweis</span><span class="leise mehr">→ <code>[&#x27;basis:organisation&#x27;, &#x27;basis:person&#x27;]</code> · Bezug</span></li><li><strong>Lieferdatum</strong><span class="art">Datum</span></li><li><strong>Lieferscheinnummer</strong><span class="art">Text</span></li><li><strong>Bestellnummer</strong><span class="art">Text</span></li><li><strong>Betrifft</strong><span class="art">Verweis</span><span class="leise mehr">→ <a href="../vertraege/#typ-vertrag">Vertrag</a> <span class="leise">(Verträge)</span> · Bezug · mehrere</span></li><li><strong>Vollständig erhalten</strong><span class="art">Auswahl</span><span class="leise mehr">ja · nein · teilweise</span></li><li><strong>Gehört zu Rechnung</strong><span class="art">Verweis</span><span class="leise mehr">→ <a href="#typ-rechnung">Rechnung</a> · gehört zu</span></li><li><strong>Bemerkungen</strong><span class="art">Langtext</span></li></ul><p class="bezug"><span class="leise">Verweist auf:</span> <code>[&#x27;basis:organisation&#x27;, &#x27;basis:person&#x27;]</code> · <a href="../vertraege/#typ-vertrag">Vertrag</a> <span class="leise">(Verträge)</span> · <a href="#typ-rechnung">Rechnung</a></p></details><details class="typ" id="typ-rechnungsposition"><summary><strong>Rechnungsposition</strong> <span class="leise klein">10 Felder</span><span class="typtext leise">Eine Zeile einer Rechnung. Gehört immer zu ihrer Rechnung und erscheint nur dort.</span></summary><ul class="felder"><li><strong>Rechnung</strong><span class="art">Verweis</span><span class="pflicht">Pflicht</span><span class="leise mehr">→ <a href="#typ-rechnung">Rechnung</a> · gehört zu</span></li><li><strong>Nr.</strong><span class="art">Zahl</span></li><li><strong>Beschreibung</strong><span class="art">Text</span><span class="pflicht">Pflicht</span></li><li><strong>Menge</strong><span class="art">Zahl</span></li><li><strong>Einheit</strong><span class="art">Text</span></li><li><strong>Einzelpreis</strong><span class="art">Betrag</span></li><li><strong>Gesamtpreis</strong><span class="art">Betrag</span></li><li><strong>Umsatzsteuersatz</strong><span class="art">prozent</span></li><li><strong>Umsatzsteuer</strong><span class="art">Betrag</span></li><li><strong>Artikelnummer</strong><span class="art">Text</span></li></ul><p class="bezug"><span class="leise">Verweist auf:</span> <a href="#typ-rechnung">Rechnung</a></p></details></div><div><h3>Ansichten</h3><p class="leise klein">So erscheinen sie später in der Ablage. Antippen (›) zeigt, was eine Ansicht filtert.</p><ul class="baum wurzel"><li><div class="sicht ohne"><strong>Rechnungen</strong><span class="typtext leise">Alle Rechnungen</span><span class="typtext leise klein">Zeigt: Rechnung</span></div><ul class="baum"><li><details class="sicht"><summary><strong>Offen</strong><span class="typtext leise">Noch nicht bezahlt</span><span class="typtext leise klein">Zeigt: Rechnung</span></summary><div class="filter"><p class="leise">Nur Mappen, bei denen:</p><ul><li>„Bezahlt am“ ist leer</li><li>„Zahlungseingang am“ ist leer</li></ul></div></details></li><li><details class="sicht"><summary><strong>Dieses Jahr</strong><span class="typtext leise klein">Zeigt: Rechnung</span></summary><div class="filter"><p class="leise">Nur Mappen, bei denen:</p><ul><li>„Rechnungsdatum“ im Zeitraum aktuelles Jahr</li></ul></div></details></li><li><div class="sicht ohne"><strong>Lieferscheine</strong><span class="typtext leise klein">Zeigt: Lieferschein</span></div></li></ul></li></ul></div></div><details class="bild"><summary>Zusammenhänge als Bild</summary><div class="bildrahmen" tabindex="0" role="region" aria-label="Zusammenhänge als Bild"><svg class="zusammenhang" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 508 296" width="508" height="296" role="img" aria-labelledby="bild-rechnungen-titel bild-rechnungen-text"><title id="bild-rechnungen-titel">Zusammenhänge der Mappentypen von Rechnungen</title><desc id="bild-rechnungen-text">Dieselben Angaben als Text: unter „Mappentypen“, je Mappentyp „Verweist auf“ und „Wird verwendet von“.</desc><defs><marker id="pfeil-bild-rechnungen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="spitze"/></marker></defs><path class="kante gehoert" d="M421 240C421 205 257 205 257 170" marker-end="url(#pfeil-bild-rechnungen)"><title>Lieferschein → Rechnung (gehört zu)</title></path><path class="kante bezug" d="M459 240C459 205 306 205 306 170L306 126C306 91 312 91 312 56" marker-end="url(#pfeil-bild-rechnungen)"><title>Lieferschein → Vertrag (Bezug)</title></path><path class="kante bezug" d="M222 126C222 91 206 91 206 56" marker-end="url(#pfeil-bild-rechnungen)"><title>Rechnung → Person (Bezug)</title></path><path class="kante gehoert" d="M250 126C250 91 286 91 286 56" marker-end="url(#pfeil-bild-rechnungen)"><title>Rechnung → Vertrag (gehört zu)</title></path><path class="kante gehoert" d="M86 240C86 205 215 205 215 170" marker-end="url(#pfeil-bild-rechnungen)"><title>Rechnungsposition → Rechnung (gehört zu)</title></path><path class="kante bezug" d="M272 240C272 205 236 205 236 170" marker-end="url(#pfeil-bild-rechnungen)"><title>Nebenkostenabrechnung → Rechnung (Bezug)</title></path><g class="knoten"><rect x="194" y="126" width="83" height="44" rx="8"/><text x="236" y="153" class="name">Rechnung</text></g><g class="knoten"><rect x="384" y="240" width="112" height="44" rx="8"/><text x="440" y="267" class="name">Lieferschein</text></g><g class="knoten"><rect x="12" y="240" width="149" height="44" rx="8"/><text x="86" y="267" class="name">Rechnungsposition</text></g><g class="knoten fremd"><rect x="172" y="12" width="68" height="44" rx="8"/><text x="206" y="29" class="name">Person</text><text x="206" y="46" class="paket">Basis</text></g><g class="knoten fremd"><rect x="183" y="240" width="179" height="44" rx="8"/><text x="272" y="257" class="name">Nebenkostenabrechnung</text><text x="272" y="274" class="paket">Vermietung</text></g><g class="knoten fremd"><rect x="262" y="12" width="75" height="44" rx="8"/><text x="299" y="29" class="name">Vertrag</text><text x="299" y="46" class="paket">Verträge</text></g></svg></div><p class="leise klein seitlich">Das Bild ist breiter als der Bildschirm – seitlich verschieben.</p><p class="leise klein lesehilfe"><span class="linie gehoert" aria-hidden="true"></span> gehört zu · <span class="linie bezug" aria-hidden="true"></span> Bezug · Der Pfeil zeigt auf den Mappentyp, auf den verwiesen wird. Blass: aus einem anderen Paket. Verweise auf den Ablageort (1 Mappentyp) sind nicht gezeichnet. <a href="../../zusammenhaenge/">Wie alles zusammenhängt ›</a></p></details><h3>Gleichbedeutende Wörter für die Suche</h3><p class="leise klein">Wer eines der Wörter sucht, findet auch die anderen – z. B. „Lieferbeleg“ findet auch „Lieferschein“.</p><ul class="woerter"><li>Lieferschein · Lieferbeleg</li><li>Skonto · Barzahlungsrabatt</li><li>Umsatzsteuer · Mehrwertsteuer · MwSt · USt</li></ul><h3>Automatisierungen</h3><p class="leise klein">Nach der Installation aus – beim Installieren fragt Ablago, welche gleich eingeschaltet werden. Vorlaufzeit, Empfänger und Text stellst du selbst ein.</p><ul class="autos"><li><strong>Rechnungen täglich prüfen</strong><p>Jeden Morgen setzt das Paket den Status der Rechnungen neu (z. B. „überfällig seit …“) und vergleicht die Positionen mit dem Betrag. Ausgeschaltet rechnet es nur, wenn jemand eine Rechnung ändert.</p><p class="ablauf"><span class="leise">Wenn</span> täglich um 05:10 <span aria-hidden="true">→</span><span class="unsichtbar">, dann:</span> …</p><p class="leise klein">Wiederkehrend nach Zeitplan</p></li></ul><h3>Einstellungen</h3><p class="leise klein">In Ablago unter Werkbank → Pakete → Rechnungen → Einstellungen.</p><details class="typ"><summary><strong>Rechnungen</strong> <span class="leise klein">1 Einstellung</span></summary><ul class="felder"><li><strong>Positionen mit dem Betrag vergleichen</strong><span class="art">Ja/Nein</span><span class="leise mehr">Passen die Positionen nicht zum Rechnungsbetrag, steht ein Hinweis an der Rechnung. Speichern hindert er nie.</span></li></ul></details></div></details>
+    <details class="bereich "><summary><h2>Was das Paket darf</h2> <span class="leise kurz">kein Zugriff auf Netzwerk und Internet</span></summary><div class="innen"><ul class="rechte"><li>Mappen lesen: Rechnung, Rechnungsposition <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Mappen anlegen und ändern: Rechnung, Rechnungsposition <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-anlegen-und-andern" title="Erklärung: Mappen anlegen und ändern" aria-label="Erklärung: Mappen anlegen und ändern (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Eine Mappe ist angelegt <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignis-mappe" title="Erklärung: Eine Mappe ist angelegt" aria-label="Erklärung: Eine Mappe ist angelegt (Administratorhandbuch)">?</a></li><li>Eine Mappe ist gespeichert und dabei geändert <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignis-mappe" title="Erklärung: Eine Mappe ist gespeichert und dabei geändert" aria-label="Erklärung: Eine Mappe ist gespeichert und dabei geändert (Administratorhandbuch)">?</a></li><li><code>zeitplan.ausgefuehrt</code></li></ul></li></ul></div></details>
+    <details class="bereich readme"><summary><h2>Beschreibung</h2> <span class="leise kurz">ausführlich</span></summary><div class="innen"><p>Rechnungen, Quittungen, Kassenbons, Gutschriften und Erstattungen – <strong>eingehend und ausgehend</strong>, mit Lieferscheinen und Positionen. Das Paket zeigt, was <strong>offen, bezahlt oder überfällig</strong> ist, und meldet ruhig, wenn die Positionen nicht zum Betrag passen.</p>
+<h3>Inhalt</h3>
+<table>
+<thead>
+<tr>
+<th>Mappentyp</th>
+<th>wofür</th>
+<th>wichtige Felder</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rechnung</td>
+<td>jede Rechnung, Quittung, Gutschrift</td>
+<td>Rechnungssteller (<code>von</code>), Betrag (Minus = Gutschrift), Rechnungsdatum, fällig am, bezahlt am, <em>Status</em>, betrifft, gehört zu Vertrag, Steuerjahr</td>
+</tr>
+<tr>
+<td>Lieferschein</td>
+<td>was geliefert wurde</td>
+<td>Lieferant, Lieferdatum, Lieferschein- und Bestellnummer, vollständig erhalten, gehört zu Rechnung</td>
+</tr>
+<tr>
+<td>Rechnungsposition</td>
+<td>eine Zeile einer Rechnung – erscheint nur an ihrer Rechnung</td>
+<td>Nr., Beschreibung, Menge, Einheit, Einzelpreis, Gesamtpreis, Umsatzsteuersatz, <em>Umsatzsteuer</em>, Artikelnummer</td>
+</tr>
+</tbody>
+</table>
+<h4>Rechnung</h4>
+<table>
+<thead>
+<tr>
+<th>Teil</th>
+<th>Felder</th>
+<th>zu sehen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>oben</td>
+<td>Rechnungssteller, Betrag, Rechnungsdatum, Fällig am, Bezahlt am, <em>Status</em></td>
+<td>immer</td>
+</tr>
+<tr>
+<td>Wozu</td>
+<td>Betrifft (Fahrzeug, Immobilie, Mietobjekt, Wohnung, Anschaffung, Vertrag – je nachdem, welche Pakete installiert sind), Gehört zu Vertrag, Steuerjahr</td>
+<td>immer</td>
+</tr>
+<tr>
+<td>Einzelheiten</td>
+<td>Rechnungsnummer, Kunden-/Vertragsnummer, Bezahlt per, Bezahlt von, Rechnungsempfänger (<code>an</code>, leer = wir)</td>
+<td>eingeklappt</td>
+</tr>
+<tr>
+<td>Beträge im Einzelnen</td>
+<td>Netto, Umsatzsteuersatz, Umsatzsteuer, Skonto, Skonto bis</td>
+<td>nur, wenn Ablago beruflich genutzt wird</td>
+</tr>
+<tr>
+<td>Ausgangsrechnung</td>
+<td>Zahlungseingang am, Mahnstufe, interne Nummer</td>
+<td>nur, wenn der Rechnungssteller eine eigene Organisation ist</td>
+</tr>
+<tr>
+<td>Fahrzeug</td>
+<td>Kilometerstand, Arbeiten</td>
+<td>nur, wenn die Rechnung ein Fahrzeug betrifft</td>
+</tr>
+<tr>
+<td>Vermietung</td>
+<td>Umlagefähig, Kostenart</td>
+<td>nur bei Mietobjekt oder Wohnung</td>
+</tr>
+<tr>
+<td>Positionen</td>
+<td>Tabelle der Rechnungspositionen mit „+ Position“</td>
+<td>immer</td>
+</tr>
+</tbody>
+</table>
+<p>Register: <em>Rechnung</em>, <em>Anlagen</em>, <em>Lieferscheine</em>, <em>Verknüpfungen</em>, <em>Historie</em>.</p>
+<h3>So rechnet das Paket</h3>
+<ul>
+<li><strong>Status:</strong> „offen – fällig am 15.11.2026“, „überfällig seit 01.11.2026“, „bezahlt am 09.11.2026“; bei Gutschriften „Gutschrift – noch nicht erhalten“ bzw. „Gutschrift erhalten am …“; bei Ausgangsrechnungen zählt der Zahlungseingang. Neu bei jeder Änderung und jeden Morgen über die mitgelieferte Automatisierung <strong>„Rechnungen täglich prüfen“</strong> (gleich eingeschaltet, änderbar unter Automatisierungen).</li>
+<li><strong>Positionen:</strong> Ist der Gesamtpreis leer, füllt das Paket Menge × Einzelpreis ein – was du selbst einträgst, bleibt. Mit Umsatzsteuersatz gelten die Preise netto, das Paket rechnet die Umsatzsteuer aus.</li>
+<li><strong>Summenprüfung:</strong> Ergeben die Positionen (mit Umsatzsteuer) etwas anderes als der Betrag, steht an der Rechnung „Die Positionen ergeben 118,97 €, die Rechnung sagt 120,80 €.“ Bis 1 Cent je Position zählt als Rundung. Der Hinweis verschwindet, sobald es passt; Speichern hindert er nie.</li>
+</ul>
+<h3>Als bezahlt markieren</h3>
+<p>An der Rechnung trägt <strong>Mappe → Als bezahlt markieren</strong> <em>Bezahlt am</em> ein – heute oder ein Datum, das du wählst. Den Status rechnet das Paket danach neu. Ist die Rechnung schon bezahlt, steht das im Menü.</p>
+<h3>Einstellungen</h3>
+<table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Vorgabe</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Positionen mit dem Betrag vergleichen</td>
+<td>an</td>
+<td>Aus: kein Hinweis an der Rechnung.</td>
+</tr>
+</tbody>
+</table>
+<h3>Umzug aus Fahrzeuge und Vermietung</h3>
+<p>Bis Fahrzeuge 1.x und Vermietung 1.x brachten eigene Typen <em>Werkstattrechnung</em> und <em>Ausgabe Mietobjekt</em> mit. Ab Rechnungen 1.1.0 ziehen sie beim <strong>Installieren oder Aktualisieren von Rechnungen</strong> hierher (Ablago 0.243.0, „Umbau“): Ablago zeigt vorher, wie viele Mappen umziehen und welche Werte wohin gehen; nach deiner Bestätigung (nur mit „Gesamte Verwaltung“) laufen sie in einem Zug um. Was nicht in ein Feld passt, steht danach in einer <strong>Notiz</strong> an der Mappe. Reihenfolge: erst Verträge, dann Rechnungen (je allein), danach Haushalt, Fahrzeuge und Vermietung auf 2.0.0.</p>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>Ablago ab 0.245.3: Aktionen im Menü „Mappe“, Umbau, Prozent, negative Beträge, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „Paket nach Zeitplan ausführen“, „gehört immer zu“ und eigene Organisation (Etappe 15).</li>
+<li>Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung und Haushalt sind nicht nötig – sind sie installiert, kann <em>Betrifft</em> auf ihre Mappen zeigen.</li>
+</ul>
+<h3>Rechte und Netzwerkzugriff</h3>
+<ul>
+<li><strong>Mappen lesen:</strong> Rechnung, Rechnungsposition · <strong>Mappen anlegen und ändern:</strong> Rechnung (nur <em>Status</em>), Rechnungsposition (nur <em>Umsatzsteuer</em> und leere Gesamtpreise).</li>
+<li><strong>Hinweise an Mappen setzen</strong> (dms:hinweise) – nur an Rechnungen, nur zur Summe.</li>
+<li>Keine Dokumente, <strong>kein Zugriff auf Netzwerk und Internet</strong>.</li>
+<li>Reagiert auf: <code>mappe.angelegt</code>, <code>mappe.geaendert</code> (Rechnungen, Positionen), <code>zeitplan.ausgefuehrt</code> (Automatisierung „Rechnungen täglich prüfen“).</li>
+</ul>
+<h3>Entwickeln</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/rechnung.h"><code>code/rechnung.h</code></a></td>
+<td>Status, Positionen, Summenprüfung – ohne Ablago testbar</td>
+</tr>
+<tr>
+<td><a href="code/rechnungen.cpp"><code>code/rechnungen.cpp</code></a></td>
+<td>Ereignisse, Lesen und Schreiben über die API, Hinweis</td>
+</tr>
+<tr>
+<td><a href="tests/rechnung_test.cpp"><code>tests/rechnung_test.cpp</code></a></td>
+<td>läuft nativ in <code>code/bauen.sh</code></td>
+</tr>
+<tr>
+<td><a href="tests/modul_test.mjs"><code>tests/modul_test.mjs</code></a></td>
+<td>das gebaute Modul gegen eine Nachbildung von Ablago</td>
+</tr>
+</tbody>
+</table>
+<h3>Pflege</h3>
+<p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Rechnungen“ im Titel.</p></div></details>
+    <details class="bereich changelog"><summary><h2>Änderungen</h2> <span class="leise kurz">Version 1.2.0</span></summary><div class="innen"><h3>1.2.0</h3>
+<ul>
+<li><strong>Aktion „Als bezahlt markieren“</strong> im Menü <em>Mappe</em> an der Rechnung (dms-registry #162, Ablago #1039): fragt das Datum (heute vorgeschlagen) und trägt <em>Bezahlt am</em> ein; den Status rechnet das Paket danach neu. Ist die Rechnung schon bezahlt, steht das im Menü.</li>
+<li>Braucht <strong>Ablago 0.245.3</strong> (Aktionen ab 0.245.0; 0.245.1 und 0.245.2 lehnten Pakete mit Anzeige-Bedingungen ab, 0.245.3 kennt Bedingungen auf Fahrzeuge und Vermietung, auch wenn die Pakete fehlen).</li>
+</ul>
+<h3>1.1.0</h3>
+<ul>
+<li><strong>Rechnungen aus Fahrzeuge und Vermietung ziehen um</strong> (dms-registry #163, Ablago #1041): Beim Installieren oder Aktualisieren von Rechnungen ziehen die Mappen der Typen <em>Werkstattrechnung</em> (Fahrzeuge bis 1.x) und <em>Ausgabe Mietobjekt</em> (Vermietung bis 1.x) in die Rechnung – mit allen Werten, Dokumenten, Verknüpfungen, Ansichten und Rechten. Ablago zeigt vorher, was wohin geht; was nicht passt, steht danach in einer Notiz an der Mappe.</li>
+<li><em>Werkstattrechnung:</em> Fahrzeug → Betrifft, Werkstatt → Rechnungssteller; Kilometerstand und Arbeiten im Abschnitt <em>Fahrzeug</em>.</li>
+<li><em>Ausgabe Mietobjekt:</em> Mietobjekt → Betrifft (eine zusätzlich eingetragene Wohnung steht in der Notiz), Firma → Rechnungssteller, Art → Kostenart (was es dort nicht gibt, z. B. „Modernisierung“, steht in der Notiz), Umlagefähig, Steuerjahr und Notiz bleiben.</li>
+<li>Der Umbau läuft nur einzeln (nicht zusammen mit anderen Paketen) und nur mit „Gesamte Verwaltung“; „Vorher sichern“ ist vorausgewählt.</li>
+<li>Braucht <strong>Ablago 0.243.0</strong>.</li>
+</ul>
+<h3>1.0.1</h3>
+<ul>
+<li><strong>Installieren repariert:</strong> Ohne das Paket Fahrzeuge bzw. Vermietung brach Ablago 0.238–0.244 die Installation ab („Der Verweis „fahrzeuge:fahrzeug“ lässt sich nicht auflösen“). Die Abschnitte <em>Fahrzeug</em> und <em>Vermietung</em> fragen jetzt mit „zeigt auf eine Mappe vom Typ …“ (<code>zeigtAufTyp</code>), das fehlende Pakete überspringt. Sonst unverändert.</li>
+</ul>
+<h3>1.0.0</h3>
+<ul>
+<li>Neu (dms-registry #161, Etappe 15): Mappentyp <strong>Rechnung</strong> für Rechnungen, Quittungen, Kassenbons, Gutschriften und Erstattungen – eingehend und ausgehend. Oben Rechnungssteller, Betrag (mit Minus für Gutschriften), Rechnungsdatum, fällig am, bezahlt am, <em>Status</em>; darunter <em>Wozu</em> (betrifft Fahrzeug, Immobilie, Wohnung, Anschaffung oder Vertrag; gehört zu Vertrag; Steuerjahr) und eingeklappt die <em>Einzelheiten</em>. <strong>Beträge im Einzelnen</strong> zeigen sich nur, wenn Ablago beruflich genutzt wird, <strong>Ausgangsrechnung</strong> nur, wenn wir der Rechnungssteller sind, <strong>Fahrzeug</strong> und <strong>Vermietung</strong> nur, wenn die Rechnung ein Fahrzeug bzw. ein Mietobjekt oder eine Wohnung betrifft. Positionen als Tabelle mit „+ Position“.</li>
+<li>Neu: <strong>Lieferschein</strong> (Lieferant, Lieferdatum, Nummern, vollständig erhalten, gehört zu Rechnung) und <strong>Rechnungsposition</strong> (gehört immer zu ihrer Rechnung, erscheint nur dort).</li>
+<li><strong>Berechnung:</strong> Status in Worten („offen – fällig am …“, „überfällig seit …“, „bezahlt am …“, „Gutschrift – noch nicht erhalten“), bei jeder Änderung und jeden Morgen (Automatisierung „Rechnungen täglich prüfen“, gleich eingeschaltet). An Positionen Gesamtpreis (wenn leer: Menge × Einzelpreis) und Umsatzsteuer. <strong>Summenprüfung:</strong> Passen die Positionen nicht zum Betrag, steht an der Rechnung ein ruhiger Hinweis mit beiden Zahlen – Speichern hindert er nie, Rundung bis 1 Cent je Position zählt nicht.</li>
+<li>Ansichten <em>Rechnungen</em>, <em>Offen</em>, <em>Dieses Jahr</em>, <em>Lieferscheine</em>; gleichbedeutende Wörter (Umsatzsteuer/Mehrwertsteuer …).</li>
+<li>Kurzanleitung „So nutzt du es“ (dms-registry #164).</li>
+<li>Braucht Basis ab 1.7.0, Verträge ab 1.0.0 und <strong>Ablago 0.238.0</strong>. Herausgeber <code>app.ablago</code>.</li>
+</ul></div></details>
+    <details class="bereich klein"><summary><h2>Für Fortgeschrittene und Entwickler</h2> <span class="leise kurz">Version, Lizenz, Quellcode, Downloads</span></summary><div class="innen"><dl class="eckdaten"><dt>Version</dt><dd>1.2.0 vom 11.11.2026</dd><dt>Herausgeber</dt><dd>app.ablago <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd><dt>Lizenz</dt><dd>Apache-2.0</dd><dt>Nötige Ablago-Version</dt><dd>&gt;=0.245.3</dd><dt>Abhängigkeiten</dt><dd><a href="../basis/">basis</a> &gt;=1.7.0, <a href="../vertraege/">vertraege</a> &gt;=1.0.0</dd><dt>Quellcode</dt><dd><a href="https://github.com/motom001/dms-registry/tree/main/pakete/rechnungen">auf GitHub ansehen</a></dd></dl><h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead><tbody><tr><td>1.2.0</td><td>11.11.2026</td><td>&gt;=0.245.3</td><td><a href="https://github.com/motom001/dms-registry/releases/download/rechnungen-v1.2.0/rechnungen-1.2.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="rechnungen@1.2.0">installieren</button></td></tr><tr><td>1.1.0</td><td>11.11.2026</td><td>&gt;=0.243.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/rechnungen-v1.1.0/rechnungen-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="rechnungen@1.1.0">installieren</button></td></tr><tr><td>1.0.1</td><td>11.11.2026</td><td>&gt;=0.238.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/rechnungen-v1.0.1/rechnungen-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="rechnungen@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>11.11.2026</td><td>&gt;=0.238.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/rechnungen-v1.0.0/rechnungen-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="rechnungen@1.0.0">installieren</button></td></tr></tbody></table></div><p><a href="https://github.com/motom001/dms-registry/issues/new?template=paket-meldung.yml&amp;title=%5BRechnungen%5D%20&amp;paket=Rechnungen%20%28rechnungen%29">Fehler oder Wunsch zu diesem Paket melden</a> <span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p></div></details>
+    <section class="passt"><h2>Passt dazu</h2><h3>Braucht</h3><div class="minis"><a class="mini" href="../../paket/basis/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>Basis</strong><br><span class="leise kurzfassung">Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.</span></span></a><a class="mini" href="../../paket/vertraege/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"/><path d="M14.487 7.858A1 1 0 0 1 14 7V2"/><path d="M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"/><path d="M8 18h1"/></svg></span><span><strong>Verträge</strong><br><span class="leise kurzfassung">Ein Mappentyp für alle Verträge, zu Hause und im Betrieb. Du trägst ein, was es ist, bei wem und wie lange es läuft – das Paket rechnet aus, bis wann du kündigen musst, und erinnert rechtzeitig.</span></span></a></div><h3>Erweiterungen dafür</h3><div class="minis"><a class="mini" href="../../paket/fahrzeuge/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span><span><strong>Fahrzeuge</strong><br><span class="leise kurzfassung">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.</span></span></a><a class="mini" href="../../paket/haushalt/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span><span><strong>Haushalt</strong><br><span class="leise kurzfassung">Die typischen Unterlagen eines Haushalts – Konten, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Verträge, Versicherungen und Rechnungen kommen aus den Paketen Verträge und Rechnungen.</span></span></a><a class="mini" href="../../paket/vermietung/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></span><span><strong>Vermietung</strong><br><span class="leise kurzfassung">Mietobjekte, Wohnungen und Nebenkostenabrechnungen – für Vermieter mit wenigen Wohnungen. Mietverträge und Ausgaben kommen aus den Paketen Verträge und Rechnungen, mit Fristen für Abrechnung, Mieterhöhung und Kündigung.</span></span></a></div><h3><a class="weiter" href="../../?kategorie=vorlagen">Ähnliche Pakete <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/haus/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span><strong>Haus</strong><br><span class="leise kurzfassung">Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.</span></span></a></div><h3><a class="weiter" href="../../autor/motom001/">Weitere Pakete von Thomas Meissner <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/benachrichtigungen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Benachrichtigungen</strong><br><span class="leise kurzfassung">Tägliche Zusammenfassung, Favoriten, „Post für dich“, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.</span></span></a><a class="mini" href="../../paket/bildformate/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span><strong>Bildformate</strong><br><span class="leise kurzfassung">Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.</span></span></a><a class="mini" href="../../paket/hallo_post/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Hallo Post</strong><br><span class="leise kurzfassung">Beispiel für Pakete mit Code – zählt neue Post und meldet die Zahl auf Knopfdruck. Zum Ausprobieren und als Vorlage für eigene Pakete.</span></span></a></div></section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="../../katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>

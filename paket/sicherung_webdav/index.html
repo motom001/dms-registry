@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sicherungsziel WebDAV – Ablago-Pakete</title>
+  <meta name="description" content="Bringt jede Ablago-Sicherung außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../stil.css?v=892b9e42ae">
+  <script src="../../dms.js?v=892b9e42ae" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke"><img src="../../ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="../../sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf" data-paket="sicherung_webdav" data-versionen="[[&quot;1.1.0&quot;,&quot;&gt;=0.158.1&quot;],[&quot;1.0.1&quot;,&quot;&gt;=0.142.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.142.0&quot;]]">
+      <span class="symbol gross bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 13v8"/><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m8 17 4-4 4 4"/></svg></span>
+      <div class="titel"><h1>Sicherungsziel WebDAV</h1>
+        <button type="button" class="knopf primaer installieren" data-installieren="sicherung_webdav@1.1.0">In meinem Ablago installieren</button>
+        <p class="kurztext">Bringt jede Ablago-Sicherung außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.</p>
+        <p class="leise klein">Version 1.1.0 · von <a href="../../autor/motom001/">Thomas Meissner</a></p>
+        <p class="chips"><a class="chip" href="../../?kategorie=sicherung">Sicherung</a></p></div>
+    </div>
+    <div id="dms-passt" class="dms-passt"></div>
+    <details class="bereich "><summary><h2>Was mitkommt</h2> <span class="leise kurz">legt nichts in der Ablage an · 10 Einstellungen</span></summary><div class="innen"><p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, keine Beispielmappen. Es bringt eine Funktion mit (siehe „Was das Paket darf“).</p><h3>Einstellungen</h3><p class="leise klein">In Ablago unter Werkbank → Pakete → Sicherungsziel WebDAV → Einstellungen. Adresse und Zugangsdaten trägst du selbst ein.</p><details class="typ"><summary><strong>Ziel</strong> <span class="leise klein">6 Einstellungen</span></summary><ul class="felder"><li><strong>Art des Ziels</strong><span class="art">Auswahl</span><span class="leise mehr">Nextcloud (auch ownCloud-kompatible Server mit Chunking) mit Benutzer und App-Passwort; Nextcloud-Dateiablage über einen Freigabe-Link „Nur Hochladen“; WebDAV allgemein für NAS und Hoster.</span></li><li><strong>Adresse</strong><span class="art">Adresse</span><span class="leise mehr">Nextcloud und Dateiablage: die Adresse der Nextcloud, z. B. https://cloud.example.org (bzw. mit Unterordner, wenn sie dort liegt). WebDAV allgemein: die Adresse des Ordners, z. B. https://nas.example.org:5006/sicherung. Nur dorthin darf das Paket ins Netz.</span></li><li><strong>Benutzer</strong><span class="art">Text</span><span class="leise mehr">Nextcloud und WebDAV allgemein. Am besten ein eigener Benutzer nur für die Sicherungen (siehe README).</span></li><li><strong>Passwort</strong><span class="art">Geheim</span><span class="leise mehr">Bei Nextcloud ein App-Passwort (Einstellungen → Sicherheit → Neues App-Passwort), bei der Dateiablage das Kennwort der Freigabe, falls gesetzt.</span></li><li><strong>Ordner</strong><span class="art">Text</span><span class="leise mehr">Nextcloud – Ordner im Konto des Benutzers; WebDAV allgemein – Unterordner unter der Adresse (leer = die Adresse selbst). Fehlt er, legt ihn das Paket an. Bei der Dateiablage ohne Bedeutung.</span></li><li><strong>Freigabe-Link (Dateiablage)</strong><span class="art">Text</span><span class="leise mehr">Nur für die Nextcloud-Dateiablage, z. B. https://cloud.example.org/s/AbCdEf123 – der Link der Freigabe „Nur Hochladen (Dateiablage)“.</span></li></ul></details><details class="typ"><summary><strong>Hochladen und Prüfen</strong> <span class="leise klein">2 Einstellungen</span></summary><ul class="felder"><li><strong>Teilgröße (MB)</strong><span class="art">Zahl</span><span class="leise mehr">So groß ist jeder Teil beim Hochladen. Bei einem langsamen Anschluss kleiner – jeder Teil muss innerhalb von etwa 2 Minuten oben sein (8 MB brauchen bei 1 MBit/s Upload etwa 70 Sekunden).</span></li><li><strong>Vollständig zurücklesen bis (MB)</strong><span class="art">Zahl</span><span class="leise mehr">Bis zu dieser Größe liest das Paket jede Sicherung vom Ziel ganz zurück und vergleicht die Prüfsumme. Größere prüft es mit 8 Stichproben – und einmal im Monat vollständig.</span></li></ul></details><details class="typ"><summary><strong>Aufbewahrung am Ziel</strong> <span class="leise klein">2 Einstellungen</span></summary><ul class="felder"><li><strong>Alte Sicherungen am Ziel löschen</strong><span class="art">Ja/Nein</span><span class="leise mehr">Aus (Vorgabe) – das Paket listet am Ziel nichts auf und löscht nichts. An – nach jeder geprüften Kopie bleiben am Ziel nur die neuesten (Anzahl darunter).</span></li><li><strong>Am Ziel behalten (Anzahl)</strong><span class="art">Zahl</span><span class="leise mehr">Nur wenn „Alte Sicherungen am Ziel löschen“ an ist.</span></li></ul></details></div></details>
+    <details class="bereich "><summary><h2>Was das Paket darf</h2> <span class="leise kurz">mit Zugriff auf Netzwerk/Internet</span></summary><div class="innen"><ul class="rechte"><li>Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen) <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-sicherung-lesen" title="Erklärung: Sicherung lesen" aria-label="Erklärung: Sicherung lesen (Administratorhandbuch)">?</a></li><li>Zugriff auf Netzwerk/Internet nur zu: der Adresse aus der Einstellung „Adresse“ (trägst du ein und bestätigst sie) <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#dienst-adresse" title="Erklärung: Dienst-Adresse" aria-label="Erklärung: Dienst-Adresse (Administratorhandbuch)">?</a></li><li>Reagiert auf diese Ereignisse: <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignisse" title="Erklärung: Ereignisse" aria-label="Erklärung: Ereignisse (Administratorhandbuch)">?</a><ul><li>Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#ereignis-sicherung-fertig" title="Erklärung: Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden" aria-label="Erklärung: Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden (Administratorhandbuch)">?</a></li></ul></li></ul></div></details>
+    <details class="bereich readme"><summary><h2>Beschreibung</h2> <span class="leise kurz">ausführlich</span></summary><div class="innen"><p>Bringt jede Sicherung von Ablago <strong>außer Haus</strong> – auf <strong>Nextcloud</strong>, ein <strong>NAS</strong> oder einen <strong>WebDAV-Speicher beim Hoster</strong> – und <strong>prüft</strong> dort, dass sie heil angekommen ist. Gedacht für alle, deren Ablago ohne Sicherungs-App des NAS läuft: auf einem Raspberry Pi, einem gemieteten Server oder bei einem Anbieter. Läuft Ablago auf einem NAS mit <em>Hyper Backup</em> oder <em>Hybrid Backup Sync</em>, reicht meist die App des NAS (siehe <a href="https://help.ablago.app/admin/aktuell/sicherung-ausser-haus/">Sicherung außer Haus</a> im Administratorhandbuch).</p>
+<p>Es läuft im <strong>Paket-Läufer</strong> von Ablago: abgeschottet, mit Grenzen für Speicher und Zeit, ins Netz nur zur Adresse, die du einträgst und bestätigst.</p>
+<h3>So arbeitet es</h3>
+<ol>
+<li>Ablago sichert wie immer <strong>zuerst lokal</strong> in den Sicherungsordner. Danach meldet es dem Paket die fertige Sicherung (Ereignis <em>Sicherung fertig</em>).</li>
+<li>Das Paket liest die <strong>verschlüsselte</strong> Sicherung in Stücken und lädt sie <strong>in Teilen</strong> hoch – auch mehrere GB, ohne sie ganz in den Speicher zu laden. Bricht das Netz ab, versucht es Ablago nach 1, 5, 30 Minuten, 2 und 6 Stunden erneut; das Paket macht an der letzten Stelle weiter. Die lokale Sicherung bleibt davon unberührt.</li>
+<li>Neben die Sicherung legt es die <strong>schlanken Metadaten</strong> (<code>&lt;name&gt;.json</code>: Größe, Prüfsumme, Zeitpunkt, Fingerabdruck des Schlüssels – keine Namen, keine Versionen). Mit beiden Dateien lässt sich die Kopie wiederherstellen, auch wenn das Gerät weg ist.</li>
+<li>Es <strong>prüft</strong>: Größe am Ziel und Prüfsumme (SHA-256) durch Zurücklesen – bis 2 GB jede Sicherung vollständig, größere mit 8 Stichproben und einmal im Monat vollständig.</li>
+<li><strong>Werkbank → Sicherung</strong> zeigt je Sicherung „lokal ✓ · extern ✓ geprüft“ – oder „fehlgeschlagen“ mit Grund. Kommt seit mehr als 2 Tagen keine neuere Sicherung am Ziel an oder schlägt eine Kopie endgültig fehl, bekommen die Administratoren eine E-Mail.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Art des Ziels</th>
+<th>Hochladen</th>
+<th>Prüfen</th>
+<th>Löschen möglich?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Nextcloud</strong> (Benutzer + App-Passwort)</td>
+<td>in Teilen (Chunking v2), beliebig groß</td>
+<td>Größe + Zurücklesen</td>
+<td>ja (Zugang darf löschen)</td>
+</tr>
+<tr>
+<td><strong>Nextcloud-Dateiablage</strong> (Freigabe „Nur Hochladen“)</td>
+<td>am Stück, bis 128 MB</td>
+<td>nicht möglich – „hochgeladen“</td>
+<td><strong>nein</strong> – bester Schutz</td>
+</tr>
+<tr>
+<td><strong>WebDAV allgemein</strong> (NAS, Hoster)</td>
+<td>bis zur Teilgröße am Stück, größer in Teilen mit <code>Content-Range</code> (z. B. Apache mit mod_dav)</td>
+<td>Größe + Zurücklesen (mit <code>Range</code>)</td>
+<td>ja (Zugang darf meist löschen)</td>
+</tr>
+</tbody>
+</table>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Die verschlüsselte Sicherung lesen, um sie außer Haus zu kopieren – kann sie nicht öffnen (kein Schlüssel, keine Inhalte) (dms:sicherung-lesen)</strong> – das Paket liest genau die Sicherung aus seinem Ereignis, so wie sie verschlüsselt im Sicherungsordner liegt, und meldet in seiner Antwort, ob sie angekommen ist. Sein API-Schlüssel darf in Ablago <strong>nur lesen</strong> – schreiben muss es dort nichts (ab Ablago 0.158.1, DMS #636). Den Schlüssel der Werkbank, Mappen, Dokumente und andere Dateien des Sicherungsordners bekommt es nie.</li>
+<li><strong>Zugriff auf Netzwerk/Internet nur zu: der Adresse aus der Einstellung „Adresse“ (trägst du ein und bestätigst sie)</strong> – dorthin geht die verschlüsselte Sicherung, sonst nirgends hin. Weiterleitungen auf andere Server folgt es nicht.</li>
+<li>Es reagiert auf <strong>Eine Sicherung ist fertig (verschlüsselt) und kann außer Haus kopiert werden</strong> (<code>sicherung.fertig</code>).</li>
+</ul>
+<p>Das Passwort speichert Ablago verschlüsselt wie jedes Passwortfeld und zeigt es nach dem Speichern nicht mehr an. Es steht weder im Protokoll noch in den Meldungen an die Werkbank.</p>
+<h3>Einrichten</h3>
+<p><strong>Nextcloud</strong> (Beispiel mit der erfundenen Adresse <code>https://cloud.example.org</code>):</p>
+<ol>
+<li>In der Nextcloud einen <strong>eigenen Benutzer</strong> nur für die Sicherungen anlegen (z. B. <code>dms-sicherung</code>) und dort unter <em>Einstellungen → Sicherheit</em> ein <strong>App-Passwort</strong> erzeugen.</li>
+<li>In Ablago <strong>Werkbank → Pakete → Sicherungsziel WebDAV → Einstellungen</strong>: <em>Art des Ziels</em> <strong>Nextcloud</strong>, <em>Adresse</em> <code>https://cloud.example.org</code>, <em>Benutzer</em> <code>dms-sicherung</code>, <em>Passwort</em> das App-Passwort, <em>Ordner</em> <code>Ablago-Sicherung</code>. Speichern und die Adresse bestätigen.</li>
+<li><strong>Verbindung testen</strong>, dann unter <em>Werkbank → Sicherung</em> <strong>Jetzt sichern</strong> und zusehen, wie die Kopie in der Spalte <em>Wo</em> ankommt.</li>
+</ol>
+<p><strong>Nextcloud-Dateiablage:</strong> In der Nextcloud einen Ordner anlegen, <em>Teilen → Link teilen → Nur Hochladen (Dateiablage)</em> wählen und am besten ein Kennwort setzen. In Ablago <em>Art des Ziels</em> <strong>Nextcloud-Dateiablage</strong>, <em>Adresse</em> <code>https://cloud.example.org</code>, <em>Freigabe-Link</em> den Link (<code>https://cloud.example.org/s/…</code>), <em>Passwort</em> das Kennwort der Freigabe.</p>
+<p><strong>NAS oder Hoster:</strong> WebDAV am NAS bzw. beim Hoster einschalten, einen eigenen Benutzer mit Zugriff nur auf einen Ordner anlegen. In Ablago <em>Art des Ziels</em> <strong>WebDAV allgemein</strong>, <em>Adresse</em> die WebDAV-Adresse des Ordners (z. B. <code>https://nas.example.org:5006/sicherung</code>), Benutzer und Passwort. Sicherungen bis zur Teilgröße (8 MB) gehen überall; größere brauchen einen Server, der Teile mit <code>Content-Range</code> annimmt – sonst meldet das Paket das verständlich. Nextcloud kann es immer.</p>
+<h3>Schutz gegen Erpressersoftware</h3>
+<p>Übernimmt jemand dein Ablago, kennt er die gespeicherten Zugangsdaten. Damit er die Kopien außer Haus nicht löschen kann:</p>
+<ul>
+<li><strong>Am besten die Nextcloud-Dateiablage:</strong> Sie kann hochladen, aber nicht auflisten, lesen oder löschen. Papierkorb und Versionen einer normalen Nextcloud helfen <strong>nicht</strong> – derselbe Zugang kann sie leeren.</li>
+<li>Sonst einen <strong>eigenen Benutzer</strong> nur für die Sicherungen und am Ziel <strong>Versionierung oder Schnappschüsse</strong>, die dieser Benutzer nicht löschen kann (z. B. Schnappschüsse des NAS).</li>
+<li><strong>Alte Sicherungen am Ziel löschen</strong> bleibt am besten <strong>aus</strong> (Vorgabe). Dann listet das Paket am Ziel nichts auf und löscht nichts; aufräumen lässt du das Ziel selbst. Schaltest du es ein, braucht der Zugang Löschrechte – genau das hebt den Schutz auf.</li>
+<li>Der <strong>Schlüssel</strong> der Werkbank gehört nie auf das Ziel – ohne ihn ist die Kopie wertlos, mit ihm wäre sie für jeden lesbar.</li>
+</ul>
+<h3>Einstellungen</h3>
+<table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Standard</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Art des Ziels</td>
+<td>Nextcloud</td>
+<td>Nextcloud, Nextcloud-Dateiablage oder WebDAV allgemein</td>
+</tr>
+<tr>
+<td>Adresse</td>
+<td>–</td>
+<td>Nextcloud: Adresse der Nextcloud; WebDAV allgemein: Adresse des Ordners</td>
+</tr>
+<tr>
+<td>Benutzer, Passwort</td>
+<td>–</td>
+<td>Zugang; bei Nextcloud ein App-Passwort</td>
+</tr>
+<tr>
+<td>Ordner</td>
+<td>Ablago-Sicherung</td>
+<td>Ordner im Nextcloud-Konto bzw. Unterordner unter der WebDAV-Adresse; fehlt er, legt ihn das Paket an</td>
+</tr>
+<tr>
+<td>Freigabe-Link (Dateiablage)</td>
+<td>–</td>
+<td>nur bei der Dateiablage</td>
+</tr>
+<tr>
+<td>Teilgröße (MB)</td>
+<td>8</td>
+<td>5–8; jeder Teil muss in etwa 2 Minuten hochgeladen sein</td>
+</tr>
+<tr>
+<td>Vollständig zurücklesen bis (MB)</td>
+<td>2048</td>
+<td>darüber Stichproben, einmal im Monat vollständig</td>
+</tr>
+<tr>
+<td>Alte Sicherungen am Ziel löschen</td>
+<td>aus</td>
+<td>siehe oben</td>
+</tr>
+<tr>
+<td>Am Ziel behalten (Anzahl)</td>
+<td>14</td>
+<td>nur mit „löschen“</td>
+</tr>
+</tbody>
+</table>
+<h3>Grenzen</h3>
+<ul>
+<li>Die <strong>Dateiablage</strong> nimmt Sicherungen nur am Stück und höchstens 128 MB (die Datei liegt dafür im Speicher des Aufrufs, 256 MB). Größere melden „fehlgeschlagen“ mit Hinweis auf einen Nextcloud-Benutzer.</li>
+<li>Ein Aufruf darf 2 Minuten dauern; jeder Teil muss in dieser Zeit oben sein. Das ganze Hochladen einer Sicherung verteilt sich auf höchstens 500 Fortsetzungen (gut 8 Stunden) – danach gilt es als fehlgeschlagen.</li>
+<li>Zurücklesen kostet Zeit und Datenvolumen in voller Größe der Sicherung. Wer das nicht will, setzt <em>Vollständig zurücklesen bis</em> auf 0 – dann prüft das Paket mit Stichproben und einmal im Monat vollständig.</li>
+<li>S3-kompatible Speicher (mit Object Lock) kommen als eigenes Paket (Stufe 2). SFTP und FTPS gibt es nicht.</li>
+</ul>
+<h3>Pflege</h3>
+<p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit dem Paketnamen im Titel.</p></div></details>
+    <details class="bereich changelog"><summary><h2>Änderungen</h2> <span class="leise kurz">Version 1.1.0</span></summary><div class="innen"><h3>1.1.0</h3>
+<ul>
+<li><strong>Nur noch lesen</strong> (DMS #636, dms-registry #101): Den Stand der Kopie („läuft“, „hochgeladen“, „geprüft“, „fehlgeschlagen“) meldet das Paket in der Antwort auf das Ereignis statt per <code>PUT /sicherungen/{name}/extern</code>. Ablago gibt ihm dafür einen API-Schlüssel, der nur lesen darf. Endgültige Fehler (z. B. Passwort falsch, Prüfsumme weicht ab) meldet es mit Rückgabewert 2, vorübergehende mit 1.</li>
+<li>Braucht Ablago ab 0.158.1.</li>
+</ul>
+<h3>1.0.1</h3>
+<ul>
+<li>Texte: Das Programm heißt jetzt <strong>Ablago</strong> (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.</li>
+</ul>
+<h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung (DMS #585, dms-registry #71, Stufe 1): bringt jede Sicherung des DMS nach dem Ereignis <em>Sicherung fertig</em> auf einen WebDAV-Speicher und prüft sie dort – <strong>Nextcloud</strong> (Hochladen in Teilen mit Chunking v2, auch für Sicherungen mit mehreren GB), <strong>Nextcloud-Dateiablage</strong> („Nur Hochladen“, bis 128 MB am Stück, ohne Lese- und Löschrecht) und <strong>WebDAV allgemein</strong> (Teile mit <code>Content-Range</code>, kleine Sicherungen am Stück).</li>
+<li>Liest die verschlüsselte Sicherung in Stücken zu höchstens 8 MB, verteilt lange Arbeit auf mehrere Aufrufe und macht nach einem Abbruch an der letzten Stelle weiter.</li>
+<li>Prüft Größe und Prüfsumme (SHA-256) durch Zurücklesen – bis 2 GB (einstellbar) vollständig, darüber mit 8 Stichproben und einmal im Monat vollständig. Eine Dateiablage meldet ehrlich „hochgeladen“.</li>
+<li>Legt die schlanken Metadaten (<code>&lt;name&gt;.json</code>) neben die Sicherung – damit lässt sich die Kopie ohne Gerät wiederherstellen.</li>
+<li>Meldet dem DMS je Sicherung „läuft“, „geprüft“, „hochgeladen“ oder „fehlgeschlagen“ mit verständlichem Grund (z. B. „Benutzer oder Passwort falsch“, „Speicher am Ziel voll“, „Prüfsumme am Ziel weicht ab“).</li>
+<li><em>Alte Sicherungen am Ziel löschen</em> gibt es nur als bewusste Wahl (Vorgabe aus).</li>
+<li><em>Verbindung testen</em> mit den gespeicherten Einstellungen.</li>
+<li>Braucht DMS ab 0.142.0.</li>
+</ul></div></details>
+    <details class="bereich klein"><summary><h2>Für Fortgeschrittene und Entwickler</h2> <span class="leise kurz">Version, Lizenz, Quellcode, Downloads</span></summary><div class="innen"><dl class="eckdaten"><dt>Version</dt><dd>1.1.0 vom 04.11.2026</dd><dt>Herausgeber</dt><dd>app.ablago <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd><dt>Lizenz</dt><dd>Apache-2.0</dd><dt>Nötige Ablago-Version</dt><dd>&gt;=0.158.1</dd><dt>Abhängigkeiten</dt><dd>keine</dd><dt>Quellcode</dt><dd><a href="https://github.com/motom001/dms-registry/tree/main/pakete/sicherung_webdav">auf GitHub ansehen</a></dd></dl><h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead><tbody><tr><td>1.1.0</td><td>04.11.2026</td><td>&gt;=0.158.1</td><td><a href="https://github.com/motom001/dms-registry/releases/download/sicherung_webdav-v1.1.0/sicherung_webdav-1.1.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="sicherung_webdav@1.1.0">installieren</button></td></tr><tr><td>1.0.1</td><td>03.11.2026</td><td>&gt;=0.142.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/sicherung_webdav-v1.0.1/sicherung_webdav-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="sicherung_webdav@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>02.11.2026</td><td>&gt;=0.142.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/sicherung_webdav-v1.0.0/sicherung_webdav-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="sicherung_webdav@1.0.0">installieren</button></td></tr></tbody></table></div><p><a href="https://github.com/motom001/dms-registry/issues/new?template=paket-meldung.yml&amp;title=%5BSicherungsziel%20WebDAV%5D%20&amp;paket=Sicherungsziel%20WebDAV%20%28sicherung_webdav%29">Fehler oder Wunsch zu diesem Paket melden</a> <span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p></div></details>
+    <section class="passt"><h2>Passt dazu</h2><h3><a class="weiter" href="../../autor/motom001/">Weitere Pakete von Thomas Meissner <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/basis/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>Basis</strong><br><span class="leise kurzfassung">Mappentypen Organisation, Niederlassung, Person und Ablageort – für Firmen, Behörden, Ärzte, Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.</span></span></a><a class="mini" href="../../paket/benachrichtigungen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Benachrichtigungen</strong><br><span class="leise kurzfassung">Tägliche Zusammenfassung, Favoriten, „Post für dich“, Vertretung und Anmeldeschutz als Automatisierungen – so, wie Ablago es bisher von selbst machte. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ fürs Menü „Mappe“.</span></span></a><a class="mini" href="../../paket/bildformate/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span><strong>Bildformate</strong><br><span class="leise kurzfassung">Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.</span></span></a></div></section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="../../katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>
