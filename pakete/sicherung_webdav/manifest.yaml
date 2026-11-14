@@ -4,12 +4,24 @@
 schema: 1
 id: sicherung_webdav
 name: Sicherungsziel WebDAV
-version: 1.1.0
+version: 1.1.1
 beschreibung: Bringt jede Ablago-Sicherung außer Haus – auf Nextcloud, ein NAS oder einen WebDAV-Speicher beim Hoster – und prüft dort, dass sie heil angekommen ist. Für alle ohne Sicherungs-App des NAS, z. B. auf einem Raspberry Pi oder einem gemieteten Server. Das Paket sieht nur die verschlüsselte Sicherung.
 autor:
   name: Thomas Meissner
   github: motom001
+herausgeber: app.ablago
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Lege beim Ziel (Nextcloud, NAS) einen eigenen Benutzer nur für die Sicherungen an, mit App-Passwort.
+    - Trag unter Werkbank → Pakete → Sicherungsziel WebDAV → Einstellungen Adresse, Benutzer, Passwort und Ordner ein.
+    - Klicke „Verbindung testen“ und danach unter Werkbank → Sicherung „Jetzt sichern“.
+    - Ab dann zeigt jede Sicherung „extern ✓ geprüft“ – oder warum nicht.
+  en:
+    - At the target (Nextcloud, NAS), create a separate user just for backups, with an app password.
+    - Under Workbench → Packages → Sicherungsziel WebDAV → Settings, enter address, user, password and folder.
+    - Click “Test connection”, then “Back up now” under Workbench → Backup.
+    - From then on every backup shows “extern ✓ geprüft” – or why not.
 # 0.158.1: Stand der Kopie in der Antwort auf das Ereignis, Schlüssel nur lesen (DMS #636); seit 0.142.0 Ereignis sicherung.fertig und dms:sicherung-lesen (DMS #585)
 dms: ">=0.158.1"
 inhalt: {}

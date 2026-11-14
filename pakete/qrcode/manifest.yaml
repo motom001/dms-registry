@@ -3,12 +3,22 @@
 schema: 1
 id: qrcode
 name: QR-Code lesen
-version: 1.0.0
+version: 1.0.1
 beschreibung: Liest den QR-Code einer Visitenkarte (vCard) und schlägt Name, Funktion, Telefon, E-Mail, Internetseite und Anschrift für „Aus Dokument ausfüllen“ vor – zuverlässiger als die Texterkennung. Ohne Visitenkarte im Bild liest Ablago wie gewohnt den Text. Läuft abgeschottet im Paket-Läufer, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
+herausgeber: app.ablago
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Wähle das Paket dort, wo Visitenkarten ankommen, z. B. in der Erkennung des Mappentyps Person oder als Standard unter Werkbank → Pakete → QR-Code lesen.
+    - Fotografiere oder scanne die Visitenkarte mit ihrem QR-Code und lege sie in die Mappe.
+    - Klicke „Aus Dokument ausfüllen“ – Name, Telefon, E-Mail und Anschrift kommen aus dem QR-Code.
+  en:
+    - Choose the package where business cards arrive, e.g. in the recognition of the folder type Person or as default under Workbench → Packages → QR-Code lesen.
+    - Photograph or scan the business card with its QR code and add it to the folder.
+    - Click “Fill in from document” – name, phone, email and address come from the QR code.
 kategorien: [post]
 symbol: contact
 # 0.125.0: Schnittstelle dms:erkennen (DMS #511); 0.133.0: Seitenbild auch für JPEG und PNG (Fotos)

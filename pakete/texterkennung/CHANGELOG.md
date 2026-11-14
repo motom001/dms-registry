@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.5.1
+
+- Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).
+
 ## 2.5.0
 
 Zusatzsprachen unter neuer Id (dms-registry #173, motom001/dms#1084).

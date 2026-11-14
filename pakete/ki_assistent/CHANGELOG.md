@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.3.1
+
+- Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).
+- Manifest: Herausgeber `app.ablago`.
+
 ## 1.3.0
 
 - **Wohin gehört das?** – neue Schnittstelle `dms:klassifizieren` (dms-registry #141, Ablago #939): Auf der Seite *Dokument übernehmen* schlägt der KI-Dienst bis zu drei Mappentypen mit Sicherheit (0–1), kurzer Begründung und einem wörtlichen Zitat vor. Er bekommt den Anfang des Dokuments und Name, Kurzbeschreibung und „Woran man ihn erkennt“ der Mappentypen, die Ablago anbietet (nur für KI-Dienste zugelassene) – keine Mappen. Die Typen heißen für den Dienst 1, 2, 3 …; das Paket übersetzt zurück, verwirft andere Kennungen und Sicherheiten außerhalb 0–1 und prüft die Antwort nach festem JSON Schema. Ablago prüft sie noch einmal.

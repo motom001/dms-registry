@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.0.3
+
+- Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).
+- Manifest: Herausgeber `app.ablago`.
+
 ## 1.0.2
 
 - Texte: Das Programm heißt jetzt **Ablago** (dms-registry #111). Inhalt, Rechte und Verhalten sind unverändert.

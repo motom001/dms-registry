@@ -3,12 +3,23 @@ schema: 1
 id: haus
 name: Haus
 herausgeber: app.ablago
-version: 1.5.0
+version: 1.5.1
 beschreibung: Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Lege deine Immobilie an, egal ob Eigentum oder Miete.
+    - Lege je Wartung (Heizung, Schornstein, Rauchmelder) eine Mappe „Wartung“ mit Fachbetrieb, Turnus und „Nächste fällig“ an.
+    - Ablago erinnert 30 Tage vorher unter „Zu erledigen“; Rechnungen und Prüfprotokolle legst du als Dokumente dazu.
+    - Trag Zählerstände beim Ablesen ein, am besten mit einem Foto des Zählers.
+  en:
+    - Create your property, whether you own it or rent.
+    - For each maintenance job (heating, chimney, smoke alarms) create a folder “Maintenance” with company, interval and “Next due”.
+    - Ablago reminds you 30 days ahead under “To do”; add invoices and inspection reports as documents.
+    - Enter meter readings when you read them, ideally with a photo of the meter.
 # 0.75.0: Verweise auf Mappentypen von Ablago (dms:…); 0.79.0: Verweise zwischen Beispielen
 # 0.121.0: Feldformate und Datumsgrenzen (format, landFeld, min/max bei Datum, DMS #535)
 # 0.177.0: mitgelieferte Automatisierungen (inhalt.automatisierungen, Ablago #712) – das Datumsfeld erinnert nicht mehr selbst

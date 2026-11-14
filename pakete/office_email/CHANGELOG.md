@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.1.3
+
+- Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).
+- Manifest: Herausgeber `app.ablago`.
+
 ## 1.1.2
 
 - Der Mail-Zerleger (`mail.h`, `cfb.h`, `zeichen.h`) liegt jetzt als **gemeinsamer Quellcode** unter `gemeinsam/mail/` im Repository; das Paket PDF/A setzt damit die Archivfassung von E-Mails (dms-registry #143). Beide Pakete lesen Mails damit gleich. Der Volltext bleibt, wie er war.

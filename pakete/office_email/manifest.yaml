@@ -3,12 +3,22 @@
 schema: 1
 id: office_email
 name: Office und E-Mail
-version: 1.1.2
+version: 1.1.3
 beschreibung: Macht Word-, Excel-, PowerPoint- und OpenDocument-Dateien, RTF, Textdateien und E-Mails (.eml, .msg) im Volltext durchsuchbar. Makros und eingebettete Objekte führt es nie aus. Abgeschottet im Paket-Läufer, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
+herausgeber: app.ablago
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Lade Word-, Excel-, PowerPoint- oder OpenDocument-Dateien und E-Mails (.eml, .msg) wie gewohnt hoch.
+    - Ihr Text ist danach in der Suche zu finden – Makros und eingebettete Objekte führt das Paket nie aus.
+    - Kann es eine Datei nicht lesen, etwa wegen eines Passworts, steht der Grund am Dokument.
+  en:
+    - Upload Word, Excel, PowerPoint or OpenDocument files and emails (.eml, .msg) as usual.
+    - Their text can then be found by search – the package never runs macros or embedded objects.
+    - If it can't read a file, e.g. because of a password, the reason is shown on the document.
 # Recht dms:volltext, code.volltext und Ereignis datei.volltext gibt es seit 0.145.0 (DMS #614): nur Volltext schreiben,
 # ohne Schreibrecht auf Dokumente; Ablago meldet auch neue Versionen, den Bestand und „Volltext neu erzeugen“.
 dms: ">=0.145.0"

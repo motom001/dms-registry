@@ -3,13 +3,22 @@
 schema: 1
 id: pdfa
 name: PDF/A
-version: 1.3.0
+version: 1.3.1
 beschreibung: Legt zu jedem Dokument zusätzlich ein durchsuchbares PDF/A ab – das Format für die Langzeitaufbewahrung, auch in vielen Jahren noch lesbar. Auch E-Mails (.eml, .msg) werden so zu Seiten. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
 herausgeber: app.ablago
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - 'Kreuze unter Werkbank → Pakete → PDF/A → Einstellungen an, was eine Archivfassung bekommt: PDFs, Scans, Fotos, E-Mails.'
+    - Für Scans und Fotos installiere zusätzlich das Paket „Texterkennung“, damit die Archivfassung durchsuchbar ist.
+    - Die Archivfassung siehst du am Dokument neben dem Original; das Original bleibt unverändert.
+  en:
+    - 'Under Workbench → Packages → PDF/A → Settings, tick what gets an archive version: PDFs, scans, photos, emails.'
+    - For scans and photos, also install the package “Texterkennung” so the archive version is searchable.
+    - You see the archive version on the document next to the original; the original stays unchanged.
 kategorien: [dateiformate]
 symbol: file-text
 # 0.149.0: Recht dms:archivfassung, code.archivfassung, Ereignis datei.archivfassung, Wortpositionen,

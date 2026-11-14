@@ -2,12 +2,21 @@
 schema: 1
 id: texterkennung
 name: Texterkennung (Deutsch und Englisch)
-version: 2.5.0
+version: 2.5.1
 beschreibung: Das Grundpaket für die Texterkennung von Ablago – macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen (z. B. Französisch, Spanisch, Türkisch). Erkennt die Sprache je Seite, richtet Seiten auf, ohne Netz.
 autor:
   name: Thomas Meissner
   github: motom001
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Lade gescannte PDFs oder Fotos wie gewohnt hoch – der Text wird erkannt und ist danach in der Suche zu finden.
+    - Für weitere Sprachen installierst du Zusatzsprachen, z. B. Französisch oder Türkisch.
+    - Vorhandene Scans erkennt Werkbank → Wartungsoperationen → Volltext neu erzeugen noch einmal, etwa nach einer neuen Zusatzsprache.
+  en:
+    - Upload scanned PDFs or photos as usual – the text is recognised and can then be found by search.
+    - For more languages, install additional languages, e.g. French or Turkish.
+    - Workbench → Maintenance operations → Recreate full text recognises existing scans again, e.g. after a new language.
 # Herausgeber (dms-registry #173, Ablago 0.229.0): ältere Ablago-Versionen übergehen das Feld.
 herausgeber: app.ablago
 kategorien: [volltext, suche]

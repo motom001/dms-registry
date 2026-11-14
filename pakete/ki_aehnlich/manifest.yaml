@@ -2,12 +2,24 @@
 schema: 1
 id: ki_aehnlich
 name: KI lokal – Ähnlichkeit
-version: 1.1.0
+version: 1.1.1
 beschreibung: Findet ähnliche Dokumente, sucht mit eigenen Worten und schlägt vor, wohin neue Post gehört – mit einem kleinen mehrsprachigen Embedding-Modell im Paket-Läufer, ohne Netz und ohne zusätzlichen Dienst.
 autor:
   name: Thomas Meissner
   github: motom001
+herausgeber: app.ablago
 lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Warte, bis Ablago den Bestand berechnet hat – den Fortschritt zeigt Werkbank → Pakete → KI lokal – Ähnlichkeit.
+    - An jeder Mappe mit Dokumenten findest du jetzt „Ähnliche Dokumente“ aus anderen Mappen.
+    - Suche auf der Startseite mit „auch in Dokumenten“ – darunter stehen „Ähnliche Treffer“, auch ohne genau dieselben Wörter.
+    - Beim Übernehmen neuer Post schlägt „Wohin gehört das?“ passende Mappen vor.
+  en:
+    - Wait until Ablago has processed your documents – Workbench → Packages → KI lokal – Ähnlichkeit shows the progress.
+    - Every folder with documents now shows “Similar documents” from other folders.
+    - Search on the start page including documents – below you see “Similar results”, even without the exact words.
+    - When filing new post, “Where does this belong?” suggests matching folders.
 # 0.122.0: Schnittstelle dms:vektoren und Ereignis volltext.fertig (DMS #442)
 # 0.226.0: Schnittstelle dms:klassifizieren – „Wohin gehört das?“ aus ähnlichen, schon abgelegten Dokumenten (DMS #939)
 dms: ">=0.226.0"

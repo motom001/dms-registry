@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.1.1
+
+- Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).
+- Manifest: Herausgeber `app.ablago`.
+
 ## 1.1.0
 
 - **Wohin gehört das?** – neue Schnittstelle `dms:klassifizieren` (dms-registry #142, Ablago #939): Auf der Seite *Dokument übernehmen* schlägt das Paket vor, zu welchem Mappentyp neue Post gehört – aus den ähnlichsten schon abgelegten Mappen („8 von 10 ähnlichen Mappen liegen in Rechnung“), bis zu drei Typen mit Sicherheit. Ablago rechnet die ähnlichen Mappen selbst – nur solche, die die Person **und** das Paket lesen dürfen, nur aus Mappentypen, die in Frage kommen und für KI-Dienste zugelassen sind – und gibt dem Paket nur Typ und Ähnlichkeit, **keine Titel und keine Inhalte**. Die Begründung nennt deshalb nur Zahlen und den Mappentyp.
