@@ -36,9 +36,11 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 **Beispiele (optional):** 13 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas als **Personen**, je Typ ein bis zwei Mappen. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, Jonas’ Impfung auf die Praxis Dr. Beispiel (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
 
+**Rundgang und Tipps:** Der Rundgang **Ausweis ablegen** zeigt dir an einem leeren Formular, wo Art, Person, *Gültig bis* und der Ort des Originals hingehören – gespeichert wird dabei nichts. Ablago bietet ihn nach der Installation 30 Tage lang als Tipp an; danach findest du ihn unter **Ablago entdecken**. Drei kurze Tipps führen zu *Garantie bis* an der Anschaffung sowie zu *Einspruch bis* und *Belege* am Steuerjahr.
+
 ## Voraussetzungen
 
-- Ablago ab Version 0.243 (für die Pakete Verträge und Rechnungen)
+- Ablago ab Version 0.285 (Rundgang und Tipps; für die Pakete Verträge und Rechnungen ab 0.243)
 - Pakete **Basis** ab 1.7.0, **Verträge** ab 1.1.0 und **Rechnungen** ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz

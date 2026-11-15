@@ -20,6 +20,7 @@ vorlage/               Vorlage für ein neues Paket – kopieren und loslegen
 schema/                JSON-Schemas für manifest.yaml und die Inhalte
 werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py, sprachen.py (laufen auch in der CI)
 werkzeuge/symbole/     erlaubte Symbole für den Katalog (Lucide, ISC) – siehe REGELN.md, „Symbol“
+werkzeuge/anker.yaml   Ankerpunkte der Oberfläche für Rundgänge und Tipps – Kopie aus Ablago, nicht von Hand ändern
 schluessel/            öffentliche Schlüssel, mit denen der Katalog signiert ist (siehe „Katalog signieren“)
 REGELN.md              was erlaubt ist, was nicht, welche Lizenzen
 CONTRIBUTING.md        wie ein Paket hierher kommt
@@ -34,7 +35,7 @@ Jedes Paket enthält mindestens:
 | `README.md` | was das Paket kann, für wen, mit Beispiel |
 | `LICENSE` | Lizenztext (Open Source, siehe [REGELN.md](REGELN.md)) |
 | `CHANGELOG.md` | Änderungen je Version |
-| `inhalt/` | Mappentypen, Sichten, Beispiele (YAML), optional Beispiel-Dokumente unter `inhalt/beispiele/` – nur erfundene Inhalte ([REGELN.md](REGELN.md#beispiel-dokumente)) |
+| `inhalt/` | Mappentypen, Sichten, Beispiele (YAML), optional Beispiel-Dokumente unter `inhalt/beispiele/` – nur erfundene Inhalte ([REGELN.md](REGELN.md#beispiel-dokumente)) –, Rundgänge und Tipps ([REGELN.md](REGELN.md#rundgaenge-und-tipps)) |
 | `code/` | nur bei Paketen mit Code: Quellcode, wird in der CI gebaut |
 | `tests/` | Erwartungen an das Paket |
 
@@ -144,7 +145,7 @@ Pakete mit Code beschreiben ihre Einstellungen im Manifest unter `code.einstellu
 - **Abschnitt:** `abschnitt` (Überschrift), optional `hilfe`, `felder`
 - **Liste** gleich aufgebauter Einträge: `liste` (Schlüssel), `name`, `eintrag` (z. B. „Regel“), optional `hilfe`, `sortierbar`, `felder`
 
-Ein **Feld** hat `schluessel`, `name`, `typ` und optional `hilfe`, `pflicht`, `standard`, `optionen` (Auswahl), `min`/`max` (Zahl), `mappentyp` (beim Typ `feld`). Typen: `text`, `mehrzeilig`, `zahl`, `janein`, `datum`, `auswahl`, `mehrfachauswahl`, `geheim` und die Verweise `mappentyp`, `feld`, `benutzer`, `rolle`, `sicht` (gespeichert wird die stabile Id, ausgewählt aus Listen). **`code.aktionen`** (`schluessel`, `name`, optional `hilfe`, `bestaetigen`) werden zu Knöpfen im Formular. Ein Beispiel steht auskommentiert in [`vorlage/manifest.yaml`](vorlage/manifest.yaml).
+Ein **Feld** hat `schluessel`, `name`, `typ` und optional `hilfe`, `pflicht`, `standard`, `optionen` (Auswahl), `min`/`max` (Zahl), `mappentyp` (beim Typ `feld`), ab Ablago 0.286.0 auch Prüfregeln (`laenge_min`, `laenge_max`, `muster` mit `meldung`). Typen: `text`, `mehrzeilig`, `zahl`, `janein`, `datum`, `auswahl`, `mehrfachauswahl`, `geheim` und die Verweise `mappentyp`, `feld`, `benutzer`, `rolle`, `sicht` (gespeichert wird die stabile Id, ausgewählt aus Listen). Dazu die Feldarten des Kerns `ki_mappentypen`, `fragen_grenzen`, `erkennung_standard` und `mappenaktionen` – den Wert hält Ablago. **`code.aktionen`** (`schluessel`, `name`, optional `hilfe`, `bestaetigen`) werden zu Knöpfen im Formular. Was ein Paket außerdem beschreiben kann – eigene Prüfung, Anzeigen in der Übersicht, „Ausprobieren“, eigene Karten für Automatisierungen –, steht in [REGELN.md](REGELN.md#einstellungen). Ein Beispiel steht auskommentiert in [`vorlage/manifest.yaml`](vorlage/manifest.yaml).
 
 `werkzeuge/pruefen.py` prüft zusätzlich: Schlüssel eindeutig je Ebene bzw. Liste, `standard` passt zum Typ, Auswahl hat `optionen`, `geheim` und Verweise haben keine Vorgabe, Verweise auf Mappentypen anderer Pakete nur als `<paket>:<schluessel>` und nur auf Abhängigkeiten; auf Mappentypen von Ablago nur `dms:benutzer` oder `dms:rolle` (`dms:ablageort` gibt eine Warnung: veraltet, bitte `basis:ablageort`).
 

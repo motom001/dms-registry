@@ -74,6 +74,14 @@ They are explained in the administrator manual under [Pakete mit Code](https://h
 - **Credentials only as `geheim`** (secret), never as `text` and never as `standard`. Ablago encrypts secrets and no longer shows them after saving.
 - **Service address** (from Ablago 0.124.0, `dms: ">=0.124.0"`): If a package needs a service that every household runs somewhere else (e.g. an AI service), it asks for the address as a setting of type `adresse` instead of a fixed address in `code.netz`. At most one per package, only in a section, **without** `standard` – at most a `beispiel` (example) for a service in the own network (e.g. `http://ollama:11434/v1`). The administrator confirms the address when saving; the package runner lets the package reach only this address. The README explains what is sent there and when.
 - Changing settings is the job of Ablago. A package does not store its settings anywhere else itself and does not bring its own user interface for them.
+- **Validation rules** (from Ablago 0.286.0, Ablago #996): `laenge_min`/`laenge_max` (whole number from 0) for `text` and `mehrzeilig`; `muster` (regular expression for the **whole** value, at most 300 characters) only for `text`, optionally with `meldung` (at most 200 characters), shown at the field when the value does not match. Ablago checks in the form and when saving, with the same message. Example: `{ schluessel: kennung, name: Customer number, typ: text, laenge_max: 12, muster: "[A-Z]{2}-\\d+", meldung: "Please like “AB-12”." }`.
+- **Core field types** (from Ablago 0.286.0): `ki_mappentypen` (what the AI may read), `fragen_grenzen` (Ask your archive), `erkennung_standard` (Fill in from document) and `mappenaktionen` (actions in the “Folder” menu on or off). Ablago keeps the value; the package does not receive it. At most once per package, only in a section, without `standard` and `pflicht`. If a package does not name them, Ablago appends them as a section of their own – with the field type the package puts them in the right place with its own heading and help.
+- **Own check** (from Ablago 0.286.0): with `code.einstellungen_pruefen: true` Ablago calls the package’s action `einstellungen_pruefen` before saving – at most 10 seconds, without write permissions. The answer `{"fehler": {"<schluessel>": "Sentence"}}` is shown at the field; `{}` means “fine”.
+- **Displays** (from Ablago 0.286.0): `code.anzeigen` describes up to 12 figures and states for the package overview (`art`: `zahl`, `anteil`, `text`, `zustand`). The package writes the values to its storage under `anzeige.<schluessel>` – values only, no user interface.
+- **Try it out** (from Ablago 0.286.0, Ablago #1004): `code.ausprobieren: { ereignis, dateiarten, hilfe }` shows the “Try it out” tab. The event must be listed in `code.ereignisse`; `dateiarten` are 1–20 types like `application/pdf` or `image/*`. The package gets the event with `"probe": true` and the settings just entered, reads only the sample file (`GET /dokumente/<id>`), writes nothing to the archive and answers with `{"zeilen": […], "seiten": […]}`; files it creates (at most 3) go to `POST /dateien`. The README says what you see there.
+- **Own cards** (from Ablago 0.287.0, Ablago #680): `code.karten` – up to 20 “then” cards for automations with `schluessel`, `name`, `hilfe` and up to 10 fields (`text`, `zahl`, `janein`). Only with the event `zeitplan.ausgefuehrt`; Ablago calls the package with `aufgabe` = key of the card and `werte`.
+- **Read setup and records** (from Ablago 0.287.0, Ablago #1054): `code.rechte.einrichtung` and `code.rechte.nachweise` name areas (`allgemein`, `belegeingang`, `ablage`, `zugang`, `betrieb`, `sicherung`, `unveraenderbarkeit`, `datenschutz`, `betriebspruefung`; records only for `belegeingang`, `zugang`, `betrieb`, `sicherung`, `unveraenderbarkeit`, `datenschutz`). **Never together with network access** – neither `code.netz` nor a service address: the data shows how the house is secured.
+- For all of these: the package names the Ablago version in which they appeared (`dms: ">=0.286.0"` or `">=0.287.0"`) – otherwise `pruefen.py` reports it. Older Ablago versions silently skip them.
 
 ## Categories
 
@@ -523,6 +531,29 @@ A package can bring **automation templates** (from Ablago 0.256.0, Ablago #1044)
 - **`ersetzt: aufgabe_vergeben`** or **`ersetzt: erinnern`** overlays Ablago’s template (at most once per package). Removing the package brings Ablago’s back. If an administrator changed the template or another package already overlays it, it stays as it is.
 - An update replaces only unchanged templates; removing the package takes them along – except those with open runs, which stay as the administrator’s own.
 - `tests/erwartung.yaml` states the number: `ablaufvorlagen: 3`.
+
+## Tours and tips { #rundgaenge-und-tipps }
+
+A package can bring **tours** and **tips** (from Ablago 0.285.0, Ablago #831, #832, Registry #132). The manifest says `inhalt.rundgaenge: inhalt/rundgaenge.yaml` and `inhalt.tipps: inhalt/tipps.yaml`, plus `dms: ">=0.285.0"`. The texts are in the file itself, addressing the reader informally (“du”) and using the terms of the [glossary](https://github.com/motom001/dms/blob/main/docs/glossar.yml). An example is in `vorlage/inhalt/`, a real one in the package *Haushalt*.
+
+```yaml
+# inhalt/rundgaenge.yaml
+- schluessel: ausweis_ablegen
+  titel: Ausweis ablegen               # task-based, at most 60 characters
+  beschreibung: Wie du einen Ausweis ablegst und dich vor dem Ablauf erinnern lässt.
+  start: nach_installation             # manuell | nach_installation (once per package) | nach_update
+  oeffne: { neu: { typ: ausweis } }    # mappe: { typ } = last changed folder · neu: { typ } = empty form
+  schritte:
+    - { schluessel: gueltig_bis, ziel: mappe.feld:gueltig_bis, ort: Im Formular, titel: Gültig bis, text: Trag ein, bis wann der Ausweis gilt. }
+# inhalt/tipps.yaml
+- { schluessel: garantie, text: Trag „Garantie bis“ ein – dann erinnert dich Ablago rechtzeitig., typ: anschaffung, ziel: mappe.feld:garantie_bis }
+```
+
+- **Tours guide through a task:** 1–8 steps, title at most 60, texts at most 200 characters, no `<` and `>`. A tour never starts by itself; with `nach_installation` or `nach_update` Ablago offers it as a tip for 30 days. `oeffne` names an own folder type or one of a dependency, `ersatz` (only with `oeffne`) the sentence shown when there is nothing to open.
+- **Targets are anchors,** not HTML ids: the list is `werkzeuge/anker.yaml` – a copy from Ablago (`shared/entdecken/anker.yaml`) of the version the CI checks with; do not edit it by hand. `mappe.feld:<key>` and `mappe.register:<key>` must exist in the opened folder type. Every step with a target needs `ort` (where the element is – for screen readers).
+- **Tips:** at most 20, each at most 160 characters and two sentences. Exactly one of `ziel` (anchor with a fixed page; `mappe.feld:`/`mappe.register:` only with `typ`) or `rundgang` (a tour of this package). `ab_version` (“New since your last visit”) is at most the package version. `bereich` (default `mappen`), `fuer` (`lesen`, `verwalten`) and `funktion` (`fragen`, `laufwerk`, `mail`) are optional.
+- **Check:** `pruefen.py` rejects what Ablago rejects when installing – unknown fields and anchors, fields and tabs that do not exist in the folder type, foreign folder types without a dependency, `nach_installation` more than once, more than two sentences.
+- The catalogue shows “with a tour” on the tile and, on the package page under “Was mitkommt” (what comes with it), the title and description of each tour and the wording of the tips.
 
 ## Converting files
 

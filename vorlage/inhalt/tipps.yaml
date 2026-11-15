@@ -1,0 +1,13 @@
+# Tipps dieses Pakets (Ablago ab 0.285.0, dann dms: ">=0.285.0"). Schema: schema/inhalt.schema.json
+# Im Manifest einkommentieren: inhalt.tipps: inhalt/tipps.yaml – höchstens 20 Tipps, je höchstens 160 Zeichen und
+# zwei Sätze, Du-Form. Genau eines von ziel (Anker) oder rundgang (ein Rundgang dieses Pakets).
+
+- schluessel: beispiel_anlegen
+  text: Neu hier? Ein kurzer Rundgang zeigt dir, wie du ein Beispiel anlegst.
+  rundgang: beispiel_anlegen
+- schluessel: datum
+  text: Wusstest du schon? Das Datum eines Beispiels steht rechts in der Mappe.
+  typ: beispiel                       # nur, wer diesen Mappentyp lesen darf; Ziel in der ersten lesbaren Mappe
+  ziel: mappe.feld:datum              # mappe.feld:/mappe.register: nur zusammen mit typ
+  bereich: mappen                     # suche | post | fristen | mappen (Vorgabe) | konto | verwalten
+  ab_version: 1.0.0                   # optional: „Neu seit deinem letzten Besuch“ ab dieser Version des Pakets

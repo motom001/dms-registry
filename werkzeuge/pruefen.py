@@ -181,6 +181,18 @@ DMS_KENNUNGEN_AB = (0, 229, 0)
 HERAUSGEBER = 'app.ablago'
 
 
+# Neue Manifest-Felder aus Ablago (#202): Rundgänge und Tipps (DMS #1244), Feldarten des Kerns, Prüfregeln, Anzeigen,
+# eigene Prüfung und Ausprobieren (DMS #1245), Einrichtung und Nachweise lesen, eigene Karten (DMS #1246).
+DMS_RUNDGAENGE_AB = (0, 285, 0)
+DMS_PAKETREITER_AB = (0, 286, 0)
+DMS_PAKETDATEN_AB = (0, 287, 0)
+KERN_FELDARTEN = ('ki_mappentypen', 'fragen_grenzen', 'erkennung_standard', 'mappenaktionen')
+
+
+def version_text(v: tuple[int, ...]) -> str:
+    return '.'.join(map(str, v))
+
+
 def dms_untergrenze(bereich: str) -> tuple[int, ...] | None:
     """Kleinste DMS-Version, die ein Bereich wie „>=0.94.0“ oder „^0.94.0 <1.0.0“ zulässt; None bei „<“ allein."""
     t = re.match(r'^(>=|>|=|\^|~)?(\d+)\.(\d+)\.(\d+)', str(bereich or '').strip())
@@ -319,6 +331,50 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
     adressen = [f for b in code.get('einstellungen') or [] if isinstance(b, dict) for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
     if adressen and vor_antworten:
         fehler.append('code.einstellungen: Einstellungen vom Typ adresse kennt das DMS erst ab 0.124.0 – bitte dms: ">=0.124.0" angeben')
+    fehler += pruefe_paketreiter(code, ab)
+    # Einrichtung und Nachweise lesen (DMS #1054, ab 0.287.0): nie zusammen mit Netz – weder code.netz noch Dienst-Adresse.
+    paketdaten = [k for k in ('einrichtung', 'nachweise') if rechte.get(k)]
+    if paketdaten:
+        if code.get('netz') or adressen:
+            fehler.append('code.rechte.einrichtung und code.rechte.nachweise gibt es nur für Pakete ohne Netz (ohne code.netz und ohne Dienst-Adresse) – '
+                          'die Angaben zeigen, wie das Haus abgesichert ist, und dürfen es nicht verlassen')
+        if ab is None or ab < DMS_PAKETDATEN_AB:
+            v = version_text(DMS_PAKETDATEN_AB)
+            fehler.append(f'code.rechte.{" und code.rechte.".join(paketdaten)} kennt Ablago erst ab {v} – bitte dms: ">={v}" angeben')
+    return fehler
+
+
+def pruefe_paketreiter(code: dict, ab: tuple[int, ...] | None) -> list[str]:
+    """code.anzeigen, code.einstellungen_pruefen, code.ausprobieren (DMS #996, #1004) und code.karten (DMS #680)."""
+    fehler: list[str] = []
+    ereignisse = code.get('ereignisse') or []
+    if isinstance(code.get('anzeigen'), list):
+        schluessel = [a.get('schluessel') for a in code['anzeigen'] if isinstance(a, dict)]
+        for s in sorted({x for x in schluessel if schluessel.count(x) > 1}, key=str):
+            fehler.append(f'code.anzeigen: Den Schlüssel „{s}“ gibt es doppelt')
+    a = code.get('ausprobieren')
+    if isinstance(a, dict) and a.get('ereignis') is not None and a.get('ereignis') not in ereignisse:
+        fehler.append(f'code.ausprobieren: Das Ereignis „{a.get("ereignis")}“ muss auch in code.ereignisse stehen – damit ruft Ablago das Paket zum Ausprobieren auf')
+    neu = [k for k in ('anzeigen', 'einstellungen_pruefen', 'ausprobieren') if k in code]
+    if neu and (ab is None or ab < DMS_PAKETREITER_AB):
+        v = version_text(DMS_PAKETREITER_AB)
+        fehler.append(f'code.{", code.".join(neu)} kennt Ablago erst ab {v} – bitte dms: ">={v}" angeben')
+    karten = code.get('karten')
+    if isinstance(karten, list) and karten:
+        if 'zeitplan.ausgefuehrt' not in ereignisse:
+            fehler.append('code.karten braucht das Ereignis zeitplan.ausgefuehrt in code.ereignisse – so ruft Ablago die Karte auf')
+        schluessel = [k.get('schluessel') for k in karten if isinstance(k, dict)]
+        for s in sorted({x for x in schluessel if schluessel.count(x) > 1}, key=str):
+            fehler.append(f'code.karten: Den Schlüssel „{s}“ gibt es doppelt')
+        for k in karten:
+            if not isinstance(k, dict):
+                continue
+            felder = [f.get('schluessel') for f in k.get('felder') or [] if isinstance(f, dict)]
+            for s in sorted({x for x in felder if felder.count(x) > 1}, key=str):
+                fehler.append(f'code.karten „{k.get("schluessel")}“: Das Feld „{s}“ gibt es doppelt')
+        if ab is None or ab < DMS_PAKETDATEN_AB:
+            v = version_text(DMS_PAKETDATEN_AB)
+            fehler.append(f'code.karten kennt Ablago erst ab {v} – bitte dms: ">={v}" angeben')
     return fehler
 
 
@@ -1061,6 +1117,31 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set, dms_be
                     fehler.append(f'{w}: mappentyp gibt es nur bei typ feld')
                 else:
                     typ_ok(str(f['mappentyp']), w)
+            # Prüfregeln (DMS #996, ab 0.286.0): Länge bei text und mehrzeilig, Muster nur bei text.
+            for k in ('laenge_min', 'laenge_max'):
+                if k in f and typ not in ('text', 'mehrzeilig'):
+                    fehler.append(f'{w}: {k} gibt es nur bei text und mehrzeilig')
+            if all(isinstance(f.get(k), int) and not isinstance(f.get(k), bool) for k in ('laenge_min', 'laenge_max')) and f['laenge_min'] > f['laenge_max']:
+                fehler.append(f'{w}: laenge_min ist größer als laenge_max')
+            if 'muster' in f:
+                if typ != 'text':
+                    fehler.append(f'{w}: muster gibt es nur bei text (kurze Werte)')
+                elif isinstance(f['muster'], str):
+                    try:
+                        re.compile(f['muster'])
+                    except re.error as e:
+                        # Unicode-Klassen (\p{…}) kennt Ablago (JavaScript), Pythons re nicht – dann nicht ablehnen.
+                        if '\\p{' not in f['muster'] and '\\P{' not in f['muster']:
+                            fehler.append(f'{w}: muster ist kein gültiger regulärer Ausdruck ({e})')
+            if 'meldung' in f and 'muster' not in f:
+                fehler.append(f'{w}: meldung gibt es nur zusammen mit muster – sie steht da, wenn der Wert nicht zum Muster passt')
+            # Feldarten des Kerns (DMS #996, ab 0.286.0): den Wert hält Ablago – keine Vorgabe, keine Pflicht, nur im Abschnitt.
+            if typ in KERN_FELDARTEN:
+                if liste:
+                    fehler.append(f'{w}: {typ} geht nur in einem Abschnitt, nicht in einer Liste')
+                if 'standard' in f or 'pflicht' in f:
+                    fehler.append(f'{w}: {typ} hat keine Vorgabe und keine Pflicht – den Wert hält Ablago')
+                continue
             if 'standard' not in f:
                 continue
             st = f['standard']
@@ -1111,9 +1192,172 @@ def pruefe_einstellungen(code: dict, paket_id: str, typen: set, abh: set, dms_be
     anzahl = sum(1 for b in code.get('einstellungen') or [] if isinstance(b, dict) and 'liste' not in b for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse')
     if anzahl > 1:
         fehler.append('code.einstellungen: höchstens eine Einstellung vom Typ adresse je Paket')
+    for k in KERN_FELDARTEN:
+        if sum(1 for _, f in alle if f.get('typ') == k) > 1:
+            fehler.append(f'code.einstellungen: {k} höchstens einmal je Paket')
+    neu = sorted({f.get('typ') for _, f in alle if f.get('typ') in KERN_FELDARTEN} | {k for _, f in alle for k in ('laenge_min', 'laenge_max', 'muster', 'meldung') if k in f})
+    ab = dms_untergrenze(dms_bereich)
+    if neu and (ab is None or ab < DMS_PAKETREITER_AB):
+        v = version_text(DMS_PAKETREITER_AB)
+        fehler.append(f'code.einstellungen: {", ".join(neu)} kennt Ablago erst ab {v} – bitte dms: ">={v}" angeben')
     aktionen = [a.get('schluessel') for a in code.get('aktionen') or [] if isinstance(a, dict)]
     for s in {x for x in aktionen if aktionen.count(x) > 1}:
         fehler.append(f'code.aktionen: Schlüssel „{s}“ doppelt')
+    return fehler
+
+
+# Rundgänge und Tipps (Ablago #831, #832, #1244; Registry #132, #202): Form und Grenzen prüft das Schema, hier wie in
+# Ablago (shared/src/entdecken.ts) Anker, Mappentypen, Felder und Register, Rundgänge und Sätze. Die Ankerliste ist eine
+# Kopie von shared/entdecken/anker.yaml aus der Ablago-Version der CI (ABLAGO in .github/workflows/pruefen.yml) – die
+# CI vergleicht beide; beim Hochziehen von ABLAGO mit erneuern.
+ANKER_DATEI = WURZEL / 'werkzeuge' / 'anker.yaml'
+ANKER_TEIL = re.compile(r'^[a-z0-9_-]{1,60}$', re.I)
+ENTDECKEN_STEUERZEICHEN = re.compile('[\x00-\x1f\x7f<>]')
+TIPP_SATZENDE = re.compile(r'[.!?](\s|$)')
+_anker: list[dict] | None = None
+
+
+def anker_liste() -> list[dict]:
+    global _anker
+    if _anker is None:
+        _anker = [a for a in yaml.safe_load(ANKER_DATEI.read_text(encoding='utf-8')) or [] if isinstance(a, dict) and a.get('anker')]
+    return _anker
+
+
+def anker_bekannt(ziel: str, liste: list[dict]) -> bool:
+    """Wie ankerBekannt in Ablago: Muster wie mappe.register:<key> passen auf jeden gültigen Schlüssel."""
+    for a in liste:
+        name = str(a['anker'])
+        if '<' in name:
+            vorn = name[:name.index('<')]
+            if ziel.startswith(vorn) and ANKER_TEIL.match(ziel[len(vorn):]):
+                return True
+        elif name == ziel:
+            return True
+    return False
+
+
+def _mappen_teil(anker: str) -> tuple[str, str] | None:
+    t = re.match(r'^mappe\.(feld|register):(.+)$', anker)
+    return (t.group(1), t.group(2)) if t else None
+
+
+def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, version: str, dms_bereich: str,
+                     datei_r: str = 'inhalt.rundgaenge', datei_t: str = 'inhalt.tipps', anker: list[dict] | None = None) -> list[str]:
+    """inhalt.rundgaenge und inhalt.tipps über das Schema hinaus – lehnt ab, was Ablago beim Installieren ablehnt."""
+    anker = anker_liste() if anker is None else anker
+    fehler: list[str] = []
+    eigene = {t.get('schluessel'): t for t in typen if isinstance(t, dict)}
+
+    def typ_info(roh) -> tuple[str, list | None, list | None] | None:
+        """(Kennung, Felder, Register) – Felder/Register nur bei eigenen Typen; None, wenn es den Typ nicht gibt."""
+        if not isinstance(roh, str):
+            return None
+        pk, _, sl = roh.rpartition(':')
+        pk = pk or paket_id
+        if pk == paket_id:
+            t = eigene.get(sl)
+            if t is None:
+                return None
+            return (f'{pk}:{sl}', [f.get('key') for f in t.get('felder') or [] if isinstance(f, dict)],
+                    [r.get('key') for r in t.get('register') or [] if isinstance(r, dict)])
+        return (roh, None, None) if pk in abh else None
+
+    def ziel_fehler(z: str, typ, wo: str) -> str | None:
+        if not anker_bekannt(z, anker):
+            return f'{wo}: unbekannter Anker „{z}“ (die Liste steht in werkzeuge/anker.yaml)'
+        teil = _mappen_teil(z)
+        if teil and typ and typ[1 if teil[0] == 'feld' else 2] is not None and teil[1] not in typ[1 if teil[0] == 'feld' else 2]:
+            return f'{wo}: {"Das Feld" if teil[0] == "feld" else "Das Register"} „{teil[1]}“ gibt es im Mappentyp „{typ[0]}“ nicht'
+        return None
+
+    def texte(roh: dict, felder: tuple, wo: str):
+        for k in felder:
+            if isinstance(roh.get(k), str) and ENTDECKEN_STEUERZEICHEN.search(roh[k].strip()):
+                fehler.append(f'{wo}: „{k}“ enthält Steuerzeichen oder spitze Klammern')
+
+    neu = []
+    schluessel_r: list[str] = []
+    if isinstance(rundgaenge, list):
+        if rundgaenge:
+            neu.append('inhalt.rundgaenge')
+        nach_installation = 0
+        for i, r in enumerate(rundgaenge):
+            if not isinstance(r, dict):
+                continue
+            s = r.get('schluessel')
+            wo = f'{datei_r}: Rundgang „{s or i + 1}“'
+            if s in schluessel_r:
+                fehler.append(f'{wo}: den Schlüssel gibt es doppelt')
+            schluessel_r.append(s)
+            if r.get('start') == 'nach_installation':
+                nach_installation += 1
+                if nach_installation == 2:
+                    fehler.append(f'{wo}: „nach_installation“ darf es nur einmal je Paket geben')
+            texte(r, ('titel', 'beschreibung', 'ende', 'ersatz'), wo)
+            typ = None
+            oeffne = r.get('oeffne')
+            if isinstance(oeffne, dict) and len(oeffne) == 1 and next(iter(oeffne)) in ('mappe', 'neu') and isinstance(oeffne[next(iter(oeffne))], dict):
+                roh = oeffne[next(iter(oeffne))].get('typ')
+                typ = typ_info(roh)
+                if typ is None:
+                    fehler.append(f'{wo}: Den Mappentyp „{roh}“ gibt es weder in diesem Paket noch in einer Abhängigkeit')
+            elif 'ersatz' in r:
+                fehler.append(f'{wo}: „ersatz“ gibt es nur mit „oeffne: mappe“ oder „oeffne: neu“')
+            namen: set = set()
+            for j, st in enumerate(r.get('schritte') or []):
+                if not isinstance(st, dict):
+                    continue
+                ws = f'{wo}, Schritt {j + 1}'
+                if st.get('schluessel') in namen:
+                    fehler.append(f'{ws}: „{st.get("schluessel")}“ gibt es doppelt')
+                namen.add(st.get('schluessel'))
+                ziele = st.get('ziel')
+                ziele = [] if ziele is None else ziele if isinstance(ziele, list) else [ziele]
+                for z in ziele:
+                    if isinstance(z, str) and (f := ziel_fehler(z, typ, ws)):
+                        fehler.append(f)
+                if ziele and not (isinstance(st.get('ort'), str) and st['ort'].strip()):
+                    fehler.append(f'{ws}: Zu einem Ziel gehört „ort“ (wo das Element steht, für Screenreader)')
+                texte(st, ('titel', 'text', 'text_handy', 'text_verwalten', 'ort', 'sonst_verwalten'), ws)
+    if isinstance(tipps, list):
+        if tipps:
+            neu.append('inhalt.tipps')
+        gesehen: list = []
+        for i, t in enumerate(tipps):
+            if not isinstance(t, dict):
+                continue
+            s = t.get('schluessel')
+            wo = f'{datei_t}: Tipp „{s or i + 1}“'
+            if s in gesehen:
+                fehler.append(f'{wo}: den Schlüssel gibt es doppelt')
+            gesehen.append(s)
+            texte(t, ('text',), wo)
+            if isinstance(t.get('text'), str) and len(TIPP_SATZENDE.findall(t['text'].strip())) > 2:
+                fehler.append(f'{wo}: höchstens zwei Sätze')
+            typ = None
+            if 'typ' in t:
+                typ = typ_info(t['typ'])
+                if typ is None:
+                    fehler.append(f'{wo}: Den Mappentyp „{t["typ"]}“ gibt es weder in diesem Paket noch in einer Abhängigkeit')
+            if ('ziel' in t) == ('rundgang' in t):
+                fehler.append(f'{wo}: genau eines von „ziel“ (Anker) oder „rundgang“')
+            if isinstance(t.get('ziel'), str):
+                z = t['ziel']
+                if (f := ziel_fehler(z, typ, wo)):
+                    fehler.append(f)
+                elif not (_mappen_teil(z) and typ) and not next((a for a in anker if a['anker'] == z), {}).get('seite'):
+                    fehler.append(f'{wo}: Der Anker „{z}“ hat keine feste Seite – als Ziel eines Tipps geht er nur mit „typ“ (Feld oder Register einer Mappe)')
+            if 'rundgang' in t and t['rundgang'] not in schluessel_r:
+                fehler.append(f'{wo}: unbekannter Rundgang „{t["rundgang"]}“ – nur Rundgänge dieses Pakets (inhalt.rundgaenge)')
+            ab_v = t.get('ab_version')
+            if isinstance(ab_v, str) and re.match(r'^\d+\.\d+\.\d+$', ab_v) and re.match(r'^\d+\.\d+\.\d+', version or '') \
+                    and tuple(map(int, ab_v.split('.'))) > tuple(map(int, re.match(r'^(\d+)\.(\d+)\.(\d+)', version).groups())):
+                fehler.append(f'{wo}: ab_version {ab_v} ist neuer als die Version des Pakets ({version})')
+    ab = dms_untergrenze(dms_bereich)
+    if neu and (ab is None or ab < DMS_RUNDGAENGE_AB):
+        v = version_text(DMS_RUNDGAENGE_AB)
+        fehler.append(f'{" und ".join(neu)} kennt Ablago erst ab {v} – bitte dms: ">={v}" angeben')
     return fehler
 
 
@@ -1980,7 +2224,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     # Inhalte gegen das Schema; lokale Schlüssel eindeutig; Verweise auflösbar.
     inhalte = m.get('inhalt') or {}
     geladen: dict[str, list] = {}
-    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten', 'automatisierungen', 'vorgaben', 'ablaufvorlagen'):
+    for art in ('mappentypen', 'sichten', 'beispiele', 'wortlisten', 'automatisierungen', 'vorgaben', 'ablaufvorlagen', 'rundgaenge', 'tipps'):
         if art not in inhalte:
             continue
         pfad = ordner / str(inhalte[art])
@@ -2081,6 +2325,10 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
     fehler += pruefe_automatisierungen(geladen.get('automatisierungen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')),
                                        tuple((m.get('code') or {}).get('ereignisse') or []) if isinstance(m.get('code'), dict) else ())
     fehler += pruefe_ablaufvorlagen(geladen.get('ablaufvorlagen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')))
+    if 'rundgaenge' in inhalte or 'tipps' in inhalte:
+        fehler += pruefe_entdecken(geladen.get('rundgaenge'), geladen.get('tipps'), geladen.get('mappentypen', []) or [], str(m.get('id')), abh,
+                                   str(m.get('version', '')), str(m.get('dms', '')), str(inhalte.get('rundgaenge', 'inhalt.rundgaenge')),
+                                   str(inhalte.get('tipps', 'inhalt.tipps')))
 
     # tests/erwartung.yaml stimmt mit dem Inhalt überein.
     erw_pfad = ordner / 'tests' / 'erwartung.yaml'

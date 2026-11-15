@@ -1065,6 +1065,21 @@ def zusammenhangseite(pakete: list) -> str:
     return seite('Wie alles zusammenhängt – Ablago-Pakete', inhalt, 1, 'Die Mappentypen aller Ablago-Pakete und wie sie zusammenhängen')
 
 
+def entdecken_block(rundgaenge: list, tipps: list) -> str:
+    """Rundgänge und Tipps (Registry #132) unter „Was mitkommt“: was man in Ablago dazu sieht."""
+    html = ''
+    if rundgaenge:
+        html += ('<h3>' + ('Rundgang' if len(rundgaenge) == 1 else 'Rundgänge') + '</h3><ul class="rundgaenge">'
+                 + ''.join(f'<li><strong>{e(str(r.get("titel", "")))}</strong> – {e(str(r.get("beschreibung", "")))} '
+                           f'<span class="leise">({mehrzahl(len(r.get("schritte") or []), "Schritt", "Schritte")})</span></li>' for r in rundgaenge)
+                 + '</ul><p class="leise klein">Ablago hebt Schritt für Schritt die Stelle hervor, um die es geht. Ein Rundgang startet nie von selbst: '
+                 'Nach der Installation bietet Ablago ihn als Tipp an, danach steht er unter „Ablago entdecken“.</p>')
+    if tipps:
+        html += ('<h3>Tipps</h3><ul class="tipps">' + ''.join(f'<li>{e(str(x.get("text", "")))}</li>' for x in tipps) + '</ul>'
+                 '<p class="leise klein">Ablago zeigt höchstens einen Tipp am Tag im Assistenten unten rechts; alle stehen unter „Ablago entdecken“.</p>')
+    return html
+
+
 def kurzanleitung(m: dict) -> list[str]:
     """„So nutzt du es“ (#164): 3–5 kurze Schritte aus dem Manifest (deutsch; englisch folgt mit #54)."""
     k = m.get('kurzanleitung')
@@ -1124,6 +1139,10 @@ def detail(p: dict, pakete: list) -> str:
     auto_html += aktionen_block(aktionen, typnamen) if n_akt else ''
     umbau = [u for u in (m.get('umbau') or []) if isinstance(u, dict)] if vorhanden else []
     auto_html += umbau_block(umbau, index, typnamen) if umbau else ''
+    # Rundgänge und Tipps (Ablago #831, #832; Registry #132): Titel und Beschreibung, Tipps im Wortlaut.
+    rundgaenge = [r for r in lies_yaml(ordner, (m.get('inhalt') or {}).get('rundgaenge')) if isinstance(r, dict)] if vorhanden else []
+    tipps = [x for x in lies_yaml(ordner, (m.get('inhalt') or {}).get('tipps')) if isinstance(x, dict)] if vorhanden else []
+    auto_html += entdecken_block(rundgaenge, tipps)
     # Vorgaben (DMS #1038) und Einstellungen (#164): erscheinen, sobald ein Paket sie mitbringt.
     vorgaben = lies_yaml(ordner, (m.get('inhalt') or {}).get('vorgaben')) if vorhanden else []
     vorgabe_html = vorgaben_block(vorgaben, p['id'], index) if vorgaben else ''
@@ -1141,7 +1160,7 @@ def detail(p: dict, pakete: list) -> str:
                        'Auswahlwerte und Ansichten in dieser Sprache.</p>' if fuer else '')
                     + '<p class="leise klein">Nach der Installation erlaubst du die Sprache unter Werkbank → Sprachen; jede Person wählt sie dann in Mein Konto.</p>')
         kurz_mit = 'Sprachpaket, nur Texte'
-    elif n_typen or n_sichten or n_bsp or n_wort or n_auto or n_vorl or n_akt or umbau or vorgabe_html or einst_html:
+    elif n_typen or n_sichten or n_bsp or n_wort or n_auto or n_vorl or n_akt or umbau or vorgabe_html or einst_html or rundgaenge or tipps:
         mit_dok = f' und {mehrzahl(n_dok, "Beispiel-Dokument", "Beispiel-Dokumenten")}' if n_dok else ''
         bsp = (f'<h3>Beispiele</h3><p>{mehrzahl(n_bsp, "Beispielmappe", "Beispielmappen")}{mit_dok} mit erfundenen Daten – nur, wenn du sie bei der Installation auswählst.</p>'
                if n_bsp else '')
@@ -1161,6 +1180,8 @@ def detail(p: dict, pakete: list) -> str:
                                           mehrzahl(n_auto, 'Automatisierung', 'Automatisierungen') if n_auto else '',
                                           mehrzahl(n_vorl, 'Automatisierungsvorlage', 'Automatisierungsvorlagen') if n_vorl else '',
                                           mehrzahl(n_akt, 'Mappen-Aktion', 'Mappen-Aktionen') if n_akt else '',
+                                          mehrzahl(len(rundgaenge), 'Rundgang', 'Rundgänge') if rundgaenge else '',
+                                          mehrzahl(len(tipps), 'Tipp', 'Tipps') if tipps else '',
                                           mehrzahl(n_einst, 'Einstellung', 'Einstellungen') if n_einst else ''] if t)
         if leer and m.get('code'):
             kurz_mit = 'legt nichts in der Ablage an · ' + kurz_mit

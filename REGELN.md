@@ -75,6 +75,14 @@ Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://help.
 - **Zugangsdaten nur als `geheim`**, nie als `text` und nie als `standard`. Ablago verschlüsselt Geheimnisse und zeigt sie nach dem Speichern nicht mehr an.
 - **Dienst-Adresse** (ab Ablago 0.124.0, `dms: ">=0.124.0"`): Braucht ein Paket einen Dienst, den jeder Haushalt woanders betreibt (z. B. einen KI-Dienst), verlangt es die Adresse als Einstellung vom Typ `adresse` statt einer festen Adresse in `code.netz`. Höchstens eine je Paket, nur in einem Abschnitt, **ohne** `standard` – höchstens ein `beispiel` für einen Dienst im eigenen Netz (z. B. `http://ollama:11434/v1`). Der Administrator bestätigt die Adresse beim Speichern; nur dorthin lässt der Paket-Läufer das Paket ins Netz. Das README erklärt, was wann dorthin geht.
 - Einstellungen ändern ist Sache von Ablago. Ein Paket speichert seine Einstellungen nicht selbst irgendwo anders und bringt keine eigene Oberfläche dafür mit.
+- **Prüfregeln** (ab Ablago 0.286.0, Ablago #996): `laenge_min`/`laenge_max` (ganze Zahl ab 0) bei `text` und `mehrzeilig`; `muster` (regulärer Ausdruck für den **ganzen** Wert, höchstens 300 Zeichen) nur bei `text`, dazu optional `meldung` (höchstens 200 Zeichen), die am Feld steht, wenn der Wert nicht passt. Ablago prüft im Formular und beim Speichern mit derselben Meldung. Beispiel: `{ schluessel: kennung, name: Kundennummer, typ: text, laenge_max: 12, muster: "[A-Z]{2}-\\d+", meldung: "Bitte wie „AB-12“." }`.
+- **Feldarten des Kerns** (ab Ablago 0.286.0): `ki_mappentypen` (was die KI lesen darf), `fragen_grenzen` (Frag deine Ablage), `erkennung_standard` (Aus Dokument ausfüllen) und `mappenaktionen` (Aktionen im Menü „Mappe“ an oder aus). Den Wert hält Ablago, das Paket bekommt ihn nicht. Je Paket höchstens einmal, nur in einem Abschnitt, ohne `standard` und `pflicht`. Nennt ein Paket sie nicht, hängt Ablago sie als eigenen Abschnitt an – mit der Feldart setzt das Paket sie an die passende Stelle und gibt ihr eine eigene Überschrift und Hilfe.
+- **Eigene Prüfung** (ab Ablago 0.286.0): Mit `code.einstellungen_pruefen: true` ruft Ablago vor dem Speichern die Aktion `einstellungen_pruefen` des Pakets auf – höchstens 10 Sekunden, ohne Schreibrechte. Antwort `{"fehler": {"<schluessel>": "Satz"}}` zeigt Ablago am Feld; `{}` heißt „passt“.
+- **Anzeigen** (ab Ablago 0.286.0): `code.anzeigen` beschreibt bis zu 12 Kennzahlen und Zustände für die Übersicht des Pakets (`art`: `zahl`, `anteil`, `text`, `zustand`). Die Werte schreibt das Paket in seinen Speicher unter `anzeige.<schluessel>` – nur Werte, keine Oberfläche.
+- **Ausprobieren** (ab Ablago 0.286.0, Ablago #1004): `code.ausprobieren: { ereignis, dateiarten, hilfe }` zeigt den Reiter „Ausprobieren“. Das Ereignis muss in `code.ereignisse` stehen; `dateiarten` sind 1–20 Angaben wie `application/pdf` oder `image/*`. Das Paket bekommt das Ereignis mit `"probe": true` und den gerade eingetragenen Einstellungen, liest nur die Probedatei (`GET /dokumente/<id>`), schreibt nichts in die Ablage und antwortet mit `{"zeilen": […], "seiten": […]}`; erzeugte Dateien (höchstens 3) legt es mit `POST /dateien` ab. Das README sagt, was man dort sieht.
+- **Eigene Karten** (ab Ablago 0.287.0, Ablago #680): `code.karten` – bis zu 20 Dann-Karten für Automatisierungen mit `schluessel`, `name`, `hilfe` und bis zu 10 Feldern (`text`, `zahl`, `janein`). Nur mit dem Ereignis `zeitplan.ausgefuehrt`; Ablago ruft das Paket mit `aufgabe` = Schlüssel der Karte und `werte` auf.
+- **Einrichtung und Nachweise lesen** (ab Ablago 0.287.0, Ablago #1054): `code.rechte.einrichtung` und `code.rechte.nachweise` nennen Bereiche (`allgemein`, `belegeingang`, `ablage`, `zugang`, `betrieb`, `sicherung`, `unveraenderbarkeit`, `datenschutz`, `betriebspruefung`; Nachweise nur für `belegeingang`, `zugang`, `betrieb`, `sicherung`, `unveraenderbarkeit`, `datenschutz`). **Nie zusammen mit Netz** – weder `code.netz` noch eine Dienst-Adresse: Die Angaben zeigen, wie das Haus abgesichert ist.
+- Für alle neuen Angaben gilt: Das Paket nennt die Ablago-Version, in der sie erschienen sind (`dms: ">=0.286.0"` bzw. `">=0.287.0"`) – `pruefen.py` meldet es sonst. Ältere Ablago-Versionen übergehen sie still.
 
 ## Kategorien
 
@@ -547,6 +555,29 @@ Ein Paket kann **Automatisierungsvorlagen** mitbringen (ab Ablago 0.256.0, Ablag
 - **`ersetzt: aufgabe_vergeben`** bzw. **`ersetzt: erinnern`** überlagert die Vorlage von Ablago (je Paket höchstens einmal). Entfernt man das Paket, gilt wieder die von Ablago. Hat ein Administrator die Vorlage geändert oder überlagert schon ein anderes Paket, bleibt sie, wie sie ist.
 - Ein Update ersetzt nur unveränderte Vorlagen; beim Entfernen gehen sie mit – außer solchen mit offenen Abläufen, die als eigene Vorlage bleiben.
 - `tests/erwartung.yaml` nennt die Zahl: `ablaufvorlagen: 3`.
+
+## Rundgänge und Tipps { #rundgaenge-und-tipps }
+
+Ein Paket kann **Rundgänge** und **Tipps** mitbringen (ab Ablago 0.285.0, Ablago #831, #832, Registry #132). Im Manifest stehen `inhalt.rundgaenge: inhalt/rundgaenge.yaml` und `inhalt.tipps: inhalt/tipps.yaml`, dazu `dms: ">=0.285.0"`. Die Texte stehen direkt in der Datei, in Du-Form und mit den Begriffen aus dem [Glossar](https://github.com/motom001/dms/blob/main/docs/glossar.yml). Ein Beispiel liegt in `vorlage/inhalt/`, ein echtes im Paket *Haushalt*.
+
+```yaml
+# inhalt/rundgaenge.yaml
+- schluessel: ausweis_ablegen
+  titel: Ausweis ablegen               # aufgabenbezogen, höchstens 60 Zeichen
+  beschreibung: Wie du einen Ausweis ablegst und dich vor dem Ablauf erinnern lässt.
+  start: nach_installation             # manuell | nach_installation (einmal je Paket) | nach_update
+  oeffne: { neu: { typ: ausweis } }    # mappe: { typ } = zuletzt geänderte Mappe · neu: { typ } = leeres Formular
+  schritte:
+    - { schluessel: gueltig_bis, ziel: mappe.feld:gueltig_bis, ort: Im Formular, titel: Gültig bis, text: Trag ein, bis wann der Ausweis gilt. }
+# inhalt/tipps.yaml
+- { schluessel: garantie, text: Trag „Garantie bis“ ein – dann erinnert dich Ablago rechtzeitig., typ: anschaffung, ziel: mappe.feld:garantie_bis }
+```
+
+- **Rundgänge führen durch eine Aufgabe:** 1–8 Schritte, Titel höchstens 60, Texte höchstens 200 Zeichen, kein `<` und `>`. Ein Rundgang startet nie von selbst; mit `nach_installation` bzw. `nach_update` bietet Ablago ihn 30 Tage lang als Tipp an. `oeffne` nennt einen eigenen Mappentyp oder einen einer Abhängigkeit, `ersatz` (nur mit `oeffne`) den Satz, wenn es nichts zu öffnen gibt.
+- **Ziele sind Anker,** keine HTML-Ids: die Liste steht in `werkzeuge/anker.yaml` – eine Kopie aus Ablago (`shared/entdecken/anker.yaml`) in der Version, mit der die CI prüft; nicht von Hand ändern. `mappe.feld:<key>` und `mappe.register:<key>` müssen im geöffneten Mappentyp vorkommen. Zu jedem Schritt mit Ziel gehört `ort` (wo das Element steht – für Screenreader).
+- **Tipps:** höchstens 20, je höchstens 160 Zeichen und zwei Sätze. Genau eines von `ziel` (Anker mit fester Seite; `mappe.feld:`/`mappe.register:` nur mit `typ`) oder `rundgang` (ein Rundgang dieses Pakets). `ab_version` („Neu seit deinem letzten Besuch“) ist höchstens die Version des Pakets. `bereich` (Vorgabe `mappen`), `fuer` (`lesen`, `verwalten`) und `funktion` (`fragen`, `laufwerk`, `mail`) sind freiwillig.
+- **Prüfung:** `pruefen.py` lehnt ab, was Ablago beim Installieren ablehnt – unbekannte Felder und Anker, Felder und Register, die es im Mappentyp nicht gibt, fremde Mappentypen ohne Abhängigkeit, `nach_installation` mehr als einmal, mehr als zwei Sätze.
+- Der Katalog zeigt an der Kachel „mit Rundgang“ und auf der Paketseite unter „Was mitkommt“ Titel und Beschreibung jedes Rundgangs und den Wortlaut der Tipps.
 
 ## Dateien umwandeln
 

@@ -1,0 +1,247 @@
+# Feste Ankerpunkte der Oberfläche (#831) – Ziele für Rundgänge und Tipps.
+#
+# Ein Rundgang oder Tipp zeigt nie auf eine beliebige HTML-Id, sondern auf einen dieser Anker. In der Oberfläche
+# trägt das Element das Attribut data-anker="<anker>". Der Test server/test/entdecken.test.ts prüft, dass jeder
+# Anker hier im Quelltext der Oberfläche vorkommt – wer ein Element umbaut, behält das Attribut.
+#
+# Diese Liste ist maschinenlesbar: Ablago prüft damit Rundgänge und Tipps, die Paketprüfung (dms-registry #132)
+# später ebenso. Neue Anker kommen dazu, vorhandene werden nicht umbenannt.
+#
+# Je Anker:
+#   anker         Name; mit <platzhalter> ein Muster, z. B. mappe.register:<key>
+#   seite         Seite, auf der der Anker sicher vorkommt – Ziel eines Tipps (nicht bei Mustern)
+#   beschreibung  Was gemeint ist
+#   handy         true: auch in der Handyfassung sichtbar
+#   clients       true: gibt es so auch in Clients (spätere App) – Tipps dazu eignen sich für Clients
+
+# ---------- Kopfzeile ----------
+- anker: neu
+  seite: /ablage/start
+  beschreibung: Knopf „+ Neu“ in der Kopfzeile der Ablage (Post ablegen, neue Mappe)
+  handy: true
+  clients: true
+- anker: benutzermenue
+  seite: /ablage/start
+  beschreibung: Knopf mit dem eigenen Namen oben rechts; öffnet Mein Konto, Ablago entdecken, Ablago verwalten, Hilfe
+  handy: true
+  clients: false
+
+# ---------- Ablage: die drei Spalten ----------
+- anker: navigation.ansichten
+  seite: /ablage/start
+  beschreibung: Linke Spalte der Ablage mit den Ansichten
+  handy: false
+  clients: false
+- anker: navigation.ansicht-waehlen
+  seite: /ablage/start
+  beschreibung: Handy – Knopf „<Ansicht> ▾“, über den man die Ansicht wählt
+  handy: true
+  clients: false
+- anker: navigation.erweiterte-suche
+  seite: /ablage/start
+  beschreibung: Eintrag „Erweiterte Suche“ links bei den Ansichten
+  handy: false
+  clients: false
+- anker: navigation.zu-erledigen
+  seite: /ablage/start
+  beschreibung: Eintrag „Zu erledigen“ links bei den Ansichten
+  handy: false
+  clients: true
+- anker: navigation.neue-post
+  seite: /ablage/start
+  beschreibung: Eintrag „Neue Post“ links bei den Ansichten (nur, wenn es die Ansicht gibt)
+  handy: false
+  clients: true
+- anker: navigation.favoriten
+  seite: /ablage/start
+  beschreibung: Eintrag „Favoriten“ links bei den Ansichten
+  handy: false
+  clients: true
+- anker: liste
+  seite: /ablage/eingang
+  beschreibung: Mittlere Spalte der Ablage mit der Liste der Mappen
+  handy: true
+  clients: false
+- anker: mappe
+  seite: /ablage/eingang
+  beschreibung: Rechte Spalte der Ablage, in der sich eine Mappe öffnet
+  handy: false
+  clients: false
+
+# ---------- Startseite ----------
+- anker: startseite.suche
+  seite: /ablage/start
+  beschreibung: Suchfeld oben in der Kopfzeile, auf jeder Seite der Ablage (seit #1218; der Name stammt von der früheren Suche der Startseite)
+  handy: true
+  clients: true
+- anker: startseite.fragen
+  seite: /ablage/start
+  beschreibung: „Frag deine Ablage“ im Assistenten unten rechts (seit #1219; nur mit einem Antwort-Paket – Tipp und Rundgang öffnen den Assistenten dafür)
+  handy: true
+  clients: false
+- anker: startseite.feld-art
+  seite: /ablage/start
+  beschreibung: Umschalter „Fragen · Tipps · Handbuch“ im Assistenten unten rechts (seit #1219; Tipp und Rundgang öffnen den Assistenten dafür)
+  handy: true
+  clients: false
+- anker: startseite.tipp
+  seite: /ablage/start
+  beschreibung: Karte mit dem Tipp des Tages im Assistenten unten rechts, Reiter „Tipps“ (seit #1219)
+  handy: true
+  clients: false
+- anker: assistent
+  seite: /ablage/start
+  beschreibung: Runder Knopf des Assistenten unten rechts (Fragen, Tipps, Handbuch), auf jeder Seite (#1219)
+  handy: true
+  clients: false
+- anker: startseite.zu-erledigen
+  seite: /ablage/start
+  beschreibung: Kachel „Zu erledigen“
+  handy: true
+  clients: true
+- anker: startseite.neue-post
+  seite: /ablage/start
+  beschreibung: Kachel „Neue Post“ (nur, wenn es die Ansicht gibt)
+  handy: true
+  clients: true
+- anker: startseite.termin
+  seite: /ablage/start
+  beschreibung: Kachel „Nächster Termin“
+  handy: true
+  clients: true
+- anker: startseite.zuletzt
+  seite: /ablage/start
+  beschreibung: Überschrift „Zuletzt geöffnet ›“ – öffnet die Liste der letzten 25 Mappen
+  handy: true
+  clients: false
+
+# ---------- Zu erledigen ----------
+- anker: zu-erledigen.ansicht
+  seite: /ablage/eingang
+  beschreibung: Umschalter Liste · Monat · Jahr in „Zu erledigen“
+  handy: true
+  clients: false
+
+# ---------- Eine Mappe (nur, wenn eine geöffnet ist) ----------
+- anker: mappe.aktionen
+  beschreibung: Menü „Mappe ▾“ einer geöffneten Mappe (Aufgabe vergeben, Erinnern, E-Mail …)
+  handy: true
+  clients: false
+- anker: mappe.stern
+  beschreibung: Stern einer geöffneten Mappe (Favoriten)
+  handy: true
+  clients: true
+- anker: mappe.register:<key>
+  beschreibung: Register einer geöffneten Mappe, z. B. mappe.register:dokumente
+  handy: true
+  clients: false
+- anker: mappe.feld:<key>
+  beschreibung: Feld einer geöffneten Mappe, z. B. mappe.feld:kuendigung_bis
+  handy: true
+  clients: false
+
+# ---------- Mein Konto ----------
+- anker: konto.abwesenheit
+  seite: /profil/abwesenheit
+  beschreibung: Bereich „Abwesenheit“ in der Liste von Mein Konto
+  handy: true
+  clients: false
+- anker: konto.schrift
+  seite: /profil/darstellung
+  beschreibung: Schriftgröße unter Mein Konto → Darstellung
+  handy: true
+  clients: false
+- anker: konto.startseite
+  seite: /profil/darstellung
+  beschreibung: Abschnitt „Startseite“ unter Mein Konto → Darstellung
+  handy: true
+  clients: false
+- anker: konto.tipps
+  seite: /profil/darstellung
+  beschreibung: Schalter „Tipps auf der Startseite zeigen“ unter Mein Konto → Darstellung
+  handy: true
+  clients: false
+- anker: konto.zusammenfassung
+  seite: /profil/benachrichtigungen
+  beschreibung: Tägliche Zusammenfassung unter Mein Konto → Benachrichtigungen
+  handy: true
+  clients: false
+
+# ---------- Ablago entdecken ----------
+- anker: entdecken.rundgaenge
+  seite: /entdecken
+  beschreibung: Abschnitt „Rundgänge“ auf der Seite „Ablago entdecken“
+  handy: true
+  clients: false
+
+# ---------- Werkbank (nur im Verwaltungsmodus) ----------
+- anker: werkbank.bereich:<route>
+  beschreibung: Eintrag eines Bereichs in der Werkbank, z. B. werkbank.bereich:pakete
+  handy: true
+  clients: false
+# Suche über den Listen in der Mitte (#978, #994): Suchfeld, darunter die Filter.
+- anker: werkbank.typen.suche
+  seite: /werkbank/typen
+  beschreibung: Suchfeld mit Filter „Paket“ über der Liste der Mappentypen
+  handy: true
+  clients: false
+- anker: werkbank.sichten.suche
+  seite: /werkbank/sichten
+  beschreibung: Suchfeld mit Filter „Paket“ über der Liste der Ansichten
+  handy: true
+  clients: false
+- anker: werkbank.nummernkreise.suche
+  seite: /werkbank/nummernkreise
+  beschreibung: Suchfeld mit Filter „Paket“ über der Liste der Nummernkreise
+  handy: true
+  clients: false
+- anker: werkbank.woerter.suche
+  seite: /werkbank/woerter
+  beschreibung: Suchfeld mit Filter „Herkunft“ über der Liste der gleichbedeutenden Wörter (#992)
+  handy: true
+  clients: false
+- anker: werkbank.woerter.neu
+  seite: /werkbank/woerter
+  beschreibung: Knopf „+ Neu“ über der Liste der gleichbedeutenden Wörter (#992)
+  handy: true
+  clients: false
+- anker: werkbank.suche.woerter
+  seite: /werkbank/texterkennung
+  beschreibung: Link von „Suche und Volltext“ auf den Bereich „Gleichbedeutende Wörter“ (#992)
+  handy: true
+  clients: false
+- anker: werkbank.suche.meintest
+  seite: /werkbank/texterkennung
+  beschreibung: Auswahl „„Meintest du …?“ vorschlagen“ (nur ohne Treffer oder auch bei mehr Treffern) unter Suche und Volltext (#1191)
+  handy: true
+  clients: false
+- anker: werkbank.auskuenfte.suche
+  seite: /werkbank/auskuenfte
+  beschreibung: Suchfeld über der Liste der Datenschutz-Auskünfte
+  handy: true
+  clients: false
+- anker: werkbank.auskuenfte.nur-offene
+  seite: /werkbank/auskuenfte
+  beschreibung: Haken „Nur offene zeigen“ unter dem Suchfeld der Datenschutz-Auskünfte
+  handy: true
+  clients: false
+- anker: werkbank.fehlermeldungen.suche
+  seite: /werkbank/fehlermeldungen
+  beschreibung: Suchfeld mit Haken „Erledigte zeigen“ über den gemeldeten Fehlern
+  handy: true
+  clients: false
+- anker: werkbank.aufgaben.suche
+  seite: /werkbank/aufgaben
+  beschreibung: Suchfeld über der Liste der Aufgaben, darunter die Filter (Empfänger, Art, Mappentyp, Fälligkeit)
+  handy: true
+  clients: false
+- anker: werkbank.aufgaben.erledigte
+  seite: /werkbank/aufgaben
+  beschreibung: Haken „Erledigte zeigen“ unter dem Suchfeld der Aufgaben
+  handy: true
+  clients: false
+- anker: werkbank.aufgaben.automatisierungen
+  seite: /werkbank/aufgaben
+  beschreibung: Satz mit Link „Wer wann benachrichtigt wird, stellst du unter Automatisierungen ein.“ über der Liste der Aufgaben
+  handy: true
+  clients: false
