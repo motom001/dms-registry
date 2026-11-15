@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.4.0
+
+- **Alles Einstellbare im Reiter „Einstellungen“** (dms-registry #202, Ablago #996): Die Abschnitte **Was die KI lesen darf**, **Frag deine Ablage** (Höchstmenge je Frage) und **Als Standard für alle Mappentypen nutzen** unter *Aus Dokument ausfüllen* stehen jetzt an der passenden Stelle zwischen den Einstellungen des Pakets, mit eigener Hilfe. Die Werte hält weiter Ablago; bisherige Einstellungen bleiben.
+- **Prüfregeln:** Modell höchstens 200 Zeichen, eigene Hinweise an den Dienst höchstens 1 000 Zeichen – Ablago sagt es direkt am Feld.
+- Braucht Ablago 0.286.0; ältere Versionen bleiben bei 1.3.2.
+
 ## 1.3.2
 
 - Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).

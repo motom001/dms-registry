@@ -2,7 +2,7 @@
 schema: 1
 id: trennblatt
 name: Trennblatt
-version: 1.1.1
+version: 1.2.0
 beschreibung: Teilt einen Stapel Briefe, die du in einem Rutsch gescannt hast, an ausgedruckten Trennblättern in einzelne Post auf; die Trennblätter fallen weg. Ein Aufkleber mit Archivnummer auf einem Brief trägt die Nummer gleich ein. Ohne Internet.
 autor:
   name: Thomas Meissner
@@ -24,7 +24,7 @@ kurzanleitung:
     - After a few seconds every letter is a post of its own with status “New”; the separator sheets are gone.
 # 0.88.0: Paket-Läufer, Seite als Graustufenbild, PDF teilen per API (Post teilen), Archivnummer per API
 # 0.94.0: Recht nur für Post (dms:post in code.rechte)
-dms: ">=0.94.0"
+dms: ">=0.286.0"
 inhalt: {}
 code:
   sprache: c
@@ -45,6 +45,9 @@ code:
           typ: text
           pflicht: true
           standard: DMS-TRENNEN
+          laenge_max: 40
+          muster: "[ -~]+"
+          meldung: Bitte nur Buchstaben ohne Umlaute, Ziffern und Zeichen wie - oder _ – mehr steht in einem Code-128-Barcode nicht.
           hilfe: Inhalt des Barcodes (Code 128), an dem das Paket teilt. Groß- und Kleinschreibung zählen nicht. Ein Trennblatt mit eigenem Inhalt erzeugt vorlage/trennblatt.py.
         - schluessel: behalten
           name: Trennblatt behalten
