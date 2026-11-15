@@ -1662,3 +1662,243 @@ class Ablaufvorlagen(unittest.TestCase):
     def test_braucht_0256(self):
         self.assertTrue(any('0.256.0' in f for f in self.lauf([self.vorlage()], dms='>=0.181.0')))
         self.assertEqual(self.lauf([], dms='>=0.181.0'), [])
+
+
+class ManifestFelder202(unittest.TestCase):
+    """Neue Manifest-Felder aus Ablago (#202, #132): Rundgänge, Tipps, Feldarten des Kerns, Prüfregeln, Anzeigen,
+    Ausprobieren, Karten, Einrichtung und Nachweise – je gültig und ungültig, mit Mindestversion."""
+
+    NEU = '>=0.287.0'
+
+    def paket(self, code: dict | None = None, dms: str = NEU, rundgaenge=None, tipps=None, version: str = '1.0.0',
+              abh: dict | None = None) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m.update(id='probe', dms=dms, version=version)
+            if abh:
+                m['abhaengigkeiten'] = abh
+            if code is None:
+                shutil.rmtree(ziel / 'code', ignore_errors=True)
+            else:
+                m['code'] = {'sprache': 'rust', 'quelle': 'code/', 'rechte': {}, **code}
+                (ziel / 'code' / 'main.rs').write_text('fn main() {}\n', encoding='utf-8')
+            for art, daten in (('rundgaenge', rundgaenge), ('tipps', tipps)):
+                if daten is not None:
+                    m['inhalt'][art] = f'inhalt/{art}.yaml'
+                    (ziel / 'inhalt' / f'{art}.yaml').write_text(yaml.safe_dump(daten, allow_unicode=True), encoding='utf-8')
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            (ziel / 'CHANGELOG.md').write_text(f'# Änderungen\n\n## {version}\n\n- Probe\n', encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def fehler(self, *args, **kw) -> str:
+        f = self.paket(*args, **kw)
+        self.assertTrue(f, 'Fehler erwartet')
+        return '\n'.join(f)
+
+    # ---------- Rundgänge ----------
+
+    @staticmethod
+    def rundgang(**aenderung) -> dict:
+        r = {'schluessel': 'beispiel_kennenlernen', 'titel': 'Beispiel anlegen', 'beschreibung': 'Wo Datum und Betrag stehen.',
+             'start': 'nach_installation', 'oeffne': {'mappe': {'typ': 'beispiel'}}, 'ersatz': 'Lege zuerst ein Beispiel an.',
+             'schritte': [{'schluessel': 'datum', 'ziel': 'mappe.feld:datum', 'ort': 'Rechts in der Mappe', 'titel': 'Datum',
+                           'text': 'Hier steht das Datum.', 'handbuch': 'benutzer/mappen/'},
+                          {'schluessel': 'neu', 'ziel': ['neu', 'liste'], 'ort': 'Oben links', 'titel': 'Neu', 'text': 'Hier legst du weitere an.'},
+                          {'schluessel': 'ende', 'titel': 'Fertig', 'text': 'Das war es schon.'}]}
+        r.update(aenderung)
+        return r
+
+    def test_rundgang_gueltig(self):
+        self.assertEqual(self.paket(rundgaenge=[self.rundgang()]), [])
+        self.assertEqual(list(pruefen.inhalt_validator('rundgaenge').iter_errors([self.rundgang()])), [])
+
+    def test_rundgang_braucht_0285(self):
+        self.assertIn('erst ab 0.285.0', self.fehler(rundgaenge=[self.rundgang()], dms='>=0.284.0'))
+        self.assertEqual(self.paket(rundgaenge=[self.rundgang()], dms='>=0.285.0'), [])
+
+    def test_rundgang_schema(self):
+        v = pruefen.inhalt_validator('rundgaenge')
+        self.assertTrue(list(v.iter_errors([self.rundgang(start='erste_anmeldung')])))   # nur Ablago selbst
+        self.assertTrue(list(v.iter_errors([self.rundgang(titel='x' * 61)])))
+        self.assertTrue(list(v.iter_errors([self.rundgang(schritte=[])])))
+        self.assertTrue(list(v.iter_errors([self.rundgang(schritte=self.rundgang()['schritte'] * 3)])))   # 9 Schritte
+        self.assertTrue(list(v.iter_errors([self.rundgang(unbekannt=1)])))
+        self.assertTrue(list(v.iter_errors([self.rundgang(oeffne={'seite': 'start'})])))
+        s = self.rundgang()
+        s['schritte'][0]['handbuch'] = 'handbuch/mappen'
+        self.assertTrue(list(v.iter_errors([s])))
+
+    def test_rundgang_anker_und_felder(self):
+        s = self.rundgang()
+        s['schritte'][0]['ziel'] = 'gibt.es.nicht'
+        self.assertIn('unbekannter Anker „gibt.es.nicht“', self.fehler(rundgaenge=[s]))
+        s = self.rundgang()
+        s['schritte'][0]['ziel'] = 'mappe.feld:fehlt'
+        self.assertIn('Das Feld „fehlt“ gibt es im Mappentyp „probe:beispiel“ nicht', self.fehler(rundgaenge=[s]))
+        s = self.rundgang()
+        s['schritte'][1]['ziel'] = 'mappe.register:dokumente'
+        self.assertEqual(self.paket(rundgaenge=[s]), [])
+        s['schritte'][1]['ziel'] = 'mappe.register:fehlt'
+        self.assertIn('Das Register „fehlt“', self.fehler(rundgaenge=[s]))
+        s = self.rundgang()
+        del s['schritte'][0]['ort']
+        self.assertIn('gehört „ort“', self.fehler(rundgaenge=[s]))
+
+    def test_rundgang_mappentyp(self):
+        self.assertIn('Den Mappentyp „fremd:akte“ gibt es weder', self.fehler(rundgaenge=[self.rundgang(oeffne={'neu': {'typ': 'fremd:akte'}})]))
+        # Typ einer Abhängigkeit: erlaubt, Felder prüft erst Ablago bei der Anzeige.
+        self.assertEqual(self.paket(rundgaenge=[self.rundgang(oeffne={'neu': {'typ': 'basis:organisation'}})], abh={'basis': '>=1.0.0'}), [])
+        r = self.rundgang()
+        del r['oeffne']
+        self.assertIn('„ersatz“ gibt es nur mit', self.fehler(rundgaenge=[r]))
+
+    def test_rundgang_einmal_nach_installation_und_doppelt(self):
+        f = self.fehler(rundgaenge=[self.rundgang(), self.rundgang(schluessel='zweiter')])
+        self.assertIn('„nach_installation“ darf es nur einmal je Paket geben', f)
+        f = self.fehler(rundgaenge=[self.rundgang(), self.rundgang(start='manuell')])
+        self.assertIn('den Schlüssel gibt es doppelt', f)
+
+    def test_rundgang_spitze_klammern(self):
+        self.assertIn('spitze Klammern', self.fehler(rundgaenge=[self.rundgang(beschreibung='Siehe <b>hier</b>.')]))
+
+    # ---------- Tipps ----------
+
+    @staticmethod
+    def tipp(**aenderung) -> dict:
+        t = {'schluessel': 'datum', 'text': 'Wusstest du schon? Ablago erinnert dich an das Datum.', 'typ': 'beispiel', 'ziel': 'mappe.feld:datum'}
+        t.update(aenderung)
+        return t
+
+    def test_tipps_gueltig(self):
+        tipps = [self.tipp(), self.tipp(schluessel='suche', ziel='startseite.suche', typ=None, bereich='suche', ab_version='1.0.0'),
+                 self.tipp(schluessel='rundgang', ziel=None, typ=None, rundgang='beispiel_kennenlernen', fuer='verwalten')]
+        tipps = [{k: v for k, v in t.items() if v is not None} for t in tipps]
+        self.assertEqual(self.paket(rundgaenge=[self.rundgang()], tipps=tipps), [])
+        self.assertIn('erst ab 0.285.0', self.fehler(tipps=[self.tipp()], dms='>=0.250.0'))
+
+    def test_tipps_schema(self):
+        v = pruefen.inhalt_validator('tipps')
+        self.assertTrue(list(v.iter_errors([self.tipp(text='x' * 161)])))
+        self.assertTrue(list(v.iter_errors([self.tipp(schluessel=f't{i}') for i in range(21)])))
+        self.assertTrue(list(v.iter_errors([self.tipp(bereich='werkbank')])))
+        self.assertTrue(list(v.iter_errors([self.tipp(funktion='drucken')])))
+        self.assertTrue(list(v.iter_errors([self.tipp(ab_version='1.0')])))
+
+    def test_tipps_regeln(self):
+        self.assertIn('höchstens zwei Sätze', self.fehler(tipps=[self.tipp(text='Eins. Zwei. Drei.')]))
+        self.assertIn('genau eines von „ziel“', self.fehler(tipps=[self.tipp(rundgang='x')]))
+        t = self.tipp()
+        del t['ziel']
+        self.assertIn('genau eines von „ziel“', self.fehler(tipps=[t]))
+        self.assertIn('unbekannter Rundgang „fehlt“', self.fehler(tipps=[{'schluessel': 'r', 'text': 'Kurz erklärt.', 'rundgang': 'fehlt'}]))
+        # Ziel in einer Mappe nur mit typ; Anker ohne feste Seite nicht ohne typ.
+        t = self.tipp()
+        del t['typ']
+        self.assertIn('hat keine feste Seite', self.fehler(tipps=[t]))
+        self.assertIn('unbekannter Anker', self.fehler(tipps=[self.tipp(ziel='startseite.gibtsnicht', typ=None)]))
+        self.assertIn('Das Feld „fehlt“', self.fehler(tipps=[self.tipp(ziel='mappe.feld:fehlt')]))
+        self.assertIn('ist neuer als die Version des Pakets', self.fehler(tipps=[self.tipp(ab_version='1.1.0')]))
+        self.assertIn('den Schlüssel gibt es doppelt', self.fehler(tipps=[self.tipp(), self.tipp()]))
+
+    def test_anker_aus_ablago(self):
+        # Die Liste ist eine Kopie aus Ablago und kennt Muster.
+        liste = pruefen.anker_liste()
+        self.assertTrue(any(a['anker'] == 'startseite.suche' and a.get('seite') for a in liste))
+        self.assertTrue(pruefen.anker_bekannt('mappe.register:dokumente', liste))
+        self.assertTrue(pruefen.anker_bekannt('werkbank.bereich:pakete', liste))
+        self.assertFalse(pruefen.anker_bekannt('mappe.register:', liste))
+        self.assertFalse(pruefen.anker_bekannt('mappe.register:a b', liste))
+
+    # ---------- Einstellungen: Feldarten des Kerns und Prüfregeln ----------
+
+    @staticmethod
+    def einstellungen(*felder, liste=False) -> dict:
+        if liste:
+            return {'einstellungen': [{'liste': 'eintraege', 'name': 'Einträge', 'eintrag': 'Eintrag', 'felder': list(felder)}]}
+        return {'einstellungen': [{'abschnitt': 'Allgemein', 'felder': list(felder)}]}
+
+    def test_kern_feldarten(self):
+        typen = {'schluessel': 'typen', 'name': 'Mappentypen', 'typ': 'ki_mappentypen'}
+        self.assertEqual(self.paket(self.einstellungen(typen, {'schluessel': 'grenzen', 'name': 'Grenzen', 'typ': 'fragen_grenzen'})), [])
+        self.assertIn('erst ab 0.286.0', self.fehler(self.einstellungen(typen), dms='>=0.285.0'))
+        self.assertIn('hat keine Vorgabe und keine Pflicht', self.fehler(self.einstellungen({**typen, 'pflicht': True})))
+        self.assertIn('hat keine Vorgabe und keine Pflicht', self.fehler(self.einstellungen({**typen, 'standard': []})))
+        self.assertIn('geht nur in einem Abschnitt', self.fehler(self.einstellungen(typen, liste=True)))
+        self.assertIn('ki_mappentypen höchstens einmal', self.fehler(self.einstellungen(typen, {**typen, 'schluessel': 'zwei'})))
+        self.assertTrue(set(pruefen.KERN_FELDARTEN) <= set(pruefen.SCHEMA_MANIFEST['$defs']['einstellungsfeld']['properties']['typ']['enum']))
+
+    def test_pruefregeln(self):
+        kennung = {'schluessel': 'kennung', 'name': 'Kundennummer', 'typ': 'text', 'laenge_min': 2, 'laenge_max': 12,
+                   'muster': '[A-Z]{2}-\\d+', 'meldung': 'Bitte wie „AB-12“.'}
+        notiz = {'schluessel': 'notiz', 'name': 'Notiz', 'typ': 'mehrzeilig', 'laenge_max': 500}
+        self.assertEqual(self.paket(self.einstellungen(kennung, notiz)), [])
+        self.assertIn('erst ab 0.286.0', self.fehler(self.einstellungen(notiz), dms='>=0.285.0'))
+        self.assertIn('laenge_min ist größer als laenge_max', self.fehler(self.einstellungen({**kennung, 'laenge_min': 20})))
+        self.assertIn('laenge_max gibt es nur bei text und mehrzeilig', self.fehler(self.einstellungen({'schluessel': 'z', 'name': 'Z', 'typ': 'zahl', 'laenge_max': 3})))
+        self.assertIn('muster gibt es nur bei text', self.fehler(self.einstellungen({**notiz, 'muster': 'a'})))
+        self.assertIn('kein gültiger regulärer Ausdruck', self.fehler(self.einstellungen({**kennung, 'muster': '[A-Z'})))
+        self.assertIn('meldung gibt es nur zusammen mit muster', self.fehler(self.einstellungen({**notiz, 'typ': 'text', 'meldung': 'Falsch.'})))
+        self.assertTrue(self.paket(self.einstellungen({**kennung, 'muster': 'x' * 301})))   # Schema: höchstens 300 Zeichen
+        self.assertTrue(self.paket(self.einstellungen({**kennung, 'laenge_min': -1})))     # Schema: ganze Zahl ab 0
+        # Unicode-Klassen kennt Ablago (JavaScript) – nicht ablehnen, nur weil Pythons re sie nicht kennt.
+        self.assertEqual(self.paket(self.einstellungen({**kennung, 'muster': '\\p{L}+'})), [])
+
+    # ---------- Anzeigen, Prüffunktion, Ausprobieren, Karten ----------
+
+    def test_anzeigen(self):
+        a = {'anzeigen': [{'schluessel': 'vektoren', 'name': 'Dokumente mit Vektor', 'art': 'anteil'},
+                          {'schluessel': 'modell', 'art': 'zustand', 'hilfe': 'Lädt beim ersten Start.'}]}
+        self.assertEqual(self.paket(a), [])
+        self.assertIn('erst ab 0.286.0', self.fehler(a, dms='>=0.285.0'))
+        self.assertIn('Den Schlüssel „modell“ gibt es doppelt', self.fehler({'anzeigen': a['anzeigen'] + [a['anzeigen'][1]]}))
+        self.assertTrue(self.paket({'anzeigen': [{'schluessel': 'x', 'art': 'balken'}]}))
+        self.assertTrue(self.paket({'anzeigen': [{'schluessel': f'a{i}', 'art': 'zahl'} for i in range(13)]}))
+
+    def test_einstellungen_pruefen(self):
+        self.assertEqual(self.paket({'einstellungen_pruefen': True}), [])
+        self.assertTrue(self.paket({'einstellungen_pruefen': False}))
+        self.assertIn('erst ab 0.286.0', self.fehler({'einstellungen_pruefen': True}, dms='>=0.250.0'))
+
+    def test_ausprobieren(self):
+        a = {'ereignisse': ['post.angelegt'], 'ausprobieren': {'ereignis': 'post.angelegt', 'dateiarten': ['application/pdf', 'image/*'], 'hilfe': 'Zeigt die Trennblätter.'}}
+        self.assertEqual(self.paket(a), [])
+        self.assertIn('erst ab 0.286.0', self.fehler(a, dms='>=0.285.0'))
+        self.assertIn('muss auch in code.ereignisse stehen', self.fehler({**a, 'ereignisse': ['dokument.hochgeladen']}))
+        self.assertTrue(self.paket({**a, 'ausprobieren': {'ereignis': 'post.angelegt', 'dateiarten': []}}))
+        self.assertTrue(self.paket({**a, 'ausprobieren': {'ereignis': 'post.angelegt', 'dateiarten': ['pdf']}}))
+        self.assertTrue(self.paket({**a, 'ausprobieren': {'ereignis': 'post.angelegt'}}))
+
+    def test_karten(self):
+        k = {'ereignisse': ['zeitplan.ausgefuehrt'], 'karten': [
+            {'schluessel': 'bericht', 'name': 'Monatsbericht ablegen', 'hilfe': 'Legt den Bericht des Vormonats ab.',
+             'felder': [{'schluessel': 'tage', 'name': 'Tage zurück', 'typ': 'zahl'}, {'schluessel': 'leise', 'name': 'Ohne Benachrichtigung', 'typ': 'janein'},
+                        {'schluessel': 'betreff', 'name': 'Betreff'}]}]}
+        self.assertEqual(self.paket(k), [])
+        self.assertIn('erst ab 0.287.0', self.fehler(k, dms='>=0.286.0'))
+        self.assertIn('braucht das Ereignis zeitplan.ausgefuehrt', self.fehler({**k, 'ereignisse': ['post.angelegt']}))
+        self.assertIn('Den Schlüssel „bericht“ gibt es doppelt', self.fehler({**k, 'karten': k['karten'] * 2}))
+        self.assertTrue(self.paket({**k, 'karten': [{'schluessel': 'x', 'name': 'X', 'felder': [{'schluessel': 'f', 'name': 'F', 'typ': 'datum'}]}]}))
+        self.assertTrue(self.paket({**k, 'karten': [{'schluessel': 'x'}]}))
+        self.assertTrue(self.paket({**k, 'karten': [{'schluessel': f'k{i}', 'name': 'K'} for i in range(21)]}))
+
+    # ---------- Einrichtung und Nachweise ----------
+
+    def test_einrichtung_und_nachweise(self):
+        r = {'rechte': {'einrichtung': ['allgemein', 'sicherung'], 'nachweise': ['sicherung']}}
+        self.assertEqual(self.paket(r), [])
+        self.assertIn('erst ab 0.287.0', self.fehler(r, dms='>=0.286.0'))
+        self.assertTrue(self.paket({'rechte': {'nachweise': ['ablage']}}))            # zu Ablage gibt es keine Nachweise
+        self.assertTrue(self.paket({'rechte': {'einrichtung': ['garten']}}))
+        f = self.fehler({**r, 'netz': ['https://api.example.org']})
+        self.assertIn('nur für Pakete ohne Netz', f)
+        dienst = {'einstellungen': [{'abschnitt': 'Dienst', 'felder': [{'schluessel': 'dienst', 'name': 'Dienst-Adresse', 'typ': 'adresse'}]}]}
+        self.assertIn('nur für Pakete ohne Netz', self.fehler({**r, **dienst}))
+
+    def test_vorlage_rundgang_und_tipps(self):
+        # Die Beispiele der Vorlage sind gültig, sobald man sie im Manifest einkommentiert.
+        r = yaml.safe_load((WURZEL / 'vorlage' / 'inhalt' / 'rundgaenge.yaml').read_text(encoding='utf-8'))
+        t = yaml.safe_load((WURZEL / 'vorlage' / 'inhalt' / 'tipps.yaml').read_text(encoding='utf-8'))
+        self.assertEqual(self.paket(rundgaenge=r, tipps=t), [])

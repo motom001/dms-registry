@@ -48,8 +48,13 @@
             "benutzer",
             "rolle",
             "sicht",
-            "adresse"
-          ]
+            "adresse",
+            "ki_mappentypen",
+            "fragen_grenzen",
+            "erkennung_standard",
+            "mappenaktionen"
+          ],
+          "description": "ki_mappentypen, fragen_grenzen, erkennung_standard, mappenaktionen: Feldarten des Kerns (Ablago #996, ab 0.286.0) – Ablago stellt sie einheitlich dar und hält den Wert; nur in einem Abschnitt, je Paket einmal, ohne standard und pflicht"
         },
         "hilfe": {
           "type": "string"
@@ -89,7 +94,11 @@
           "type": "string",
           "pattern": "^https?://[^\\s@?#]+$",
           "description": "bei typ adresse (DMS >=0.124.0): Beispiel im leeren Feld, z. B. http://ollama:11434/v1 – nie eine gespeicherte Vorgabe"
-        }
+        },
+        "laenge_min": { "type": "integer", "minimum": 0, "description": "Ablago #996, ab 0.286.0: kürzeste erlaubte Länge, nur bei text und mehrzeilig" },
+        "laenge_max": { "type": "integer", "minimum": 0, "description": "Ablago #996, ab 0.286.0: längste erlaubte Länge, nur bei text und mehrzeilig" },
+        "muster": { "type": "string", "minLength": 1, "maxLength": 300, "description": "Ablago #996, ab 0.286.0: regulärer Ausdruck für den ganzen Wert, nur bei text, z. B. ^[A-Z]{2}\\d{2}$" },
+        "meldung": { "type": "string", "minLength": 1, "maxLength": 200, "description": "Ablago #996, ab 0.286.0: Satz, wenn der Wert nicht zum muster passt (nur mit muster)" }
       }
     },
     "abschnitt": {
@@ -338,6 +347,14 @@
         "vorgaben": {
           "type": "string",
           "description": "Mitgelieferte Mappen mit fester Kennung (DMS #1038, ab Ablago 0.236.0) – bleiben nach der Installation, z. B. Vertragsarten"
+        },
+        "rundgaenge": {
+          "type": "string",
+          "description": "Rundgänge durch eine Aufgabe (Ablago #831, ab 0.285.0, dms: \">=0.285.0\"), meist inhalt/rundgaenge.yaml"
+        },
+        "tipps": {
+          "type": "string",
+          "description": "Tipps, höchstens 20 (Ablago #832, ab 0.285.0, dms: \">=0.285.0\"), meist inhalt/tipps.yaml"
         }
       }
     },
@@ -488,6 +505,18 @@
                 ]
               },
               "uniqueItems": true
+            },
+            "einrichtung": {
+              "type": "array",
+              "description": "Ablago #1054, ab 0.287.0: Einrichtung dieser Bereiche lesen (wie Ablago eingestellt ist, keine Inhalte) – nur ohne code.netz und ohne Dienst-Adresse",
+              "items": { "enum": ["allgemein", "belegeingang", "ablage", "zugang", "betrieb", "sicherung", "unveraenderbarkeit", "datenschutz", "betriebspruefung"] },
+              "uniqueItems": true
+            },
+            "nachweise": {
+              "type": "array",
+              "description": "Ablago #1054, ab 0.287.0: Nachweise dieser Bereiche lesen (was im Monat geschah, gezählt) – nur ohne code.netz und ohne Dienst-Adresse",
+              "items": { "enum": ["belegeingang", "zugang", "betrieb", "sicherung", "unveraenderbarkeit", "datenschutz"] },
+              "uniqueItems": true
             }
           }
         },
@@ -613,6 +642,66 @@
               },
               "bestaetigen": {
                 "type": "boolean"
+              }
+            }
+          }
+        },
+        "einstellungen_pruefen": {
+          "const": true,
+          "description": "Ablago #996, ab 0.286.0: Knopf „Einstellungen prüfen“ – das Paket bekommt die Aktion einstellungen_pruefen mit den eingetragenen, noch nicht gespeicherten Werten und antwortet mit Zeilen; schreiben darf es dabei nichts"
+        },
+        "anzeigen": {
+          "type": "array",
+          "maxItems": 12,
+          "description": "Ablago #996, ab 0.286.0: Kennzahlen in der Übersicht des Pakets; den Wert legt das Paket in seinem Speicher unter anzeige.<schluessel> ab",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["schluessel", "art"],
+            "properties": {
+              "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+              "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+              "art": { "enum": ["zahl", "anteil", "text", "zustand"] },
+              "hilfe": { "type": "string", "maxLength": 300 }
+            }
+          }
+        },
+        "ausprobieren": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ereignis", "dateiarten"],
+          "description": "Ablago #1004, ab 0.286.0: Reiter „Ausprobieren“ – das Paket bekommt das Ereignis mit probe: true, liest nur die Probedatei und ändert nichts",
+          "properties": {
+            "ereignis": { "type": "string", "description": "muss auch in code.ereignisse stehen, z. B. post.angelegt" },
+            "dateiarten": { "type": "array", "minItems": 1, "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z]+/(\\*|[a-z0-9][a-z0-9.+-]*)$" } },
+            "hilfe": { "type": "string", "maxLength": 300 }
+          }
+        },
+        "karten": {
+          "type": "array",
+          "maxItems": 20,
+          "description": "Ablago #680, ab 0.287.0: eigene Dann-Karten für Automatisierungen, ausgeführt über das Ereignis zeitplan.ausgefuehrt (aufgabe = Schlüssel der Karte, werte = Felder)",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["schluessel", "name"],
+            "properties": {
+              "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+              "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "hilfe": { "type": "string", "maxLength": 500 },
+              "felder": {
+                "type": "array",
+                "maxItems": 10,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["schluessel", "name"],
+                  "properties": {
+                    "schluessel": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$" },
+                    "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+                    "typ": { "enum": ["text", "zahl", "janein"], "description": "Vorgabe: text" }
+                  }
+                }
               }
             }
           }

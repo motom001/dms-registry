@@ -22,6 +22,7 @@ vorlage/               template for a new package – copy it and get started
 schema/                JSON schemas for manifest.yaml and the contents
 werkzeuge/             neues-paket.sh, pruefen.py, katalog.py, signieren.py, webseite.py, sammeldatei.py (also run in the CI)
 werkzeuge/symbole/     allowed icons for the catalogue (Lucide, ISC) – see REGELN.en.md, “Icon”
+werkzeuge/anker.yaml   anchor points of the user interface for tours and tips – copy from Ablago, do not edit by hand
 schluessel/            public keys the catalogue is signed with (see "Signing the catalogue")
 REGELN.md              what is allowed, what is not, which licences (English: REGELN.en.md)
 CONTRIBUTING.md        how a package gets here (English: CONTRIBUTING.en.md)
@@ -37,7 +38,7 @@ Every package contains at least:
 | `README.md` | what the package does, for whom, with an example |
 | `LICENSE` | licence text (open source, see [REGELN.en.md](REGELN.en.md)) |
 | `CHANGELOG.md` | changes per version |
-| `inhalt/` | Mappe types, views, samples (YAML), optionally example documents under `inhalt/beispiele/` – invented content only ([REGELN.en.md](REGELN.en.md#beispiel-dokumente)) |
+| `inhalt/` | Mappe types, views, samples (YAML), optionally example documents under `inhalt/beispiele/` – invented content only ([REGELN.en.md](REGELN.en.md#beispiel-dokumente)) –, tours and tips ([REGELN.en.md](REGELN.en.md#rundgaenge-und-tipps)) |
 | `code/` | only for packages with code: source code, built in the CI |
 | `tests/` | expectations for the package |
 
@@ -146,7 +147,7 @@ Packages with code describe their settings in the manifest under `code.einstellu
 - **Section:** `abschnitt` (heading), optional `hilfe`, `felder`
 - **List** of entries with the same structure: `liste` (key), `name`, `eintrag` (e.g. "Regel", rule), optional `hilfe`, `sortierbar`, `felder`
 
-A **field** has `schluessel`, `name`, `typ` and optionally `hilfe`, `pflicht`, `standard`, `optionen` (choice), `min`/`max` (number), `mappentyp` (for the type `feld`). Types: `text`, `mehrzeilig` (multi-line), `zahl` (number), `janein` (yes/no), `datum` (date), `auswahl` (choice), `mehrfachauswahl` (multiple choice), `geheim` (secret) and the references `mappentyp`, `feld`, `benutzer`, `rolle`, `sicht` (the stable id is stored, chosen from lists). **`code.aktionen`** (`schluessel`, `name`, optional `hilfe`, `bestaetigen`) become buttons in the form. A commented example is in [`vorlage/manifest.yaml`](vorlage/manifest.yaml).
+A **field** has `schluessel`, `name`, `typ` and optionally `hilfe`, `pflicht`, `standard`, `optionen` (choice), `min`/`max` (number), `mappentyp` (for the type `feld`), from Ablago 0.286.0 also validation rules (`laenge_min`, `laenge_max`, `muster` with `meldung`). Types: `text`, `mehrzeilig` (multi-line), `zahl` (number), `janein` (yes/no), `datum` (date), `auswahl` (choice), `mehrfachauswahl` (multiple choice), `geheim` (secret) and the references `mappentyp`, `feld`, `benutzer`, `rolle`, `sicht` (the stable id is stored, chosen from lists). Plus the core field types `ki_mappentypen`, `fragen_grenzen`, `erkennung_standard` and `mappenaktionen` – Ablago keeps the value. **`code.aktionen`** (`schluessel`, `name`, optional `hilfe`, `bestaetigen`) become buttons in the form. What else a package can describe – its own check, displays in the overview, “Try it out”, own cards for automations – is in [REGELN.en.md](REGELN.en.md#settings). A commented example is in [`vorlage/manifest.yaml`](vorlage/manifest.yaml).
 
 `werkzeuge/pruefen.py` additionally checks: keys are unique per level or list, `standard` matches the type, a choice has `optionen`, `geheim` and references have no default, references to Mappe types of other packages only as `<paket>:<schluessel>` and only to dependencies; to Mappe types of Ablago only `dms:benutzer` or `dms:rolle` (`dms:ablageort` gives a warning: deprecated, please use `basis:ablageort`).
 

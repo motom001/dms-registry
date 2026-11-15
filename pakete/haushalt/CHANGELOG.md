@@ -1,5 +1,11 @@
 # Änderungen
 
+## 2.1.0
+
+- Neu: **Rundgang „Ausweis ablegen“** (dms-registry #132) – zeigt in vier Schritten an einem leeren Formular, wo Art, Person, „Gültig bis“ und der Ort des Originals hingehören; gespeichert wird dabei nichts. Ablago bietet ihn nach der Installation 30 Tage lang als Tipp an, danach steht er unter „Ablago entdecken“.
+- Neu: **drei Tipps** – „Garantie bis“ an der Anschaffung, „Einspruch bis“ und „Belege“ am Steuerjahr.
+- Braucht Ablago 0.285.0; ältere Versionen bleiben bei 2.0.0.
+
 ## 2.0.0
 
 - **Breaking Change – Vertrag und Versicherung ziehen ins Paket Verträge** (dms-registry #163): Haushalt bringt die Mappentypen *Vertrag* und *Versicherung* nicht mehr mit. Verträge und Versicherungen legst du als **Vertrag** aus dem Paket Verträge an (Versicherung ist dort eine Vertragsart); es rechnet *Kündigen bis* selbst aus. Bestehende Mappen ziehen beim Installieren bzw. Aktualisieren von **Verträge 1.1.0** dorthin um – mit allen Werten, Dokumenten, Verknüpfungen, Ansichten und Rechten (Ablago 0.243.0, „Umbau“). Deshalb erst Verträge, dann Rechnungen, dann dieses Update.

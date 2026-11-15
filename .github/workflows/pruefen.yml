@@ -55,8 +55,12 @@ jobs:
       # ABLAGO beim Kern-Update hochziehen.
       - name: Pakete mit dem Installer von Ablago prüfen
         env:
-          ABLAGO: ghcr.io/motom001/dms:0.257.0
+          ABLAGO: ghcr.io/motom001/dms:0.290.1
         run: |
+          # Rundgänge und Tipps (#132, #202): werkzeuge/anker.yaml ist eine Kopie der Ankerliste dieser Ablago-Version –
+          # beim Hochziehen von ABLAGO mit erneuern: docker run --rm --entrypoint cat "$ABLAGO" /app/shared/entdecken/anker.yaml > werkzeuge/anker.yaml
+          docker run --rm --entrypoint cat "$ABLAGO" /app/shared/entdecken/anker.yaml | diff -u - werkzeuge/anker.yaml \
+            || { echo "::error file=werkzeuge/anker.yaml::Ankerliste weicht von Ablago ${ABLAGO##*:} ab – bitte erneuern (siehe Kommentar)"; exit 1; }
           git worktree add -q "$RUNNER_TEMP/neu" HEAD
           if [ "${{ github.event_name }}" = pull_request ]; then
             git worktree add -q "$RUNNER_TEMP/alt" "origin/${{ github.base_ref }}"

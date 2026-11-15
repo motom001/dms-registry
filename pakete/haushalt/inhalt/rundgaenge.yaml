@@ -1,0 +1,32 @@
+# Rundgang (Ablago ab 0.285.0, dms-registry #132): führt durch eine Aufgabe. Ablago bietet ihn nach der Installation
+# 30 Tage lang als Tipp an und zeigt ihn unter „Ablago entdecken“; er startet nie von selbst.
+- schluessel: ausweis_ablegen
+  titel: Ausweis ablegen
+  beschreibung: Wie du einen Ausweis oder eine Urkunde ablegst und dich vor dem Ablauf erinnern lässt.
+  start: nach_installation
+  fuer: lesen
+  oeffne:
+    neu: { typ: ausweis }             # leeres Formular – gespeichert wird nichts
+  ersatz: Ausweise legst du unter „+ Neu“ als „Ausweis & Urkunde“ an.
+  schritte:
+    - schluessel: art
+      ziel: mappe.feld:art
+      ort: Im Formular oben
+      titel: Was ist es?
+      text: Wähle Personalausweis, Reisepass, Führerschein oder eine Urkunde.
+    - schluessel: person
+      ziel: mappe.feld:person_verweis
+      ort: Im Formular unter der Art
+      titel: Für wen?
+      text: Wähle die Person aus deinem Haushalt. So findest du später alle Ausweise einer Person.
+    - schluessel: gueltig_bis
+      ziel: mappe.feld:gueltig_bis
+      ort: Im Formular unter „Ausgestellt am“
+      titel: Gültig bis
+      text: Trag ein, bis wann der Ausweis gilt. Bei Urkunden bleibt das Feld leer.
+    - schluessel: original
+      ziel: mappe.feld:verbleib_original
+      ort: Im Formular unten
+      titel: Wo liegt das Original?
+      text: Wähle, wo du das Papier aufbewahrst, zum Beispiel „Arbeitszimmer › Schrank › roter Ordner“.
+  ende: Ablago erinnert dich 90 Tage vor „Gültig bis“, wenn du unter Werkbank → Automatisierungen „Ausweis läuft bald ab“ einschaltest.

@@ -41,6 +41,9 @@ inhalt:
 #                                     # z. B. - woerter: [Kfz, Auto, PKW]; dann dms: ">=0.127.0"
 #  automatisierungen: inhalt/automatisierungen.yaml # optional (Ablago ab 0.177.0): vorgefertigte Automatisierungen,
 #                                     # z. B. „Neue Dokumente melden“; dann dms: ">=0.177.0"
+#  rundgaenge: inhalt/rundgaenge.yaml # optional (Ablago ab 0.285.0): Rundgang durch eine Aufgabe, höchstens 8 Schritte;
+#                                     # dann dms: ">=0.285.0" (REGELN.md, „Rundgänge und Tipps“)
+#  tipps: inhalt/tipps.yaml           # optional (Ablago ab 0.285.0): kurze Sätze, die an eine Stelle führen, höchstens 20
 
 # Nur für Pakete mit Code (Ablago ab 0.88.0) – sonst weglassen, dazu den Ordner code/. Siehe code/README.md.
 # code:
@@ -70,5 +73,23 @@ inhalt:
 #       felder:
 #         - { schluessel: absender, name: Absender enthält, typ: text }
 #         - { schluessel: ziel, name: Mappentyp, typ: mappentyp, pflicht: true }
+#         # Prüfregeln (Ablago ab 0.286.0): Länge bei text/mehrzeilig, Muster für den ganzen Wert nur bei text
+#         - { schluessel: kennung, name: Kundennummer, typ: text, laenge_max: 12, muster: "[A-Z]{2}-\\d+", meldung: "Bitte wie „AB-12“." }
+#     - abschnitt: Datenschutz       # Feldarten des Kerns (Ablago ab 0.286.0): den Wert hält Ablago, je Paket einmal,
+#       felder:                      # ohne standard und pflicht – ki_mappentypen, fragen_grenzen, erkennung_standard,
+#         - { schluessel: typen, name: Was die KI lesen darf, typ: ki_mappentypen }   # mappenaktionen
 #   aktionen:                        # Knöpfe im Formular; Ablago ruft das Paket auf und zeigt die Antwort
 #     - { schluessel: anwenden, name: Regeln jetzt auf neue Post anwenden, bestaetigen: true }
+#   einstellungen_pruefen: true      # Ablago ab 0.286.0: eigene Prüfung vor dem Speichern (Aktion einstellungen_pruefen)
+#   anzeigen:                        # Ablago ab 0.286.0: Kennzahlen in der Übersicht, Wert im Speicher unter anzeige.<schluessel>
+#     - { schluessel: zugeordnet, name: Zugeordnete Post, art: zahl }          # zahl, anteil, text, zustand
+#   ausprobieren:                    # Ablago ab 0.286.0: Reiter „Ausprobieren“ – das Ereignis kommt mit probe: true,
+#     ereignis: dokument.hochgeladen # das Paket liest nur die Probedatei und ändert nichts
+#     dateiarten: [application/pdf, "image/*"]
+#     hilfe: Zeigt, welcher Regel die Datei folgen würde.
+#   karten:                          # Ablago ab 0.287.0: eigene Dann-Karten für Automatisierungen,
+#     - schluessel: bericht          # braucht das Ereignis zeitplan.ausgefuehrt
+#       name: Monatsbericht ablegen
+#       hilfe: Legt den Bericht des Vormonats als Mappe ab.
+#       felder:
+#         - { schluessel: tage, name: Tage zurück, typ: zahl }               # text, zahl, janein

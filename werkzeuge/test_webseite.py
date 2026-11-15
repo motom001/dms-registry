@@ -234,6 +234,25 @@ class AktionenUndUmbau(unittest.TestCase):
         self.assertIn('Werkstattrechnung (aus Fahrzeuge)', h)
 
 
+class RundgaengeUndTipps(unittest.TestCase):
+    """Registry #132: Paketseite zeigt Rundgänge und Tipps, die Kachel „mit Rundgang“."""
+
+    def test_block(self):
+        h = w.entdecken_block([{'titel': 'Ausweis ablegen', 'beschreibung': 'Wo was hingehört.', 'schritte': [{}, {}, {}]}],
+                              [{'text': 'Trag „Garantie bis“ ein.'}, {'text': '<b>x</b>'}])
+        self.assertIn('<h3>Rundgang</h3>', h)
+        self.assertIn('<strong>Ausweis ablegen</strong> – Wo was hingehört.', h)
+        self.assertIn('3 Schritte', h)
+        self.assertIn('<h3>Tipps</h3>', h)
+        self.assertIn('&lt;b&gt;', h)
+        self.assertEqual(w.entdecken_block([], []), '')
+
+    def test_kachel_mit_rundgang(self):
+        self.assertIn('mit Rundgang', w.kennzeichen({'id': 'haushalt'}, 'de'))
+        self.assertIn('with a tour', w.kennzeichen({'id': 'haushalt'}, 'en'))
+        self.assertNotIn('mit Rundgang', w.kennzeichen({'id': 'basis'}, 'de'))
+
+
 class Zusammenhaenge(unittest.TestCase):
     """Diagramm als Inline-SVG (#115 Punkt 4): beim Bauen erzeugt, nichts von Dritten, Farben aus der Seite."""
 
