@@ -55,7 +55,7 @@ Unter **Werkbank → Pakete → Trennblatt → Einstellungen**:
 
 | Einstellung | Standard | Bedeutung |
 | --- | --- | --- |
-| Barcode auf dem Trennblatt | `DMS-TRENNEN` | Inhalt des Barcodes, an dem das Paket teilt. Groß- und Kleinschreibung zählen nicht. |
+| Barcode auf dem Trennblatt | `DMS-TRENNEN` | Inhalt des Barcodes, an dem das Paket teilt. Groß- und Kleinschreibung zählen nicht. Höchstens 40 Zeichen, nur Buchstaben ohne Umlaute, Ziffern und Zeichen wie `-` oder `_` (ab 1.2.0 prüft Ablago das beim Speichern). |
 | Trennblatt behalten | Nein | Ja: Jedes Trennblatt bleibt als erste Seite der neuen Post. |
 | Leere Rückseite mit entfernen | Ja | Eine leere Seite direkt nach einem Trennblatt (beidseitiger Scan) fällt mit weg. Leer heißt wie beim Paket [Leerseiten](../leerseiten/) in der Stufe „vorsichtig“: Lochung, Staub und Schatten am Rand zählen nicht, eine Bleistiftnotiz oder ein Stempel schon. |
 | Nur Post aus diesen Kanälen | leer (alle) | Eingangsordner, E-Mail-Postfach, Hochgeladen, Scan, WebDAV, API, Import |
@@ -92,7 +92,7 @@ Den größten Teil der Zeit braucht Ablago, um die Seiten zu rastern. Mit dem St
 
 ## Voraussetzungen
 
-- Ablago **0.94.0** oder neuer (Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API, Recht nur für Post).
+- Ablago **0.286.0** oder neuer (Prüfregel für den Barcode; Version 1.1.1 läuft ab 0.94.0: Paket-Läufer, Seite als Graustufenbild, Post teilen per API, Archivnummer per API, Recht nur für Post).
 
 ## Für Entwickler
 

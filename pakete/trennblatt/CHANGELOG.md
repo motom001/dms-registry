@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.0
+
+- **Prüfregel für den Barcode** (dms-registry #202, Ablago #996): höchstens 40 Zeichen, nur Buchstaben ohne Umlaute, Ziffern und Zeichen wie `-` oder `_`. Was ein Code-128-Barcode nicht tragen kann, sagt Ablago jetzt direkt am Feld, statt dass das Paket das Trennblatt nie findet.
+- Braucht Ablago 0.286.0; ältere Versionen bleiben bei 1.1.1.
+
 ## 1.1.1
 
 - Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).

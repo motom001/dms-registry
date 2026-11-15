@@ -10,7 +10,7 @@ Das Paket **rechnet nicht selbst**. Es ist ein Adapter zu einem **KI-Dienst, den
 
 1. Du stellst in Ablago eine Frage. Der Browser schickt sie mit dem bisherigen Chat an **dein Ablago**.
 2. **Ablago selbst** sucht passende Stellen – im Volltext deiner Dokumente, in Titeln und Feldern der Mappen und, mit dem Paket [KI lokal – Ähnlichkeit](../ki_aehnlich/), nach Ähnlichkeit. Es sucht **nur in Mappen, die du lesen darfst**; Passwortfelder und Benutzer sind nie dabei.
-3. Es schneidet **wenige Ausschnitte** heraus – höchstens so viele, wie der Administrator unter *Werkbank → Pakete → KI-Assistent → Frag deine Ablage* einstellt (Standard: 8 Ausschnitte, zusammen 6 000 Zeichen). **Nie der ganze Bestand.**
+3. Es schneidet **wenige Ausschnitte** heraus – höchstens so viele, wie der Administrator unter *Werkbank → Pakete → KI-Assistent → Einstellungen → Frag deine Ablage* einstellt (Standard: 8 Ausschnitte, zusammen 6 000 Zeichen). **Nie der ganze Bestand.**
 4. Ablago gibt Frage, bisherigen Chat und Ausschnitte an dieses Paket im **Paket-Läufer**. Das Paket schickt sie an den KI-Dienst unter der **Dienst-Adresse** – an keine andere Adresse; das erzwingt der Läufer.
 5. Der Dienst antwortet Stück für Stück; das Paket gibt die Stücke weiter, und die Antwort entsteht beim Schreiben.
 6. Ablago zeigt die Antwort **nur als Text** und darunter die **Quellen**. Unter jeder Antwort steht aufklappbar **„An die KI geschickt: n Ausschnitte aus m Mappen“** mit genau den Stellen, die beim Dienst angekommen sind. Hat das Paket gekürzt (siehe *Kontextlänge* unten), steht dort z. B. **„An die KI geschickt: 6 von 9 Ausschnitten (gekürzt)“**, und aufgeklappt siehst du nur die sechs.
@@ -29,7 +29,7 @@ Den Knopf **Aus Dokument ausfüllen** gibt es in jeder Mappe. Normalerweise fül
 5. Die Werte erscheinen nur als **Vorschlag** in der Mappe; gespeichert wird erst, wenn du speicherst.
 6. **Antwortet der Dienst nicht** (nicht erreichbar, nach der Zeitgrenze, höchstens 60 Sekunden) oder **unbrauchbar**, übernimmt die eingebaute Erkennung – du siehst einen Hinweis. Antwortet er, aber ohne einen passenden Wert oder gar nicht mit JSON, heißt der Hinweis „KI-Assistent hat nichts Brauchbares geliefert“ (die genaue Ursache steht im Protokoll des Pakets).
 
-**Einrichten:** *Werkbank → Pakete → KI-Assistent* → Abschnitt **Aus Dokument ausfüllen** → *Dieses Paket als Standard für alle Mappentypen nutzen*, oder in der *Erkennung* eines einzelnen Mappentyps. Weil das Paket den Text an die Dienst-Adresse schickt, fragt Ablago **„Text der Dokumente an einen Dienst schicken?“** – erst mit *Bestätigen und wählen* gilt die Wahl. In den Einstellungen des Pakets kannst du das ausschalten (**Für „Aus Dokument ausfüllen“ nutzen**) und die **Zeitgrenze** einstellen (Standard 50 Sekunden).
+**Einrichten:** *Werkbank → Pakete → KI-Assistent → Einstellungen* → Abschnitt **Aus Dokument ausfüllen** → *Als Standard für alle Mappentypen nutzen*, oder in der *Erkennung* eines einzelnen Mappentyps. Weil das Paket den Text an die Dienst-Adresse schickt, fragt Ablago **„Text der Dokumente an einen Dienst schicken?“** – erst mit *Bestätigen und wählen* gilt die Wahl. In den Einstellungen des Pakets kannst du das ausschalten (**Für „Aus Dokument ausfüllen“ nutzen**) und die **Zeitgrenze** einstellen (Standard 50 Sekunden).
 
 ### Wohin gehört das?
 
@@ -109,12 +109,13 @@ Ins Compose-Projekt von Ablago eintragen (oder beide Projekte in ein gemeinsames
    - **Schlüssel (API-Key)** nur, wenn der Dienst eine Anmeldung verlangt (Ollama nicht). Ablago speichert ihn verschlüsselt.
    - **Antwort höchstens (Tokens)**, Standard 800 – kleiner ist schneller (gilt für „Frag deine Ablage“).
    - **Kontextlänge (Tokens)**, Standard 8 192 – so groß wie beim Dienst, nie größer (siehe *Kontextlänge* oben).
-   - Abschnitt **Aus Dokument ausfüllen**: an/aus, **Zeitgrenze** (Standard 50 Sekunden) und **Eigene Hinweise an den Dienst**.
+   - Abschnitt **Was die KI lesen darf** (ab 1.4.0 an dieser Stelle): welche Mappentypen der Dienst bekommt. Neue Mappentypen sind gesperrt, bis du sie zulässt; die Auswahl gilt für alle KI-Pakete.
+   - Abschnitt **Frag deine Ablage**: Höchstmenge je Frage (Standard 8 Ausschnitte, zusammen 6 000 Zeichen).
+   - Abschnitt **Aus Dokument ausfüllen**: als Standard für alle Mappentypen, an/aus, **Zeitgrenze** (Standard 50 Sekunden) und **Eigene Hinweise an den Dienst** (höchstens 1 000 Zeichen).
    - Abschnitt **Wohin gehört das?** (ab 1.3.0): an/aus und **Eigene Hinweise an den Dienst**.
 3. **Speichern** – Ablago fragt „Daten an diese Adresse schicken?“. Mit **Adresse bestätigen und speichern** gilt die Adresse; erst dann darf das Paket dorthin.
 4. **Verbindung testen**: Das Paket fragt den Dienst nach seinen Modellen und stellt eine kurze Probefrage. Die Meldung sagt, ob der Dienst erreichbar ist, ob das Modell da ist (sonst: welche es gibt) und wie lange eine Antwort dauerte.
 
-Unter *Werkbank → Pakete → KI-Assistent* stellst du außerdem die **Höchstmenge je Frage** ein.
 
 ## Welches Modell?
 
@@ -147,7 +148,7 @@ Die Zeit bestimmt also fast nur der KI-Dienst. **Messungen mit echten Modellen a
 
 ## Voraussetzungen
 
-- Ablago **0.226.0** oder neuer (Schnittstelle `dms:klassifizieren` und Fundstellen als Rahmen; seit 0.138.0 Anzeige, wenn das Paket kürzt, und „hat nichts Brauchbares geliefert“; seit 0.125.0 Schnittstelle `dms:erkennen` für „Aus Dokument ausfüllen“; seit 0.124.0 `dms:antworten`, Dienst-Adresse als Einstellung, Antwort Stück für Stück).
+- Ablago **0.286.0** oder neuer (alle Einstellungen im Reiter „Einstellungen“, Prüfregeln; seit 0.226.0 Schnittstelle `dms:klassifizieren` und Fundstellen als Rahmen; seit 0.138.0 Anzeige, wenn das Paket kürzt, und „hat nichts Brauchbares geliefert“; seit 0.125.0 Schnittstelle `dms:erkennen` für „Aus Dokument ausfüllen“; seit 0.124.0 `dms:antworten`, Dienst-Adresse als Einstellung, Antwort Stück für Stück).
 - Ein KI-Dienst mit OpenAI-kompatibler Schnittstelle (`/v1/models`, `/v1/chat/completions`).
 - Dokumente mit Volltext – ohne Text findet Ablago keine Ausschnitte. Mit [KI lokal – Ähnlichkeit](../ki_aehnlich/) findet es auch Stellen ohne gleiche Wörter.
 
