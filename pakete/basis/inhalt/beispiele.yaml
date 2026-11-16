@@ -1,4 +1,6 @@
 # Beispiel-Mappen mit erfundenen Daten. Verweise zwischen Beispielen ({ beispiel: … }) ab DMS 0.79.0.
+# Keine echten Daten (dms-registry #205): Menschen ohne Persona tragen eine Rollenbezeichnung statt eines Namens,
+# E-Mail- und Internetadressen liegen nur unter example.org.
 - typ: organisation
   schluessel: stadtwerke
   werte:
@@ -7,8 +9,8 @@
     art: [Versorger]
     kundennummer: "100-4711"
     telefon: "0123 45678-0"
-    email: service@stadtwerke-musterstadt.example
-    internet: https://www.stadtwerke-musterstadt.example
+    email: service@stadtwerke.example.org
+    internet: https://www.stadtwerke.example.org
     strasse: Am Wasserturm
     hausnummer: "1"
     plz: "12345"
@@ -17,7 +19,7 @@
 - typ: organisation
   schluessel: praxis
   werte:
-    name: Praxis Dr. Beispiel
+    name: Hausarztpraxis am Lindenweg
     art: [Arzt/Praxis]
     kundennummer: "P-0815"
     beschreibung: Hausarztpraxis, Termine nach Vereinbarung.
@@ -35,7 +37,7 @@
     art: [Bank]
     kundennummer: "KD 4711 0815"
     telefon: "0123 9999-0"
-    internet: https://www.sparkasse-musterstadt.example
+    internet: https://www.sparkasse.example.org
     strasse: Hauptstraße
     hausnummer: "10"
     plz: "12345"
@@ -68,27 +70,24 @@
 - typ: person
   werte:
     anrede: Frau
-    vorname: Sabine
-    nachname: Beraterin
+    nachname: Kundenberaterin Sparkasse
     beziehung: [Ansprechpartner]
     organisation: { beispiel: sparkasse }
     niederlassung: { beispiel: filiale_markt }
     funktion: Kundenberaterin
     telefon: "0123 9999-125"
-    email: sabine.beraterin@sparkasse-musterstadt.example
+    email: beratung@sparkasse.example.org
 - typ: person
   werte:
     anrede: Herr
-    titel: Dr.
-    vorname: Bernd
-    nachname: Beispiel
+    nachname: Hausarzt
     beziehung: [Arzt/Ärztin]
     organisation: { beispiel: praxis }
     funktion: Hausarzt
 - typ: person
   werte:
-    vorname: Oma
-    nachname: Muster
+    nachname: Oma
+    beschreibung: Großmutter – ein Beispiel für jemanden aus der Familie.
     beziehung: [Familie]
     geburtstag: "1948-05-12"
     telefon: "0123 55555"

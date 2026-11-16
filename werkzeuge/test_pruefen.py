@@ -911,6 +911,57 @@ PNG = b'\x89PNG\r\n\x1a\n' + b'\x01' * 32
 JPEG = b'\xff\xd8\xff\xe0' + b'\x02' * 32
 
 
+class BeispielAdressen(unittest.TestCase):
+    """E-Mail- und Internetadressen in Beispielen nur unter example.org, example.com, example.net oder .test (#205)."""
+
+    def pruefe(self, werte: dict, dateien: dict | None = None) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ordner = Path(tmp)
+            for name, inhalt in (dateien or {}).items():
+                (ordner / 'inhalt' / name).parent.mkdir(parents=True, exist_ok=True)
+                (ordner / 'inhalt' / name).write_bytes(inhalt)
+            return pruefen.pruefe_beispiel_adressen(ordner, [{'typ': 'person', 'werte': werte}])
+
+    def test_beispiel_domains_erlaubt(self):
+        self.assertEqual(self.pruefe({'email': 'service@stadtwerke.example.org', 'internet': 'https://www.sparkasse.example.org/filialen',
+                                      'notiz': 'Mail an lena@example.com oder https://example.net', 'mobil': '0170 0000000',
+                                      'web': 'http://router.test', 'liste': ['jonas@example.org']}), [])
+
+    def test_andere_domains_gemeldet(self):
+        f = '\n'.join(self.pruefe({'email': 'service@stadtwerke-musterstadt.example', 'internet': 'https://www.sparkasse.de',
+                                   'notiz': 'siehe www.beispiel.de', 'kontakt': [{'email': 'a@example.org.evil.de'}]}))
+        self.assertIn('email „service@stadtwerke-musterstadt.example“', f)
+        self.assertIn('internet „https://www.sparkasse.de“', f)
+        self.assertIn('notiz „www.beispiel.de“', f)
+        self.assertIn('kontakt[0].email „a@example.org.evil.de“', f)
+        self.assertIn('außerhalb der Beispiel-Domains', f)
+
+    def test_internetfeld_ohne_schema(self):
+        self.assertEqual(len(self.pruefe({'internet': 'stadtwerke.de'})), 1)
+        self.assertEqual(self.pruefe({'internet': 'stadtwerke.example.org'}), [])
+        # In anderen Feldern ist „rechnung.pdf“ keine Adresse.
+        self.assertEqual(self.pruefe({'datei': 'rechnung.pdf', 'betrag': 'Version 2.0'}), [])
+
+    def test_pdf_roh_und_gepackt(self):
+        import zlib
+        roh = b'%PDF-1.4\n(Fragen an info@stadtwerke.de)\n%%EOF\n'
+        gepackt = b'%PDF-1.4\n1 0 obj<</Filter/FlateDecode>>stream\n' + zlib.compress(b'(https://www.bank.de)') + b'\nendstream\n%%EOF\n'
+        gut = b'%PDF-1.4\n(service@stadtwerke.example.org)\n%%EOF\n'
+        f = '\n'.join(self.pruefe({}, {'beispiele/a.pdf': roh, 'beispiele/b.pdf': gepackt, 'beispiele/c.pdf': gut, 'beispiele/d.png': PNG}))
+        self.assertIn('inhalt/beispiele/a.pdf', f)
+        self.assertIn('info@stadtwerke.de', f)
+        self.assertIn('inhalt/beispiele/b.pdf', f)
+        self.assertIn('https://www.bank.de', f)
+        self.assertNotIn('c.pdf', f)
+        self.assertNotIn('d.png', f)
+
+    def test_pakete_der_registry_sauber(self):
+        for p in sorted((WURZEL / 'pakete').iterdir()):
+            b = p / 'inhalt' / 'beispiele.yaml'
+            if b.is_file():
+                self.assertEqual(pruefen.pruefe_beispiel_adressen(p, yaml.safe_load(b.read_text(encoding='utf-8')) or []), [], p.name)
+
+
 class BeispielDokumente(unittest.TestCase):
     """Beispiel-Dokumente in Paketen (Registry #137, motom001/dms#878)."""
 

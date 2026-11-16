@@ -13,7 +13,7 @@
   schluessel: jonas
   werte: { anrede: Herr, vorname: Jonas, nachname: Muster, beziehung: [Familie], geburtstag: "2010-05-28" }
 - typ: konto
-  werte: { bank: { beispiel: "basis:sparkasse" }, art: Girokonto, inhaber_verweis: [{ beispiel: lena }, { beispiel: tom }], iban: DE02 1203 0000 0000 2020 51, eroeffnet_am: "2015-04-01" }
+  werte: { bank: { beispiel: "basis:sparkasse" }, art: Girokonto, inhaber_verweis: [{ beispiel: lena }, { beispiel: tom }], iban: DE89 3704 0044 0532 0130 00, eroeffnet_am: "2015-04-01" }
 - typ: konto
   werte: { art: Depot, inhaber_verweis: [{ beispiel: lena }], eroeffnet_am: "2021-09-15" }
 - typ: steuerjahr
@@ -22,7 +22,7 @@
 - typ: arbeitsverhaeltnis
   werte: { steuerjahr: [{ beispiel: steuer2025 }], person_verweis: { beispiel: tom }, taetigkeit: Elektroniker, beginn: "2018-08-01" }
 - typ: vorsorge
-  werte: { art: gesetzliche Rente, person_verweis: { beispiel: lena }, vertragsnummer: "12 150378 M 007" }
+  werte: { art: gesetzliche Rente, person_verweis: { beispiel: lena }, vertragsnummer: "12 150378 M 007" }  # Beispielnummer mit ungültiger Prüfziffer
 - typ: ausweis
   werte: { art: Personalausweis, person_verweis: { beispiel: jonas }, nummer: L01X00T47, ausgestellt_am: "2026-06-02", gueltig_bis: "2032-06-01" }
 - typ: ausweis

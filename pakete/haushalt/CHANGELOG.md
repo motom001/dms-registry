@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.1.1
+
+- Beispiele (dms-registry #205): Das Girokonto nutzt die Test-IBAN aus REGELN.md (`DE89 3704 0044 0532 0130 00`); Jonas’ Impfung zeigt auf die „Hausarztpraxis am Lindenweg“ aus Basis 1.7.2. Bereits angelegte Beispiel-Mappen bleiben, wie sie sind.
+
 ## 2.1.0
 
 - Neu: **Rundgang „Ausweis ablegen“** (dms-registry #132) – zeigt in vier Schritten an einem leeren Formular, wo Art, Person, „Gültig bis“ und der Ort des Originals hingehören; gespeichert wird dabei nichts. Ablago bietet ihn nach der Installation 30 Tage lang als Tipp an, danach steht er unter „Ablago entdecken“.

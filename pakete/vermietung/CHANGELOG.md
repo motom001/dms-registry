@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.0.1
+
+- Beispiele passen zur Persona „Vermieter“ (dms-registry #205): Das Zweifamilienhaus Gartenstraße 8 gehört Herrn Özdemir; er steht als neue Beispiel-Person und als *Anbieter* (Vermieter) an beiden Mietverträgen. Die Mieter heißen nach ihrer Rolle („Mieterin EG“, „Mieter OG“) statt „Petra Mieterin“ und „Jonas Mieter“ – Petra und Jonas sind Personas in anderen Rollen. 12 statt 11 Beispiele. Bereits angelegte Beispiel-Mappen bleiben, wie sie sind.
+
 ## 2.0.0
 
 - **Breaking Change – Mietvertrag und Ausgabe ziehen in die Pakete Verträge und Rechnungen** (dms-registry #163): Vermietung bringt die Mappentypen *Mietvertrag* und *Ausgabe Mietobjekt* nicht mehr mit.

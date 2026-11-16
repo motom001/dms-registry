@@ -3,7 +3,7 @@ schema: 1
 id: haushalt
 name: Haushalt
 herausgeber: app.ablago
-version: 2.1.0
+version: 2.1.1
 beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Verträge, Versicherungen und Rechnungen kommen aus den Paketen Verträge und Rechnungen.
 autor:
   name: Thomas Meissner
