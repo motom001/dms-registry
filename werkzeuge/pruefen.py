@@ -1056,6 +1056,88 @@ def pruefe_beispiel_dokumente(ordner: Path, beispiele: list, typen: list, paket_
     return fehler
 
 
+# Adressen in Beispielen (Registry #205): E-Mail- und Internetadressen nur unter den reservierten Beispiel-Domains
+# (RFC 2606/6761) – example.org, example.com, example.net und ihre Unterdomains sowie die Endung .test. Gilt für die
+# Werte in beispiele.yaml und für Beispiel-Dokumente, soweit lesbar (PDF: Text roh und in Flate-Streams).
+BEISPIEL_DOMAINS = ('example.org', 'example.com', 'example.net')
+ADRESSE_EMAIL = re.compile(r'[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)')
+ADRESSE_URL = re.compile(r'(?:\b[A-Za-z][A-Za-z0-9+.-]*://(?:[^@\s/?#]*@)?|\bwww\.)([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*)', re.I)
+ADRESSE_NUR_DOMAIN = re.compile(r'^([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,})(?:[/?#]\S*)?$')
+# Felder, die auch eine Domain ohne https:// und ohne www. als Internetadresse nehmen (format: internetseite).
+ADRESSE_FELDER = {'internet', 'internetseite', 'webseite', 'website', 'homepage', 'url'}
+
+
+def beispiel_domain_ok(domain: str) -> bool:
+    d = domain.lower().rstrip('.')
+    return d.endswith('.test') or any(d == b or d.endswith('.' + b) for b in BEISPIEL_DOMAINS)
+
+
+def fremde_adressen(text: str, nur_domain: bool = False) -> list[str]:
+    """Adressen im Text, die nicht unter einer Beispiel-Domain liegen (E-Mail, Internetadresse mit Schema oder www.)."""
+    gefunden = []
+    for m in ADRESSE_EMAIL.finditer(text):
+        if not beispiel_domain_ok(m.group(1)):
+            gefunden.append(m.group(0))
+    for m in ADRESSE_URL.finditer(text):
+        host = m.group(1) if not m.group(0).lower().startswith('www.') else 'www.' + m.group(1)
+        if '.' in host and not beispiel_domain_ok(host):
+            gefunden.append(m.group(0))
+    if nur_domain and not gefunden:
+        m = ADRESSE_NUR_DOMAIN.match(text.strip())
+        if m and not beispiel_domain_ok(m.group(1)):
+            gefunden.append(text.strip())
+    return list(dict.fromkeys(gefunden))
+
+
+def pdf_texte(daten: bytes) -> list[str]:
+    """Lesbarer Text eines PDF ohne Zusatzbibliothek: die Datei roh und jeder Flate-Stream entpackt (soweit möglich)."""
+    import zlib
+    texte = [daten.decode('latin-1')]
+    for m in re.finditer(rb'stream\r?\n', daten):
+        try:
+            texte.append(zlib.decompressobj().decompress(daten[m.end():m.end() + 20 * 1024 * 1024]).decode('latin-1'))
+        except zlib.error:
+            continue
+    return texte
+
+
+def pruefe_beispiel_adressen(ordner: Path, beispiele: list) -> list[str]:
+    """E-Mail- und Internetadressen in Beispielen nur unter example.org, example.com, example.net oder .test (#205)."""
+    fehler: list[str] = []
+    erlaubt = 'erlaubt: example.org, example.com, example.net mit Unterdomains und .test'
+
+    def werte(x, pfad: str, i: int, typ):
+        if isinstance(x, dict):
+            for k, v in x.items():
+                werte(v, f'{pfad}.{k}' if pfad else str(k), i, typ)
+        elif isinstance(x, list):
+            for j, v in enumerate(x):
+                werte(v, f'{pfad}[{j}]', i, typ)
+        elif isinstance(x, str):
+            for a in fremde_adressen(x, pfad.rsplit('.', 1)[-1] in ADRESSE_FELDER):
+                fehler.append(f'beispiele[{i}] ({typ}): {pfad} „{a}“ – Adresse außerhalb der Beispiel-Domains ({erlaubt})')
+
+    for i, b in enumerate(beispiele or []):
+        if not isinstance(b, dict):
+            continue
+        werte(b.get('werte'), '', i, b.get('typ'))
+        for j, d in enumerate(b.get('dokumente') or []):
+            if isinstance(d, dict):
+                werte({k: v for k, v in d.items() if k != 'datei'}, f'dokumente[{j}]', i, b.get('typ'))
+    unten = ordner / BEISPIEL_ORDNER
+    for p in sorted(unten.rglob('*')) if unten.is_dir() else []:
+        if not p.is_file() or p.suffix.lower() != '.pdf' or p.stat().st_size > BEISPIEL_DATEI_MAX:
+            continue
+        daten = p.read_bytes()
+        if not daten.startswith(b'%PDF-'):
+            continue
+        funde = list(dict.fromkeys(a for t in pdf_texte(daten) for a in fremde_adressen(t)))
+        if funde:
+            fehler.append(f'inhalt/{p.relative_to(ordner / "inhalt").as_posix()}: Adressen außerhalb der Beispiel-Domains '
+                          f'({erlaubt}): {", ".join(funde[:5])}{" …" if len(funde) > 5 else ""}')
+    return fehler
+
+
 def beispiel_groessen(ordner: Path) -> list[str]:
     """Größe der Beispiel-Dokumente je Datei und gesamt (Registry #137), als Hinweis bei jeder Prüfung."""
     unten = ordner / BEISPIEL_ORDNER
@@ -2317,6 +2399,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             verweis_ok(b['typ'], 'beispiele')
     fehler += pruefe_beispiel_verweise(geladen.get('beispiele', []) or [], str(m.get('id')), abh)
     fehler += pruefe_beispiel_dokumente(ordner, geladen.get('beispiele', []) or [], geladen.get('mappentypen', []) or [], str(m.get('id')), str(m.get('dms', '')))
+    fehler += pruefe_beispiel_adressen(ordner, geladen.get('beispiele', []) or [])
     fehler += pruefe_wortlisten(geladen.get('wortlisten', []) or [], str(m.get('dms', '')))
     fehler += pruefe_vorlagen(ordner, geladen.get('mappentypen', []) or [])
     fehler += pruefe_etappe15(ordner, m, geladen.get('mappentypen', []) or [], geladen.get('vorgaben', []) or [],

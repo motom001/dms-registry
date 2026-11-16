@@ -1,12 +1,16 @@
-# Beispiel-Mappen mit erfundenen Daten: Familie Muster vermietet ein Zweifamilienhaus.
+# Beispiel-Mappen mit erfundenen Daten: Herr Özdemir (die Persona „Vermieter“ von Ablago) vermietet ein Zweifamilienhaus.
+# Die Mieter haben keine Persona und heißen nach ihrer Rolle (dms-registry #205); Adressen nur unter example.org.
 # Verweise zwischen Beispielen ({ beispiel: … }) ab DMS 0.79.0; die Bank des Kautionskontos kommt aus den Beispielen
 # des Pakets Basis. Ab 2.0.0 sind die Mietverträge Verträge (Paket Verträge) und die Ausgaben Rechnungen (Paket Rechnungen).
 - typ: "basis:person"
+  schluessel: oezdemir
+  werte: { anrede: Herr, nachname: Özdemir, beschreibung: Vermieter – vermietet die Wohnungen in der Gartenstraße 8. }
+- typ: "basis:person"
   schluessel: mieterin_eg
-  werte: { anrede: Frau, vorname: Petra, nachname: Mieterin, beziehung: [Mieter/in], telefon: "0123 44444", email: petra.mieterin@example.org }
+  werte: { anrede: Frau, nachname: Mieterin EG, beziehung: [Mieter/in], telefon: "0123 44444", email: mieterin-eg@example.org }
 - typ: "basis:person"
   schluessel: mieter_og
-  werte: { anrede: Herr, vorname: Jonas, nachname: Mieter, beziehung: [Mieter/in], mobil: "0170 0000000" }
+  werte: { anrede: Herr, nachname: Mieter OG, beziehung: [Mieter/in], mobil: "0170 0000000" }
 - typ: mietobjekt
   schluessel: gartenstrasse
   werte: { bezeichnung: Zweifamilienhaus Gartenstraße 8, art: Mehrfamilienhaus, strasse: Gartenstraße, hausnummer: "8", plz: "12345", ort: Musterstadt, baujahr: "1965", einheiten: 2, grundsteuer_az: "123/456/78901" }
@@ -20,6 +24,7 @@
   werte:
     bezeichnung: Mietvertrag EG
     art: { vorgabe: "vertraege:miete" }
+    von: { beispiel: oezdemir }
     betrifft: [{ beispiel: eg }]
     an: [{ beispiel: mieterin_eg }]
     beginn: "2021-04-01"
@@ -36,6 +41,7 @@
   werte:
     bezeichnung: Mietvertrag OG
     art: { vorgabe: "vertraege:miete" }
+    von: { beispiel: oezdemir }
     betrifft: [{ beispiel: og }]
     an: [{ beispiel: mieter_og }]
     beginn: "2019-08-01"

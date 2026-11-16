@@ -34,7 +34,7 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 - *Läuft bald ab* – Ausweise, die in den nächsten sechs Monaten ablaufen oder schon abgelaufen sind,
 - *Garantie läuft ab* – Anschaffungen, deren Garantie in den nächsten drei Monaten endet.
 
-**Beispiele (optional):** 13 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas als **Personen**, je Typ ein bis zwei Mappen. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, Jonas’ Impfung auf die Praxis Dr. Beispiel (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
+**Beispiele (optional):** 13 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas als **Personen**, je Typ ein bis zwei Mappen. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, Jonas’ Impfung auf die Hausarztpraxis (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
 
 **Rundgang und Tipps:** Der Rundgang **Ausweis ablegen** zeigt dir an einem leeren Formular, wo Art, Person, *Gültig bis* und der Ort des Originals hingehören – gespeichert wird dabei nichts. Ablago bietet ihn nach der Installation 30 Tage lang als Tipp an; danach findest du ihn unter **Ablago entdecken**. Drei kurze Tipps führen zu *Garantie bis* an der Anschaffung sowie zu *Einspruch bis* und *Belege* am Steuerjahr.
 

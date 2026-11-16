@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.7.2
+
+- Beispiele ohne echt wirkende Daten (dms-registry #205): Kundenberaterin, Hausarzt und Oma heißen nach ihrer Rolle statt „Sabine Beraterin“, „Dr. Bernd Beispiel“ und „Oma Muster“; die Praxis heißt „Hausarztpraxis am Lindenweg“. E-Mail- und Internetadressen liegen unter example.org (z. B. `service@stadtwerke.example.org`) statt unter der Endung `.example`. Bereits angelegte Beispiel-Mappen bleiben, wie sie sind.
+
 ## 1.7.1
 
 - Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).

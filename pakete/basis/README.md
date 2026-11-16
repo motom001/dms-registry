@@ -43,7 +43,7 @@ Andere Pakete (Haushalt, Haus, Vermietung, Fahrzeuge) verweisen im Feld *Verblei
 
 **Gleichbedeutende Wörter für die Suche:** *Rechnung, Beleg* · *Quittung, Kassenbon, Kassenzettel* · *Vertrag, Vereinbarung* · *Kündigung, Beendigung* · *Police, Versicherungsschein, Versicherungspolice* · *Mahnung, Zahlungserinnerung* · *Gutschrift, Erstattung, Rückerstattung* · *Lastschrift, Abbuchung* · *Anschrift, Adresse*. Wer eines sucht, findet auch die anderen. Das sind nur allgemeine Wörter, die in jeder Ablage vorkommen; fachliche Wörter bringen die Fachpakete mit (z. B. Kfz/Auto in Fahrzeuge). Sie stehen in Ablago unter Werkbank → Suche; eigene Gruppen kannst du dort ergänzen.
 
-**Beispiele (optional):** „Stadtwerke Musterstadt“, „Praxis Dr. Beispiel“, die „Sparkasse Musterstadt“ mit zwei Filialen, die Kundenberaterin Sabine Beraterin (Filiale Marktplatz), Hausarzt Dr. Bernd Beispiel und Oma Muster – erfundene Daten, untereinander verknüpft.
+**Beispiele (optional):** „Stadtwerke Musterstadt“, die „Hausarztpraxis am Lindenweg“, die „Sparkasse Musterstadt“ mit zwei Filialen, die Kundenberaterin der Sparkasse (Filiale Marktplatz), der Hausarzt und die Oma – erfundene Daten, untereinander verknüpft. Personen ohne Persona heißen nach ihrer Rolle, Adressen liegen unter example.org.
 
 ## Voraussetzungen
 
