@@ -1060,8 +1060,9 @@ def pruefe_beispiel_dokumente(ordner: Path, beispiele: list, typen: list, paket_
 # (RFC 2606/6761) – example.org, example.com, example.net und ihre Unterdomains sowie die Endung .test. Gilt für die
 # Werte in beispiele.yaml und für Beispiel-Dokumente, soweit lesbar (PDF: Text roh und in Flate-Streams).
 BEISPIEL_DOMAINS = ('example.org', 'example.com', 'example.net')
-ADRESSE_EMAIL = re.compile(r'[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)')
-ADRESSE_URL = re.compile(r'(?:\b[A-Za-z][A-Za-z0-9+.-]*://(?:[^@\s/?#]*@)?|\bwww\.)([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*)', re.I)
+# Begrenzte Längen und Anfang nur an einer Wortgrenze: bleibt linear, auch bei MB-langen Zeichenfolgen in PDFs.
+ADRESSE_EMAIL = re.compile(r'(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]{1,64}@([A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63}){1,10})')
+ADRESSE_URL = re.compile(r'(?:(?<![A-Za-z0-9+.-])[A-Za-z][A-Za-z0-9+.-]{0,30}://(?:[^@\s/?#]{0,64}@)?|(?<![A-Za-z0-9.-])www\.)([A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63}){0,10})', re.I)
 ADRESSE_NUR_DOMAIN = re.compile(r'^([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,})(?:[/?#]\S*)?$')
 # Felder, die auch eine Domain ohne https:// und ohne www. als Internetadresse nehmen (format: internetseite).
 ADRESSE_FELDER = {'internet', 'internetseite', 'webseite', 'website', 'homepage', 'url'}
