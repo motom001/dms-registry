@@ -1953,3 +1953,29 @@ class ManifestFelder202(unittest.TestCase):
         r = yaml.safe_load((WURZEL / 'vorlage' / 'inhalt' / 'rundgaenge.yaml').read_text(encoding='utf-8'))
         t = yaml.safe_load((WURZEL / 'vorlage' / 'inhalt' / 'tipps.yaml').read_text(encoding='utf-8'))
         self.assertEqual(self.paket(rundgaenge=r, tipps=t), [])
+
+
+class InSuche(unittest.TestCase):
+    """dms-registry #197, DMS #1220: inSuche am Mappentyp, nur Ja/Nein, ohne höhere Mindestversion."""
+
+    def paket(self, wert) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            typen = yaml.safe_load((ziel / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+            typen[0]['inSuche'] = wert
+            (ziel / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump(typen, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_ja_nein(self):
+        ohne = self.paket(True)
+        self.assertEqual(self.paket(False), ohne)
+
+    def test_kein_text(self):
+        fehler = self.paket('nein')
+        self.assertTrue(any('inSuche' in f for f in fehler), fehler)
+
+    def test_vertragsart_nicht_in_der_suche(self):
+        typen = yaml.safe_load((WURZEL / 'pakete' / 'vertraege' / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+        self.assertIs(next(t for t in typen if t['schluessel'] == 'vertragsart')['inSuche'], False)

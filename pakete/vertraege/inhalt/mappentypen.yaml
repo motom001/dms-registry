@@ -5,6 +5,8 @@
 
 - schluessel: vertragsart
   name: Vertragsart
+  # Reine Auswahlliste: Vertragsarten sollen nicht als Treffer in der Suche oben erscheinen (dms-registry #197, DMS #1220).
+  inSuche: false
   beschreibung: Art eines Vertrags mit typischer Laufzeit und Kündigungsfrist und den passenden Vorlagen – z. B. Mobilfunk, Miete oder Versicherung. Das Paket bringt die üblichen mit; eigene kannst du ergänzen.
   beschriftungen: { en: { name: "Contract type", beschreibung: "Type of contract with its typical term, notice period and matching templates – e.g. mobile, rent or insurance. The package brings the usual ones; you can add your own." } }
   titelVorlage: "{name}"
