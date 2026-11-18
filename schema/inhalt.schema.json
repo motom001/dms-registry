@@ -169,7 +169,8 @@
         "register": { "type": "array", "items": { "$ref": "#/$defs/register" }, "minItems": 1 },
         "trefferliste": { "type": "array", "items": { "type": "string" } },
         "beschriftungen": { "$ref": "#/$defs/beschriftungen_name" },
-        "gehoertZu": { "$ref": "#/$defs/schluessel", "description": "DMS #1031: Mappen dieses Typs gehören immer zu einer anderen Mappe – Kennung des Verweisfelds (Pflicht), nicht in Ansichten und Suche" }
+        "gehoertZu": { "$ref": "#/$defs/schluessel", "description": "DMS #1031: Mappen dieses Typs gehören immer zu einer anderen Mappe – Kennung des Verweisfelds (Pflicht), nicht in Ansichten und Suche" },
+        "inSuche": { "type": "boolean", "description": "DMS #1220 (ab Ablago 0.276.0, ältere ignorieren es): false = Mappen dieses Typs nicht in der allgemeinen Suche (Suchfeld oben, Frag deine Ablage) – für reine Auswahllisten; fehlt = ja" }
       }
     },
     "vorgabe": {

@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.4.0
+
+- **Vertragsarten erscheinen nicht mehr in der Suche oben** und nicht in „Frag deine Ablage“ (dms-registry #197, Ablago #1220). In der erweiterten Suche findest du sie, sobald du den Typ „Vertragsart“ wählst; die Auswahl am Vertrag bleibt, wie sie ist. Hast du den Haken „In der allgemeinen Suche zeigen“ am Typ selbst gesetzt, bleibt deine Einstellung.
+- Braucht weiter **Ablago 0.248.0**; ältere Fassungen als 0.276.0 zeigen Vertragsarten weiter in der Suche.
+
 ## 1.3.0
 
 - **Umzug mit Fristen** (Ablago #1125): Versicherungen aus *Haushalt* bekommen beim Umzug gleich die üblichen Werte der Vertragsart *Versicherung* (12 Monate Laufzeit, verlängert sich um 12 Monate, 3 Monate zum Laufzeitende), Mietverträge aus *Vermietung* die der Vertragsart *Miete* (läuft unbefristet weiter, 3 Monate zum Monatsende). Gesetzt wird nur, was leer ist; danach rechnet das Paket *Kündigen bis* gleich richtig.
