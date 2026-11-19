@@ -2,7 +2,7 @@
 
 ## 2.1.0
 
-- **Rechnungen kommen aus dem Paket Rechnungen und Bestellungen** (dms-registry #208), dem Nachfolger des Pakets Rechnungen. Register, Ansichten und Verweise zeigen auf dessen Rechnung; nach dessen Installation (mit Umzug der Rechnungen) kannst du das Paket Rechnungen entfernen. Braucht **Ablago 0.248.0**.
+- **Rechnungen kommen aus dem Paket Rechnungen und Bestellungen** (dms-registry #208), dem Nachfolger des Pakets Rechnungen. Register, Ansichten und Verweise zeigen auf dessen Rechnung. Einen Umzug aus dem alten Paket gibt es nicht (nur eine Installation, die neu aufgebaut wird). Braucht **Ablago 0.248.0**.
 
 ## 2.0.1
 

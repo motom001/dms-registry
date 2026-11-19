@@ -1,6 +1,7 @@
 # Paket Rechnungen und Bestellungen (dms-registry #208, #210, #211, Etappe 15): Rechnung, Bestellung, Lieferschein,
 # Rechnungsposition und Steuerzeile – eingehend und ausgehend, mit Status, Summen und Summenprüfung. Nachfolger des
-# Pakets Rechnungen: beim Installieren ziehen dessen Mappen hierher (Umbau, DMS #1041). Schema: schema/manifest.schema.json
+# Pakets Rechnungen (ohne Umzug: es gab nur eine Installation, und die wird neu aufgebaut, Thomas 20.11.2026).
+# Schema: schema/manifest.schema.json
 schema: 1
 id: rechnung_bestellung
 name: Rechnungen und Bestellungen
@@ -13,8 +14,7 @@ autor:
 lizenz: Apache-2.0
 kategorien: [vorlagen]
 symbol: receipt-text
-# 0.248.0: Umbau mit Text → Verweis und Zeiträumen (DMS #1125); darin enthalten Umbau (0.243.0, #1041), Aktionen im
-# Menü „Mappe“ (0.245.0, #1039), Bedingungen auf zielOptional-Ziele (0.245.3, #1122), eigene Organisation (0.238.0),
+# 0.248.0 wie Fahrzeuge, Haushalt und Vermietung; darin enthalten Aktionen im Menü „Mappe“ (0.245.0, #1039), Bedingungen auf zielOptional-Ziele (0.245.3, #1122), eigene Organisation (0.238.0),
 # Vorgaben und Vorbelegen (0.234.0/0.236.0), gehört immer zu (0.235.0), Tabelle (0.232.0), berechnete Felder (0.231.0)
 dms: ">=0.248.0"
 kurzanleitung:
@@ -33,30 +33,6 @@ kurzanleitung:
 abhaengigkeiten:
   basis: ">=1.7.0"
   vertraege: ">=1.0.0"
-# Umbau (dms-registry #208, DMS #1041): Nachfolger des Pakets Rechnungen. Beim Installieren übernimmt die Rechnung den
-# alten Typ mit seiner Id (Ansichten, Rechte, Links bleiben) und bekommt den neuen Aufbau; Positionen und Lieferscheine
-# ebenso. Was keinen Platz mehr hat – Bemerkungen, Bezahlt von, Netto, Umsatzsteuersatz, Umsatzsteuer, Status (rechnet
-# das Paket neu) – steht danach in einer Notiz an der Mappe. Ablago zeigt vorher, was wohin geht.
-umbau:
-  - von: "rechnungen:rechnung"
-    nach: rechnung
-    felder: { von: von, an: an, betrag: betrag, rechnungsnummer: rechnungsnummer, datum: datum, faellig_am: faellig_am,
-              bezahlt_am: bezahlt_am, zahlweise: zahlweise, betrifft: betrifft, vertrag: gehoert_zu, steuerjahr: steuerjahr,
-              kilometerstand: kilometerstand, arbeiten: arbeiten, umlagefaehig: umlagefaehig, kostenart: kostenart,
-              skonto: skonto, skonto_bis: skonto_bis, zahlungseingang_am: zahlungseingang_am, mahnstufe: mahnstufe,
-              interne_nummer: interne_nummer, kostenstelle: kostenstelle, kostentraeger: kostentraeger, sachkonto: sachkonto,
-              verbleib_original: verbleib_original, kundennummer: gefundene_kundennummer }
-    register: { anlagen: dokumente }
-  - von: "rechnungen:rechnungsposition"
-    nach: rechnungsposition
-    felder: { rechnung: rechnung, nr: nr, beschreibung: beschreibung, menge: menge, einheit: einheit, einzelpreis: einzelpreis,
-              gesamtpreis: gesamtpreis, ust_satz: ust_satz, steuerschluessel: steuerschluessel,
-              artikelnummer: artikelnummer }
-  - von: "rechnungen:lieferschein"
-    nach: lieferschein
-    felder: { von: von, an: an, datum: datum, lieferscheinnummer: lieferscheinnummer, bestellnummer: bestellnummer,
-              betrifft: betrifft, vollstaendig: vollstaendig, rechnung: rechnung, notiz: notiz }
-    register: { dokumente: dokumente }
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml
