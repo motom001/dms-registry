@@ -3,8 +3,8 @@ schema: 1
 id: haushalt
 name: Haushalt
 herausgeber: app.ablago
-version: 2.2.0
-beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Verträge, Versicherungen und Rechnungen kommen aus den Paketen Verträge und Rechnungen.
+version: 3.0.0
+beschreibung: Die typischen Unterlagen eines Haushalts – Ausweise und Urkunden, Gesundheit, Arbeit, Vorsorge, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Konten und Steuerjahre kommen aus dem Paket Finanzen, Verträge und Versicherungen aus Verträge, Rechnungen aus Rechnungen und Bestellungen.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -21,19 +21,21 @@ dms: ">=0.285.0"
 kurzanleitung:
   de:
     - Lege deine Bank, Versicherer und Ärzte einmal als Organisation an – du wählst sie danach überall aus.
-    - Leg Konten, Ausweise, Arztbriefe und Anschaffungen als Mappe an; Verträge und Versicherungen als Vertrag.
+    - Leg Ausweise, Arztbriefe und Anschaffungen als Mappe an; Konten im Paket Finanzen, Verträge und Versicherungen als Vertrag.
     - Trag beim Ausweis „Gültig bis“ und bei der Anschaffung „Garantie bis“ ein – die mitgelieferten Automatisierungen erinnern rechtzeitig, wenn du sie einschaltest.
-    - Im Steuerjahr findest du unter „Belege“ alles, was du diesem Jahr zugeordnet hast.
+    - Ordne Anschaffungen, Arztkosten und Fortbildungen einem Steuerjahr zu – im Steuerjahr (Paket Finanzen) stehen sie dann unter „Belege“.
   en:
     - Create your bank, insurers and doctors once as an organisation – then you can choose them everywhere.
-    - Create accounts, IDs, medical letters and purchases as folders; contracts and insurance policies as a contract.
+    - Create IDs, medical letters and purchases as folders; accounts in the Finances package, contracts and insurance policies as a contract.
     - Enter “Valid until” for IDs and “Warranty until” for purchases – the included automations remind you in time once you turn them on.
-    - In a tax year, “Receipts” shows everything you assigned to that year.
+    - Assign purchases, medical costs and training to a tax year – the tax year (Finances package) then lists them under “Receipts”.
 abhaengigkeiten:
   # Ab 2.0.0 (dms-registry #163): Vertrag und Versicherung aus Verträge, Rechnungen und Kassenbons aus Rechnungen.
   basis: ">=1.7.0"
   vertraege: ">=1.1.0"
-  rechnung_bestellung: ">=1.0.0"
+  rechnung_bestellung: ">=1.1.0"
+  # Ab 3.0.0 (dms-registry #212): Konto und Steuerjahr aus Finanzen.
+  finanzen: ">=1.0.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

@@ -64,15 +64,21 @@ jobs:
           git worktree add -q "$RUNNER_TEMP/neu" HEAD
           if [ "${{ github.event_name }}" = pull_request ]; then
             git worktree add -q "$RUNNER_TEMP/alt" "origin/${{ github.base_ref }}"
-            # Nimmt der PR ein Paket aus dem Katalog (Ordner weg, Tags in werkzeuge/zurueckgezogen.yaml), gibt es kein
-            # Update von Installationen mit ihm – dann nur die frische Installation prüfen (z. B. Rechnungen, #208).
+            # Nimmt der PR ein Paket aus dem Katalog (Ordner weg, Tags in werkzeuge/zurueckgezogen.yaml) oder bringt er eine
+            # Version ohne Update-Weg (werkzeuge/ohne_update.yaml), gibt es kein Update von Installationen mit ihm – dann nur
+            # die frische Installation prüfen (z. B. Rechnungen, #208; Haushalt 3.0.0, #212).
             weg=""
             for d in "$RUNNER_TEMP"/alt/pakete/*/; do
               id=$(basename "$d")
               if [ ! -d "$RUNNER_TEMP/neu/pakete/$id" ] && grep -q "^- $id-v" werkzeuge/zurueckgezogen.yaml; then weg="$weg $id"; fi
             done
+            # Neue Versionen ohne Update-Weg (werkzeuge/ohne_update.yaml, z. B. Haushalt 3.0.0, #212): ebenso nur frisch.
+            for m in "$RUNNER_TEMP"/neu/pakete/*/manifest.yaml; do
+              id=$(basename "$(dirname "$m")"); v=$(sed -n 's/^version: *//p' "$m" | tr -d '"' | head -1)
+              if grep -q "^- $id-v$v\b" werkzeuge/ohne_update.yaml && ! grep -q "^version: *\"\?$v\"\?$" "$RUNNER_TEMP/alt/pakete/$id/manifest.yaml" 2>/dev/null; then weg="$weg $id"; fi
+            done
             if [ -n "$weg" ]; then
-              echo "::notice::Aus dem Katalog genommen:$weg – geprüft wird nur die frische Installation, kein Update."
+              echo "::notice::Ohne Update-Weg:$weg – geprüft wird nur die frische Installation, kein Update."
               docker run --rm -v "$RUNNER_TEMP/neu/pakete:/neu:ro" "$ABLAGO" pakete-pruefen /neu
             else
               docker run --rm -v "$RUNNER_TEMP/alt/pakete:/alt:ro" -v "$RUNNER_TEMP/neu/pakete:/neu:ro" "$ABLAGO" pakete-pruefen /alt /neu

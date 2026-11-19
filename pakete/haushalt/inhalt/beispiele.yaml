@@ -2,6 +2,7 @@
 # Die Beispiele zeigen aufeinander und auf Beispiele aus Basis ({ beispiel: … }, ab DMS 0.79.0).
 # Ablageorte setzt du selbst – sie gehören dem DMS, nicht einem Paket.
 # Die drei sind Personen aus Basis (ab Basis 1.1.0); Konto, Ausweis & Co. verweisen auf sie.
+# Ab 3.0.0 sind Konto, Kontoauszug, Freistellungsauftrag und Steuerjahr Mappentypen aus dem Paket Finanzen.
 # Beispiel-Verträge und -Versicherungen bringt ab 2.0.0 das Paket Verträge mit.
 - typ: "basis:person"
   schluessel: lena
@@ -12,11 +13,16 @@
 - typ: "basis:person"
   schluessel: jonas
   werte: { anrede: Herr, vorname: Jonas, nachname: Muster, beziehung: [Familie], geburtstag: "2010-05-28" }
-- typ: konto
+- typ: "finanzen:konto"
   werte: { bank: { beispiel: "basis:sparkasse" }, art: Girokonto, inhaber_verweis: [{ beispiel: lena }, { beispiel: tom }], iban: DE89 3704 0044 0532 0130 00, eroeffnet_am: "2015-04-01" }
-- typ: konto
-  werte: { art: Depot, inhaber_verweis: [{ beispiel: lena }], eroeffnet_am: "2021-09-15" }
-- typ: steuerjahr
+- typ: "finanzen:konto"
+  schluessel: depot
+  werte: { bank: { beispiel: "basis:sparkasse" }, art: Depot, inhaber_verweis: [{ beispiel: lena }], eroeffnet_am: "2021-09-15" }
+- typ: "finanzen:kontoauszug"
+  werte: { konto: { beispiel: depot }, nummer: "1/2026", zeitraum: Quartal, beginn: "2026-01-01", ende: "2026-03-31" }
+- typ: "finanzen:freistellungsauftrag"
+  werte: { bank: { beispiel: "basis:sparkasse" }, betrag: 2000, jahr: "2026", person_verweis: [{ beispiel: lena }, { beispiel: tom }] }
+- typ: "finanzen:steuerjahr"
   schluessel: steuer2025
   werte: { jahr: "2025", abgegeben_am: "2026-05-20", bescheid_vom: "2026-08-12", ergebnis: 843.17, einspruch_bis: "2026-09-12" }
 - typ: arbeitsverhaeltnis

@@ -109,7 +109,7 @@
     - { key: kosten, label: Umlagefähige Kosten gesamt, typ: betrag, waehrung: EUR, beschriftungen: { en: { label: "Total rechargeable costs" } }  }
     - { key: ergebnis, label: Nachzahlungen/Guthaben gesamt, typ: betrag, waehrung: EUR, hilfe: Summe über alle Mieter – Nachzahlungen positiv, Guthaben negativ. Die Abrechnung je Wohnung liegt als Dokument dabei., beschriftungen: { en: { label: "Total back payments/credits", hilfe: "Sum over all tenants – back payments positive" } }  }
     # Ab 2.0.0 ohne Abhängigkeit von Haushalt: das Steuerjahr, wenn Haushalt installiert ist (zielOptional, DMS #1036).
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, zielOptional: ["haushalt:steuerjahr"], verweisart: bezug, hilfe: Für die Anlage V, beschriftungen: { en: { label: "Tax year", hilfe: "For the rental income form (Anlage V)" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, zielOptional: ["finanzen:steuerjahr"], verweisart: bezug, hilfe: Für die Anlage V, beschriftungen: { en: { label: "Tax year", hilfe: "For the rental income form (Anlage V)" } }  }
     # Ab 2.0.0: die Rechnungen, die in diese Abrechnung eingeflossen sind (Paket Rechnungen).
     - { key: rechnungen, label: Rechnungen, typ: referenz, ziel: "rechnung_bestellung:rechnung", mehrfach: true, verweisart: bezug, hilfe: Die umgelegten Rechnungen dieses Jahres – Grundsteuer, Versicherung, Müll …, beschriftungen: { en: { label: "Invoices", hilfe: "The recharged invoices of this year – property tax, insurance, waste …" } }  }
   register:

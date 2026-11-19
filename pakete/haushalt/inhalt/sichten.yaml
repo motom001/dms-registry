@@ -1,14 +1,14 @@
 # Ansichten des Pakets Haushalt. Schema: schema/inhalt.schema.json
 # Ordner „Haushalt“ mit je einer Ansicht pro Mappentyp, dazu Ansichten für anstehende Fristen.
+# Ab 3.0.0: Konten und Steuerjahre zeigt das Paket Finanzen.
 # Ab 2.0.0: Verträge und Versicherungen sind Verträge aus dem Paket Verträge (vertraege:vertrag).
 
 - schluessel: haushalt
   name: Haushalt
   beschreibung: Alle Unterlagen des Haushalts
   beschriftungen: { en: { name: "Household", beschreibung: "All household documents" } }
-  typen: [konto, "vertraege:vertrag", steuerjahr, arbeitsverhaeltnis, vorsorge, ausweis, gesundheit, anschaffung, bildung]
+  typen: ["vertraege:vertrag", arbeitsverhaeltnis, vorsorge, ausweis, gesundheit, anschaffung, bildung]
 
-- { schluessel: konten, name: Konten, eltern: haushalt, typen: [konto], beschriftungen: { en: { name: "Accounts" } }  }
 - { schluessel: vertraege, name: Verträge, eltern: haushalt, typen: ["vertraege:vertrag"], beschriftungen: { en: { name: "Contracts" } }  }
 - schluessel: versicherungen
   name: Versicherungen
@@ -17,7 +17,6 @@
   typen: ["vertraege:vertrag"]
   bedingungen:
     - { feld: versicherung_art, operator: nichtLeer }
-- { schluessel: steuerjahre, name: Steuerjahre, eltern: haushalt, typen: [steuerjahr], beschriftungen: { en: { name: "Tax years" } }  }
 - { schluessel: arbeit, name: Arbeitsverhältnisse, eltern: haushalt, typen: [arbeitsverhaeltnis], beschriftungen: { en: { name: "Employments" } }  }
 - { schluessel: vorsorge, name: Vorsorge, eltern: haushalt, typen: [vorsorge], beschriftungen: { en: { name: "Pension" } }  }
 - { schluessel: ausweise, name: Ausweise & Urkunden, eltern: haushalt, typen: [ausweis], beschriftungen: { en: { name: "IDs & certificates" } }  }

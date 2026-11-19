@@ -1,0 +1,8 @@
+# Mitgelieferte Automatisierungen (Ablago #712). Nach der Installation aus – beim Installieren fragt Ablago,
+# welche gleich eingeschaltet werden. Bis Haushalt 2.x stand diese im Paket Haushalt.
+- schluessel: steuer_einspruch
+  name: Einspruchsfrist beim Steuerbescheid
+  beschreibung: 7 Tage vor dem Ende der Einspruchsfrist.
+  wenn: { art: datum, typ: steuerjahr, feld: einspruch_bis, vorlauf: 7, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Einspruch bis {datum}: {titel}" }

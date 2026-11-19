@@ -4,12 +4,3 @@
   bereich: fristen
   typ: anschaffung
   ziel: mappe.feld:garantie_bis
-- schluessel: einspruch
-  text: Trag beim Steuerbescheid „Einspruch bis“ ein. So verpasst du die Frist für einen Einspruch nicht.
-  bereich: fristen
-  typ: steuerjahr
-  ziel: mappe.feld:einspruch_bis
-- schluessel: belege
-  text: Im Steuerjahr zeigt „Belege“ alles, was du diesem Jahr zugeordnet hast – praktisch für die Steuererklärung.
-  typ: steuerjahr
-  ziel: mappe.register:belege

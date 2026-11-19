@@ -1,5 +1,12 @@
 # Änderungen
 
+## 3.0.0
+
+- **Konto und Steuerjahr kommen aus dem Paket Finanzen** (dms-registry #212). Haushalt hängt von Finanzen 1.0.0 ab; *Steuerjahr* an Arbeitsverhältnis, Gesundheit, Anschaffung und Bildung zeigt auf das Steuerjahr aus Finanzen. Ansichten *Konten* und *Steuerjahre*, die Automatisierung „Einspruchsfrist beim Steuerbescheid“ und die beiden Tipps zum Steuerjahr sind jetzt dort.
+- **Bausparen** ist keine Art der Vorsorge mehr – ein Bausparvertrag ist ein Konto (Paket Finanzen).
+- Beispiele: Konten und Steuerjahr sind Mappen aus Finanzen, dazu ein Kontoauszug zum Depot und ein Freistellungsauftrag.
+- **Kein Umzug:** Vorhandene Konten und Steuerjahre aus Haushalt 2.x ziehen nicht mit. Haushalt 3.0.0 ist für eine neu aufgebaute Ablage gedacht.
+
 ## 2.2.0
 
 - **Rechnungen kommen aus dem Paket Rechnungen und Bestellungen** (dms-registry #208), dem Nachfolger des Pakets Rechnungen. Register, Ansichten und Verweise zeigen auf dessen Rechnung. Einen Umzug aus dem alten Paket gibt es nicht (nur eine Installation, die neu aufgebaut wird). Ablago weiter ab 0.285.0.
