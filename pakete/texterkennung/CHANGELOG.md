@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.5.3
+
+- **Auswahl der Mappentypen** (dms-registry #209): Nennt ein Ereignis den Mappentyp nicht, liest das Paket die Mappe – und las dabei bisher eine ältere Form der Antwort von Ablago. So galt die Auswahl „Nur diese“ bzw. „Ausgeschlossen“ in diesem seltenen Fall nicht. Jetzt gilt sie immer.
+
 ## 2.5.2
 
 - Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).

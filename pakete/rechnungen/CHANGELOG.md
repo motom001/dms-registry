@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.1
+
+- **Status wird wieder berechnet** (dms-registry #209): Das Paket las die Mappe in einer älteren Form der Antwort von Ablago, fand darin keine Werte und schrieb deshalb nie einen Status – weder nach dem Speichern noch nach „Als bezahlt markieren“. Auch die Summenprüfung beim Speichern einer Rechnung rechnete so ins Leere. Jetzt rechnet es beides wie gedacht; die tägliche Prüfung war nicht betroffen.
+- **Kein stilles „unverändert“ mehr bei Konflikten:** Hat sich die Mappe zwischen Lesen und Speichern geändert (409), liest das Paket sie einmal neu und rechnet noch einmal. Klappt auch das nicht, steht es als Fehler im Verlauf des Pakets. Ist die Mappe beim Speichern weg (404), steht eine Zeile im Protokoll.
+
 ## 1.2.0
 
 - **Aktion „Als bezahlt markieren“** im Menü *Mappe* an der Rechnung (dms-registry #162, Ablago #1039): fragt das Datum (heute vorgeschlagen) und trägt *Bezahlt am* ein; den Status rechnet das Paket danach neu. Ist die Rechnung schon bezahlt, steht das im Menü.

@@ -398,7 +398,9 @@ std::string typGrund(const Json &einstellungen, const Json &daten) {
     if (!sichereId(mappe)) return "Mappe unbekannt";
     Antwort a = api("GET", "/mappen/" + mappe);
     if (a.status != 200) { log(WARNUNG, "Mappe nicht lesbar (HTTP " + std::to_string(a.status) + ")"); return "Mappe nicht lesbar"; }
-    typ = JsonLeser::lies(a.body.data(), a.body.size())["typId"].text();
+    // Die Mappe steht unter „mappe“ (GET /mappen/{id}, dms-registry #209); die Form ohne Hülle gilt weiter.
+    const Json j = JsonLeser::lies(a.body.data(), a.body.size());
+    typ = (j["mappe"].art == Json::OBJEKT ? j["mappe"] : j)["typId"].text();
   }
   // Ausgeschlossene gelten immer; ist „Nur diese“ leer, sind alle übrigen erlaubt.
   if (mitOhne) for (const Json &e : ohne.l) if (eintragId(e) == typ) return "Mappentyp ausgeschlossen";

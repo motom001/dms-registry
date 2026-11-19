@@ -12,7 +12,8 @@ const modul = new WebAssembly.Module(readFileSync(join(hier, '..', 'code', 'modu
 const E = (b) => ({ betrag: b, waehrung: 'EUR' });
 
 /** Ein Aufruf wie im Paket-Läufer: frischer Speicher, Ereignis rein, Ergebnis und API-Aufrufe raus. */
-function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = false, einstellungen = { summenpruefung: true }, erstellt = '2026-11-10T06:00:00.000Z' }) {
+// konflikt: so viele PUT auf eine Mappe bekommen 409 (true = alle); ohneHuelle: GET /mappen/{id} in der alten Form ohne „mappe“.
+function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = 0, ohneHuelle = false, einstellungen = { summenpruefung: true }, erstellt = '2026-11-10T06:00:00.000Z' }) {
   const aufrufe = [], geschrieben = {}, protokoll = [], hinweise = {};
   let antwort = new Uint8Array(0), ergebnis = '';
   const memory = new WebAssembly.Memory({ initial: 32, maximum: 4096 });
@@ -25,9 +26,14 @@ function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = fal
     let h = /^\/mappen\/([^/?]+)\/hinweise\/summe$/.exec(q.pfad);
     if (h) { hinweise[h[1]] = q.methode === 'PUT' ? q.body.text : null; return json(200, {}); }
     let m = /^\/mappen\/([^/?]+)$/.exec(q.pfad);
-    if (m && q.methode === 'GET') return mappen[m[1]] ? json(200, { id: m[1], typId: mappen[m[1]].typ, geaendert: '2026-11-09T10:00:00.000Z', werte: mappen[m[1]].werte }) : json(404, { fehler: 'nicht da' });
+    if (m && q.methode === 'GET') {
+      if (!mappen[m[1]]) return json(404, { fehler: 'nicht da' });
+      // Wie Ablago (API v1, GET /mappen/{id}): die Mappe unter „mappe“, daneben Dokumente, Notizen, Rechte … (#209)
+      const mp = { id: m[1], typId: mappen[m[1]].typ, geaendert: '2026-11-09T10:00:00.000Z', werte: mappen[m[1]].werte };
+      return json(200, ohneHuelle ? mp : { mappe: mp, dokumente: [], notizen: [], rechte: { R: true, U: true } });
+    }
     if (m && q.methode === 'PUT') {
-      if (konflikt) return json(409, { fehler: 'Konflikt' });
+      if (konflikt === true || konflikt > 0) { if (konflikt !== true) konflikt--; return json(409, { fehler: 'Konflikt' }); }
       geschrieben[m[1]] = q.body;
       return json(200, { id: m[1] });
     }
@@ -119,6 +125,17 @@ pruefe('Summenprüfung aus: kein Hinweis', !('r1' in r.hinweise) && r.geschriebe
 
 r = lauf({ daten: { mappe: 'weg', typ: 't-r' }, mappen: {} });
 pruefe('Gelöscht: nichts zu tun', r.code === 0, r);
+
+// #209: bezahlt gesetzt (ohne daten.typ, wie nach dem Übernehmen aus der Post) → Status „bezahlt am …“
+const bezahltBasis = () => ({ r9: { typ: 't-r', werte: { betrag: E(59.9), datum: '2026-11-02', bezahlt_am: '2026-11-18', status: null } } });
+r = lauf({ daten: { mappe: 'r9', felder: ['bezahlt_am'] }, mappen: bezahltBasis() });
+pruefe('#209: Bezahlt am gesetzt → Status bezahlt', r.code === 0 && r.geschrieben.r9?.werte.status === 'bezahlt am 18.11.2026' && r.ergebnis === 'Rechnung: Status neu', r);
+r = lauf({ daten: { mappe: 'r9', typ: 't-r' }, mappen: bezahltBasis(), ohneHuelle: true });
+pruefe('#209: alte Antwort ohne Hülle geht weiter', r.geschrieben.r9?.werte.status === 'bezahlt am 18.11.2026', r);
+r = lauf({ daten: { mappe: 'r9', typ: 't-r' }, mappen: bezahltBasis(), konflikt: 1 });
+pruefe('#209: 409 → neu gelesen, zweiter Versuch gespeichert', r.code === 0 && r.geschrieben.r9?.werte.status === 'bezahlt am 18.11.2026' && r.aufrufe.filter((x) => x === 'GET /mappen/r9').length >= 2 && r.protokoll.some((x) => x.includes('409')), r);
+r = lauf({ daten: { mappe: 'r9', typ: 't-r' }, mappen: bezahltBasis(), konflikt: true });
+pruefe('#209: 409 zweimal → Fehler im Protokoll, nicht still', r.code === 2 && !r.geschrieben.r9 && r.protokoll.some((x) => x.startsWith('2 ') && x.includes('zweiten Versuch')), r);
 
 
 // Aktion „Als bezahlt markieren“ (#162)

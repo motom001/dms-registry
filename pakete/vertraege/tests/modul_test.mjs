@@ -22,7 +22,11 @@ function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = fal
     aufrufe.push(`${q.methode} ${q.pfad}`);
     if (q.methode === 'GET' && q.pfad === '/typen') return json(200, [{ id: 't-andere', schluessel: 'haushalt:konto' }, { id: 't-vertrag', schluessel: 'vertraege:vertrag' }]);
     let m = /^\/mappen\/([^/?]+)$/.exec(q.pfad);
-    if (m && q.methode === 'GET') return mappen[m[1]] ? json(200, { id: m[1], typId: 't-vertrag', geaendert: '2026-11-09T10:00:00.000Z', werte: mappen[m[1]] }) : json(404, { fehler: 'nicht da' });
+    // Wie Ablago (API v1, GET /mappen/{id}): die Mappe unter „mappe“, daneben Dokumente, Notizen, Rechte … (#209)
+    if (m && q.methode === 'GET')
+      return mappen[m[1]]
+        ? json(200, { mappe: { id: m[1], typId: 't-vertrag', geaendert: '2026-11-09T10:00:00.000Z', werte: mappen[m[1]] }, dokumente: [], notizen: [] })
+        : json(404, { fehler: 'nicht da' });
     if (m && q.methode === 'PUT') {
       if (konflikt) return json(409, { fehler: 'Konflikt' });
       geschrieben[m[1]] = q.body;

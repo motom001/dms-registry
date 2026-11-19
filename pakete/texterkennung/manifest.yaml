@@ -2,7 +2,7 @@
 schema: 1
 id: texterkennung
 name: Texterkennung (Deutsch und Englisch)
-version: 2.5.2
+version: 2.5.3
 beschreibung: Macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen, z. B. Französisch, Spanisch oder Türkisch. Es richtet schiefe Seiten auf und arbeitet ohne Internet.
 autor:
   name: Thomas Meissner

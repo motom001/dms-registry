@@ -28,7 +28,7 @@ function lauf({ volltext = 200, einstellungen = {}, daten = {}, mappentyp = 'bas
   const api = (q) => {
     aufrufe.push(`${q.methode} ${q.pfad}`);
     const s = /^\/dokumente\/dok-1\/seiten\/(\d+)\/scan\?dpi=\d+$/.exec(q.pfad);
-    if (q.methode === 'GET' && q.pfad === '/mappen/mappe-1') return json(200, { id: 'mappe-1', typId: mappentyp });
+    if (q.methode === 'GET' && q.pfad === '/mappen/mappe-1') return json(200, { mappe: { id: 'mappe-1', typId: mappentyp }, dokumente: [] }); // wie Ablago: unter „mappe“ (#209)
     if (q.methode === 'GET' && s) {
       if (!scans) return json(404, { fehler: 'Seite gibt es nicht' });
       const f = join(ordner, `seite-${s[1]}.pgm`);

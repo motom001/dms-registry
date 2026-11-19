@@ -2,7 +2,7 @@
 // Summenprüfung als Hinweis an der Rechnung (dms:hinweise). Die Regeln stehen in rechnung.h.
 //
 // Ereignisse: mappe.angelegt / mappe.geaendert zu Rechnungen und Positionen, zeitplan.ausgefuehrt (überfällig, Summen).
-// (überfällig). Geschrieben wird nur, was sich ändert, mit „stand“ – ein Mensch gewinnt (409).
+// (überfällig). Geschrieben wird nur, was sich ändert, mit „stand“; bei 409 liest das Paket die Mappe einmal neu und rechnet noch einmal.
 // Hinweis setzen/entfernen: PUT bzw. DELETE /mappen/{id}/hinweise/summe (Schnittstelle aus DMS #1034, ab Ablago 0.231.0; Text höchstens 300 Zeichen).
 // Aktion im Menü „Mappe“ (dms-registry #162, DMS #1039, ab 0.245.0): „Als bezahlt markieren“ – dms_aktion mit
 // { aktion: dms:mappenaktion }; Schritt 1 fragt das Datum (heute vorgeschlagen), Schritt 2 setzt „Bezahlt am“.
@@ -44,6 +44,9 @@ Antwort api(const std::string &methode, const std::string &pfad, const std::stri
   if (!a.empty()) dms_antwort_lesen(a.data(), (int32_t)a.size());
   return {s, JsonLeser::lies(a.data(), a.size())};
 }
+// GET /mappen/{id} liefert die Mappe unter „mappe“, daneben Dokumente, Notizen, Rechte … (dms-registry #209: das Paket
+// las bis 1.2.0 die oberste Ebene, fand keine Werte und schrieb deshalb nie einen Status). Die Form ohne Hülle gilt weiter.
+const Json &mappe_aus(const Json &a) { return a["mappe"].art == Json::OBJEKT ? a["mappe"] : a; }
 
 std::optional<rechnung::Datum> datum(const Json &w) { return w.art == Json::TEXT ? rechnung::lies_iso(w.t) : std::nullopt; }
 std::optional<double> zahl(const Json &w) {
@@ -76,7 +79,8 @@ rechnung::Datum heute_aus(const Json &e) {
   return {2026, 1, 1};
 }
 
-// Nur geänderte Felder schreiben. 0 = geschrieben, 1 = nichts zu tun, 2 = Fehler.
+// Nur geänderte Felder schreiben. 0 = geschrieben, 1 = nichts zu tun, 2 = Fehler, 3 = Konflikt (409: seit dem Lesen hat
+// sich ein Feld geändert, das das Paket schreiben will – neu lesen und neu rechnen, was ein Mensch einträgt, gilt).
 int schreibe(const std::string &id, const Json &m, const std::vector<std::pair<std::string, Json>> &neu) {
   const Json &w = m["werte"];
   Json aend; aend.art = Json::OBJEKT;
@@ -85,7 +89,8 @@ int schreibe(const std::string &id, const Json &m, const std::vector<std::pair<s
   if (aend.o.empty()) return 1;
   std::string body = "{\"werte\":" + jsonSchreib(aend) + (m["geaendert"].art == Json::TEXT ? ",\"stand\":" + jsonText(m["geaendert"].t) : "") + "}";
   Antwort a = api("PUT", "/mappen/" + id, body);
-  if (a.status == 409 || a.status == 404) return 1;
+  if (a.status == 409) { log(INFO, "Mappe " + id + ": Speichern 409 – inzwischen geändert"); return 3; }
+  if (a.status == 404) { log(INFO, "Mappe " + id + ": Speichern 404 – nicht mehr da oder nicht lesbar"); return 1; }
   if (a.status != 200) { log(FEHLER, "Mappe " + id + ": Speichern HTTP " + std::to_string(a.status)); return 2; }
   return 0;
 }
@@ -155,8 +160,10 @@ int summe_pruefen(const std::string &rechnung_id, const std::string &pos_typ, co
   if (!pos_typ.empty() && jede(pos_typ, [&](const std::string &, const Json &m) {
         if (verweis(m["werte"]["rechnung"]) == rechnung_id) pos.push_back(position(m["werte"]));
       }) == 2) return 2;
-  return hinweis(rechnung_id, r.json["werte"], pos);
+  return hinweis(rechnung_id, mappe_aus(r.json)["werte"], pos);
 }
+
+int rechnung_fertig(const std::string &id, int r, const Json &d, const std::string &pos_typ, const Json &e);
 
 int verarbeite(const Json &e) {
   const std::string art = e["art"].text();
@@ -172,6 +179,7 @@ int verarbeite(const Json &e) {
     const bool summen = e["einstellungen"]["summenpruefung"].wahr(true);
     int n = 0, neu = 0, fehler = 0;
     if (jede(typ, [&](const std::string &id, const Json &m) {
+          // Konflikt (3): Die Rechnung wurde gerade geändert; das Ereignis dazu rechnet den Status ohnehin neu.
           int r = rechnung_status(id, m, heute); n++; neu += r == 0; fehler += r == 2;
           if (!summen) return;
           std::vector<rechnung::Position> pos;
@@ -185,20 +193,30 @@ int verarbeite(const Json &e) {
   const std::string id = d["mappe"].text();
   if (id.empty() || id.size() > 64) return 0;
   const std::string pos_typ = typ_id(TYP_POSITION);
-  Antwort m = api("GET", "/mappen/" + id);
-  if (m.status == 404) { ergebnis("Die Mappe gibt es nicht mehr – nichts zu tun"); return 0; }
-  if (m.status != 200) { log(FEHLER, "Mappe lesen: HTTP " + std::to_string(m.status)); return 2; }
-  const Json &w = m.json["werte"];
-  const std::string typ = d["typ"].text(m.json["typId"].text().c_str());
-  if (!pos_typ.empty() && typ == pos_typ) {
-    int r = position_rechnen(id, m.json);
+  // Bei einem Konflikt (3) einmal neu lesen und neu rechnen.
+  for (int versuch = 1;; versuch++) {
+    Antwort m = api("GET", "/mappen/" + id);
+    if (m.status == 404) { ergebnis("Die Mappe gibt es nicht mehr – nichts zu tun"); return 0; }
+    if (m.status != 200) { log(FEHLER, "Mappe lesen: HTTP " + std::to_string(m.status)); return 2; }
+    const Json &mappe = mappe_aus(m.json);
+    const Json &w = mappe["werte"];
+    const std::string typ = d["typ"].text(mappe["typId"].text().c_str());
+    const bool ist_position = !pos_typ.empty() && typ == pos_typ;
+    int r = ist_position ? position_rechnen(id, mappe) : rechnung_status(id, mappe, heute_aus(e));
+    if (r == 3 && versuch < 2) continue;
+    if (r == 3) { log(WARNUNG, "Mappe " + id + ": auch beim zweiten Versuch 409 – nichts gespeichert"); return 2; }
     if (r == 2) return 2;
-    if (summe_pruefen(verweis(w["rechnung"]), pos_typ, e["einstellungen"]) == 2) return 2;
-    ergebnis(r == 0 ? "Position neu berechnet" : "Position unverändert");
-    return 0;
+    if (ist_position) {
+      if (summe_pruefen(verweis(w["rechnung"]), pos_typ, e["einstellungen"]) == 2) return 2;
+      ergebnis(r == 0 ? "Position neu berechnet" : "Position unverändert");
+      return 0;
+    }
+    return rechnung_fertig(id, r, d, pos_typ, e);
   }
-  int r = rechnung_status(id, m.json, heute_aus(e));
-  if (r == 2) return 2;
+}
+
+// Nach dem Status einer Rechnung: Summenprüfung, wenn nötig, und das Ergebnis für den Verlauf.
+int rechnung_fertig(const std::string &id, int r, const Json &d, const std::string &pos_typ, const Json &e) {
   // Summenprüfung nur, wenn sich der Betrag geändert hat (oder unbekannt ist, was sich geändert hat).
   const Json &felder = d["felder"];
   bool betrag = felder.art != Json::LISTE || felder.l.empty();

@@ -44,6 +44,9 @@ Antwort api(const std::string &methode, const std::string &pfad, const std::stri
   if (!a.empty()) dms_antwort_lesen(a.data(), (int32_t)a.size());
   return {s, JsonLeser::lies(a.data(), a.size())};
 }
+// GET /mappen/{id} liefert die Mappe unter „mappe“, daneben Dokumente, Notizen, Rechte … (dms-registry #209: bis 1.4.0
+// las das Paket die oberste Ebene und rechnete beim Speichern nichts neu). Die Form ohne Hülle gilt weiter.
+const Json &mappe_aus(const Json &a) { return a["mappe"].art == Json::OBJEKT ? a["mappe"] : a; }
 
 std::optional<vertrag::Datum> datum(const Json &w) { return w.art == Json::TEXT ? vertrag::lies_iso(w.t) : std::nullopt; }
 
@@ -159,7 +162,7 @@ int eine(const Json &e) {
   Antwort m = api("GET", "/mappen/" + id);
   if (m.status == 404) { ergebnis("Den Vertrag gibt es nicht mehr – nichts zu tun"); return 0; }
   if (m.status != 200) { log(FEHLER, "Vertrag lesen: HTTP " + std::to_string(m.status)); return 2; }
-  int r = rechne_mappe(id, m.json, heute_aus(e));
+  int r = rechne_mappe(id, mappe_aus(m.json), heute_aus(e));
   if (r == 2) return 2;
   ergebnis(r == 0 ? "Vertrag neu berechnet" : "Vertrag unverändert");
   return 0;
