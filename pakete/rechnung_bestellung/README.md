@@ -62,7 +62,7 @@ An der Rechnung trägt **Mappe → Als bezahlt markieren** *Bezahlt am* ein – 
 ## Voraussetzungen
 
 - Ablago ab 0.248.0 (Aktionen im Menü „Mappe“, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „gehört immer zu“, eigene Organisation, Vorbelegen).
-- Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung, Haushalt und Kontierung sind nicht nötig – sind sie installiert, bieten *Betrifft*, *Steuerjahr*, *Kontierung* und *Steuerschlüssel* ihre Mappen an.
+- Pakete Basis ab 1.7.0, Verträge ab 1.0.0 und Finanzen ab 1.0.0 (Steuerjahr und Konto). Fahrzeuge, Haus, Vermietung, Haushalt und Kontierung sind nicht nötig – sind sie installiert, bieten *Betrifft*, *Kontierung* und *Steuerschlüssel* ihre Mappen an.
 
 ## Rechte und Netzwerkzugriff
 

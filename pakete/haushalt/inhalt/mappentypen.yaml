@@ -1,5 +1,7 @@
 # Mappentypen des Pakets Haushalt. Schema: schema/inhalt.schema.json
 # Ablago legt sie als haushalt:<schluessel> an; angezeigt wird der Name.
+# Ab 3.0.0 (dms-registry #212): Konto und Steuerjahr kommen aus dem Paket Finanzen (finanzen:konto, finanzen:steuerjahr);
+# Bausparen ist dort eine Kontoart und keine Art der Vorsorge mehr.
 # Ab 2.0.0 (dms-registry #163): Vertrag und Versicherung kommen aus dem Paket Verträge (Versicherung ist dort eine
 # Vertragsart), Rechnungen und Kassenbons aus dem Paket Rechnungen. Den Umzug bestehender Mappen macht Verträge.
 #
@@ -8,75 +10,7 @@
 #   person_verweis     wer im Haushalt – Verweis auf eine Person aus Basis (bis 1.0.x Textfeld person; aus_text,
 #                      ein Update legt den Verweis dazu, umgewandelt wird mit Vorschau in der Werkbank, DMS #534)
 #   verbleib_original  „Verbleib Originaldokumente“, Verweis auf den Ablageort des DMS
-#   steuerjahr         Verweis auf das Steuerjahr; das Steuerjahr zeigt diese Mappen unter „Belege“
-
-- schluessel: konto
-  name: Konto
-  beschreibung: Girokonto, Sparkonto, Depot, Kreditkarte, Kredit oder Bausparvertrag.
-  beschriftungen: { en: { name: "Account", beschreibung: "Current account, savings account, securities account, credit card, loan or building savings contract." } }
-  titelVorlage: "{art} – {bank} – {inhaber_verweis}"
-  felder:
-    - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Bank" } }  }
-    - key: art
-      label: Art
-      beschriftungen: { en: { label: "Type", optionen: { "Girokonto": "Current account", "Sparkonto": "Savings account", "Depot": "Securities account", "Kreditkarte": "Credit card", "Kredit": "Loan", "Bausparvertrag": "Building savings contract" } } }
-      typ: auswahl
-      pflicht: true
-      optionen: [Girokonto, Sparkonto, Depot, Kreditkarte, Kredit, Bausparvertrag]
-    - { key: inhaber_verweis, label: Inhaber, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, aus_text: inhaber, hilfe: Wem das Konto gehört – beim Gemeinschaftskonto mehrere Personen, beschriftungen: { en: { label: "Holder", hilfe: "Who owns the account – several people for a joint account" } }  }
-    - key: iban
-      label: IBAN
-      beschriftungen: { en: { label: "IBAN", hilfe: "Spaces allowed, e.g. DE89 3704 0044 0532 0130 00" } }
-      typ: text
-      maxLen: 42
-      muster: "[A-Z]{2}[0-9]{2}( ?[A-Z0-9]){11,30}"
-      # Ab 1.2.0 (DMS 0.121): Länge des Landes und Prüfziffer, Anzeige in Vierergruppen.
-      format: iban
-      hilfe: Leerzeichen erlaubt, z. B. DE89 3704 0044 0532 0130 00
-    - { key: online_zugang, label: Online-Zugang, typ: passwort, hilfe: Zugangsdaten zum Online-Banking; nur wer die Mappe bearbeiten darf, sieht sie, beschriftungen: { en: { label: "Online access", hilfe: "Online banking login; only for those who may edit the folder" } }  }
-    - { key: eroeffnet_am, label: Eröffnet am, typ: datum, beschriftungen: { en: { label: "Opened on" } }  }
-    - { key: gekuendigt_am, label: Gekündigt am, typ: datum, beschriftungen: { en: { label: "Closed on" } }  }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Kontovertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper account agreement is kept" } }  }
-  register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bank, art, inhaber_verweis, iban, online_zugang, eroeffnet_am, gekuendigt_am, verbleib_original], beschriftungen: { en: { name: "General" } }  }
-    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
-    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
-  trefferliste: [art, bank, inhaber_verweis, iban]
-
-- schluessel: steuerjahr
-  name: Steuerjahr
-  beschreibung: Einkommensteuer eines Jahres – Erklärung, Bescheid und die Belege dazu.
-  beschriftungen: { en: { name: "Tax year", beschreibung: "Income tax for one year – return, assessment and the receipts for it." } }
-  titelVorlage: "Steuerjahr {jahr}"
-  felder:
-    - { key: jahr, label: Jahr, typ: text, pflicht: true, eindeutig: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025", beschriftungen: { en: { label: "Year", hilfe: "Four digits, e.g. 2025" } }  }
-    - { key: abgegeben_am, label: Abgegeben am, typ: datum, beschriftungen: { en: { label: "Filed on" } }  }
-    - { key: bescheid_vom, label: Bescheid vom, typ: datum, beschriftungen: { en: { label: "Assessment dated" } }  }
-    - { key: ergebnis, label: Erstattung/Nachzahlung, typ: betrag, waehrung: EUR, hilfe: Erstattung positiv, Nachzahlung negativ, beschriftungen: { en: { label: "Refund/back payment", hilfe: "Refund positive" } }  }
-    - key: einspruch_bis
-      label: Einspruch bis
-      beschriftungen: { en: { label: "Objection by", hilfe: "One month after the assessment (assessment date + 1 month). The included automation reminds you 7 days before." } }
-      typ: datum
-      hilfe: Ein Monat nach dem Bescheid (Bescheid vom + 1 Monat). Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
-      frist: { vorlauf: 7, einheit: tage }
-    - { key: steuerberater, label: Steuerberater, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Tax adviser" } }  }
-  register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis, steuerberater], beschriftungen: { en: { name: "General" } }  }
-    - key: belege
-      name: Belege
-      beschriftungen: { en: { name: "Receipts" } }
-      art: verknuepfungen
-      quellen:
-        - { typ: anschaffung, feld: steuerjahr }
-        - { typ: gesundheit, feld: steuerjahr }
-        - { typ: bildung, feld: steuerjahr }
-        - { typ: arbeitsverhaeltnis, feld: steuerjahr }
-        - { typ: "rechnung_bestellung:rechnung", feld: steuerjahr }
-    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
-    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
-  trefferliste: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis]
+#   steuerjahr         Verweis auf das Steuerjahr aus Finanzen; das Steuerjahr zeigt diese Mappen unter „Belege“
 
 - schluessel: arbeitsverhaeltnis
   name: Arbeitsverhältnis
@@ -89,7 +23,7 @@
     - { key: taetigkeit, label: Tätigkeit, typ: text, maxLen: 120, beschriftungen: { en: { label: "Job title" } }  }
     - { key: beginn, label: Beginn, typ: datum, beschriftungen: { en: { label: "Start" } }  }
     - { key: ende, label: Ende, typ: datum, beschriftungen: { en: { label: "End" } }  }
-    - { key: steuerjahr, label: Steuerjahre, typ: referenz, ziel: steuerjahr, mehrfach: true, verweisart: bezug, hilfe: In welchen Steuerjahren es zählt; dort erscheint es unter „Belege“, beschriftungen: { en: { label: "Tax years", hilfe: "Which tax years it counts for; it appears there under “Receipts”" } }  }
+    - { key: steuerjahr, label: Steuerjahre, typ: referenz, ziel: "finanzen:steuerjahr", mehrfach: true, verweisart: bezug, hilfe: In welchen Steuerjahren es zählt; dort erscheint es unter „Belege“, beschriftungen: { en: { label: "Tax years", hilfe: "Which tax years it counts for; it appears there under “Receipts”" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Arbeitsvertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper employment contract is kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [arbeitgeber, person_verweis, taetigkeit, beginn, ende, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
@@ -100,16 +34,16 @@
 
 - schluessel: vorsorge
   name: Vorsorge
-  beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester, Rürup und Bausparen.
-  beschriftungen: { en: { name: "Pension", beschreibung: "State, company and private pensions, Riester, Rürup and building savings." } }
+  beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester und Rürup. Bausparverträge sind Konten (Paket Finanzen).
+  beschriftungen: { en: { name: "Pension", beschreibung: "State, company and private pensions, Riester and Rürup. Building savings contracts are accounts (Finances package)." } }
   titelVorlage: "{art} – {person_verweis} – {anbieter}"
   felder:
     - key: art
       label: Art
-      beschriftungen: { en: { label: "Type", optionen: { "gesetzliche Rente": "state pension", "betriebliche Altersvorsorge": "company pension", "Riester": "Riester", "Rürup": "Rürup", "private Rente": "private pension", "Bausparen": "building savings", "Sonstige": "Other" } } }
+      beschriftungen: { en: { label: "Type", optionen: { "gesetzliche Rente": "state pension", "betriebliche Altersvorsorge": "company pension", "Riester": "Riester", "Rürup": "Rürup", "private Rente": "private pension", "Sonstige": "Other" } } }
       typ: auswahl
       pflicht: true
-      optionen: [gesetzliche Rente, betriebliche Altersvorsorge, Riester, Rürup, private Rente, Bausparen, Sonstige]
+      optionen: [gesetzliche Rente, betriebliche Altersvorsorge, Riester, Rürup, private Rente, Sonstige]
     - { key: anbieter, label: Anbieter, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Provider" } }  }
     - { key: vertragsnummer, label: Vertragsnummer, typ: text, maxLen: 60, hilfe: Bei der gesetzlichen Rente die Versicherungsnummer, erkennung: { art: nummer }, beschriftungen: { en: { label: "Contract number", hilfe: "For the state pension, the insurance number" } }  }
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
@@ -167,7 +101,7 @@
     - { key: datum, label: Datum, typ: datum, beschriftungen: { en: { label: "Date" } }  }
     - { key: praxis, label: Praxis, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Arztpraxis, Krankenhaus oder Apotheke, beschriftungen: { en: { label: "Practice", hilfe: "Doctor’s practice" } }  }
     - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, hilfe: Bei Rechnungen, beschriftungen: { en: { label: "Amount", hilfe: "For invoices" } }  }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du die Kosten in der Steuererklärung angibst, beschriftungen: { en: { label: "Tax year", hilfe: "If you claim the costs in your tax return" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: Wenn du die Kosten in der Steuererklärung angibst, beschriftungen: { en: { label: "Tax year", hilfe: "If you claim the costs in your tax return" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, datum, praxis, betrag, steuerjahr], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
@@ -192,7 +126,7 @@
       typ: datum
       hilfe: Gewährleistung oder Herstellergarantie. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel", beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct the purchase, e.g. work equipment" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel", beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct the purchase, e.g. work equipment" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the receipt is – no warranty without it" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [gegenstand, haendler, kaufdatum, preis, seriennummer, garantie_bis, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
@@ -224,7 +158,7 @@
     - { key: von, label: Von, typ: datum, beschriftungen: { en: { label: "From" } }  }
     - { key: bis, label: Bis, typ: datum, beschriftungen: { en: { label: "Until" } }  }
     - { key: abschluss, label: Abschluss, typ: text, maxLen: 120, hilfe: "z. B. „Abitur“ oder „Bachelor of Arts“", beschriftungen: { en: { label: "Qualification", hilfe: "e.g. “Abitur” or “Bachelor of Arts”" } }  }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung, beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct costs" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung, beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct costs" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo Zeugnisse und Urkunden auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where paper certificates are kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, einrichtung, von, bis, abschluss, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }

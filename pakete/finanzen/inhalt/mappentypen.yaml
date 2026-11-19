@@ -1,0 +1,133 @@
+# Mappentypen des Pakets Finanzen (dms-registry #212). Schema: schema/inhalt.schema.json
+# Konto und Steuerjahr standen bis Haushalt 2.x im Paket Haushalt – gleiche Kennungen, ohne Umzug (Ablago neu aufsetzen).
+# Kennungen nach REGELN.md, „Gleiche Kennungen“: art, bank, person_verweis, betrag, jahr, nummer, verbleib_original …
+# Andere Pakete zeigen mit „steuerjahr“ auf das Steuerjahr und mit „konto“ bzw. „abbuchung_konto“ auf ein Konto.
+# Finanzen hängt von keinem davon ab; deshalb sammeln „Belege“ und „Was läuft über dieses Konto?“ alles, was auf
+# die Mappe zeigt, ohne Liste der Typen.
+
+- schluessel: konto
+  name: Konto
+  beschreibung: Girokonto, Sparkonto, Tagesgeld, Depot, Kreditkarte, Kredit oder Bausparvertrag – auch PayPal und ähnliche Dienste.
+  beschriftungen: { en: { name: "Account", beschreibung: "Current account, savings account, overnight money, securities account, credit card, loan or building savings contract – also PayPal and similar services." } }
+  # #212: wessen Konto es ist, steht vorne; bei Bezahldiensten stand sonst nur der Anbieter da.
+  titelVorlage: "{bank} von {inhaber_verweis} ({art})"
+  felder:
+    - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank oder Anbieter, z. B. auch PayPal, beschriftungen: { en: { label: "Bank", hilfe: "Bank or provider, e.g. also PayPal" } } }
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", hilfe: "PayPal and similar services: the account or card behind them", optionen: { "Girokonto": "Current account", "Sparkonto": "Savings account", "Tagesgeld": "Overnight money", "Depot": "Securities account", "Kreditkarte": "Credit card", "Kredit": "Loan", "Bausparvertrag": "Building savings contract" } } }
+      typ: auswahl
+      pflicht: true
+      hilfe: PayPal und ähnliche Dienste – das Konto oder die Karte dahinter
+      optionen: [Girokonto, Sparkonto, Tagesgeld, Depot, Kreditkarte, Kredit, Bausparvertrag]
+    # Im Betrieb ist der Inhaber die Firma (Organisation), privat eine oder mehrere Personen.
+    - { key: inhaber_verweis, label: Inhaber, typ: referenz, ziel: ["basis:person", "basis:organisation"], mehrfach: true, verweisart: bezug, hilfe: Wem das Konto gehört – beim Gemeinschaftskonto mehrere Personen, im Betrieb die Firma, beschriftungen: { en: { label: "Holder", hilfe: "Who owns the account – several people for a joint account, the company for a business" } } }
+    - key: iban
+      label: IBAN
+      beschriftungen: { en: { label: "IBAN", hilfe: "Spaces allowed, e.g. DE89 3704 0044 0532 0130 00" } }
+      typ: text
+      maxLen: 42
+      muster: "[A-Z]{2}[0-9]{2}( ?[A-Z0-9]){11,30}"
+      format: iban
+      erkennung: { art: iban }
+      hilfe: Leerzeichen erlaubt, z. B. DE89 3704 0044 0532 0130 00
+    - { key: kontonummer, label: Konto- oder Kartennummer, typ: text, maxLen: 40, wiederfinden: true, hilfe: Wenn es keine IBAN gibt, z. B. Depot oder Kreditkarte (nur die letzten Ziffern), beschriftungen: { en: { label: "Account or card number", hilfe: "If there is no IBAN, e.g. securities account or credit card (last digits only)" } } }
+    - { key: online_zugang, label: Online-Zugang, typ: passwort, hilfe: Zugangsdaten zum Online-Banking; nur wer die Mappe bearbeiten darf, sieht sie, beschriftungen: { en: { label: "Online access", hilfe: "Online banking login; only for those who may edit the folder" } } }
+    - { key: eroeffnet_am, label: Eröffnet am, typ: datum, beschriftungen: { en: { label: "Opened on" } } }
+    - { key: gekuendigt_am, label: Gekündigt am, typ: datum, beschriftungen: { en: { label: "Closed on" } } }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Kontovertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper account agreement is kept" } } }
+    - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bank, art, inhaber_verweis, iban, kontonummer, online_zugang, eroeffnet_am, gekuendigt_am, verbleib_original, notiz], beschriftungen: { en: { name: "General" } } }
+    - { key: kontoauszuege, name: Kontoauszüge, art: verknuepfungen, quellen: [{ typ: kontoauszug, feld: konto }], beschriftungen: { en: { name: "Bank statements" } } }
+    # #212: alles, was auf das Konto zeigt – Verträge über „Abbuchung von Konto“, Rechnungen über „Konto“, Kautionen. Hilft beim Kontowechsel.
+    - { key: laeuft_ueber, name: "Was läuft über dieses Konto?", art: verknuepfungen, beschriftungen: { en: { name: "What runs through this account?" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [_titel, art, bank, inhaber_verweis, iban]
+
+- schluessel: kontoauszug
+  name: Kontoauszug
+  beschreibung: Ein Auszug zu einem Konto, für einen Monat oder ein Quartal – z. B. vom Depot auf Papier oder als PDF.
+  beschriftungen: { en: { name: "Bank statement", beschreibung: "A statement for an account, for a month or a quarter – e.g. from the securities account on paper or as a PDF." } }
+  titelVorlage: "Auszug {nummer} – {konto}"
+  felder:
+    - { key: konto, label: Konto, typ: referenz, ziel: konto, pflicht: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Account" } } }
+    - { key: nummer, label: Auszugsnummer, typ: text, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, hilfe: z. B. 3/2026, beschriftungen: { en: { label: "Statement number", hilfe: "e.g. 3/2026" } } }
+    - key: zeitraum
+      label: Zeitraum
+      typ: auswahl
+      optionen: [Monat, Quartal]
+      beschriftungen: { en: { label: "Period", optionen: { Monat: Month, Quartal: Quarter } } }
+    - { key: beginn, label: Von, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "From" } } }
+    - { key: ende, label: Bis, typ: datum, beschriftungen: { en: { label: "To" } } }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Auszug auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper statement is kept" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [konto, nummer, zeitraum, beginn, ende, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [konto, nummer, zeitraum, beginn, ende]
+
+- schluessel: freistellungsauftrag
+  name: Freistellungsauftrag
+  beschreibung: Wie viel deiner Kapitalerträge eine Bank in einem Jahr steuerfrei auszahlt – je Person und Bank.
+  beschriftungen: { en: { name: "Exemption order", beschreibung: "How much of your investment income a bank pays out tax-free in a year – per person and bank." } }
+  titelVorlage: "Freistellungsauftrag {jahr} – {bank} – {person_verweis}"
+  felder:
+    - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Bank" } } }
+    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, beschriftungen: { en: { label: "Amount" } } }
+    - { key: jahr, label: Jahr, typ: text, muster: "[0-9]{4}", maxLen: 4, hilfe: Ab welchem Jahr er gilt, vierstellig, beschriftungen: { en: { label: "Year", hilfe: "From which year it applies, four digits" } } }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: Bei Ehepaaren beide, beschriftungen: { en: { label: "Person", hilfe: "Both for married couples" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bank, betrag, jahr, person_verweis], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [jahr, bank, person_verweis, betrag]
+
+- schluessel: steuerjahr
+  name: Steuerjahr
+  beschreibung: Die Steuern eines Jahres – Erklärung, Bescheid und die Belege dazu; im Betrieb auch Umsatzsteuer, Gewerbesteuer und Jahresabschluss.
+  beschriftungen: { en: { name: "Tax year", beschreibung: "The taxes of one year – return, assessment and the receipts for it; for a business also VAT, trade tax and the annual accounts." } }
+  titelVorlage: "Steuerjahr {jahr}"
+  felder:
+    - { key: jahr, label: Jahr, typ: text, pflicht: true, eindeutig: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025", beschriftungen: { en: { label: "Year", hilfe: "Four digits, e.g. 2025" } } }
+    - { key: abgegeben_am, label: Abgegeben am, typ: datum, hilfe: Die Einkommensteuererklärung, beschriftungen: { en: { label: "Filed on", hilfe: "The income tax return" } } }
+    - { key: bescheid_vom, label: Bescheid vom, typ: datum, beschriftungen: { en: { label: "Assessment dated" } } }
+    - { key: ergebnis, label: Erstattung/Nachzahlung, typ: betrag, waehrung: EUR, hilfe: Erstattung positiv, Nachzahlung negativ, beschriftungen: { en: { label: "Refund/back payment", hilfe: "Refund positive, back payment negative" } } }
+    - key: einspruch_bis
+      label: Einspruch bis
+      beschriftungen: { en: { label: "Objection by", hilfe: "One month after the assessment (assessment date + 1 month). The included automation reminds you 7 days before." } }
+      typ: datum
+      hilfe: Ein Monat nach dem Bescheid (Bescheid vom + 1 Monat). Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
+      frist: { vorlauf: 7, einheit: tage }
+    - { key: steuerberater, label: Steuerberater, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Tax adviser" } } }
+    # Im Betrieb (#212): kein eigenes Geschäftsjahr – Umsatzsteuer, Gewerbesteuer und Jahresabschluss stehen im Steuerjahr.
+    - { key: ust_abgegeben_am, label: Umsatzsteuererklärung abgegeben am, typ: datum, beschriftungen: { en: { label: "VAT return filed on" } } }
+    - { key: ust_bescheid_vom, label: Umsatzsteuerbescheid vom, typ: datum, beschriftungen: { en: { label: "VAT assessment dated" } } }
+    - { key: ust_ergebnis, label: Umsatzsteuer Erstattung/Nachzahlung, typ: betrag, waehrung: EUR, hilfe: Erstattung positiv, Nachzahlung negativ, beschriftungen: { en: { label: "VAT refund/back payment", hilfe: "Refund positive, back payment negative" } } }
+    - { key: gewst_abgegeben_am, label: Gewerbesteuererklärung abgegeben am, typ: datum, beschriftungen: { en: { label: "Trade tax return filed on" } } }
+    - { key: gewst_bescheid_vom, label: Gewerbesteuerbescheid vom, typ: datum, hilfe: Den Bescheid schickt die Gemeinde, beschriftungen: { en: { label: "Trade tax assessment dated", hilfe: "The municipality sends the assessment" } } }
+    - { key: gewst_betrag, label: Gewerbesteuer, typ: betrag, waehrung: EUR, beschriftungen: { en: { label: "Trade tax" } } }
+    - key: abschluss_art
+      label: Jahresabschluss
+      typ: auswahl
+      optionen: [Einnahmenüberschussrechnung, Bilanz]
+      beschriftungen: { en: { label: "Annual accounts", optionen: { "Einnahmenüberschussrechnung": "Cash-basis accounts (EÜR)", "Bilanz": "Balance sheet" } } }
+    - { key: abschluss_am, label: Jahresabschluss erstellt am, typ: datum, beschriftungen: { en: { label: "Annual accounts prepared on" } } }
+  register:
+    - key: allgemein
+      name: Allgemein
+      beschriftungen: { en: { name: "General" } }
+      art: felder
+      felder: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis, steuerberater,
+               ust_abgegeben_am, ust_bescheid_vom, ust_ergebnis, gewst_abgegeben_am, gewst_bescheid_vom, gewst_betrag,
+               abschluss_art, abschluss_am]
+      abschnitte:
+        - { vor: ust_abgegeben_am, titel: Umsatzsteuer, beschriftungen: { en: { titel: "VAT" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
+        - { vor: gewst_abgegeben_am, titel: Gewerbesteuer, beschriftungen: { en: { titel: "Trade tax" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
+        - { vor: abschluss_art, titel: Jahresabschluss, beschriftungen: { en: { titel: "Annual accounts" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
+    # Alles, was auf das Steuerjahr zeigt (Feld „steuerjahr“ an Rechnungen, Anschaffungen, Arbeitsverhältnissen …).
+    - { key: belege, name: Belege, art: verknuepfungen, beschriftungen: { en: { name: "Receipts" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis]

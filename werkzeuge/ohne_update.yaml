@@ -1,0 +1,4 @@
+# Paketversionen ohne Update-Weg von der Vorgängerversion (kein Umbau, Ablago wird neu aufgesetzt).
+# Steht eine Version aus dem Pull Request hier, prüft die CI nur die frische Installation (.github/workflows/pruefen.yml).
+# Nur mit Freigabe von Thomas eintragen – im Katalog erscheint die Version trotzdem als Update.
+- haushalt-v3.0.0   # Konto und Steuerjahr ziehen ohne Umzug nach Finanzen (#212, Thomas 20.11.2026)

@@ -3,7 +3,7 @@ schema: 1
 id: vermietung
 name: Vermietung
 herausgeber: app.ablago
-version: 2.1.0
+version: 2.1.1
 beschreibung: Mietobjekte, Wohnungen und Nebenkostenabrechnungen – für Vermieter mit wenigen Wohnungen. Mietverträge und Ausgaben kommen aus den Paketen Verträge sowie Rechnungen und Bestellungen, mit Fristen für Abrechnung, Mieterhöhung und Kündigung.
 autor:
   name: Thomas Meissner

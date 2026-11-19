@@ -1,0 +1,36 @@
+# Paket Finanzen (dms-registry #212): Konto und Steuerjahr – bis Haushalt 2.x im Paket Haushalt –, dazu Kontoauszug
+# und Freistellungsauftrag. Für Privat und Betrieb; Haushalt und Rechnungen und Bestellungen bauen darauf auf.
+# Ablago legt ab, es bucht nicht: keine Kontostände, Buchungen, Kassenbuch oder Budgets.
+# Schema: schema/manifest.schema.json
+schema: 1
+id: finanzen
+name: Finanzen
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: Konten, Kontoauszüge, Freistellungsaufträge und Steuerjahre an einem Ort – privat wie im Betrieb. Ablago legt die Unterlagen ab, es bucht nicht.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: wallet
+kurzanleitung:
+  de:
+    - Lege deine Bank einmal als Organisation an und dann je Konto eine Mappe – mit Inhaber, Art und IBAN.
+    - Kontoauszüge legst du am Konto ab; unter „Was läuft über dieses Konto?“ siehst du Verträge, Rechnungen und Auszüge dazu.
+    - Im Steuerjahr findest du unter „Belege“ alles, was du diesem Jahr zugeordnet hast. Trag „Einspruch bis“ ein, dann erinnert Ablago rechtzeitig.
+    - Bei „beruflich genutzt“ hat das Steuerjahr dazu Umsatzsteuer, Gewerbesteuer und Jahresabschluss.
+  en:
+    - Create your bank once as an organisation, then one folder per account – with holder, type and IBAN.
+    - File bank statements with the account; “What runs through this account?” shows the contracts, invoices and statements for it.
+    - In a tax year, “Receipts” shows everything you assigned to that year. Enter “Objection by” and Ablago reminds you in time.
+    - With “used for business”, the tax year also has VAT, trade tax and the annual accounts.
+# 0.285.0: Rundgänge und Tipps (dms-registry #132); darin enthalten Anzeige-Bedingungen mit Merkmal (beruflich) und frist.
+dms: ">=0.285.0"
+abhaengigkeiten:
+  basis: ">=1.7.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  automatisierungen: inhalt/automatisierungen.yaml
+  tipps: inhalt/tipps.yaml

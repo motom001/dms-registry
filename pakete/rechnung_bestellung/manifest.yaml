@@ -6,7 +6,7 @@ schema: 1
 id: rechnung_bestellung
 name: Rechnungen und Bestellungen
 herausgeber: app.ablago
-version: 1.0.0
+version: 1.1.0
 beschreibung: Rechnungen, Quittungen, Gutschriften und Bestellungen – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, teilt die Umsatzsteuer nach Sätzen auf und meldet, wenn die Summen nicht zum Betrag passen.
 autor:
   name: Thomas Meissner
@@ -33,6 +33,8 @@ kurzanleitung:
 abhaengigkeiten:
   basis: ">=1.7.0"
   vertraege: ">=1.0.0"
+  # Ab 1.1.0 (dms-registry #212): Steuerjahr und Konto aus Finanzen.
+  finanzen: ">=1.0.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

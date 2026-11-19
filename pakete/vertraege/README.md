@@ -18,7 +18,7 @@ Ein Mappentyp für **alle Verträge** – Strom, Internet, Handy, Streaming, Mit
 | oben | Bezeichnung (Pflicht), **Anbieter** (`von`), **Vertragsart**, **Zuständig**, *Kündigen bis*, *Status* |
 | Vertragsparteien | **Kunde** (`an`, leer heißt: wir; auch mehrere), Vertragsnummer (Anbieter) |
 | Laufzeit und Kündigung | Beginn, Mindestlaufzeit, Danach (verlängert sich um … / läuft unbefristet weiter / endet), Verlängert sich um, Vertragsende, Kündigungsfrist, Kündigung zum (Laufzeitende, Monats-, Quartals-, Jahresende, jederzeit), Gekündigt am, Kündigung bestätigt am, *Frühestens zu Ende am*, *Nächste Verlängerung*, *Endet am*, *Laufzeit in Monaten* |
-| Kosten | Betrag, Zahlweise, *Pro Monat* |
+| Kosten | Betrag, Zahlweise, *Pro Monat*, Abbuchung von Konto (Konto aus dem Paket Finanzen, wenn installiert), Mandatsreferenz |
 | Weiteres | **Betrifft** (Fahrzeug, Wohnung, Mietobjekt, Immobilie oder Anschaffung – sobald das Paket dazu installiert ist), Gehört zu (übergeordneter Vertrag, z. B. Familientarif), Verbleib Original, Bemerkungen |
 | Abschluss | nur, wenn Anbieter oder Kunde eine **eigene Organisation** ist (Basis): von uns / von der Gegenseite unterschrieben am, interne Nummer, Ansprechpartner |
 | Miete | nur bei Vertragsart Miete: Mietart, Kaltmiete, Vorauszahlung, Sonstiges, nächste Mieterhöhung, Kaution, Kautionskonto, Kaution zurück am |

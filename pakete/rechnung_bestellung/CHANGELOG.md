@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.0
+
+- **Steuerjahr und Konto aus dem Paket Finanzen** (dms-registry #212): Rechnungen und Bestellungen hängt jetzt von Finanzen 1.0.0 ab. *Steuerjahr* zeigt auf das Steuerjahr aus Finanzen (bisher optional aus Haushalt), neben *Bezahlt per* gibt es das Feld **Konto** – von welchem Konto bezahlt oder auf welches eingegangen.
+
 ## 1.0.0
 
 Nachfolger des Pakets **Rechnungen** (bis 1.3.0), ohne Umzug aus dem alten Paket – es gab nur eine Installation, und die wird neu aufgebaut.

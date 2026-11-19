@@ -19,7 +19,7 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 **Verweise:**
 
 - **Mieter** sind **Personen**, **Hausverwaltung**, **Firma** und die Bank des Kautionskontos **Organisationen** – beides aus dem Paket Basis.
-- **Steuerjahr** ist ein Steuerjahr aus dem Paket Haushalt, wenn es installiert ist – dort sammelst du die Unterlagen der Einkommensteuer, zu der die Anlage V gehört.
+- **Steuerjahr** ist ein Steuerjahr aus dem Paket Finanzen, wenn es installiert ist – dort sammelst du die Unterlagen der Einkommensteuer, zu der die Anlage V gehört.
 - **Immobilie (Paket Haus)** ist optional: Führst du Wartungen und Zählerstände des Hauses im Paket Haus, verweist das Mietobjekt auf die Immobilie.
 - **Verbleib Originaldokumente** zeigt auf einen **Ablageort** aus dem Paket Basis – wo der unterschriebene Mietvertrag, das Übergabeprotokoll oder der Kaufvertrag liegen.
 
@@ -38,7 +38,7 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 ## Voraussetzungen
 
 - Ablago ab Version 0.248 (für das Paket Rechnungen und Bestellungen)
-- Pakete **Basis** ab 1.7.0, **Haus** ab 1.0.0, **Verträge** ab 1.1.0 und **Rechnungen und Bestellungen** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert; **Haushalt** ist nicht nötig (dann bleibt das Steuerjahr leer)
+- Pakete **Basis** ab 1.7.0, **Haus** ab 1.0.0, **Verträge** ab 1.1.0 und **Rechnungen und Bestellungen** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert; **Finanzen** kommt mit Rechnungen und Bestellungen ab 1.1.0 mit; vorher bleibt das Steuerjahr leer
 
 ## Rechte und Netz
 

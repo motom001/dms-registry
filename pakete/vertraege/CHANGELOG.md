@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.6.0
+
+- **Abbuchung vom Konto** (dms-registry #212): Unter *Kosten* die Felder **Abbuchung von Konto** (ein Konto aus dem Paket Finanzen, wenn es installiert ist) und **Mandatsreferenz**. Am Konto steht der Vertrag dann unter „Was läuft über dieses Konto?“ – praktisch beim Kontowechsel.
+- *Kautionskonto* zeigt auf ein Konto aus Finanzen statt aus Haushalt.
+
 ## 1.5.0
 
 - **Kein Umzug mehr aus Haushalt 1.x und Vermietung 1.x:** Die Umbau-Schritte für *Vertrag*, *Versicherung* und *Mietvertrag* sind entfernt. Es gab keine Installation mehr, die sie brauchte (Thomas, 20.11.2026). Wer noch Haushalt oder Vermietung 1.x hat, aktualisiert vorher auf Verträge 1.4.1.

@@ -25,6 +25,8 @@
       beschriftungen: { en: { label: "Paid by", optionen: { "Überweisung": "bank transfer", "Lastschrift": "direct debit", "Karte": "card", "bar": "cash", "PayPal und Co.": "PayPal etc.", "Rechnung": "on account" } } }
       typ: auswahl
       optionen: [Überweisung, Lastschrift, Karte, bar, PayPal und Co., Rechnung]
+    # #212: von welchem Konto bezahlt bzw. auf welches eingegangen – „Bezahlt per“ bleibt daneben.
+    - { key: konto, label: Konto, typ: referenz, ziel: "finanzen:konto", verweisart: bezug, hilfe: Von welchem Konto bezahlt oder auf welches eingegangen, beschriftungen: { en: { label: "Account", hilfe: "Which account it was paid from or into" } } }
     # Einzelheiten
     - key: betrifft
       label: Betrifft
@@ -38,7 +40,7 @@
       hilfe: Wofür die Rechnung ist – Fahrzeug, Wohnung, Anschaffung oder Vertrag
     # Vertrag oder Bestellung, mehrfach und gemischt – z. B. ein Vertrag, den eine Bestellung erweitert (#208, #211).
     - { key: gehoert_zu, label: Gehört zu Vertrag / Bestellung, typ: referenz, ziel: ["vertraege:vertrag", bestellung], mehrfach: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to contract / order" } } }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, zielOptional: ["haushalt:steuerjahr"], verweisart: bezug, hilfe: Wenn du die Kosten absetzen willst, beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs" } } }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: Wenn du die Kosten absetzen willst, beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs" } } }
     # Fahrzeug – wenn „betrifft“ ein Fahrzeug ist
     - { key: kilometerstand, label: Kilometerstand, typ: zahl, beschriftungen: { en: { label: "Mileage" } } }
     - { key: arbeiten, label: Arbeiten, typ: langtext, hilfe: z. B. Inspektion, Bremsen vorne, beschriftungen: { en: { label: "Work done", hilfe: "e.g. service, front brakes" } } }
@@ -88,7 +90,7 @@
       name: Rechnung
       beschriftungen: { en: { name: "Invoice" } }
       art: felder
-      felder: [von, an, status, betrag, rechnungsnummer, datum, faellig_am, bezahlt_am, zahlweise,
+      felder: [von, an, status, betrag, rechnungsnummer, datum, faellig_am, bezahlt_am, zahlweise, konto,
                betrifft, gehoert_zu, steuerjahr,
                kilometerstand, arbeiten,
                umlagefaehig, kostenart,
