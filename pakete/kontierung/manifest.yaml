@@ -13,6 +13,7 @@ autor:
   github: motom001
 lizenz: Apache-2.0
 kategorien: [vorlagen]
+symbol: network
 # Nur im Betrieb sinnvoll: Ablago empfiehlt das Paket nur mit dem Merkmal „beruflich genutzt“ (REGELN.md, „Für dich empfohlen“).
 passtZu: [beruflich]
 kurzanleitung:

@@ -115,6 +115,7 @@ kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unte
 | `languages` | Sprachen (mit `kuerzel`) |
 | `mail` | Post, E-Mail |
 | `message-circle-question-mark` | Fragen, Assistent |
+| `network` | Gliederung, Kostenstellen, Kontierung |
 | `receipt-text` | Rechnungen, Belege |
 | `scan-barcode` | Trennblätter, Barcodes |
 | `scan-text` | Texterkennung |
