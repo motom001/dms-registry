@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.4.1
+
+- **Fristen werden beim Speichern wieder berechnet** (dms-registry #209): Das Paket las die Mappe in einer älteren Form der Antwort von Ablago und rechnete beim Anlegen und Speichern eines Vertrags nichts neu („Vertrag unverändert“). Kündigen bis, frühestes Ende und Status kamen nur mit der täglichen Prüfung. Jetzt stimmen sie gleich nach dem Speichern.
+
 ## 1.4.0
 
 - **Vertragsarten erscheinen nicht mehr in der Suche oben** und nicht in „Frag deine Ablage“ (dms-registry #197, Ablago #1220). In der erweiterten Suche findest du sie, sobald du den Typ „Vertragsart“ wählst; die Auswahl am Vertrag bleibt, wie sie ist. Hast du den Haken „In der allgemeinen Suche zeigen“ am Typ selbst gesetzt, bleibt deine Einstellung.
