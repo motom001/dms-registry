@@ -293,8 +293,8 @@ int verarbeite(const Json &e) {
     // Positionen einmal lesen und nach Rechnung ordnen – für die Summenprüfung der Rechnungen, die Positionen haben.
     std::vector<std::pair<std::string, rechnung::Position>> alle_pos;
     const std::string pos_typ = typ_id(TYP_POSITION);
-    // Dabei Umsatzsteuer und leere Gesamtpreise nachrechnen – z. B. nach dem Umzug aus dem Paket Rechnungen, der die
-    // berechnete Umsatzsteuer nicht mitnimmt (Konflikt zählt nicht: die Änderung bringt ihr eigenes Ereignis).
+    // Dabei Umsatzsteuer und leere Gesamtpreise nachrechnen, falls ein Ereignis verloren ging (Konflikt zählt nicht:
+    // die Änderung bringt ihr eigenes Ereignis).
     int pos_neu = 0;
     if (!pos_typ.empty() && jede(pos_typ, [&](const std::string &pid, const Json &m) {
           pos_neu += position_rechnen(pid, m) == 0;

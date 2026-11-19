@@ -2,7 +2,7 @@
 
 Rechnungen, Quittungen, Kassenbons, Gutschriften und Erstattungen – **eingehend und ausgehend** – dazu Bestellungen, Lieferscheine und Positionen. Das Paket zeigt, was **offen, bezahlt oder überfällig** ist, teilt die Umsatzsteuer nach Sätzen auf und meldet ruhig, wenn die Summen nicht zum Betrag passen.
 
-Es ist der Nachfolger des Pakets **Rechnungen** (siehe [Umzug aus dem Paket Rechnungen](#umzug-aus-dem-paket-rechnungen)).
+Es ist der Nachfolger des Pakets **Rechnungen**. Einen Umzug aus dem alten Paket gibt es nicht: Rechnungen hatte nur eine Installation, und die wird neu aufgebaut.
 
 ## Inhalt
 
@@ -59,17 +59,9 @@ An der Rechnung trägt **Mappe → Als bezahlt markieren** *Bezahlt am* ein – 
 | Positionen mit dem Betrag vergleichen | an | Aus: kein Hinweis zu den Positionen. |
 | Steuerzeilen aus den Positionen füllen | an | Aus: Steuerzeilen nur von Hand. |
 
-## Umzug aus dem Paket Rechnungen
-
-Wer das Paket **Rechnungen** (bis 1.3.0) hat, installiert dieses Paket einzeln (nicht zusammen mit anderen, mit „Gesamte Verwaltung“). Ablago zeigt vorher, wie viele Mappen umziehen und welche Werte wohin gehen; nach deiner Bestätigung laufen Rechnungen, Positionen und Lieferscheine in einem Zug um – mit Dokumenten, Verknüpfungen, Ansichten und Rechten. Die Rechnung übernimmt dabei den alten Typ mit seiner Id und bekommt den neuen Aufbau.
-
-- *Gehört zu Vertrag* → **Gehört zu Vertrag / Bestellung**, *Kunden- oder Vertragsnummer* → **Gefundene Kundennummer**, Register *Anlagen* → **Dokumente**.
-- *Bemerkungen*, *Bezahlt von*, *Netto*, *Umsatzsteuersatz*, *Umsatzsteuer*, der *Steuerschlüssel* der Rechnung und der alte *Status* stehen danach in einer **Notiz** an der Mappe; den Status rechnet das Paket neu.
-- Danach unter **Werkbank → Pakete** das Paket Rechnungen entfernen. Fahrzeuge, Haushalt und Vermietung zeigen ab ihrer nächsten Version auf dieses Paket.
-
 ## Voraussetzungen
 
-- Ablago ab 0.248.0 (Umbau, Aktionen im Menü „Mappe“, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „gehört immer zu“, eigene Organisation, Vorbelegen).
+- Ablago ab 0.248.0 (Aktionen im Menü „Mappe“, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „gehört immer zu“, eigene Organisation, Vorbelegen).
 - Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung, Haushalt und Kontierung sind nicht nötig – sind sie installiert, bieten *Betrifft*, *Steuerjahr*, *Kontierung* und *Steuerschlüssel* ihre Mappen an.
 
 ## Rechte und Netzwerkzugriff
