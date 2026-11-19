@@ -114,6 +114,7 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 | `languages` | languages (with `kuerzel`) |
 | `mail` | post, e-mail |
 | `message-circle-question-mark` | questions, assistant |
+| `network` | structure, cost centres, account assignment |
 | `receipt-text` | invoices, receipts |
 | `scan-barcode` | separator sheets, barcodes |
 | `scan-text` | text recognition |
