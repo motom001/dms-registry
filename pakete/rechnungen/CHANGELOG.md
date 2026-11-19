@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.4.0
+
+- **Neuer Mappentyp Bestellung** (dms-registry #211): Händler oder Lieferant, Bestellnummer, Bestelldatum, Betrag, Lieferstand, *Rücksendefrist bis*, Betrifft und Gehört zu Vertrag. Bestätigungen, Angebot und Anfrage hängen als Dokumente daran; Rechnungen und Lieferscheine erscheinen unter *Verknüpfungen*.
+- **Rücksendefrist endet bald:** neue Automatisierung, eingeschaltet – 3 Tage vorher eine Aufgabe für die Person, die die Bestellung angelegt hat.
+- **Rechnung und Lieferschein** bekommen das Feld *Gehört zu Bestellung* (an der Rechnung auch mehrere, z. B. bei einer Sammelrechnung). Später sollen Vertrag und Bestellung an der Rechnung in einem Feld stehen (#208).
+- Neue Ansichten *Bestellungen* und *Unterwegs*; Kurzanleitung mit einem Beispiel.
+
 ## 1.3.0
 
 - **Kontierung im Betrieb** (dms-registry #213): Neuer Abschnitt *Kontierung* (eingeklappt, nur bei „beruflich genutzt“) mit Kostenstelle, Kostenträger, Sachkonto und Steuerschlüssel. Die Auswahl kommt aus dem neuen Paket **Kontierung**; ohne es bleiben die Felder leer. Der Steuerschlüssel übernimmt beim Auswählen seinen Satz in „Umsatzsteuersatz“, wenn das Feld leer ist – privat bleibt der Satz frei eintragbar.

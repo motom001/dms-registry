@@ -17,3 +17,12 @@
   bedingungen:
     - { feld: datum, operator: imZeitraum, wert: { art: jahr } }
 - { schluessel: lieferscheine, name: Lieferscheine, eltern: rechnungen, typen: [lieferschein], beschriftungen: { en: { name: "Delivery notes" } } }
+- { schluessel: bestellungen, name: Bestellungen, beschreibung: Einkäufe von der Bestellung bis zur Lieferung, eltern: rechnungen, typen: [bestellung], beschriftungen: { en: { name: "Orders", beschreibung: "Purchases from order to delivery" } } }
+- schluessel: unterwegs
+  name: Unterwegs
+  beschreibung: Bestellt oder versandt, noch nicht angekommen
+  beschriftungen: { en: { name: "On the way", beschreibung: "Ordered or shipped, not arrived yet" } }
+  eltern: bestellungen
+  typen: [bestellung]
+  bedingungen:
+    - { feld: lieferstand, operator: einerVon, wert: { art: fest, wert: [bestellt, versandt, teilweise] } }

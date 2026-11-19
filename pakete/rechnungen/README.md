@@ -7,7 +7,8 @@ Rechnungen, Quittungen, Kassenbons, Gutschriften und Erstattungen – **eingehen
 | Mappentyp | wofür | wichtige Felder |
 | --- | --- | --- |
 | Rechnung | jede Rechnung, Quittung, Gutschrift | Rechnungssteller (`von`), Betrag (Minus = Gutschrift), Rechnungsdatum, fällig am, bezahlt am, *Status*, betrifft, gehört zu Vertrag, Steuerjahr |
-| Lieferschein | was geliefert wurde | Lieferant, Lieferdatum, Lieferschein- und Bestellnummer, vollständig erhalten, gehört zu Rechnung |
+| Bestellung | ein Einkauf von der Bestellung bis zur Lieferung, online oder im Betrieb | Händler oder Lieferant, Bestellnummer, Bestelldatum, Betrag, Lieferstand (bestellt, versandt, angekommen, teilweise, zurückgeschickt), **Rücksendefrist bis** (erinnert 3 Tage vorher), betrifft, gehört zu Vertrag |
+| Lieferschein | was geliefert wurde | Lieferant, Lieferdatum, Lieferschein- und Bestellnummer, gehört zu Bestellung, vollständig erhalten, gehört zu Rechnung |
 | Rechnungsposition | eine Zeile einer Rechnung – erscheint nur an ihrer Rechnung | Nr., Beschreibung, Menge, Einheit, Einzelpreis, Gesamtpreis, Umsatzsteuersatz, *Umsatzsteuer*, Artikelnummer |
 
 ### Rechnung
@@ -25,6 +26,14 @@ Rechnungen, Quittungen, Kassenbons, Gutschriften und Erstattungen – **eingehen
 | Positionen | Tabelle der Rechnungspositionen mit „+ Position“ | immer |
 
 Register: *Rechnung*, *Anlagen*, *Lieferscheine*, *Verknüpfungen*, *Historie*.
+
+### Bestellung
+
+Eine Bestellung ist in Ablago **kein Vertrag**: Verträge laufen (Laufzeit, Verlängerung, Kündigung), eine Bestellung ist ein einmaliger Vorgang. Anfrage, Angebot, Eingangs-, Bestell- und Zahlungsbestätigung hängen als **Dokumente** an der Bestellung. Rechnung und Lieferschein zeigen über **Gehört zu Bestellung** auf sie und stehen dann unter *Verknüpfungen* der Bestellung. Die mitgelieferte Automatisierung **Rücksendefrist endet bald** erinnert 3 Tage vor dem Ende der Rücksendefrist (eingeschaltet; unter *Automatisierungen* abschaltbar).
+
+**Beispiel:** Lena bestellt online einen Wasserkocher. Sie legt eine Bestellung an (Händler, Bestellnummer, Rücksendefrist bis) und hängt die Bestellbestätigung aus der E-Mail an. Kommt die Rechnung, wählt sie dort unter *Wozu* die Bestellung – die Rechnung erscheint an der Bestellung, Bestätigung und Rechnung liegen zusammen.
+
+Ansichten: *Bestellungen* und darunter *Unterwegs* (bestellt, versandt oder teilweise angekommen).
 
 ## So rechnet das Paket
 

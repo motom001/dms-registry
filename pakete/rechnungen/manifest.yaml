@@ -4,7 +4,7 @@ schema: 1
 id: rechnungen
 name: Rechnungen
 herausgeber: app.ablago
-version: 1.3.0
+version: 1.4.0
 beschreibung: Rechnungen, Quittungen, Kassenbons und Gutschriften – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, und meldet, wenn die Positionen nicht zum Betrag passen.
 autor:
   name: Thomas Meissner
@@ -26,11 +26,13 @@ kurzanleitung:
     - Trage „bezahlt am“ ein, sobald sie bezahlt ist; den Status rechnet das Paket jeden Morgen neu.
     - Unter „Wozu“ ordnest du sie einem Vertrag, Fahrzeug oder einer Wohnung zu – dann findest du sie dort wieder.
     - "Für Rechnungen mit Positionen: „+ Position“ – passt die Summe nicht zum Betrag, zeigt die Rechnung einen Hinweis."
+    - "Online bestellt? Lena legt eine Bestellung an und hängt die Bestätigung an; Rechnung und Lieferschein zeigen über „Gehört zu Bestellung“ darauf."
   en:
     - Create an invoice or take it over from the mail – from whom, how much, when due.
     - Enter “paid on” once it is paid; the package recalculates the status every morning.
     - Under “What for” you link it to a contract, vehicle or flat – then you find it there too.
     - "For invoices with items: “+ Item” – if the total does not match the amount, the invoice shows a note."
+    - "Ordered online? Lena creates an order and attaches the confirmation; invoice and delivery note point to it via “Belongs to order”."
 abhaengigkeiten:
   basis: ">=1.7.0"
   vertraege: ">=1.0.0"

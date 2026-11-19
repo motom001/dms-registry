@@ -1,5 +1,5 @@
 # Was nach der Installation in Ablago vorhanden sein muss.
-mappentypen: [rechnung, lieferschein, rechnungsposition]
-sichten: [rechnungen, offen, dieses_jahr, lieferscheine]
+mappentypen: [rechnung, bestellung, lieferschein, rechnungsposition]
+sichten: [rechnungen, offen, dieses_jahr, lieferscheine, bestellungen, unterwegs]
 wortlisten: 3
-automatisierungen: 1
+automatisierungen: 2

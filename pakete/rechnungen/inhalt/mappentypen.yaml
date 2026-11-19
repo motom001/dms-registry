@@ -45,6 +45,8 @@
       verweisart: bezug
       hilfe: Wofür die Rechnung ist – Fahrzeug, Wohnung, Anschaffung oder Vertrag
     - { key: vertrag, label: Gehört zu Vertrag, typ: referenz, ziel: "vertraege:vertrag", verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to contract" } } }
+    # #211: eigenes Feld, bis „Gehört zu Vertrag / Bestellung“ (#208) beide in einem Feld zusammenführt – das braucht den Kern.
+    - { key: bestellung, label: Gehört zu Bestellung, typ: referenz, ziel: bestellung, mehrfach: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to order" } } }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, zielOptional: ["haushalt:steuerjahr"], verweisart: bezug, hilfe: Wenn du die Kosten absetzen willst, beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs" } } }
     # Einzelheiten (eingeklappt)
     - { key: rechnungsnummer, label: Rechnungsnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Invoice number" } } }
@@ -107,7 +109,7 @@
       beschriftungen: { en: { name: "Invoice" } }
       art: felder
       felder: [von, betrag, datum, faellig_am, bezahlt_am, status,
-               betrifft, vertrag, steuerjahr,
+               betrifft, vertrag, bestellung, steuerjahr,
                rechnungsnummer, kundennummer, zahlweise, bezahlt_von, an,
                netto, ust_satz, ust, skonto, skonto_bis,
                kostenstelle, kostentraeger, sachkonto, steuerschluessel,
@@ -130,6 +132,41 @@
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
   trefferliste: [von, datum, betrag, faellig_am, status]
 
+- schluessel: bestellung
+  name: Bestellung
+  beschreibung: Ein Einkauf von der Bestellung bis zur Lieferung – online oder im Betrieb. Bestätigungen hängen als Dokumente daran, Rechnung und Lieferschein zeigen darauf.
+  beschriftungen: { en: { name: "Order", beschreibung: "A purchase from order to delivery – online or for the business. Confirmations are attached as documents; invoice and delivery note point to it." } }
+  # dms-registry #211: kein Vertrag (der ist für laufende Verträge mit Laufzeit und Kündigung), sondern ein einmaliger Vorgang.
+  titelVorlage: "{von} – {datum}"
+  felder:
+    - { key: von, label: Händler oder Lieferant, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, erkennung: { art: verweis }, beschriftungen: { en: { label: "Shop or supplier" } } }
+    - { key: bestellnummer, label: Bestellnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, hilfe: Steht meist auf Bestätigung, Lieferschein und Rechnung, beschriftungen: { en: { label: "Order number", hilfe: "Usually on the confirmation, delivery note and invoice" } } }
+    - { key: datum, label: Bestelldatum, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Order date" } } }
+    - { key: betrag, label: Betrag, typ: betrag, hilfe: Brutto, wie bestellt, erkennung: { art: betrag }, beschriftungen: { en: { label: "Amount", hilfe: "Gross, as ordered" } } }
+    - key: lieferstand
+      label: Lieferstand
+      typ: auswahl
+      optionen: [bestellt, versandt, angekommen, teilweise, zurückgeschickt]
+      standard: bestellt
+      beschriftungen: { en: { label: "Delivery status", optionen: { "bestellt": "ordered", "versandt": "shipped", "angekommen": "arrived", "teilweise": "partly arrived", "zurückgeschickt": "returned" } } }
+    - key: ruecksendefrist
+      label: Rücksendefrist bis
+      typ: datum
+      hilfe: Bis wann du zurückschicken kannst. Die mitgelieferte Automatisierung erinnert 3 Tage vorher.
+      frist: { vorlauf: 3, einheit: tage }
+      beschriftungen: { en: { label: "Return by", hilfe: "Last day you can send it back. The included automation reminds you 3 days before." } }
+    - { key: betrifft, label: Betrifft, typ: referenz, ziel: "vertraege:vertrag", zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"], mehrfach: true, gleicherTyp: true, verweisart: bezug, hilfe: Wofür die Bestellung ist – z. B. eine Anschaffung, beschriftungen: { en: { label: "Concerns", hilfe: "What the order is for – e.g. a purchase" } } }
+    - { key: vertrag, label: Gehört zu Vertrag, typ: referenz, ziel: "vertraege:vertrag", verweisart: zugehoerigkeit, hilfe: z. B. wenn die Bestellung einen Vertrag erweitert, beschriftungen: { en: { label: "Belongs to contract", hilfe: "e.g. if the order extends a contract" } } }
+    - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: bestellung, name: Bestellung, art: felder, felder: [von, bestellnummer, datum, betrag, lieferstand, ruecksendefrist, betrifft, vertrag, notiz], beschriftungen: { en: { name: "Order" } } }
+    # Anfrage, Angebot, Eingangs-, Bestell- und Zahlungsbestätigung – ohne eigene Mappentypen (#211).
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    # Rechnungen und Lieferscheine, die über „Gehört zu Bestellung“ hierher zeigen, und alle anderen Bezüge.
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [von, datum, bestellnummer, betrag, lieferstand, ruecksendefrist]
+
 - schluessel: lieferschein
   name: Lieferschein
   beschreibung: Lieferschein zu einer Bestellung – was geliefert wurde, und ob es vollständig war.
@@ -141,6 +178,7 @@
     - { key: datum, label: Lieferdatum, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Delivery date" } } }
     - { key: lieferscheinnummer, label: Lieferscheinnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Delivery note number" } } }
     - { key: bestellnummer, label: Bestellnummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Order number" } } }
+    - { key: bestellung, label: Gehört zu Bestellung, typ: referenz, ziel: bestellung, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to order" } } }
     - { key: betrifft, label: Betrifft, typ: referenz, ziel: "vertraege:vertrag", zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"], mehrfach: true, gleicherTyp: true, verweisart: bezug, beschriftungen: { en: { label: "Concerns" } } }
     - key: vollstaendig
       label: Vollständig erhalten
@@ -150,7 +188,7 @@
     - { key: rechnung, label: Gehört zu Rechnung, typ: referenz, ziel: rechnung, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to invoice" } } }
     - { key: notiz, label: Bemerkungen, typ: langtext, beschriftungen: { en: { label: "Remarks" } } }
   register:
-    - { key: lieferschein, name: Lieferschein, art: felder, felder: [von, an, datum, lieferscheinnummer, bestellnummer, betrifft, vollstaendig, rechnung, notiz], beschriftungen: { en: { name: "Delivery note" } } }
+    - { key: lieferschein, name: Lieferschein, art: felder, felder: [von, an, datum, lieferscheinnummer, bestellnummer, bestellung, betrifft, vollstaendig, rechnung, notiz], beschriftungen: { en: { name: "Delivery note" } } }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
   trefferliste: [von, datum, lieferscheinnummer, vollstaendig, rechnung]
