@@ -64,6 +64,14 @@ jobs:
           git worktree add -q "$RUNNER_TEMP/neu" HEAD
           if [ "${{ github.event_name }}" = pull_request ]; then
             git worktree add -q "$RUNNER_TEMP/alt" "origin/${{ github.base_ref }}"
+            # Ein Paket, das der PR aus dem Katalog nimmt und dessen Tags in werkzeuge/zurueckgezogen.yaml stehen, gibt es
+            # danach nicht mehr – ein Update von Installationen mit ihm prüfen wir nicht (z. B. Rechnungen, #208).
+            for d in "$RUNNER_TEMP"/alt/pakete/*/; do
+              id=$(basename "$d")
+              if [ ! -d "$RUNNER_TEMP/neu/pakete/$id" ] && grep -q "^- $id-v" werkzeuge/zurueckgezogen.yaml; then
+                echo "Aus dem Katalog genommen, nicht als Update geprüft: $id"; rm -rf "$d"
+              fi
+            done
             docker run --rm -v "$RUNNER_TEMP/alt/pakete:/alt:ro" -v "$RUNNER_TEMP/neu/pakete:/neu:ro" "$ABLAGO" pakete-pruefen /alt /neu
           else
             docker run --rm -v "$RUNNER_TEMP/neu/pakete:/neu:ro" "$ABLAGO" pakete-pruefen /neu
