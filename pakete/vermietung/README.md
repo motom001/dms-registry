@@ -1,6 +1,6 @@
 # Vermietung
 
-Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermietete Zweifamilienhaus, die Eigentumswohnung als Altersvorsorge, die Garage nebenan. Es bringt **Mietobjekt**, **Wohnung** und **Nebenkostenabrechnung**; Mietverträge sind **Verträge** aus dem Paket Verträge (Vertragsart *Miete*), Ausgaben **Rechnungen** aus dem Paket Rechnungen. Damit liegen Verträge, Kaution, Abrechnungen und Rechnungen je Haus beisammen, Ablago erinnert an die Fristen, und die Belege für die Anlage V sind nach Jahr sortiert. Installiert wird es unter **Werkbank → Pakete**; die Pakete **Basis**, **Haus**, **Verträge** und **Rechnungen** kommen dabei automatisch mit.
+Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermietete Zweifamilienhaus, die Eigentumswohnung als Altersvorsorge, die Garage nebenan. Es bringt **Mietobjekt**, **Wohnung** und **Nebenkostenabrechnung**; Mietverträge sind **Verträge** aus dem Paket Verträge (Vertragsart *Miete*), Ausgaben **Rechnungen** aus dem Paket Rechnungen und Bestellungen. Damit liegen Verträge, Kaution, Abrechnungen und Rechnungen je Haus beisammen, Ablago erinnert an die Fristen, und die Belege für die Anlage V sind nach Jahr sortiert. Installiert wird es unter **Werkbank → Pakete**; die Pakete **Basis**, **Haus**, **Verträge** und **Rechnungen und Bestellungen** kommen dabei automatisch mit.
 
 > **Kein Ersatz für Steuer- oder Rechtsberatung.** Das Paket hilft beim Ordnen und erinnert an Termine. Ob eine Mieterhöhung zulässig ist, welche Kosten umlagefähig sind und was in die Anlage V gehört, klärst du mit deinem Steuerberater, einem Mieterverein bzw. Haus- und Grundbesitzerverein oder einer Anwältin.
 
@@ -12,7 +12,7 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 | Wohnung | eine Einheit im Mietobjekt | Mietobjekt, Bezeichnung (z. B. „EG links“), Lage, Wohnfläche, Zimmer, Zähler | – |
 | Nebenkostenabrechnung | Betriebskostenabrechnung eines Jahres | Mietobjekt, Abrechnungsjahr, Zeitraum, versendet am, umlagefähige Kosten, Nachzahlungen/Guthaben, Steuerjahr, Rechnungen | **Versenden bis** (60 Tage vorher) |
 
-**Mietverträge** legst du als **Vertrag** (Paket Verträge) mit der Vertragsart *Miete* an: *Betrifft* = die Wohnung, *Kunde* = die Mieter; Mietart, Kaltmiete, Vorauszahlung, nächste Mieterhöhung und Kaution stehen im Abschnitt *Miete*. Das Paket Verträge rechnet Status, *Kündigen bis* und Ende aus. **Ausgaben** legst du als **Rechnung** (Paket Rechnungen) an: *Betrifft* = Mietobjekt oder Wohnung, dazu im Abschnitt *Vermietung* *Umlagefähig* und *Kostenart*.
+**Mietverträge** legst du als **Vertrag** (Paket Verträge) mit der Vertragsart *Miete* an: *Betrifft* = die Wohnung, *Kunde* = die Mieter; Mietart, Kaltmiete, Vorauszahlung, nächste Mieterhöhung und Kaution stehen im Abschnitt *Miete*. Das Paket Verträge rechnet Status, *Kündigen bis* und Ende aus. **Ausgaben** legst du als **Rechnung** (Paket Rechnungen und Bestellungen) an: *Betrifft* = Mietobjekt oder Wohnung, dazu im Abschnitt *Vermietung* *Umlagefähig* und *Kostenart*.
 
 **Register:** Das **Mietobjekt** zeigt seine *Wohnungen*, *Nebenkosten* (Abrechnungen) und *Ausgaben* (Rechnungen, die es betreffen); die **Wohnung** ihre *Mietverträge* und *Ausgaben*. Dazu überall *Dokumente*, *Verknüpfungen* und *Historie*.
 
@@ -37,8 +37,8 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.243 (für die Pakete Verträge und Rechnungen)
-- Pakete **Basis** ab 1.7.0, **Haus** ab 1.0.0, **Verträge** ab 1.1.0 und **Rechnungen** ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert; **Haushalt** ist nicht nötig (dann bleibt das Steuerjahr leer)
+- Ablago ab Version 0.248 (für das Paket Rechnungen und Bestellungen)
+- Pakete **Basis** ab 1.7.0, **Haus** ab 1.0.0, **Verträge** ab 1.1.0 und **Rechnungen und Bestellungen** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert; **Haushalt** ist nicht nötig (dann bleibt das Steuerjahr leer)
 
 ## Rechte und Netz
 

@@ -1116,7 +1116,7 @@ class Umbau(unittest.TestCase):
         self.assertTrue(any('zweimal' in x for x in self.pruefe([{'von': 'haushalt:vertrag', 'nach': 'vertrag'}] * 2)))
 
     def test_pakete_der_registry(self):
-        for pid in ('vertraege', 'rechnungen'):
+        for pid in ('vertraege', 'rechnung_bestellung'):
             m = yaml.safe_load((WURZEL / 'pakete' / pid / 'manifest.yaml').read_text(encoding='utf-8'))
             self.assertTrue(m.get('umbau'), pid)
             for s in m['umbau']:

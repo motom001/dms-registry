@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.2.0
+
+- **Rechnungen kommen aus dem Paket Rechnungen und Bestellungen** (dms-registry #208), dem Nachfolger des Pakets Rechnungen. Register, Ansichten und Verweise zeigen auf dessen Rechnung; nach dessen Installation (mit Umzug der Rechnungen) kannst du das Paket Rechnungen entfernen. Ablago weiter ab 0.285.0.
+
 ## 2.1.1
 
 - Beispiele (dms-registry #205): Das Girokonto nutzt die Test-IBAN aus REGELN.md (`DE89 3704 0044 0532 0130 00`); Jonas’ Impfung zeigt auf die „Hausarztpraxis am Lindenweg“ aus Basis 1.7.2. Bereits angelegte Beispiel-Mappen bleiben, wie sie sind.

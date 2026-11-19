@@ -1,6 +1,6 @@
 # Haushalt
 
-Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mit: Konten, Steuerjahre, Arbeitsverhältnisse, Vorsorge, Ausweise und Urkunden, Gesundheit, Anschaffungen und Bildung – Verträge und Versicherungen aus dem Paket **Verträge**, Rechnungen und Kassenbons aus dem Paket **Rechnungen**. Statt die Werkbank selbst einzurichten, installierst du es mit einem Klick unter **Werkbank → Pakete** und kannst sofort ablegen. Die Pakete **Basis** (Organisation, Person, Ablageort), **Verträge** und **Rechnungen** kommen dabei automatisch mit.
+Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mit: Konten, Steuerjahre, Arbeitsverhältnisse, Vorsorge, Ausweise und Urkunden, Gesundheit, Anschaffungen und Bildung – Verträge und Versicherungen aus dem Paket **Verträge**, Rechnungen und Kassenbons aus dem Paket **Rechnungen und Bestellungen**. Statt die Werkbank selbst einzurichten, installierst du es mit einem Klick unter **Werkbank → Pakete** und kannst sofort ablegen. Die Pakete **Basis** (Organisation, Person, Ablageort), **Verträge** und **Rechnungen und Bestellungen** kommen dabei automatisch mit.
 
 ## Inhalt
 
@@ -12,7 +12,7 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 | Vorsorge | Rente, Riester, Rürup, Bausparen … | Art, Anbieter, Vertragsnummer, Person, Beginn | – |
 | Ausweis & Urkunde | Personalausweis, Reisepass, Führerschein, Urkunden, Zeugnisse | Art, Person, Nummer, ausgestellt am | **Gültig bis** (90 Tage vorher) |
 | Gesundheit | Arztbriefe, Befunde, Impfungen, Rezepte, Rechnungen | Person, Art, Datum, Praxis, Betrag, Steuerjahr | – |
-| Anschaffung | Geräte und Möbel | Gegenstand, Händler, Kaufdatum, Preis, Seriennummer, Steuerjahr; Register *Rechnungen* (Kassenbon und Rechnung aus dem Paket Rechnungen) | **Garantie bis** (30 Tage vorher) |
+| Anschaffung | Geräte und Möbel | Gegenstand, Händler, Kaufdatum, Preis, Seriennummer, Steuerjahr; Register *Rechnungen* (Kassenbon und Rechnung aus dem Paket Rechnungen und Bestellungen) | **Garantie bis** (30 Tage vorher) |
 | Bildung | Schule, Ausbildung, Studium, Kurse | Person, Art, Einrichtung, von, bis, Abschluss, Steuerjahr | – |
 
 **Register:** jeder Typ hat *Allgemein* (die Felder), *Dokumente*, *Verknüpfungen* und *Historie*. Das **Steuerjahr** hat zusätzlich *Belege*: Dort erscheinen alle Anschaffungen, Gesundheitsunterlagen, Bildungsnachweise, Arbeitsverhältnisse und Rechnungen, bei denen du dieses Steuerjahr eingetragen hast.
@@ -40,8 +40,8 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.285 (Rundgang und Tipps; für die Pakete Verträge und Rechnungen ab 0.243)
-- Pakete **Basis** ab 1.7.0, **Verträge** ab 1.1.0 und **Rechnungen** ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert
+- Ablago ab Version 0.285 (Rundgang und Tipps; für Verträge ab 0.243, für Rechnungen und Bestellungen ab 0.248)
+- Pakete **Basis** ab 1.7.0, **Verträge** ab 1.1.0 und **Rechnungen und Bestellungen** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
 

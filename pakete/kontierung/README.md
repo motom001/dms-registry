@@ -22,7 +22,7 @@ Das Paket ist für die **berufliche Nutzung** gedacht: Ablago empfiehlt es nur, 
 
 ## An der Rechnung
 
-Das Paket [Rechnungen](../rechnungen/) (ab 1.3.0) zeigt bei „beruflich genutzt“ den Abschnitt **Kontierung** mit *Kostenstelle*, *Kostenträger*, *Sachkonto* und *Steuerschlüssel*. An jeder Position gibt es außerdem einen *Steuerschlüssel*. Wählst du einen Steuerschlüssel, übernimmt Ablago seinen Satz in den leeren *Umsatzsteuersatz*. Privat bleibt der Satz frei eintragbar. Unter *Verknüpfungen* einer Kostenstelle stehen alle Rechnungen, die auf sie zeigen.
+Das Paket [Rechnungen und Bestellungen](../rechnung_bestellung/) zeigt bei „beruflich genutzt“ den Abschnitt **Kontierung** mit *Kostenstelle*, *Kostenträger* und *Sachkonto*. An jeder Position und jeder Steuerzeile gibt es außerdem einen *Steuerschlüssel*. Wählst du einen Steuerschlüssel, übernimmt Ablago seinen Satz in den leeren *Umsatzsteuersatz* bzw. *Satz*. Privat bleibt der Satz frei eintragbar. Unter *Verknüpfungen* einer Kostenstelle stehen alle Rechnungen, die auf sie zeigen.
 
 ## Voraussetzungen
 

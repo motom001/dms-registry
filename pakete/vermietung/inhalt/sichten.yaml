@@ -22,14 +22,14 @@
   beschreibung: Rechnungen, die ein Mietobjekt oder eine Wohnung betreffen
   beschriftungen: { en: { name: "Expenses", beschreibung: "Invoices concerning a rental property or unit" } }
   eltern: vermietung
-  typen: ["rechnungen:rechnung"]
+  typen: ["rechnung_bestellung:rechnung"]
   bedingungen:
     - { feld: betrifft, operator: zeigtAufTyp, wert: ["vermietung:mietobjekt", "vermietung:wohnung"] }
 - schluessel: ausgaben_dieses_jahr
   name: Ausgaben dieses Jahr
   beschriftungen: { en: { name: "Expenses this year" } }
   eltern: ausgaben
-  typen: ["rechnungen:rechnung"]
+  typen: ["rechnung_bestellung:rechnung"]
   bedingungen:
     - { feld: betrifft, operator: zeigtAufTyp, wert: ["vermietung:mietobjekt", "vermietung:wohnung"] }
     - { feld: datum, operator: imZeitraum, wert: { art: jahr } }
@@ -38,7 +38,7 @@
   beschreibung: Für die Anlage V der letzten Steuererklärung
   beschriftungen: { en: { name: "Expenses last year", beschreibung: "For the Anlage V of the last tax return" } }
   eltern: ausgaben
-  typen: ["rechnungen:rechnung"]
+  typen: ["rechnung_bestellung:rechnung"]
   bedingungen:
     - { feld: betrifft, operator: zeigtAufTyp, wert: ["vermietung:mietobjekt", "vermietung:wohnung"] }
     - { feld: datum, operator: imZeitraum, wert: { art: jahr, versatz: -1 } }
@@ -47,7 +47,7 @@
   beschreibung: Was in die nächste Nebenkostenabrechnung gehört
   beschriftungen: { en: { name: "Rechargeable last year", beschreibung: "What belongs in the next service charge statement" } }
   eltern: ausgaben
-  typen: ["rechnungen:rechnung"]
+  typen: ["rechnung_bestellung:rechnung"]
   bedingungen:
     - { feld: umlagefaehig, operator: ja }
     - { feld: datum, operator: imZeitraum, wert: { art: jahr, versatz: -1 } }

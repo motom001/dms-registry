@@ -1,9 +1,13 @@
-// Paket Rechnungen (dms-registry #161): Status der Rechnung, Umsatzsteuer und Gesamtpreis der Positionen,
-// Summenprüfung als Hinweis an der Rechnung (dms:hinweise). Die Regeln stehen in rechnung.h.
+// Paket Rechnungen und Bestellungen (dms-registry #161, #210; bis 1.x das Paket Rechnungen): Status der Rechnung,
+// Umsatzsteuer und Gesamtpreis der Positionen, Steuerzeilen je Satz mit Summen an der Rechnung, Summenprüfungen als
+// Hinweis an der Rechnung (dms:hinweise). Die Regeln stehen in rechnung.h.
 //
-// Ereignisse: mappe.angelegt / mappe.geaendert zu Rechnungen und Positionen, zeitplan.ausgefuehrt (überfällig, Summen).
-// (überfällig). Geschrieben wird nur, was sich ändert, mit „stand“; bei 409 liest das Paket die Mappe einmal neu und rechnet noch einmal.
-// Hinweis setzen/entfernen: PUT bzw. DELETE /mappen/{id}/hinweise/summe (Schnittstelle aus DMS #1034, ab Ablago 0.231.0; Text höchstens 300 Zeichen).
+// Ereignisse: mappe.angelegt / mappe.geaendert zu Rechnungen, Positionen und Steuerzeilen, zeitplan.ausgefuehrt
+// (überfällig, Summen). Geschrieben wird nur, was sich ändert, mit „stand“; bei 409 liest das Paket die Mappe einmal
+// neu und rechnet noch einmal. Eigene Änderungen meldet Ablago dem Paket nicht – deshalb rechnet es Folgen gleich mit.
+// Hinweise setzen/entfernen: PUT bzw. DELETE /mappen/{id}/hinweise/summe bzw. …/steuer (DMS #1034, höchstens 300 Zeichen).
+// Steuerzeilen „aus Positionen“ (#210): je Satz der Positionen eine Zeile, angelegt mit POST /mappen und aktuell gehalten;
+// gibt es an der Rechnung eine Zeile von Hand, fasst das Paket die Steuerzeilen nicht an.
 // Aktion im Menü „Mappe“ (dms-registry #162, DMS #1039, ab 0.245.0): „Als bezahlt markieren“ – dms_aktion mit
 // { aktion: dms:mappenaktion }; Schritt 1 fragt das Datum (heute vorgeschlagen), Schritt 2 setzt „Bezahlt am“.
 #include <cstdint>
@@ -28,9 +32,11 @@ namespace {
 
 enum Stufe { DEBUG = 0, INFO = 1, WARNUNG = 2, FEHLER = 3 };
 // Kennungen in Ablago ab 0.229.0: <paket>:<schluessel> (DMS #1084)
-const char *TYP_RECHNUNG = "rechnungen:rechnung", *TYP_POSITION = "rechnungen:rechnungsposition";
+const char *TYP_RECHNUNG = "rechnung_bestellung:rechnung", *TYP_POSITION = "rechnung_bestellung:rechnungsposition",
+           *TYP_STEUER = "rechnung_bestellung:steuerzeile";
+const char *AUS_POSITIONEN = "aus Positionen";
 const int SEITE = 100, HOECHSTENS = 5000;
-const char *HINWEIS = "summe";
+const char *HINWEIS = "summe", *HINWEIS_STEUER = "steuer";
 
 char *eingang = nullptr;
 void log(int stufe, const std::string &t) { dms_log(stufe, t.data(), (int32_t)t.size()); }
@@ -124,10 +130,16 @@ int position_rechnen(const std::string &id, const Json &m) {
   return schreibe(id, m, neu);
 }
 
+// Id eines Mappentyps; GET /typen nur einmal je Aufruf.
 std::string typ_id(const char *schluessel) {
-  Antwort a = api("GET", "/typen");
-  const Json &liste = a.json.art == Json::LISTE ? a.json : a.json["typen"];
-  for (const Json &x : liste.l)
+  static bool gelesen = false;
+  static Json typen;
+  if (!gelesen) {
+    Antwort a = api("GET", "/typen");
+    typen = a.json.art == Json::LISTE ? a.json : a.json["typen"];
+    gelesen = a.status == 200;
+  }
+  for (const Json &x : typen.l)
     if (x["schluessel"].text() == schluessel) return x["id"].text();
   return "";
 }
@@ -143,12 +155,118 @@ template <class F> int jede(const std::string &typ, F f) {
   return 0;
 }
 
+int hinweis_setzen(const std::string &rechnung_id, const char *schluessel, const std::string &h);
 int hinweis(const std::string &rechnung_id, const Json &w, const std::vector<rechnung::Position> &pos) {
-  std::string h = rechnung::summenhinweis(zahl(w["betrag"]), pos, w["betrag"]["waehrung"].text("EUR"));
-  Antwort a = h.empty() ? api("DELETE", "/mappen/" + rechnung_id + "/hinweise/" + HINWEIS)
-                        : api("PUT", "/mappen/" + rechnung_id + "/hinweise/" + HINWEIS, "{\"text\":" + jsonText(h) + "}");
+  return hinweis_setzen(rechnung_id, HINWEIS, rechnung::summenhinweis(zahl(w["betrag"]), pos, w["betrag"]["waehrung"].text("EUR")));
+}
+
+rechnung::Steuerzeile steuerzeile(const Json &w) {
+  rechnung::Steuerzeile z;
+  z.satz = zahl(w["satz"]);
+  z.netto = zahl(w["netto"]);
+  z.steuer = zahl(w["steuer"]);
+  return z;
+}
+bool von_hand(const Json &w) { return w["herkunft"].text() != AUS_POSITIONEN && w["herkunft"].text() != "aus E-Rechnung"; }
+
+struct Zeile { std::string id; Json mappe; };
+// Steuerzeilen einer Rechnung (vollständige Mappen aus der Liste).
+int steuerzeilen_von(const std::string &rechnung_id, const std::string &steuer_typ, std::vector<Zeile> &aus) {
+  if (steuer_typ.empty()) return 0;
+  return jede(steuer_typ, [&](const std::string &id, const Json &m) {
+    if (verweis(m["werte"]["rechnung"]) == rechnung_id) aus.push_back({id, m});
+  });
+}
+
+int hinweis_setzen(const std::string &rechnung_id, const char *schluessel, const std::string &h) {
+  Antwort a = h.empty() ? api("DELETE", "/mappen/" + rechnung_id + "/hinweise/" + schluessel)
+                        : api("PUT", "/mappen/" + rechnung_id + "/hinweise/" + schluessel, "{\"text\":" + jsonText(h) + "}");
   if (a.status >= 500) { log(FEHLER, "Hinweis: HTTP " + std::to_string(a.status)); return 2; }
   return 0;
+}
+
+// Summen der Steuerzeilen an die Rechnung und Hinweis, wenn Netto + Umsatzsteuer nicht zum Betrag passen.
+// rechnung: die Mappe der Rechnung (frisch gelesen). Ohne Zeilen werden vorhandene Summen geleert.
+int steuern_rechnen(const std::string &rechnung_id, const Json &rechnung, const std::vector<Zeile> &zeilen) {
+  std::vector<rechnung::Steuerzeile> z;
+  for (const Zeile &x : zeilen) z.push_back(steuerzeile(x.mappe["werte"]));
+  const Json &w = rechnung["werte"];
+  // Nichts da und nichts gesetzt: nichts zu tun (auch kein Hinweis zu entfernen).
+  if (z.empty() && w["netto_gesamt"].art == Json::NUL && w["ust_gesamt"].art == Json::NUL) return 1;
+  const std::string waehrung = w["betrag"]["waehrung"].text("EUR");
+  rechnung::Summen s = rechnung::summen(z);
+  int r = schreibe(rechnung_id, rechnung, {{"netto_gesamt", betrag_json(s.netto, waehrung)}, {"ust_gesamt", betrag_json(s.ust, waehrung)}});
+  if (r == 2) return 2;
+  if (hinweis_setzen(rechnung_id, HINWEIS_STEUER, rechnung::steuerhinweis(zahl(w["betrag"]), z, waehrung)) == 2) return 2;
+  return r == 3 ? 1 : r;
+}
+
+// Steuerzeilen „aus Positionen“ (#210): je Satz der Positionen eine Zeile anlegen bzw. aktualisieren; Zeilen eines
+// Satzes, den keine Position mehr hat, bekommen 0. Gibt es eine Zeile von Hand, bleibt alles, wie es ist.
+int aus_positionen(const std::string &rechnung_id, const std::vector<rechnung::Position> &pos, std::vector<Zeile> &zeilen,
+                   const std::string &steuer_typ, const std::string &waehrung) {
+  for (const Zeile &x : zeilen) if (von_hand(x.mappe["werte"])) return 0;
+  std::map<double, rechnung::Steuerzeile> je = rechnung::aus_positionen(pos);
+  if (je.empty() && zeilen.empty()) return 0;
+  int fehler = 0;
+  for (Zeile &x : zeilen) {
+    auto sz = zahl(x.mappe["werte"]["satz"]);
+    auto i = sz ? je.find(*sz) : je.end();
+    std::optional<double> n = i == je.end() ? std::optional<double>(0.0) : i->second.netto;
+    std::optional<double> st = i == je.end() ? std::optional<double>(0.0) : i->second.steuer;
+    if (i != je.end()) je.erase(i);
+    fehler += schreibe(x.id, x.mappe, {{"netto", betrag_json(n, waehrung)}, {"steuer", betrag_json(st, waehrung)}}) == 2;
+    // Für die Summen gleich mit den neuen Werten weiterrechnen.
+    x.mappe.o["werte"].o["netto"] = betrag_json(n, waehrung);
+    x.mappe.o["werte"].o["steuer"] = betrag_json(st, waehrung);
+  }
+  for (const auto &kv : je) {
+    Json satz; satz.art = Json::ZAHL; satz.z = kv.first;
+    Json werte; werte.art = Json::OBJEKT;
+    werte.o["rechnung"] = text_json(rechnung_id);
+    werte.o["satz"] = satz;
+    werte.o["netto"] = betrag_json(kv.second.netto, waehrung);
+    werte.o["steuer"] = betrag_json(kv.second.steuer, waehrung);
+    werte.o["herkunft"] = text_json(AUS_POSITIONEN);
+    Antwort a = api("POST", "/mappen", "{\"typId\":" + jsonText(steuer_typ) + ",\"werte\":" + jsonSchreib(werte) + "}");
+    if (a.status != 200 && a.status != 201) { log(FEHLER, "Steuerzeile anlegen: HTTP " + std::to_string(a.status)); fehler++; continue; }
+    Json m; m.art = Json::OBJEKT; m.o["werte"] = werte;
+    zeilen.push_back({mappe_aus(a.json)["id"].text(), m});
+  }
+  return fehler ? 2 : 0;
+}
+
+// Nach einer Änderung an Positionen oder Steuerzeilen: Steuerzeilen aus Positionen (falls eingeschaltet), Summen, Hinweis.
+int steuern_nachziehen(const std::string &rechnung_id, const std::string &pos_typ, const std::string &steuer_typ, const Json &einstellungen) {
+  if (rechnung_id.empty() || steuer_typ.empty()) return 0;
+  Antwort r = api("GET", "/mappen/" + rechnung_id);
+  if (r.status != 200) return r.status == 404 ? 0 : 2;
+  const Json &rm = mappe_aus(r.json);
+  std::vector<Zeile> zeilen;
+  if (steuerzeilen_von(rechnung_id, steuer_typ, zeilen) == 2) return 2;
+  int fehler = 0;
+  if (einstellungen["steuerzeilen_aus_positionen"].wahr(true) && !pos_typ.empty()) {
+    std::vector<rechnung::Position> pos;
+    if (jede(pos_typ, [&](const std::string &, const Json &m) {
+          if (verweis(m["werte"]["rechnung"]) == rechnung_id) pos.push_back(position(m["werte"]));
+        }) == 2) return 2;
+    fehler += aus_positionen(rechnung_id, pos, zeilen, steuer_typ, rm["werte"]["betrag"]["waehrung"].text("EUR")) == 2;
+  }
+  fehler += steuern_rechnen(rechnung_id, rm, zeilen) == 2;
+  return fehler ? 2 : 0;
+}
+
+// Ändert jemand an einer Zeile „aus Positionen“ Satz, Netto oder Steuer, gehört sie ihm: Herkunft „von Hand“
+// (eigene Änderungen meldet Ablago dem Paket nicht, das Ereignis kommt also von einem Menschen oder einem anderen Weg).
+int steuerzeile_aendern(const std::string &id, const Json &m, const Json &d) {
+  const Json &w = m["werte"];
+  bool angefasst = false;
+  for (const Json &f : d["felder"].l) angefasst = angefasst || f.text() == "satz" || f.text() == "netto" || f.text() == "steuer";
+  std::vector<std::pair<std::string, Json>> neu;
+  if (angefasst && w["herkunft"].text() == AUS_POSITIONEN) neu.push_back({"herkunft", text_json("von Hand")});
+  if (w["steuer"].art == Json::NUL)
+    if (auto st = rechnung::steuer(steuerzeile(w))) neu.push_back({"steuer", betrag_json(st, w["netto"]["waehrung"].text("EUR"))});
+  return neu.empty() ? 1 : schreibe(id, m, neu);
 }
 
 // Summenprüfung einer Rechnung: Positionen holen, vergleichen, Hinweis setzen oder entfernen.
@@ -175,24 +293,42 @@ int verarbeite(const Json &e) {
     // Positionen einmal lesen und nach Rechnung ordnen – für die Summenprüfung der Rechnungen, die Positionen haben.
     std::vector<std::pair<std::string, rechnung::Position>> alle_pos;
     const std::string pos_typ = typ_id(TYP_POSITION);
-    if (!pos_typ.empty() && jede(pos_typ, [&](const std::string &, const Json &m) { alle_pos.push_back({verweis(m["werte"]["rechnung"]), position(m["werte"])}); }) == 2) return 2;
+    // Dabei Umsatzsteuer und leere Gesamtpreise nachrechnen – z. B. nach dem Umzug aus dem Paket Rechnungen, der die
+    // berechnete Umsatzsteuer nicht mitnimmt (Konflikt zählt nicht: die Änderung bringt ihr eigenes Ereignis).
+    int pos_neu = 0;
+    if (!pos_typ.empty() && jede(pos_typ, [&](const std::string &pid, const Json &m) {
+          pos_neu += position_rechnen(pid, m) == 0;
+          alle_pos.push_back({verweis(m["werte"]["rechnung"]), position(m["werte"])});
+        }) == 2) return 2;
+    // Steuerzeilen ebenso einmal lesen (#210): Summen und Hinweis der Rechnungen, die Zeilen haben.
+    std::vector<std::pair<std::string, Zeile>> alle_zeilen;
+    const std::string steuer_typ = typ_id(TYP_STEUER);
+    if (!steuer_typ.empty() && jede(steuer_typ, [&](const std::string &zid, const Json &m) { alle_zeilen.push_back({verweis(m["werte"]["rechnung"]), {zid, m}}); }) == 2) return 2;
     const bool summen = e["einstellungen"]["summenpruefung"].wahr(true);
     int n = 0, neu = 0, fehler = 0;
     if (jede(typ, [&](const std::string &id, const Json &m) {
           // Konflikt (3): Die Rechnung wurde gerade geändert; das Ereignis dazu rechnet den Status ohnehin neu.
           int r = rechnung_status(id, m, heute); n++; neu += r == 0; fehler += r == 2;
+          std::vector<Zeile> zeilen;
+          for (const auto &z : alle_zeilen) if (z.first == id) zeilen.push_back(z.second);
+          if (!zeilen.empty()) {
+            // Nach einem neuen Status ist „stand“ der Liste alt – für die Summen frisch lesen.
+            Antwort f = r == 0 ? api("GET", "/mappen/" + id) : Antwort{200, m};
+            if (f.status == 200) fehler += steuern_rechnen(id, r == 0 ? mappe_aus(f.json) : m, zeilen) == 2;
+          }
           if (!summen) return;
           std::vector<rechnung::Position> pos;
           for (const auto &p : alle_pos) if (p.first == id) pos.push_back(p.second);
           if (!pos.empty()) fehler += hinweis(id, m["werte"], pos) == 2;
         }) == 2) return 2;
-    ergebnis(std::to_string(n) + (n == 1 ? " Rechnung" : " Rechnungen") + " geprüft, " + std::to_string(neu) + " Status neu");
+    ergebnis(std::to_string(n) + (n == 1 ? " Rechnung" : " Rechnungen") + " geprüft, " + std::to_string(neu) + " Status neu" +
+             (pos_neu ? ", " + std::to_string(pos_neu) + (pos_neu == 1 ? " Position" : " Positionen") + " neu berechnet" : ""));
     return fehler && !neu ? 2 : 0;
   }
   if (art != "mappe.angelegt" && art != "mappe.geaendert") return 0;
   const std::string id = d["mappe"].text();
   if (id.empty() || id.size() > 64) return 0;
-  const std::string pos_typ = typ_id(TYP_POSITION);
+  const std::string pos_typ = typ_id(TYP_POSITION), steuer_typ = typ_id(TYP_STEUER);
   // Bei einem Konflikt (3) einmal neu lesen und neu rechnen.
   for (int versuch = 1;; versuch++) {
     Antwort m = api("GET", "/mappen/" + id);
@@ -202,13 +338,20 @@ int verarbeite(const Json &e) {
     const Json &w = mappe["werte"];
     const std::string typ = d["typ"].text(mappe["typId"].text().c_str());
     const bool ist_position = !pos_typ.empty() && typ == pos_typ;
-    int r = ist_position ? position_rechnen(id, mappe) : rechnung_status(id, mappe, heute_aus(e));
+    const bool ist_steuer = !steuer_typ.empty() && typ == steuer_typ;
+    int r = ist_position ? position_rechnen(id, mappe) : ist_steuer ? steuerzeile_aendern(id, mappe, d) : rechnung_status(id, mappe, heute_aus(e));
     if (r == 3 && versuch < 2) continue;
     if (r == 3) { log(WARNUNG, "Mappe " + id + ": auch beim zweiten Versuch 409 – nichts gespeichert"); return 2; }
     if (r == 2) return 2;
     if (ist_position) {
       if (summe_pruefen(verweis(w["rechnung"]), pos_typ, e["einstellungen"]) == 2) return 2;
+      if (steuern_nachziehen(verweis(w["rechnung"]), pos_typ, steuer_typ, e["einstellungen"]) == 2) return 2;
       ergebnis(r == 0 ? "Position neu berechnet" : "Position unverändert");
+      return 0;
+    }
+    if (ist_steuer) {
+      if (steuern_nachziehen(verweis(w["rechnung"]), pos_typ, steuer_typ, e["einstellungen"]) == 2) return 2;
+      ergebnis(r == 0 ? "Steuerzeile neu berechnet" : "Steuerzeile unverändert");
       return 0;
     }
     return rechnung_fertig(id, r, d, pos_typ, e);
@@ -222,6 +365,7 @@ int rechnung_fertig(const std::string &id, int r, const Json &d, const std::stri
   bool betrag = felder.art != Json::LISTE || felder.l.empty();
   for (const Json &f : felder.l) betrag = betrag || f.text() == "betrag";
   if (betrag && summe_pruefen(id, pos_typ, e["einstellungen"]) == 2) return 2;
+  if (betrag && steuern_nachziehen(id, pos_typ, typ_id(TYP_STEUER), e["einstellungen"]) == 2) return 2;
   ergebnis(r == 0 ? "Rechnung: Status neu" : "Rechnung unverändert");
   return 0;
 }

@@ -1,0 +1,224 @@
+# Mappentypen des Pakets Rechnungen und Bestellungen (dms-registry #208, #210, #211; Nachfolger des Pakets Rechnungen).
+# Schema: schema/inhalt.schema.json
+# Kennungen nach REGELN.md, „Gleiche Kennungen“: von, an, betrag, datum, betrifft, steuerjahr, zahlweise, notiz …
+# „betrifft“ zeigt auch auf Typen von Paketen, die selbst von diesem Paket abhängen (zielOptional, DMS #1036).
+
+- schluessel: rechnung
+  name: Rechnung
+  beschreibung: Rechnung, Quittung, Kassenbon, Gutschrift oder Erstattung – eingehend oder ausgehend. Eine Gutschrift trägst du mit Minus ein.
+  beschriftungen: { en: { name: "Invoice", beschreibung: "Invoice, receipt, till receipt, credit note or refund – incoming or outgoing. Enter a credit note with a minus sign." } }
+  titelVorlage: "{von} – {datum}"
+  felder:
+    # Oben, immer sichtbar (#208): je Reihe Rechnungssteller · Rechnungsempfänger · Status, Betrag · Rechnungsnummer ·
+    # Rechnungsdatum, Fällig am · Bezahlt am · Bezahlt per.
+    - { key: von, label: Rechnungssteller, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, erkennung: { art: verweis }, beschriftungen: { en: { label: "Issued by" } } }
+    - { key: an, label: Rechnungsempfänger, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, hilfe: Leer heißt wir (der Haushalt); im Betrieb die eigene Organisation, beschriftungen: { en: { label: "Billed to", hilfe: "Empty means us (the household); in a business the own organisation" } } }
+    - { key: status, label: Status, typ: text, maxLen: 120, berechnet: true, hilfe: "z. B. „offen – fällig am 15.11.2026“, „bezahlt am 12.11.2026“, „Gutschrift – noch nicht erhalten“", beschriftungen: { en: { label: "Status" } } }
+    # Den Satz „Gutschrift oder Erstattung? Mit Minus eintragen.“ hängt Ablago bei negativ: true selbst an (#208).
+    - { key: betrag, label: Betrag, typ: betrag, negativ: true, hilfe: Brutto., erkennung: { art: betrag }, beschriftungen: { en: { label: "Amount", hilfe: "Gross." } } }
+    - { key: rechnungsnummer, label: Rechnungsnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Invoice number" } } }
+    - { key: datum, label: Rechnungsdatum, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Invoice date" } } }
+    - { key: faellig_am, label: Fällig am, typ: datum, beschriftungen: { en: { label: "Due on" } } }
+    - { key: bezahlt_am, label: Bezahlt am, typ: datum, beschriftungen: { en: { label: "Paid on" } } }
+    - key: zahlweise
+      label: Bezahlt per
+      beschriftungen: { en: { label: "Paid by", optionen: { "Überweisung": "bank transfer", "Lastschrift": "direct debit", "Karte": "card", "bar": "cash", "PayPal und Co.": "PayPal etc.", "Rechnung": "on account" } } }
+      typ: auswahl
+      optionen: [Überweisung, Lastschrift, Karte, bar, PayPal und Co., Rechnung]
+    # Einzelheiten
+    - key: betrifft
+      label: Betrifft
+      beschriftungen: { en: { label: "Concerns", hilfe: "What the invoice is for – a vehicle, flat, purchase or contract" } }
+      typ: referenz
+      ziel: "vertraege:vertrag"
+      zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"]
+      mehrfach: true
+      gleicherTyp: true
+      verweisart: bezug
+      hilfe: Wofür die Rechnung ist – Fahrzeug, Wohnung, Anschaffung oder Vertrag
+    # Vertrag oder Bestellung, mehrfach und gemischt – z. B. ein Vertrag, den eine Bestellung erweitert (#208, #211).
+    - { key: gehoert_zu, label: Gehört zu Vertrag / Bestellung, typ: referenz, ziel: ["vertraege:vertrag", bestellung], mehrfach: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to contract / order" } } }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, zielOptional: ["haushalt:steuerjahr"], verweisart: bezug, hilfe: Wenn du die Kosten absetzen willst, beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs" } } }
+    # Fahrzeug – wenn „betrifft“ ein Fahrzeug ist
+    - { key: kilometerstand, label: Kilometerstand, typ: zahl, beschriftungen: { en: { label: "Mileage" } } }
+    - { key: arbeiten, label: Arbeiten, typ: langtext, hilfe: z. B. Inspektion, Bremsen vorne, beschriftungen: { en: { label: "Work done", hilfe: "e.g. service, front brakes" } } }
+    # Vermietung – wenn „betrifft“ ein Mietobjekt oder eine Wohnung ist
+    - { key: umlagefaehig, label: Umlagefähig, typ: janein, hilfe: Gehört in die Nebenkostenabrechnung, beschriftungen: { en: { label: "Recoverable", hilfe: "Belongs in the service charge statement" } } }
+    - key: kostenart
+      label: Kostenart
+      beschriftungen: { en: { label: "Cost type", optionen: { "Grundsteuer": "Property tax", "Wasser und Abwasser": "Water and sewage", "Heizung und Warmwasser": "Heating and hot water", "Müll": "Waste", "Straßenreinigung": "Street cleaning", "Hausreinigung": "Cleaning", "Garten": "Garden", "Hausmeister": "Caretaker", "Versicherung": "Insurance", "Strom Allgemein": "Common electricity", "Reparatur": "Repair", "Sonstiges": "Other" } } }
+      typ: auswahl
+      optionen: [Grundsteuer, Wasser und Abwasser, Heizung und Warmwasser, Müll, Straßenreinigung, Hausreinigung, Garten, Hausmeister, Versicherung, Strom Allgemein, Reparatur, Sonstiges]
+    # Beträge im Einzelnen – nur beruflich (#210): Umsatzsteuer je Satz als Tabelle, die Summen rechnet das Paket.
+    - key: steuerzeilen
+      label: Umsatzsteuer aufteilen
+      beschriftungen: { en: { label: "Split VAT" } }
+      typ: tabelle
+      quelle: { typ: steuerzeile, feld: rechnung, trefferliste: standard, neu: "+ Satz" }
+    - { key: netto_gesamt, label: Netto gesamt, typ: betrag, negativ: true, berechnet: true, hilfe: Summe der Steuerzeilen, beschriftungen: { en: { label: "Total net", hilfe: "Sum of the VAT lines" } } }
+    - { key: ust_gesamt, label: Umsatzsteuer gesamt, typ: betrag, negativ: true, berechnet: true, hilfe: Summe der Steuerzeilen, beschriftungen: { en: { label: "Total VAT", hilfe: "Sum of the VAT lines" } } }
+    - { key: skonto, label: Skonto, typ: betrag, beschriftungen: { en: { label: "Cash discount" } } }
+    - { key: skonto_bis, label: Skonto bis, typ: datum, beschriftungen: { en: { label: "Cash discount until" } } }
+    # Ausgangsrechnung – nur, wenn wir der Rechnungssteller sind
+    - { key: zahlungseingang_am, label: Zahlungseingang am, typ: datum, beschriftungen: { en: { label: "Payment received on" } } }
+    - key: mahnstufe
+      label: Mahnstufe
+      beschriftungen: { en: { label: "Dunning level", optionen: { "keine": "none", "Erinnerung": "reminder", "1. Mahnung": "1st reminder", "2. Mahnung": "2nd reminder", "Inkasso": "collection" } } }
+      typ: auswahl
+      optionen: [keine, Erinnerung, 1. Mahnung, 2. Mahnung, Inkasso]
+    - { key: interne_nummer, label: Interne Nummer, typ: text, maxLen: 40, beschriftungen: { en: { label: "Internal number" } } }
+    # Kontierung – nur beruflich (#213); die Ziele bringt das Paket Kontierung mit, ohne es bleiben die Felder leer.
+    # Den Steuerschlüssel wählt man an der Steuerzeile bzw. Position.
+    - { key: kostenstelle, label: Kostenstelle, typ: referenz, zielOptional: ["kontierung:kostenstelle"], verweisart: bezug, beschriftungen: { en: { label: "Cost centre" } } }
+    - { key: kostentraeger, label: Kostenträger, typ: referenz, zielOptional: ["kontierung:kostentraeger"], verweisart: bezug, beschriftungen: { en: { label: "Cost unit" } } }
+    - { key: sachkonto, label: Sachkonto, typ: referenz, zielOptional: ["kontierung:sachkonto"], verweisart: bezug, beschriftungen: { en: { label: "Account" } } }
+    # Positionen
+    - key: positionen
+      label: Positionen
+      beschriftungen: { en: { label: "Items" } }
+      typ: tabelle
+      quelle: { typ: rechnungsposition, feld: rechnung, trefferliste: standard, neu: "+ Position" }
+    # Archiv (#208): was auf dem Beleg stand – die Kundennummer gehört eigentlich zum Rechnungssteller, die
+    # Vertragskontonummer zum Vertrag. Hilft beim Zuordnen.
+    - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the original is" } } }
+    - { key: gefundene_kundennummer, label: Gefundene Kundennummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, hilfe: So stand sie auf dem Beleg, beschriftungen: { en: { label: "Customer number found", hilfe: "As printed on the document" } } }
+    - { key: gefundene_vertragskontonummer, label: Gefundene Vertragskontonummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, hilfe: So stand sie auf dem Beleg, beschriftungen: { en: { label: "Contract account number found", hilfe: "As printed on the document" } } }
+  register:
+    - key: rechnung
+      name: Rechnung
+      beschriftungen: { en: { name: "Invoice" } }
+      art: felder
+      felder: [von, an, status, betrag, rechnungsnummer, datum, faellig_am, bezahlt_am, zahlweise,
+               betrifft, gehoert_zu, steuerjahr,
+               kilometerstand, arbeiten,
+               umlagefaehig, kostenart,
+               steuerzeilen, netto_gesamt, ust_gesamt, skonto, skonto_bis,
+               zahlungseingang_am, mahnstufe, interne_nummer,
+               kostenstelle, kostentraeger, sachkonto,
+               positionen,
+               verbleib_original, gefundene_kundennummer, gefundene_vertragskontonummer]
+      abschnitte:
+        - { vor: betrifft, titel: Einzelheiten, beschriftungen: { en: { titel: "Details" } } }
+        - { vor: kilometerstand, titel: Fahrzeug, beschriftungen: { en: { titel: "Vehicle" } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: betrifft, op: zeigtAufTyp, wert: { art: fest, wert: ["fahrzeuge:fahrzeug"] } } }] } }
+        - { vor: umlagefaehig, titel: Vermietung, beschriftungen: { en: { titel: "Letting" } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: betrifft, op: zeigtAufTyp, wert: { art: fest, wert: ["vermietung:mietobjekt", "vermietung:wohnung"] } } }] } }
+        - { vor: steuerzeilen, titel: Beträge im Einzelnen, eingeklappt: true, beschriftungen: { en: { titel: "Amounts in detail" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
+        - { vor: zahlungseingang_am, titel: Ausgangsrechnung, beschriftungen: { en: { titel: "Outgoing invoice" } }, anzeigen: { bedingungen: [{ art: eigeneOrganisation, feld: von }] } }
+        - { vor: kostenstelle, titel: Kontierung, eingeklappt: true, beschriftungen: { en: { titel: "Account assignment" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
+        - { vor: positionen, titel: Positionen, beschriftungen: { en: { titel: "Items" } } }
+        - { vor: verbleib_original, titel: Archiv, eingeklappt: true, beschriftungen: { en: { titel: "Archive" } } }
+    # „Anlagen“ heißt jetzt „Dokumente“; Lieferscheine stehen unter „Verknüpfungen“ wie alle anderen Bezüge (#208).
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [von, datum, betrag, faellig_am, status]
+
+- schluessel: steuerzeile
+  name: Steuerzeile
+  beschreibung: Umsatzsteuer zu einem Satz auf einer Rechnung. Gehört immer zu ihrer Rechnung und erscheint nur dort.
+  beschriftungen: { en: { name: "VAT line", beschreibung: "VAT at one rate on an invoice. Always belongs to its invoice and only appears there." } }
+  # dms-registry #210: je Satz eine Zeile, beliebig viele; die Summen an der Rechnung rechnet das Paket.
+  titelVorlage: "{satz}"
+  gehoertZu: rechnung
+  felder:
+    - { key: rechnung, label: Rechnung, typ: referenz, ziel: rechnung, pflicht: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Invoice" } } }
+    # Übernimmt beim Auswählen den Satz (nur in ein leeres Feld); Ziele aus dem Paket Kontierung, nur beruflich.
+    - { key: steuerschluessel, label: Steuerschlüssel, typ: referenz, zielOptional: ["kontierung:steuerschluessel"], verweisart: bezug, vorbelegen: [{ von: satz, nach: satz }], anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }, beschriftungen: { en: { label: "Tax code" } } }
+    - { key: satz, label: Satz, typ: prozent, nachkomma: 1, pflicht: true, hilfe: z. B. 19, 7 oder 0, beschriftungen: { en: { label: "Rate", hilfe: "e.g. 19, 7 or 0" } } }
+    - { key: netto, label: Netto, typ: betrag, negativ: true, beschriftungen: { en: { label: "Net" } } }
+    - { key: steuer, label: Steuerbetrag, typ: betrag, negativ: true, hilfe: Leer lassen – dann rechnet das Paket Netto × Satz, beschriftungen: { en: { label: "VAT amount", hilfe: "Leave empty – the package then calculates net × rate" } } }
+    # Woher die Zeile kommt: Zeilen „aus Positionen“ hält das Paket aktuell, „von Hand“ fasst es nie an.
+    - key: herkunft
+      label: Herkunft
+      typ: auswahl
+      optionen: [von Hand, aus Positionen, aus E-Rechnung]
+      beschriftungen: { en: { label: "Source", optionen: { "von Hand": "by hand", "aus Positionen": "from items", "aus E-Rechnung": "from e-invoice" } } }
+  register:
+    - { key: steuerzeile, name: Steuerzeile, art: felder, felder: [rechnung, steuerschluessel, satz, netto, steuer, herkunft], beschriftungen: { en: { name: "VAT line" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [satz, netto, steuer, herkunft]
+
+- schluessel: bestellung
+  name: Bestellung
+  beschreibung: Ein Einkauf von der Bestellung bis zur Lieferung – online oder im Betrieb. Bestätigungen hängen als Dokumente daran, Rechnung und Lieferschein zeigen darauf.
+  beschriftungen: { en: { name: "Order", beschreibung: "A purchase from order to delivery – online or for the business. Confirmations are attached as documents; invoice and delivery note point to it." } }
+  # dms-registry #211: kein Vertrag (der ist für laufende Verträge mit Laufzeit und Kündigung), sondern ein einmaliger Vorgang.
+  titelVorlage: "{von} – {datum}"
+  felder:
+    - { key: von, label: Händler oder Lieferant, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, erkennung: { art: verweis }, beschriftungen: { en: { label: "Shop or supplier" } } }
+    - { key: bestellnummer, label: Bestellnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, hilfe: Steht meist auf Bestätigung, Lieferschein und Rechnung, beschriftungen: { en: { label: "Order number", hilfe: "Usually on the confirmation, delivery note and invoice" } } }
+    - { key: datum, label: Bestelldatum, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Order date" } } }
+    - { key: betrag, label: Betrag, typ: betrag, hilfe: Brutto, wie bestellt, erkennung: { art: betrag }, beschriftungen: { en: { label: "Amount", hilfe: "Gross, as ordered" } } }
+    - key: lieferstand
+      label: Lieferstand
+      typ: auswahl
+      optionen: [bestellt, versandt, angekommen, teilweise, zurückgeschickt]
+      standard: bestellt
+      beschriftungen: { en: { label: "Delivery status", optionen: { "bestellt": "ordered", "versandt": "shipped", "angekommen": "arrived", "teilweise": "partly arrived", "zurückgeschickt": "returned" } } }
+    - key: ruecksendefrist
+      label: Rücksendefrist bis
+      typ: datum
+      hilfe: Bis wann du zurückschicken kannst. Die mitgelieferte Automatisierung erinnert 3 Tage vorher.
+      frist: { vorlauf: 3, einheit: tage }
+      beschriftungen: { en: { label: "Return by", hilfe: "Last day you can send it back. The included automation reminds you 3 days before." } }
+    - { key: betrifft, label: Betrifft, typ: referenz, ziel: "vertraege:vertrag", zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"], mehrfach: true, gleicherTyp: true, verweisart: bezug, hilfe: Wofür die Bestellung ist – z. B. eine Anschaffung, beschriftungen: { en: { label: "Concerns", hilfe: "What the order is for – e.g. a purchase" } } }
+    - { key: vertrag, label: Gehört zu Vertrag, typ: referenz, ziel: "vertraege:vertrag", verweisart: zugehoerigkeit, hilfe: z. B. wenn die Bestellung einen Vertrag erweitert, beschriftungen: { en: { label: "Belongs to contract", hilfe: "e.g. if the order extends a contract" } } }
+    - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: bestellung, name: Bestellung, art: felder, felder: [von, bestellnummer, datum, betrag, lieferstand, ruecksendefrist, betrifft, vertrag, notiz], beschriftungen: { en: { name: "Order" } } }
+    # Anfrage, Angebot, Eingangs-, Bestell- und Zahlungsbestätigung – ohne eigene Mappentypen (#211).
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    # Rechnungen und Lieferscheine, die über „Gehört zu Bestellung“ hierher zeigen, und alle anderen Bezüge.
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [von, datum, bestellnummer, betrag, lieferstand, ruecksendefrist]
+
+- schluessel: lieferschein
+  name: Lieferschein
+  beschreibung: Lieferschein zu einer Bestellung – was geliefert wurde, und ob es vollständig war.
+  beschriftungen: { en: { name: "Delivery note", beschreibung: "Delivery note for an order – what was delivered and whether it was complete." } }
+  titelVorlage: "{von} – {datum}"
+  felder:
+    - { key: von, label: Lieferant, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, erkennung: { art: verweis }, beschriftungen: { en: { label: "Supplier" } } }
+    - { key: an, label: Empfänger, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, hilfe: Leer heißt wir, beschriftungen: { en: { label: "Recipient", hilfe: "Empty means us" } } }
+    - { key: datum, label: Lieferdatum, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Delivery date" } } }
+    - { key: lieferscheinnummer, label: Lieferscheinnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Delivery note number" } } }
+    - { key: bestellnummer, label: Bestellnummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Order number" } } }
+    - { key: bestellung, label: Gehört zu Bestellung, typ: referenz, ziel: bestellung, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to order" } } }
+    - { key: betrifft, label: Betrifft, typ: referenz, ziel: "vertraege:vertrag", zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"], mehrfach: true, gleicherTyp: true, verweisart: bezug, beschriftungen: { en: { label: "Concerns" } } }
+    - key: vollstaendig
+      label: Vollständig erhalten
+      beschriftungen: { en: { label: "Received in full", optionen: { "ja": "yes", "nein": "no", "teilweise": "partly" } } }
+      typ: auswahl
+      optionen: [ja, nein, teilweise]
+    - { key: rechnung, label: Gehört zu Rechnung, typ: referenz, ziel: rechnung, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to invoice" } } }
+    - { key: notiz, label: Bemerkungen, typ: langtext, beschriftungen: { en: { label: "Remarks" } } }
+  register:
+    - { key: lieferschein, name: Lieferschein, art: felder, felder: [von, an, datum, lieferscheinnummer, bestellnummer, bestellung, betrifft, vollstaendig, rechnung, notiz], beschriftungen: { en: { name: "Delivery note" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [von, datum, lieferscheinnummer, vollstaendig, rechnung]
+
+- schluessel: rechnungsposition
+  name: Rechnungsposition
+  beschreibung: Eine Zeile einer Rechnung. Gehört immer zu ihrer Rechnung und erscheint nur dort.
+  beschriftungen: { en: { name: "Invoice item", beschreibung: "One line of an invoice. Always belongs to its invoice and only appears there." } }
+  # Ohne Nummer: „{nr}. …“ ergäbe sonst „. Bremsen vorne“ (Fund Entwicklung 11.11.); die Nr. steht in der Tabelle.
+  titelVorlage: "{beschreibung}"
+  gehoertZu: rechnung
+  felder:
+    - { key: rechnung, label: Rechnung, typ: referenz, ziel: rechnung, pflicht: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Invoice" } } }
+    - { key: nr, label: Nr., typ: zahl, beschriftungen: { en: { label: "No." } } }
+    - { key: beschreibung, label: Beschreibung, typ: text, maxLen: 300, pflicht: true, beschriftungen: { en: { label: "Description" } } }
+    - { key: menge, label: Menge, typ: zahl, nachkomma: 3, beschriftungen: { en: { label: "Quantity" } } }
+    - { key: einheit, label: Einheit, typ: text, maxLen: 20, hilfe: z. B. Stück, Std., kg, beschriftungen: { en: { label: "Unit", hilfe: "e.g. pcs, h, kg" } } }
+    - { key: einzelpreis, label: Einzelpreis, typ: betrag, negativ: true, beschriftungen: { en: { label: "Unit price" } } }
+    - { key: gesamtpreis, label: Gesamtpreis, typ: betrag, negativ: true, hilfe: Leer lassen – dann rechnet das Paket Menge × Einzelpreis, beschriftungen: { en: { label: "Total", hilfe: "Leave empty – the package then calculates quantity × unit price" } } }
+    - { key: ust_satz, label: Umsatzsteuersatz, typ: prozent, nachkomma: 1, hilfe: Mit Satz gelten die Preise netto, beschriftungen: { en: { label: "VAT rate", hilfe: "With a rate the prices are net" } } }
+    - { key: ust_betrag, label: Umsatzsteuer, typ: betrag, negativ: true, berechnet: true, beschriftungen: { en: { label: "VAT" } } }
+    # Steuerschlüssel je Position – nur beruflich (#213); Ziele aus dem Paket Kontierung.
+    - { key: steuerschluessel, label: Steuerschlüssel, typ: referenz, zielOptional: ["kontierung:steuerschluessel"], verweisart: bezug, vorbelegen: [{ von: satz, nach: ust_satz }], anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }, hilfe: Übernimmt den Satz in „Umsatzsteuersatz“, beschriftungen: { en: { label: "Tax code", hilfe: "Copies the rate into “VAT rate”" } } }
+    - { key: artikelnummer, label: Artikelnummer, typ: text, maxLen: 60, beschriftungen: { en: { label: "Item number" } } }
+  register:
+    - { key: position, name: Position, art: felder, felder: [rechnung, nr, beschreibung, menge, einheit, einzelpreis, gesamtpreis, ust_satz, ust_betrag, steuerschluessel, artikelnummer], beschriftungen: { en: { name: "Item" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [nr, beschreibung, menge, einheit, einzelpreis, gesamtpreis, ust_satz]

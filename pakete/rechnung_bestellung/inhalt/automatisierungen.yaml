@@ -6,3 +6,10 @@
   wenn: { art: zeitplan, uhrzeit: "05:10", tage: [1, 2, 3, 4, 5, 6, 7] }
   dann:
     - { art: paket, aufgabe: taeglich }
+- schluessel: ruecksendefrist
+  name: Rücksendefrist endet bald
+  beschreibung: 3 Tage vor dem Ende der Rücksendefrist einer Bestellung – Zeit, zu entscheiden, ob du sie behältst.
+  eingeschaltet: true
+  wenn: { art: datum, typ: bestellung, feld: ruecksendefrist, vorlauf: 3, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Rücksendefrist bis {datum}: {titel}" }

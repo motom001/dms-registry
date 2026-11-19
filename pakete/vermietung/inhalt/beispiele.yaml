@@ -54,13 +54,13 @@
     vorauszahlung: 170
     sonstiges: 40
     kaution: 1680
-- typ: "rechnungen:rechnung"
+- typ: "rechnung_bestellung:rechnung"
   schluessel: grundsteuer2025
   werte: { betrifft: [{ beispiel: gartenstrasse }], kostenart: Grundsteuer, datum: "2025-02-15", betrag: 412, bezahlt_am: "2025-02-15", umlagefaehig: true }
-- typ: "rechnungen:rechnung"
+- typ: "rechnung_bestellung:rechnung"
   schluessel: versicherung2025
-  werte: { betrifft: [{ beispiel: gartenstrasse }], kostenart: Versicherung, datum: "2025-01-10", betrag: 689.9, bezahlt_am: "2025-01-10", umlagefaehig: true, notiz: Wohngebäudeversicherung }
-- typ: "rechnungen:rechnung"
-  werte: { betrifft: [{ beispiel: og }], kostenart: Reparatur, datum: "2026-03-04", betrag: 318.6, bezahlt_am: "2026-03-10", umlagefaehig: false, notiz: Thermostatventile im Bad und in der Küche getauscht }
+  werte: { betrifft: [{ beispiel: gartenstrasse }], kostenart: Versicherung, datum: "2025-01-10", betrag: 689.9, bezahlt_am: "2025-01-10", umlagefaehig: true }
+- typ: "rechnung_bestellung:rechnung"
+  werte: { betrifft: [{ beispiel: og }], kostenart: Reparatur, datum: "2026-03-04", betrag: 318.6, bezahlt_am: "2026-03-10", umlagefaehig: false }
 - typ: nebenkostenabrechnung
   werte: { mietobjekt: { beispiel: gartenstrasse }, jahr: "2025", von: "2025-01-01", bis: "2025-12-31", versenden_bis: "2026-12-31", kosten: 4630.4, rechnungen: [{ beispiel: grundsteuer2025 }, { beispiel: versicherung2025 }] }

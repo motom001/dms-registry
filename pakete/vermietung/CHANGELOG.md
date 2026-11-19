@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.1.0
+
+- **Rechnungen kommen aus dem Paket Rechnungen und Bestellungen** (dms-registry #208), dem Nachfolger des Pakets Rechnungen. Register, Ansichten und Verweise zeigen auf dessen Rechnung; nach dessen Installation (mit Umzug der Rechnungen) kannst du das Paket Rechnungen entfernen. Braucht **Ablago 0.248.0**. Die Beispiel-Rechnungen haben keine Bemerkungen mehr (das Feld gibt es dort nicht mehr).
+
 ## 2.0.1
 
 - Beispiele passen zur Persona „Vermieter“ (dms-registry #205): Das Zweifamilienhaus Gartenstraße 8 gehört Herrn Özdemir; er steht als neue Beispiel-Person und als *Anbieter* (Vermieter) an beiden Mietverträgen. Die Mieter heißen nach ihrer Rolle („Mieterin EG“, „Mieter OG“) statt „Petra Mieterin“ und „Jonas Mieter“ – Petra und Jonas sind Personas in anderen Rollen. 12 statt 11 Beispiele. Bereits angelegte Beispiel-Mappen bleiben, wie sie sind.
