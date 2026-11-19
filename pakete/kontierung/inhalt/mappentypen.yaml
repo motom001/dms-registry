@@ -1,0 +1,105 @@
+# Mappentypen des Pakets Kontierung (dms-registry #213). Schema: schema/inhalt.schema.json
+# Kennungen nach REGELN.md, „Gleiche Kennungen“: nummer, name, bezeichnung, beschreibung, notiz …
+# Hierarchien wie beim Ablageort (Paket Basis): ein Verweis auf den eigenen Typ („Gehört zu“), darunter ein Register
+# mit allem, was darauf zeigt. Die Felder an der Rechnung bringt das Paket Rechnungen mit (zielOptional).
+
+- schluessel: organisationseinheit
+  name: Organisationseinheit
+  beschreibung: Eine Abteilung oder ein Bereich im Betrieb – verschachtelt, z. B. Vertrieb › Innendienst
+  beschriftungen: { en: { name: "Organisational unit", beschreibung: "A department or area of the business – nested, e.g. Sales › Inside sales" } }
+  titelVorlage: "{name}"
+  felder:
+    - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Vertrieb, Buchhaltung, Werkstatt, beschriftungen: { en: { label: "Name", hilfe: "e.g. Sales, Accounting, Workshop" } } }
+    - { key: kuerzel, label: Kürzel, typ: text, maxLen: 20, wiederfinden: true, beschriftungen: { en: { label: "Short code" } } }
+    - { key: uebergeordnet, label: Gehört zu, typ: referenz, ziel: organisationseinheit, verweisart: zugehoerigkeit, hilfe: Die übergeordnete Einheit. Leer lassen für ganz oben., beschriftungen: { en: { label: "Part of", hilfe: "The parent unit. Leave empty for the very top." } } }
+    - { key: leitung, label: Leitung, typ: referenz, ziel: "basis:person", verweisart: bezug, beschriftungen: { en: { label: "Head" } } }
+    - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [name, kuerzel, uebergeordnet, leitung, notiz], beschriftungen: { en: { name: "General" } } }
+    - { key: untereinheiten, name: Untereinheiten, art: verknuepfungen, quellen: [{ typ: organisationseinheit, feld: uebergeordnet }], beschriftungen: { en: { name: "Sub-units" } } }
+    - { key: kostenstellen, name: Kostenstellen, art: verknuepfungen, quellen: [{ typ: kostenstelle, feld: organisationseinheit }], beschriftungen: { en: { name: "Cost centres" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [_titel, kuerzel, uebergeordnet, leitung]
+
+- schluessel: kostenstelle
+  name: Kostenstelle
+  beschreibung: Wo Kosten entstehen, z. B. 4100 Fuhrpark – mit verantwortlicher Person und übergeordneter Kostenstelle
+  beschriftungen: { en: { name: "Cost centre", beschreibung: "Where costs arise, e.g. 4100 Fleet – with the person responsible and a parent cost centre" } }
+  titelVorlage: "{nummer} {name}"
+  felder:
+    - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, hilfe: z. B. 4100, beschriftungen: { en: { label: "Number", hilfe: "e.g. 4100" } } }
+    - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Fuhrpark, beschriftungen: { en: { label: "Name", hilfe: "e.g. Fleet" } } }
+    # Später steuert sie Freigaben, z. B. „Rechnung geht an die Verantwortliche der Kostenstelle“ (#213).
+    - { key: verantwortlich, label: Verantwortliche Person, typ: referenz, ziel: "basis:person", verweisart: bezug, beschriftungen: { en: { label: "Person responsible" } } }
+    - { key: uebergeordnet, label: Übergeordnete Kostenstelle, typ: referenz, ziel: kostenstelle, verweisart: zugehoerigkeit, hilfe: Leer lassen für ganz oben., beschriftungen: { en: { label: "Parent cost centre", hilfe: "Leave empty for the very top." } } }
+    - { key: organisationseinheit, label: Organisationseinheit, typ: referenz, ziel: organisationseinheit, verweisart: bezug, beschriftungen: { en: { label: "Organisational unit" } } }
+    - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [nummer, name, verantwortlich, uebergeordnet, organisationseinheit, notiz], beschriftungen: { en: { name: "General" } } }
+    - { key: unterkostenstellen, name: Untergeordnete Kostenstellen, art: verknuepfungen, quellen: [{ typ: kostenstelle, feld: uebergeordnet }], beschriftungen: { en: { name: "Child cost centres" } } }
+    # Alles, was auf die Kostenstelle zeigt – z. B. Rechnungen über „Kostenstelle“.
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [nummer, name, verantwortlich, uebergeordnet, organisationseinheit]
+
+- schluessel: kostentraeger
+  name: Kostenträger
+  beschreibung: Wofür Kosten entstehen – ein Produkt, Projekt oder Auftrag
+  beschriftungen: { en: { name: "Cost unit", beschreibung: "What costs are for – a product, project or job" } }
+  titelVorlage: "{nummer} {name}"
+  felder:
+    - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Number" } } }
+    - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, beschriftungen: { en: { label: "Name" } } }
+    - key: art
+      label: Art
+      typ: auswahl
+      optionen: [Produkt, Projekt, Auftrag, Sonstiges]
+      beschriftungen: { en: { label: "Type", optionen: { Produkt: Product, Projekt: Project, Auftrag: Job, Sonstiges: Other } } }
+    - { key: verantwortlich, label: Verantwortliche Person, typ: referenz, ziel: "basis:person", verweisart: bezug, beschriftungen: { en: { label: "Person responsible" } } }
+    - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [nummer, name, art, verantwortlich, notiz], beschriftungen: { en: { name: "General" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [nummer, name, art, verantwortlich]
+
+- schluessel: sachkonto
+  name: Sachkonto
+  beschreibung: Ein Konto aus dem Kontenrahmen der Buchhaltung, z. B. 4930 Bürobedarf – nur zur Auswahl, Ablago bucht nicht
+  beschriftungen: { en: { name: "General ledger account", beschreibung: "An account from the chart of accounts, e.g. 4930 Office supplies – for selection only, Ablago does not post entries" } }
+  titelVorlage: "{nummer} {bezeichnung}"
+  felder:
+    - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, hilfe: z. B. 4930, beschriftungen: { en: { label: "Number", hilfe: "e.g. 4930" } } }
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Bürobedarf, beschriftungen: { en: { label: "Name", hilfe: "e.g. Office supplies" } } }
+    - key: kontenrahmen
+      label: Kontenrahmen
+      typ: auswahl
+      optionen: [SKR03, SKR04, Eigener]
+      hilfe: Welchen Kontenrahmen deine Buchhaltung nutzt
+      beschriftungen: { en: { label: "Chart of accounts", hilfe: "Which chart of accounts your accountants use", optionen: { SKR03: SKR03, SKR04: SKR04, Eigener: Own } } }
+    - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [nummer, bezeichnung, kontenrahmen, notiz], beschriftungen: { en: { name: "General" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [nummer, bezeichnung, kontenrahmen]
+
+- schluessel: steuerschluessel
+  name: Steuerschlüssel
+  beschreibung: Ein Umsatzsteuersatz mit Bezeichnung und Kennzeichen für die Buchhaltung, gültig ab einem Datum
+  beschriftungen: { en: { name: "Tax code", beschreibung: "A VAT rate with a name and a code for the accountants, valid from a date" } }
+  titelVorlage: "{bezeichnung}"
+  felder:
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Umsatzsteuer 19 %, beschriftungen: { en: { label: "Name", hilfe: "e.g. VAT 19 %" } } }
+    # Gleiche Feldart wie der Umsatzsteuersatz an Rechnung und Position – dort übernimmt Ablago den Satz beim Auswählen.
+    - { key: satz, label: Satz, typ: prozent, nachkomma: 1, pflicht: true, beschriftungen: { en: { label: "Rate" } } }
+    - { key: gueltig_ab, label: Gültig ab, typ: datum, hilfe: Sätze ändern sich – ab wann dieser gilt, beschriftungen: { en: { label: "Valid from", hilfe: "Rates change – from when this one applies" } } }
+    - { key: gueltig_bis, label: Gültig bis, typ: datum, hilfe: Leer, solange er gilt, beschriftungen: { en: { label: "Valid until", hilfe: "Empty while it applies" } } }
+    # Die Abbildung auf die Schlüssel der Buchhaltung passiert beim Übertragen (#213).
+    - { key: kennzeichen, label: Kennzeichen für die Buchhaltung, typ: text, maxLen: 20, hilfe: Der Schlüssel in eurer Buchhaltung, falls ihr einen nutzt, beschriftungen: { en: { label: "Code for the accountants", hilfe: "The code in your accounting system, if you use one" } } }
+    - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, satz, gueltig_ab, gueltig_bis, kennzeichen, notiz], beschriftungen: { en: { name: "General" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [bezeichnung, satz, gueltig_ab, gueltig_bis, kennzeichen]

@@ -1,0 +1,15 @@
+# Mitgelieferte Steuerschlüssel (DMS #1038): die Sätze der Umsatzsteuer in Deutschland, damit Rechnung und Positionen
+# im Betrieb gleich eine Auswahl haben. Sie bleiben nach der Installation; Updates ergänzen neue, überschreiben aber
+# nichts, was du geändert hast. Das Kennzeichen eurer Buchhaltung trägst du selbst ein. Ohne Gewähr, keine Steuerberatung.
+- kennung: ust_19
+  typ: steuerschluessel
+  werte: { bezeichnung: Umsatzsteuer 19 %, satz: 19, gueltig_ab: "2007-01-01" }
+  beschriftungen: { en: { bezeichnung: VAT 19 % } }
+- kennung: ust_7
+  typ: steuerschluessel
+  werte: { bezeichnung: Umsatzsteuer 7 %, satz: 7, gueltig_ab: "1983-07-01", notiz: "Ermäßigter Satz, z. B. Lebensmittel, Bücher, Zeitungen." }
+  beschriftungen: { en: { bezeichnung: VAT 7 %, notiz: "Reduced rate, e.g. food, books, newspapers." } }
+- kennung: ust_0
+  typ: steuerschluessel
+  werte: { bezeichnung: Ohne Umsatzsteuer (0 %), satz: 0, notiz: "Steuerfrei oder nicht steuerbar, z. B. Versicherungsbeiträge oder Rechnungen von Kleinunternehmern." }
+  beschriftungen: { en: { bezeichnung: Without VAT (0 %), notiz: "Exempt or outside the scope of VAT, e.g. insurance premiums or invoices from small businesses." } }
