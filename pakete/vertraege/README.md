@@ -56,16 +56,9 @@ Die mitgelieferte Automatisierung **„Vertrag rechtzeitig kündigen“** ist na
 | --- | --- | --- |
 | Status und Fristen ausrechnen | an | Aus: Die berechneten Felder bleiben, wie sie sind. |
 
-## Umzug aus Haushalt und Vermietung
-
-Bis Haushalt 1.x und Vermietung 1.x brachten eigene Typen *Vertrag*, *Versicherung* und *Mietvertrag* mit. Ab Verträge 1.1.0 ziehen sie beim **Installieren oder Aktualisieren von Verträge** hierher (Ablago 0.243.0, „Umbau“): Ablago zeigt vorher je Typ, wie viele Mappen umziehen und welche Werte wohin gehen; nach deiner Bestätigung (nur mit „Gesamte Verwaltung“) laufen sie in einem Zug um. Mappen, Dokumente, Verknüpfungen, Ansichten, Automatisierungen und Rechte-Regeln bleiben erhalten; was nicht in ein Feld passt, steht danach in einer **Notiz** an der Mappe, nichts geht verloren.
-
-- **Reihenfolge:** erst Verträge installieren bzw. aktualisieren (allein), danach Rechnungen, dann Haushalt, Fahrzeuge und Vermietung auf 2.0.0.
-- **Danach prüfen:** Bei umgezogenen Verträgen die Vertragsart wählen und Mindestlaufzeit und „Danach“ eintragen – dann rechnet das Paket *Kündigen bis* selbst. Die alten Angaben „Mindestlaufzeit bis“ und „Kündigen bis“ stehen in der Notiz.
-
 ## Voraussetzungen
 
-- Ablago ab 0.245.3: Aktionen im Menü „Mappe“, Umbau, Zeitraum, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, „Paket nach Zeitplan ausführen“, Vorbelegen, Vorgaben und eigene Organisation (Etappe 15).
+- Ablago ab 0.245.3: Aktionen im Menü „Mappe“, Zeitraum, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, „Paket nach Zeitplan ausführen“, Vorbelegen, Vorgaben und eigene Organisation (Etappe 15).
 - Paket Basis ab 1.7.0.
 
 ## Rechte und Netzwerkzugriff
