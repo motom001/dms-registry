@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.5.0
+
+- **Kein Umzug mehr aus Haushalt 1.x und Vermietung 1.x:** Die Umbau-Schritte für *Vertrag*, *Versicherung* und *Mietvertrag* sind entfernt. Es gab keine Installation mehr, die sie brauchte (Thomas, 20.11.2026). Wer noch Haushalt oder Vermietung 1.x hat, aktualisiert vorher auf Verträge 1.4.1.
+
 ## 1.4.1
 
 - **Fristen werden beim Speichern wieder berechnet** (dms-registry #209): Das Paket las die Mappe in einer älteren Form der Antwort von Ablago und rechnete beim Anlegen und Speichern eines Vertrags nichts neu („Vertrag unverändert“). Kündigen bis, frühestes Ende und Status kamen nur mit der täglichen Prüfung. Jetzt stimmen sie gleich nach dem Speichern.
