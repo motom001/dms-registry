@@ -1,0 +1,5 @@
+# Was nach der Installation in Ablago vorhanden sein muss (pruefen.py vergleicht das mit inhalt/).
+mappentypen: [organisationseinheit, kostenstelle, kostentraeger, sachkonto, steuerschluessel]
+sichten: [kontierung, kostenstellen, kostentraeger_liste, sachkonten, steuerschluessel_liste, organisationseinheiten]
+beispiele: 0
+vorgaben: 3

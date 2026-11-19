@@ -46,3 +46,4 @@ texterkennung.ara
 vertraege
 rechnungen
 leerseiten
+kontierung

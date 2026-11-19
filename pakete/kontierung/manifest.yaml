@@ -1,0 +1,36 @@
+# Paket Kontierung (dms-registry #213, Etappe 15): Kontierungsobjekte für Betriebe – Organisationseinheit, Kostenstelle,
+# Kostenträger, Sachkonto und Steuerschlüssel. Ablago hält die Kontierung fest, damit man findet, freigibt und an die
+# Buchhaltung übergibt; gebucht wird dort. Das Paket Rechnungen zeigt die Felder dafür, sobald Kontierung da ist.
+# Schema: schema/manifest.schema.json
+schema: 1
+id: kontierung
+name: Kontierung
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: Kostenstellen, Kostenträger, Sachkonten und Steuerschlüssel für den Betrieb – damit Rechnungen gleich richtig zugeordnet sind und die Buchhaltung weiß, wohin sie gehören.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+# Nur im Betrieb sinnvoll: Ablago empfiehlt das Paket nur mit dem Merkmal „beruflich genutzt“ (REGELN.md, „Für dich empfohlen“).
+passtZu: [beruflich]
+kurzanleitung:
+  de:
+    - Lege deine Kostenstellen an, mit Nummer, Name und der verantwortlichen Person; übergeordnete Kostenstellen ergeben die Hierarchie.
+    - Kostenträger, Sachkonten und Organisationseinheiten kommen bei Bedarf dazu – Steuerschlüssel für 19 %, 7 % und 0 % sind schon da.
+    - An der Rechnung wählst du im Abschnitt „Kontierung“ Kostenstelle, Kostenträger und Sachkonto (Paket Rechnungen ab 1.3.0).
+    - Ablago bucht nicht – die Kontierung steht an der Rechnung, damit du findest, freigibst und an die Buchhaltung übergibst.
+  en:
+    - Create your cost centres with number, name and the person responsible; parent cost centres build the hierarchy.
+    - Add cost units, general ledger accounts and organisational units as needed – tax codes for 19 %, 7 % and 0 % are already there.
+    - On an invoice, choose cost centre, cost unit and account in the section “Account assignment” (Invoices package 1.3.0 or later).
+    - Ablago does not post entries – the assignment stays on the invoice so you can find, approve and hand it to your accountants.
+# 0.236.0: Vorgaben (Steuerschlüssel, DMS #1038); darin enthalten mehrere Ziele (0.230.0) und Anzeige-Bedingungen (0.228.0).
+dms: ">=0.236.0"
+abhaengigkeiten:
+  basis: ">=1.7.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  vorgaben: inhalt/vorgaben.yaml

@@ -68,6 +68,14 @@
     - { key: ust, label: Umsatzsteuer, typ: betrag, negativ: true, beschriftungen: { en: { label: "VAT" } } }
     - { key: skonto, label: Skonto, typ: betrag, beschriftungen: { en: { label: "Cash discount" } } }
     - { key: skonto_bis, label: Skonto bis, typ: datum, beschriftungen: { en: { label: "Cash discount until" } } }
+    # Kontierung – nur beruflich (dms-registry #213). Die Ziele bringt das Paket Kontierung mit; ohne es bleiben die
+    # Felder leer. Jedes Feld hat die Bedingung selbst: Ein Update legt in einem Register mit Abschnitten keinen neuen
+    # Abschnitt an, die Felder stehen dann am Ende – und sollen privat trotzdem nicht erscheinen.
+    - { key: kostenstelle, label: Kostenstelle, typ: referenz, zielOptional: ["kontierung:kostenstelle"], verweisart: bezug, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }, beschriftungen: { en: { label: "Cost centre" } } }
+    - { key: kostentraeger, label: Kostenträger, typ: referenz, zielOptional: ["kontierung:kostentraeger"], verweisart: bezug, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }, beschriftungen: { en: { label: "Cost unit" } } }
+    - { key: sachkonto, label: Sachkonto, typ: referenz, zielOptional: ["kontierung:sachkonto"], verweisart: bezug, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }, beschriftungen: { en: { label: "Account" } } }
+    # Übernimmt beim Auswählen den Satz in „Umsatzsteuersatz“ (nur in ein leeres Feld); privat bleibt der Satz frei.
+    - { key: steuerschluessel, label: Steuerschlüssel, typ: referenz, zielOptional: ["kontierung:steuerschluessel"], verweisart: bezug, vorbelegen: [{ von: satz, nach: ust_satz }], anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }, hilfe: Übernimmt den Satz in „Umsatzsteuersatz“, beschriftungen: { en: { label: "Tax code", hilfe: "Copies the rate into “VAT rate”" } } }
     # Ausgangsrechnung – nur, wenn wir der Rechnungssteller sind
     - { key: zahlungseingang_am, label: Zahlungseingang am, typ: datum, beschriftungen: { en: { label: "Payment received on" } } }
     - key: mahnstufe
@@ -102,6 +110,7 @@
                betrifft, vertrag, steuerjahr,
                rechnungsnummer, kundennummer, zahlweise, bezahlt_von, an,
                netto, ust_satz, ust, skonto, skonto_bis,
+               kostenstelle, kostentraeger, sachkonto, steuerschluessel,
                zahlungseingang_am, mahnstufe, interne_nummer,
                kilometerstand, arbeiten,
                umlagefaehig, kostenart,
@@ -110,6 +119,7 @@
         - { vor: betrifft, titel: Wozu, beschriftungen: { en: { titel: "What for" } } }
         - { vor: rechnungsnummer, titel: Einzelheiten, eingeklappt: true, beschriftungen: { en: { titel: "Details" } } }
         - { vor: netto, titel: Beträge im Einzelnen, eingeklappt: true, beschriftungen: { en: { titel: "Amounts in detail" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
+        - { vor: kostenstelle, titel: Kontierung, eingeklappt: true, beschriftungen: { en: { titel: "Account assignment" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
         - { vor: zahlungseingang_am, titel: Ausgangsrechnung, beschriftungen: { en: { titel: "Outgoing invoice" } }, anzeigen: { bedingungen: [{ art: eigeneOrganisation, feld: von }] } }
         - { vor: kilometerstand, titel: Fahrzeug, beschriftungen: { en: { titel: "Vehicle" } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: betrifft, op: zeigtAufTyp, wert: { art: fest, wert: ["fahrzeuge:fahrzeug"] } } }] } }
         - { vor: umlagefaehig, titel: Vermietung, beschriftungen: { en: { titel: "Letting" } }, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: betrifft, op: zeigtAufTyp, wert: { art: fest, wert: ["vermietung:mietobjekt", "vermietung:wohnung"] } } }] } }
@@ -162,8 +172,10 @@
     - { key: gesamtpreis, label: Gesamtpreis, typ: betrag, negativ: true, hilfe: Leer lassen – dann rechnet das Paket Menge × Einzelpreis, beschriftungen: { en: { label: "Total", hilfe: "Leave empty – the package then calculates quantity × unit price" } } }
     - { key: ust_satz, label: Umsatzsteuersatz, typ: prozent, nachkomma: 1, hilfe: Mit Satz gelten die Preise netto, beschriftungen: { en: { label: "VAT rate", hilfe: "With a rate the prices are net" } } }
     - { key: ust_betrag, label: Umsatzsteuer, typ: betrag, negativ: true, berechnet: true, beschriftungen: { en: { label: "VAT" } } }
+    # Steuerschlüssel je Position – nur beruflich (#213); Ziele aus dem Paket Kontierung.
+    - { key: steuerschluessel, label: Steuerschlüssel, typ: referenz, zielOptional: ["kontierung:steuerschluessel"], verweisart: bezug, vorbelegen: [{ von: satz, nach: ust_satz }], anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] }, hilfe: Übernimmt den Satz in „Umsatzsteuersatz“, beschriftungen: { en: { label: "Tax code", hilfe: "Copies the rate into “VAT rate”" } } }
     - { key: artikelnummer, label: Artikelnummer, typ: text, maxLen: 60, beschriftungen: { en: { label: "Item number" } } }
   register:
-    - { key: position, name: Position, art: felder, felder: [rechnung, nr, beschreibung, menge, einheit, einzelpreis, gesamtpreis, ust_satz, ust_betrag, artikelnummer], beschriftungen: { en: { name: "Item" } } }
+    - { key: position, name: Position, art: felder, felder: [rechnung, nr, beschreibung, menge, einheit, einzelpreis, gesamtpreis, ust_satz, ust_betrag, steuerschluessel, artikelnummer], beschriftungen: { en: { name: "Item" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
   trefferliste: [nr, beschreibung, menge, einheit, einzelpreis, gesamtpreis, ust_satz]

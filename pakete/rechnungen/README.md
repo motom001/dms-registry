@@ -18,6 +18,7 @@ Rechnungen, Quittungen, Kassenbons, Gutschriften und Erstattungen – **eingehen
 | Wozu | Betrifft (Fahrzeug, Immobilie, Mietobjekt, Wohnung, Anschaffung, Vertrag – je nachdem, welche Pakete installiert sind), Gehört zu Vertrag, Steuerjahr | immer |
 | Einzelheiten | Rechnungsnummer, Kunden-/Vertragsnummer, Bezahlt per, Bezahlt von, Rechnungsempfänger (`an`, leer = wir) | eingeklappt |
 | Beträge im Einzelnen | Netto, Umsatzsteuersatz, Umsatzsteuer, Skonto, Skonto bis | nur, wenn Ablago beruflich genutzt wird |
+| Kontierung | Kostenstelle, Kostenträger, Sachkonto, Steuerschlüssel (übernimmt den Satz in „Umsatzsteuersatz“) – Auswahl aus dem Paket [Kontierung](../kontierung/), ohne es bleiben die Felder leer | nur, wenn Ablago beruflich genutzt wird; eingeklappt |
 | Ausgangsrechnung | Zahlungseingang am, Mahnstufe, interne Nummer | nur, wenn der Rechnungssteller eine eigene Organisation ist |
 | Fahrzeug | Kilometerstand, Arbeiten | nur, wenn die Rechnung ein Fahrzeug betrifft |
 | Vermietung | Umlagefähig, Kostenart | nur bei Mietobjekt oder Wohnung |
@@ -48,7 +49,7 @@ Bis Fahrzeuge 1.x und Vermietung 1.x brachten eigene Typen *Werkstattrechnung* u
 ## Voraussetzungen
 
 - Ablago ab 0.245.3: Aktionen im Menü „Mappe“, Umbau, Prozent, negative Beträge, Anzeige-Bedingungen, mehrere Ziele, berechnete Felder, Hinweise, Tabelle, „Paket nach Zeitplan ausführen“, „gehört immer zu“ und eigene Organisation (Etappe 15).
-- Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung und Haushalt sind nicht nötig – sind sie installiert, kann *Betrifft* auf ihre Mappen zeigen.
+- Pakete Basis ab 1.7.0 und Verträge ab 1.0.0. Fahrzeuge, Haus, Vermietung und Haushalt sind nicht nötig – sind sie installiert, kann *Betrifft* auf ihre Mappen zeigen. Ebenso Kontierung: Ist es installiert, bieten die Felder im Abschnitt *Kontierung* und *Steuerschlüssel* an der Position seine Mappen an.
 
 ## Rechte und Netzwerkzugriff
 

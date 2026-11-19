@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.3.0
+
+- **Kontierung im Betrieb** (dms-registry #213): Neuer Abschnitt *Kontierung* (eingeklappt, nur bei „beruflich genutzt“) mit Kostenstelle, Kostenträger, Sachkonto und Steuerschlüssel. Die Auswahl kommt aus dem neuen Paket **Kontierung**; ohne es bleiben die Felder leer. Der Steuerschlüssel übernimmt beim Auswählen seinen Satz in „Umsatzsteuersatz“, wenn das Feld leer ist – privat bleibt der Satz frei eintragbar.
+- **Steuerschlüssel je Position**, ebenfalls nur beruflich.
+- Bei einer vorhandenen Installation stehen die neuen Felder am Ende des Registers *Rechnung* (Ablago legt bei einem Update keinen neuen Abschnitt an); auch dort erscheinen sie nur bei „beruflich genutzt“.
+
 ## 1.2.1
 
 - **Status wird wieder berechnet** (dms-registry #209): Das Paket las die Mappe in einer älteren Form der Antwort von Ablago, fand darin keine Werte und schrieb deshalb nie einen Status – weder nach dem Speichern noch nach „Als bezahlt markieren“. Auch die Summenprüfung beim Speichern einer Rechnung rechnete so ins Leere. Jetzt rechnet es beides wie gedacht; die tägliche Prüfung war nicht betroffen.
