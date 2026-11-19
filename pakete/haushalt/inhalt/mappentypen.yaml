@@ -72,7 +72,7 @@
         - { typ: gesundheit, feld: steuerjahr }
         - { typ: bildung, feld: steuerjahr }
         - { typ: arbeitsverhaeltnis, feld: steuerjahr }
-        - { typ: "rechnungen:rechnung", feld: steuerjahr }
+        - { typ: "rechnung_bestellung:rechnung", feld: steuerjahr }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
@@ -201,7 +201,7 @@
       name: Rechnungen
       beschriftungen: { en: { name: "Invoices" } }
       art: verknuepfungen
-      quellen: [{ typ: "rechnungen:rechnung", feld: betrifft }]
+      quellen: [{ typ: "rechnung_bestellung:rechnung", feld: betrifft }]
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }

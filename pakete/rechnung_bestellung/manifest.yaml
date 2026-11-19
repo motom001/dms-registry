@@ -1,0 +1,103 @@
+# Paket Rechnungen und Bestellungen (dms-registry #208, #210, #211, Etappe 15): Rechnung, Bestellung, Lieferschein,
+# Rechnungsposition und Steuerzeile – eingehend und ausgehend, mit Status, Summen und Summenprüfung. Nachfolger des
+# Pakets Rechnungen: beim Installieren ziehen dessen Mappen hierher (Umbau, DMS #1041). Schema: schema/manifest.schema.json
+schema: 1
+id: rechnung_bestellung
+name: Rechnungen und Bestellungen
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: Rechnungen, Quittungen, Gutschriften und Bestellungen – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, teilt die Umsatzsteuer nach Sätzen auf und meldet, wenn die Summen nicht zum Betrag passen.
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: receipt-text
+# 0.248.0: Umbau mit Text → Verweis und Zeiträumen (DMS #1125); darin enthalten Umbau (0.243.0, #1041), Aktionen im
+# Menü „Mappe“ (0.245.0, #1039), Bedingungen auf zielOptional-Ziele (0.245.3, #1122), eigene Organisation (0.238.0),
+# Vorgaben und Vorbelegen (0.234.0/0.236.0), gehört immer zu (0.235.0), Tabelle (0.232.0), berechnete Felder (0.231.0)
+dms: ">=0.248.0"
+kurzanleitung:
+  de:
+    - Lege eine Rechnung an oder übernimm sie aus der Post – von wem, an wen, wie viel, wann fällig.
+    - Trage „Bezahlt am“ ein oder nimm „Als bezahlt markieren“ im Menü „Mappe“; den Status rechnet das Paket gleich und jeden Morgen neu.
+    - Unter „Einzelheiten“ ordnest du sie einem Vertrag oder einer Bestellung, einem Fahrzeug oder einer Wohnung zu – dann findest du sie dort wieder.
+    - Positionen und Steuerzeilen („+ Position“, „+ Satz“) rechnet das Paket zusammen; passt die Summe nicht zum Betrag, zeigt die Rechnung einen Hinweis.
+    - "Online bestellt? Lena legt eine Bestellung an und hängt die Bestätigung an; Rechnung und Lieferschein zeigen über „Gehört zu“ darauf."
+  en:
+    - Create an invoice or take it over from the mail – from whom, to whom, how much, when due.
+    - Enter “Paid on” or use “Mark as paid” in the “Folder” menu; the package recalculates the status right away and every morning.
+    - Under “Details” you link it to a contract or order, a vehicle or a flat – then you find it there too.
+    - The package adds up items and VAT lines (“+ Item”, “+ Rate”); if the total does not match the amount, the invoice shows a note.
+    - "Ordered online? Lena creates an order and attaches the confirmation; invoice and delivery note point to it via “Belongs to”."
+abhaengigkeiten:
+  basis: ">=1.7.0"
+  vertraege: ">=1.0.0"
+# Umbau (dms-registry #208, DMS #1041): Nachfolger des Pakets Rechnungen. Beim Installieren übernimmt die Rechnung den
+# alten Typ mit seiner Id (Ansichten, Rechte, Links bleiben) und bekommt den neuen Aufbau; Positionen und Lieferscheine
+# ebenso. Was keinen Platz mehr hat – Bemerkungen, Bezahlt von, Netto, Umsatzsteuersatz, Umsatzsteuer, Status (rechnet
+# das Paket neu) – steht danach in einer Notiz an der Mappe. Ablago zeigt vorher, was wohin geht.
+umbau:
+  - von: "rechnungen:rechnung"
+    nach: rechnung
+    felder: { von: von, an: an, betrag: betrag, rechnungsnummer: rechnungsnummer, datum: datum, faellig_am: faellig_am,
+              bezahlt_am: bezahlt_am, zahlweise: zahlweise, betrifft: betrifft, vertrag: gehoert_zu, steuerjahr: steuerjahr,
+              kilometerstand: kilometerstand, arbeiten: arbeiten, umlagefaehig: umlagefaehig, kostenart: kostenart,
+              skonto: skonto, skonto_bis: skonto_bis, zahlungseingang_am: zahlungseingang_am, mahnstufe: mahnstufe,
+              interne_nummer: interne_nummer, kostenstelle: kostenstelle, kostentraeger: kostentraeger, sachkonto: sachkonto,
+              verbleib_original: verbleib_original, kundennummer: gefundene_kundennummer }
+    register: { anlagen: dokumente }
+  - von: "rechnungen:rechnungsposition"
+    nach: rechnungsposition
+    felder: { rechnung: rechnung, nr: nr, beschreibung: beschreibung, menge: menge, einheit: einheit, einzelpreis: einzelpreis,
+              gesamtpreis: gesamtpreis, ust_satz: ust_satz, steuerschluessel: steuerschluessel,
+              artikelnummer: artikelnummer }
+  - von: "rechnungen:lieferschein"
+    nach: lieferschein
+    felder: { von: von, an: an, datum: datum, lieferscheinnummer: lieferscheinnummer, bestellnummer: bestellnummer,
+              betrifft: betrifft, vollstaendig: vollstaendig, rechnung: rechnung, notiz: notiz }
+    register: { dokumente: dokumente }
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  wortlisten: inhalt/wortlisten.yaml
+  automatisierungen: inhalt/automatisierungen.yaml
+# Aktionen im Menü „Mappe“ (dms-registry #162, DMS #1039). Ablago fragt im Dialog und schreibt mit dem Zugriff der Person.
+mappenaktionen:
+  - schluessel: bezahlt
+    name: Als bezahlt markieren
+    beschreibung: Trägt „Bezahlt am“ ein – heute oder ein anderes Datum. Den Status rechnet das Paket danach neu.
+    mappentypen: [rechnung]
+    rechte: [aendern]
+    bedingung:
+      modus: alle
+      bedingungen: [{ art: feld, bedingung: { feld: bezahlt_am, op: leer } }]
+      grund: Die Rechnung ist schon als bezahlt markiert.
+code:
+  sprache: c
+  quelle: code/
+  # Status bei jeder Änderung und jeden Morgen (Automatisierung „Rechnungen täglich prüfen“, überfällig);
+  # Summen und Summenprüfung, wenn sich Rechnung, Position oder Steuerzeile ändert.
+  ereignisse: [mappe.angelegt, mappe.geaendert, zeitplan.ausgefuehrt]
+  mappentypen: [rechnung, rechnungsposition, steuerzeile]
+  rechte:
+    lesen: [rechnung, rechnungsposition, steuerzeile]
+    # Status und Summen der Rechnung, Umsatzsteuer und leere Gesamtpreise der Position, leere Steuerbeträge;
+    # Steuerzeilen „aus Positionen“ legt das Paket an und hält sie aktuell (Zeilen „von Hand“ fasst es nie an).
+    schreiben: [rechnung, rechnungsposition, steuerzeile]
+    dokumente: keine
+    schnittstellen: ["dms:hinweise"]           # Hinweis an der Rechnung, wenn die Positionen nicht zum Betrag passen
+  netz: []
+  einstellungen:
+    - abschnitt: Rechnungen
+      felder:
+        - schluessel: summenpruefung
+          name: Positionen mit dem Betrag vergleichen
+          typ: janein
+          standard: true
+          hilfe: Passen die Positionen nicht zum Rechnungsbetrag, steht ein Hinweis an der Rechnung. Speichern hindert er nie.
+        - schluessel: steuerzeilen_aus_positionen
+          name: Steuerzeilen aus den Positionen füllen
+          typ: janein
+          standard: true
+          hilfe: Haben Positionen einen Umsatzsteuersatz, legt das Paket je Satz eine Steuerzeile „aus Positionen“ an und hält sie aktuell. Zeilen von Hand bleiben, wie sie sind.

@@ -3,7 +3,7 @@ schema: 1
 id: haushalt
 name: Haushalt
 herausgeber: app.ablago
-version: 2.1.1
+version: 2.2.0
 beschreibung: Die typischen Unterlagen eines Haushalts – Konten, Steuerjahre, Ausweise und Urkunden, Gesundheit, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Verträge, Versicherungen und Rechnungen kommen aus den Paketen Verträge und Rechnungen.
 autor:
   name: Thomas Meissner
@@ -33,7 +33,7 @@ abhaengigkeiten:
   # Ab 2.0.0 (dms-registry #163): Vertrag und Versicherung aus Verträge, Rechnungen und Kassenbons aus Rechnungen.
   basis: ">=1.7.0"
   vertraege: ">=1.1.0"
-  rechnungen: ">=1.1.0"
+  rechnung_bestellung: ">=1.0.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

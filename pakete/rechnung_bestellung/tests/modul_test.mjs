@@ -14,7 +14,7 @@ const E = (b) => ({ betrag: b, waehrung: 'EUR' });
 /** Ein Aufruf wie im Paket-Läufer: frischer Speicher, Ereignis rein, Ergebnis und API-Aufrufe raus. */
 // konflikt: so viele PUT auf eine Mappe bekommen 409 (true = alle); ohneHuelle: GET /mappen/{id} in der alten Form ohne „mappe“.
 function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = 0, ohneHuelle = false, einstellungen = { summenpruefung: true }, erstellt = '2026-11-10T06:00:00.000Z' }) {
-  const aufrufe = [], geschrieben = {}, protokoll = [], hinweise = {};
+  const aufrufe = [], geschrieben = {}, protokoll = [], hinweise = {}, steuerhinweise = {}, angelegt = [];
   let antwort = new Uint8Array(0), ergebnis = '';
   const memory = new WebAssembly.Memory({ initial: 32, maximum: 4096 });
   const u8 = () => new Uint8Array(memory.buffer);
@@ -22,9 +22,15 @@ function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = 0, 
   const json = (status, x) => { antwort = new TextEncoder().encode(JSON.stringify(x)); return status; };
   const api = (q) => {
     aufrufe.push(`${q.methode} ${q.pfad}`);
-    if (q.methode === 'GET' && q.pfad === '/typen') return json(200, [{ id: 't-r', schluessel: 'rechnungen:rechnung' }, { id: 't-p', schluessel: 'rechnungen:rechnungsposition' }]);
-    let h = /^\/mappen\/([^/?]+)\/hinweise\/summe$/.exec(q.pfad);
-    if (h) { hinweise[h[1]] = q.methode === 'PUT' ? q.body.text : null; return json(200, {}); }
+    if (q.methode === 'GET' && q.pfad === '/typen') return json(200, [{ id: 't-r', schluessel: 'rechnung_bestellung:rechnung' }, { id: 't-p', schluessel: 'rechnung_bestellung:rechnungsposition' }, { id: 't-s', schluessel: 'rechnung_bestellung:steuerzeile' }]);
+    let h = /^\/mappen\/([^/?]+)\/hinweise\/(summe|steuer)$/.exec(q.pfad);
+    if (h) { (h[2] === 'summe' ? hinweise : steuerhinweise)[h[1]] = q.methode === 'PUT' ? q.body.text : null; return json(200, {}); }
+    if (q.methode === 'POST' && q.pfad === '/mappen') {
+      const id = `neu-${angelegt.length + 1}`;
+      angelegt.push({ id, ...q.body });
+      mappen[id] = { typ: q.body.typId, werte: q.body.werte };
+      return json(200, { id, typId: q.body.typId, werte: q.body.werte });
+    }
     let m = /^\/mappen\/([^/?]+)$/.exec(q.pfad);
     if (m && q.methode === 'GET') {
       if (!mappen[m[1]]) return json(404, { fehler: 'nicht da' });
@@ -35,9 +41,10 @@ function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = 0, 
     if (m && q.methode === 'PUT') {
       if (konflikt === true || konflikt > 0) { if (konflikt !== true) konflikt--; return json(409, { fehler: 'Konflikt' }); }
       geschrieben[m[1]] = q.body;
+      if (mappen[m[1]]) mappen[m[1]].werte = { ...mappen[m[1]].werte, ...q.body.werte };
       return json(200, { id: m[1] });
     }
-    m = /^\/mappen\?sicht=typ:(t-[rp])&von=(\d+)&anzahl=(\d+)$/.exec(q.pfad);
+    m = /^\/mappen\?sicht=typ:(t-[rps])&von=(\d+)&anzahl=(\d+)$/.exec(q.pfad);
     if (m && q.methode === 'GET') {
       const alle = Object.entries(mappen).filter(([, x]) => x.typ === m[1]).map(([id, x]) => ({ id, typId: x.typ, geaendert: '2026-11-09T10:00:00.000Z', werte: x.werte }));
       m = [null, m[2], m[3]];
@@ -56,11 +63,11 @@ function lauf({ art = 'mappe.geaendert', daten = {}, mappen = {}, konflikt = 0, 
   for (const i of WebAssembly.Module.imports(modul)) if (i.module === 'wasi_snapshot_preview1') importe.wasi_snapshot_preview1[i.name] = () => 52;
   const inst = new WebAssembly.Instance(modul, importe);
   inst.exports._initialize?.();
-  const e = new TextEncoder().encode(JSON.stringify({ art, id: 'e-1', versuch: 1, erstellt, daten, paket: { id: 'rechnungen', version: '1.0.0' }, einstellungen }));
+  const e = new TextEncoder().encode(JSON.stringify({ art, id: 'e-1', versuch: 1, erstellt, daten, paket: { id: 'rechnung_bestellung', version: '1.0.0' }, einstellungen }));
   const p = inst.exports.dms_puffer(e.length);
   u8().set(e, p);
   const code = inst.exports.dms_ereignis(p, e.length);
-  return { code, ergebnis, protokoll, aufrufe, geschrieben, hinweise };
+  return { code, ergebnis, protokoll, aufrufe, geschrieben, hinweise, steuerhinweise, angelegt, mappen };
 }
 
 /** Eine Aktion im Menü „Mappe“ wie im Läufer (DMS #1039): dms_aktion mit Eingabe, Antwort per ergebnis(). `ms`: Uhr (oder null). */
@@ -79,7 +86,7 @@ function aktion(eingabe, ms = Date.UTC(2026, 10, 11, 9, 30)) {
   if (ms !== null) importe.wasi_snapshot_preview1.clock_time_get = (_id, _gen, aus) => { new DataView(memory.buffer).setBigUint64(aus, BigInt(ms) * 1000000n, true); return 0; };
   const inst = new WebAssembly.Instance(modul, importe);
   inst.exports._initialize?.();
-  const e = new TextEncoder().encode(JSON.stringify({ aktion: 'dms:mappenaktion', kennung: 'k-1', paket: { id: 'rechnungen' }, einstellungen: {}, ...eingabe }));
+  const e = new TextEncoder().encode(JSON.stringify({ aktion: 'dms:mappenaktion', kennung: 'k-1', paket: { id: 'rechnung_bestellung' }, einstellungen: {}, ...eingabe }));
   const p = inst.exports.dms_puffer(e.length);
   u8().set(e, p);
   const code = inst.exports.dms_aktion(p, e.length);
@@ -138,8 +145,45 @@ r = lauf({ daten: { mappe: 'r9', typ: 't-r' }, mappen: bezahltBasis(), konflikt:
 pruefe('#209: 409 zweimal → Fehler im Protokoll, nicht still', r.code === 2 && !r.geschrieben.r9 && r.protokoll.some((x) => x.startsWith('2 ') && x.includes('zweiten Versuch')), r);
 
 
+// #210 Steuerzeilen: von Hand – leerer Steuerbetrag wird Netto × Satz, Summen an der Rechnung, Hinweis bei Abweichung
+const steuerBasis = () => ({
+  r5: { typ: 't-r', werte: { betrag: E(400), datum: '2026-11-01' } },
+  s1: { typ: 't-s', werte: { rechnung: 'r5', satz: 7, netto: E(100), herkunft: 'von Hand' } },
+  s2: { typ: 't-s', werte: { rechnung: 'r5', satz: 19, netto: E(200), steuer: E(38) } },
+});
+r = lauf({ daten: { mappe: 's1', felder: ['netto'] }, mappen: steuerBasis() });
+pruefe('#210: Steuerbetrag aus Netto × Satz', r.code === 0 && r.geschrieben.s1?.werte.steuer?.betrag === 7, r);
+pruefe('#210: Summen an der Rechnung', r.geschrieben.r5?.werte.netto_gesamt?.betrag === 300 && r.geschrieben.r5?.werte.ust_gesamt?.betrag === 45, r);
+pruefe('#210: Hinweis, wenn Netto + Steuer nicht zum Brutto passen', r.steuerhinweise.r5 === 'Netto und Umsatzsteuer ergeben 345,00 €, die Rechnung sagt 400,00 €.', r);
+pruefe('#210: Zeile von Hand – keine Zeilen aus Positionen', !r.angelegt.length, r);
+
+// #210 aus Positionen: je Satz eine Zeile anlegen, Summen gleich mitrechnen
+const posBasis = () => ({
+  r6: { typ: 't-r', werte: { betrag: E(176.1), datum: '2026-11-01' } },
+  p6: { typ: 't-p', werte: { rechnung: 'r6', beschreibung: 'Miete', gesamtpreis: E(100), ust_satz: 19 } },
+  p7: { typ: 't-p', werte: { rechnung: 'r6', beschreibung: 'Lieferung', menge: 2, einzelpreis: E(10), ust_satz: 7 } },
+  p8: { typ: 't-p', werte: { rechnung: 'r6', beschreibung: 'Service', gesamtpreis: E(30), ust_satz: 19 } },
+});
+r = lauf({ daten: { mappe: 'p6', typ: 't-p' }, mappen: posBasis(), einstellungen: { summenpruefung: true } });
+const z19 = r.angelegt.find((x) => x.werte.satz === 19), z7 = r.angelegt.find((x) => x.werte.satz === 7);
+pruefe('#210: zwei Zeilen aus Positionen angelegt', r.code === 0 && r.angelegt.length === 2 && z19?.werte.netto.betrag === 130 && z19.werte.steuer.betrag === 24.7 && z7?.werte.netto.betrag === 20 && z7.werte.steuer.betrag === 1.4 && z19.werte.herkunft === 'aus Positionen' && z19.typId === 't-s', r);
+pruefe('#210: Summen aus den neuen Zeilen', r.geschrieben.r6?.werte.netto_gesamt?.betrag === 150 && r.geschrieben.r6?.werte.ust_gesamt?.betrag === 26.1 && r.steuerhinweise.r6 === null, r);
+// zweiter Lauf mit den angelegten Zeilen: aktualisieren statt doppelt anlegen; Satz weg → 0
+const zweite = r.mappen;
+zweite.p8.werte.ust_satz = 7;
+r = lauf({ daten: { mappe: 'p8', typ: 't-p' }, mappen: zweite });
+pruefe('#210: vorhandene Zeilen aktualisiert, nichts doppelt', !r.angelegt.length && r.geschrieben['neu-1'] && r.geschrieben['neu-2'], r);
+pruefe('#210: Werte nach Satzwechsel', r.mappen['neu-1'].werte.netto.betrag + r.mappen['neu-2'].werte.netto.betrag === 150 && r.geschrieben.r6?.werte.ust_gesamt?.betrag === 22.5, r);
+r = lauf({ daten: { mappe: 'p6', typ: 't-p' }, mappen: posBasis(), einstellungen: { summenpruefung: true, steuerzeilen_aus_positionen: false } });
+pruefe('#210: Einstellung aus – keine Zeilen', !r.angelegt.length, r);
+// Mensch ändert eine Zeile „aus Positionen“ → gehört ihm
+const dritte = posBasis();
+dritte.z1 = { typ: 't-s', werte: { rechnung: 'r6', satz: 19, netto: E(130), steuer: E(24.7), herkunft: 'aus Positionen' } };
+r = lauf({ daten: { mappe: 'z1', felder: ['netto'] }, mappen: dritte });
+pruefe('#210: geänderte Zeile aus Positionen wird „von Hand“', r.geschrieben.z1?.werte.herkunft === 'von Hand' && !r.angelegt.length, r);
+
 // Aktion „Als bezahlt markieren“ (#162)
-const mappe = { id: 'r1', typ: 'rechnungen:rechnung', titel: 'Stadtwerke – 01.11.2026', werte: { betrag: E(120.8) } };
+const mappe = { id: 'r1', typ: 'rechnung_bestellung:rechnung', titel: 'Stadtwerke – 01.11.2026', werte: { betrag: E(120.8) } };
 let a = aktion({ mappenaktion: 'bezahlt', schritt: 1, mappe });
 const felder = a.antwort?.dialog?.felder ?? [];
 pruefe('Bezahlt: Dialog mit heute als Vorschlag', a.code === 0 && felder[1]?.art === 'datum' && felder[1].standard === '2026-11-11' && felder[1].pflicht && felder[0].text.includes('120,80 €'), a);

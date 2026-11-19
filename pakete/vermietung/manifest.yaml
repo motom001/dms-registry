@@ -3,8 +3,8 @@ schema: 1
 id: vermietung
 name: Vermietung
 herausgeber: app.ablago
-version: 2.0.1
-beschreibung: Mietobjekte, Wohnungen und Nebenkostenabrechnungen – für Vermieter mit wenigen Wohnungen. Mietverträge und Ausgaben kommen aus den Paketen Verträge und Rechnungen, mit Fristen für Abrechnung, Mieterhöhung und Kündigung.
+version: 2.1.0
+beschreibung: Mietobjekte, Wohnungen und Nebenkostenabrechnungen – für Vermieter mit wenigen Wohnungen. Mietverträge und Ausgaben kommen aus den Paketen Verträge sowie Rechnungen und Bestellungen, mit Fristen für Abrechnung, Mieterhöhung und Kündigung.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -15,8 +15,9 @@ lizenz: Apache-2.0
 # 0.127.0: Wortlisten für die Suche (inhalt.wortlisten, DMS #356)
 # 0.177.0: mitgelieferte Automatisierungen (inhalt.automatisierungen, Ablago #712) – das Datumsfeld erinnert nicht mehr selbst
 # 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
-# 0.243.0: Verträge 1.1.0 und Rechnungen 1.1.0 (Umbau, DMS #1041) – Mietvertrag und Ausgabe ziehen dorthin (dms-registry #163)
-dms: ">=0.243.0"
+# 0.243.0: Verträge 1.1.0 und Rechnungen 1.1.0 (Umbau, DMS #1041) – Mietvertrag und Ausgabe ziehen dorthin (dms-registry #163);
+# 0.248.0: Rechnungen und Bestellungen (dms-registry #208)
+dms: ">=0.248.0"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
@@ -34,7 +35,7 @@ abhaengigkeiten:
   basis: ">=1.7.0"
   haus: ">=1.0.0"
   vertraege: ">=1.1.0"
-  rechnungen: ">=1.1.0"
+  rechnung_bestellung: ">=1.0.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml

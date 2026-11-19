@@ -48,6 +48,25 @@ int main() {
   Position halb; halb.menge = 2;
   pruefe("unvollständige Position: nichts behaupten", summenhinweis(1.0, {p1, halb}).empty());
   pruefe("ohne Positionen: nichts", summenhinweis(1.0, {}).empty());
+  // Steuerzeilen (#210): Miete mit Lieferung und Service – 0 %, 7 % und 19 % auf einer Rechnung.
+  Steuerzeile s0; s0.satz = 0; s0.netto = 50;
+  Steuerzeile s7; s7.satz = 7; s7.netto = 100;
+  Steuerzeile s19; s19.satz = 19; s19.netto = 200; s19.steuer = 38.0;
+  pruefe("Steuer aus Netto × Satz", steuer(s7) && *steuer(s7) == 7.0);
+  pruefe("Steuer eingetragen gilt", steuer(s19) && *steuer(s19) == 38.0);
+  Summen su = summen({s0, s7, s19});
+  pruefe("Summen über drei Sätze", su.netto && *su.netto == 350.0 && su.ust && *su.ust == 45.0);
+  pruefe("Steuer passt zum Brutto", steuerhinweis(395.0, {s0, s7, s19}).empty());
+  pruefe("Steuer passt nicht", steuerhinweis(400.0, {s0, s7, s19}) == "Netto und Umsatzsteuer ergeben 395,00 €, die Rechnung sagt 400,00 €.", steuerhinweis(400.0, {s0, s7, s19}));
+  Steuerzeile leer; leer.satz = 19;
+  pruefe("Zeile ohne Netto: Summe offen, kein Hinweis", !summen({s7, leer}).netto && steuerhinweis(1.0, {s7, leer}).empty());
+  pruefe("ohne Zeilen: keine Summen", !summen({}).netto && !summen({}).ust);
+  Position q1; q1.gesamtpreis = 100; q1.ust_satz = 19;
+  Position q2; q2.menge = 2; q2.einzelpreis = 10; q2.ust_satz = 7;
+  Position q3; q3.gesamtpreis = 50; q3.ust_satz = 19;
+  Position q4; q4.gesamtpreis = 5;
+  auto je = aus_positionen({q1, q2, q3, q4});
+  pruefe("aus Positionen: zwei Sätze, ohne Satz zählt nicht", je.size() == 2 && *je[19].netto == 150.0 && *je[19].steuer == 28.5 && *je[7].netto == 20.0 && *je[7].steuer == 1.4);
   printf("%d ok, %d Fehler\n", ok, fehler);
   return fehler ? 1 : 0;
 }

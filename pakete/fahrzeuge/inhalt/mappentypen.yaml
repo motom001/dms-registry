@@ -45,7 +45,7 @@
       name: Rechnungen
       beschriftungen: { en: { name: "Invoices" } }
       art: verknuepfungen
-      quellen: [{ typ: "rechnungen:rechnung", feld: betrifft }]
+      quellen: [{ typ: "rechnung_bestellung:rechnung", feld: betrifft }]
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }

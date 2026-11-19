@@ -110,7 +110,7 @@ class WasMitkommt(unittest.TestCase):
     def setUpClass(cls):
         import yaml
         cls.pakete = []
-        for pid in ('basis', 'haushalt', 'haus', 'vermietung', 'vertraege', 'rechnungen', 'trennblatt', 'benachrichtigungen'):
+        for pid in ('basis', 'haushalt', 'haus', 'vermietung', 'vertraege', 'rechnung_bestellung', 'trennblatt', 'benachrichtigungen'):
             m = yaml.safe_load((w.WURZEL / 'pakete' / pid / 'manifest.yaml').read_text(encoding='utf-8'))
             v = {'version': m['version'], 'dms': m['dms'], 'abhaengigkeiten': m.get('abhaengigkeiten') or {}, 'code': bool(m.get('code')),
                  'inhalt': {'mappentypen': [], 'sichten': [], 'beispiele': 0}, 'archiv': 'archive/x.zip', 'sha256': '0' * 64, 'groesse': 1,

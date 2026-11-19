@@ -1,6 +1,6 @@
 # Fahrzeuge
 
-Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten **Pkw-Kaufvertrag** und **Leasing**. Damit verpasst du die HU nicht, findest Fahrzeugbrief und Versicherung schnell und hast beim Verkauf alle Rechnungen beisammen. Installiert wird es unter **Werkbank → Pakete**; die Pakete **Basis**, **Verträge** und **Rechnungen** kommen dabei automatisch mit.
+Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten **Pkw-Kaufvertrag** und **Leasing**. Damit verpasst du die HU nicht, findest Fahrzeugbrief und Versicherung schnell und hast beim Verkauf alle Rechnungen beisammen. Installiert wird es unter **Werkbank → Pakete**; die Pakete **Basis**, **Verträge** und **Rechnungen und Bestellungen** kommen dabei automatisch mit.
 
 ## Inhalt
 
@@ -8,12 +8,12 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 | --- | --- | --- | --- |
 | Fahrzeug | Pkw, Motorrad, Wohnmobil, Anhänger, E-Bike | Bezeichnung, Art, Kennzeichen (eindeutig), Fahrzeug-Identnummer, Erstzulassung, Halter (Person), Verantwortlich, Versicherung, Finanzierung/Leasing | **HU fällig** (einen Monat vorher) |
 
-**Register:** Das **Fahrzeug** zeigt unter *Rechnungen* alle Rechnungen aus dem Paket Rechnungen, bei denen *Betrifft* dieses Fahrzeug ist – Werkstatt, Reifen, Zubehör; dazu *Dokumente*, *Verknüpfungen* und *Historie*.
+**Register:** Das **Fahrzeug** zeigt unter *Rechnungen* alle Rechnungen aus dem Paket Rechnungen und Bestellungen, bei denen *Betrifft* dieses Fahrzeug ist – Werkstatt, Reifen, Zubehör; dazu *Dokumente*, *Verknüpfungen* und *Historie*.
 
 **Verweise:**
 
 - **Versicherung** und **Finanzierung/Leasing** sind **Verträge** aus dem Paket Verträge – die Kfz-Versicherung mit der Vertragsart *Versicherung*, ein Leasing mit der Vertragsart *Leasing*. Das Paket Verträge rechnet aus, bis wann du kündigen musst.
-- **Rechnungen** zum Fahrzeug sind **Rechnungen** aus dem Paket Rechnungen mit *Betrifft* = Fahrzeug; Kilometerstand und Arbeiten stehen dort im Abschnitt *Fahrzeug*.
+- **Rechnungen** zum Fahrzeug sind **Rechnungen** aus dem Paket Rechnungen und Bestellungen mit *Betrifft* = Fahrzeug; Kilometerstand und Arbeiten stehen dort im Abschnitt *Fahrzeug*.
 - **Halter** ist eine **Person** aus dem Paket Basis (Verweisart Bezug). An der Person und am Vertrag siehst du unter *Verknüpfungen*, welche Fahrzeuge auf sie verweisen.
 - **Verbleib Originaldokumente** zeigt auf einen **Ablageort** aus dem Paket Basis – beim Fahrzeug der Fahrzeugbrief (Zulassungsbescheinigung Teil II), z. B. im Safe.
 
@@ -30,8 +30,8 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.243 (für die Pakete Verträge und Rechnungen; Vertragsarten als Vorgaben ab 0.236)
-- Pakete **Basis** ab 1.7.0, **Verträge** ab 1.1.0 und **Rechnungen** ab 1.1.0 – werden bei der Installation aus dem Katalog mitinstalliert
+- Ablago ab Version 0.248 (für das Paket Rechnungen und Bestellungen; Vertragsarten als Vorgaben ab 0.236)
+- Pakete **Basis** ab 1.7.0, **Verträge** ab 1.1.0 und **Rechnungen und Bestellungen** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz
 

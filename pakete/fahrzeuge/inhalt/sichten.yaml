@@ -11,7 +11,7 @@
   beschreibung: Rechnungen, die ein Fahrzeug betreffen – Werkstatt, Reifen, Zubehör
   beschriftungen: { en: { name: "Vehicle invoices", beschreibung: "Invoices concerning a vehicle – garage, tyres, accessories" } }
   eltern: fahrzeuge
-  typen: ["rechnungen:rechnung"]
+  typen: ["rechnung_bestellung:rechnung"]
   bedingungen:
     - { feld: betrifft, operator: zeigtAufTyp, wert: ["fahrzeuge:fahrzeug"] }
 - schluessel: hu_faellig

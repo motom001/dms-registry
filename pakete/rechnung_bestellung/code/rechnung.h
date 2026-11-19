@@ -1,8 +1,9 @@
-// Rechnungen (dms-registry #161): Status einer Rechnung, Umsatzsteuer und Gesamtpreis einer Position und die
-// Summenprüfung – ohne Ablago testbar (tests/rechnung_test.cpp).
+// Rechnungen und Bestellungen (dms-registry #161, #210): Status einer Rechnung, Umsatzsteuer und Gesamtpreis einer
+// Position, Steuerzeilen je Satz und die Summenprüfungen – ohne Ablago testbar (tests/rechnung_test.cpp).
 #pragma once
 #include <cmath>
 #include <cstdio>
+#include <map>
 #include <optional>
 #include <string>
 #include <vector>
@@ -87,6 +88,54 @@ inline std::string summenhinweis(const std::optional<double> &betrag, const std:
   summe = runde(summe);
   if (std::fabs(summe - *betrag) <= 0.01 * (double)pos.size() + 1e-9) return "";
   return "Die Positionen ergeben " + euro(summe, waehrung) + ", die Rechnung sagt " + euro(*betrag, waehrung) + ".";
+}
+
+// Steuerzeilen (#210): je Satz Netto und Steuerbetrag. Der Steuerbetrag ist eingetragen oder Netto × Satz.
+struct Steuerzeile {
+  std::optional<double> satz, netto, steuer;
+};
+inline std::optional<double> steuer(const Steuerzeile &z) {
+  if (z.steuer) return z.steuer;
+  if (z.netto && z.satz) return runde(*z.netto * *z.satz / 100);
+  return std::nullopt;
+}
+struct Summen {
+  std::optional<double> netto, ust;
+};
+// Summen über alle Zeilen; leer, wenn es keine Zeile gibt. Fehlt in einer Zeile Netto, ist auch die Summe offen.
+inline Summen summen(const std::vector<Steuerzeile> &zeilen) {
+  if (zeilen.empty()) return {};
+  double n = 0, u = 0;
+  bool alle_netto = true, alle_ust = true;
+  for (const Steuerzeile &z : zeilen) {
+    if (z.netto) n += *z.netto; else alle_netto = false;
+    if (auto s = steuer(z)) u += *s; else alle_ust = false;
+  }
+  Summen r;
+  if (alle_netto) r.netto = runde(n);
+  if (alle_ust) r.ust = runde(u);
+  return r;
+}
+// Hinweis, wenn Netto + Umsatzsteuer nicht zum Bruttobetrag passen (bis 1 Cent je Zeile zählt nicht).
+inline std::string steuerhinweis(const std::optional<double> &betrag, const std::vector<Steuerzeile> &zeilen, const std::string &waehrung = "EUR") {
+  Summen s = summen(zeilen);
+  if (!betrag || !s.netto || !s.ust) return "";
+  double brutto = runde(*s.netto + *s.ust);
+  if (std::fabs(brutto - *betrag) <= 0.01 * (double)zeilen.size() + 1e-9) return "";
+  return "Netto und Umsatzsteuer ergeben " + euro(brutto, waehrung) + ", die Rechnung sagt " + euro(*betrag, waehrung) + ".";
+}
+// Aus den Positionen je Satz: Netto (Gesamtpreise) und Steuer. Positionen ohne Satz oder ohne Preis zählen nicht.
+inline std::map<double, Steuerzeile> aus_positionen(const std::vector<Position> &pos) {
+  std::map<double, Steuerzeile> je;
+  for (const Position &p : pos) {
+    auto g = gesamt(p);
+    if (!g || !p.ust_satz) continue;
+    Steuerzeile &z = je[*p.ust_satz];
+    z.satz = p.ust_satz;
+    z.netto = runde(z.netto.value_or(0) + *g);
+    z.steuer = runde(z.steuer.value_or(0) + *ust_betrag(p));
+  }
+  return je;
 }
 
 }  // namespace rechnung

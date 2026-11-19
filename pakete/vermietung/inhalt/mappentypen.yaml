@@ -47,7 +47,7 @@
       name: Ausgaben
       beschriftungen: { en: { name: "Expenses" } }
       art: verknuepfungen
-      quellen: [{ typ: "rechnungen:rechnung", feld: betrifft }]
+      quellen: [{ typ: "rechnung_bestellung:rechnung", feld: betrifft }]
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
@@ -83,7 +83,7 @@
       name: Ausgaben
       beschriftungen: { en: { name: "Expenses" } }
       art: verknuepfungen
-      quellen: [{ typ: "rechnungen:rechnung", feld: betrifft }]
+      quellen: [{ typ: "rechnung_bestellung:rechnung", feld: betrifft }]
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
@@ -111,7 +111,7 @@
     # Ab 2.0.0 ohne Abhängigkeit von Haushalt: das Steuerjahr, wenn Haushalt installiert ist (zielOptional, DMS #1036).
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, zielOptional: ["haushalt:steuerjahr"], verweisart: bezug, hilfe: Für die Anlage V, beschriftungen: { en: { label: "Tax year", hilfe: "For the rental income form (Anlage V)" } }  }
     # Ab 2.0.0: die Rechnungen, die in diese Abrechnung eingeflossen sind (Paket Rechnungen).
-    - { key: rechnungen, label: Rechnungen, typ: referenz, ziel: "rechnungen:rechnung", mehrfach: true, verweisart: bezug, hilfe: Die umgelegten Rechnungen dieses Jahres – Grundsteuer, Versicherung, Müll …, beschriftungen: { en: { label: "Invoices", hilfe: "The recharged invoices of this year – property tax, insurance, waste …" } }  }
+    - { key: rechnungen, label: Rechnungen, typ: referenz, ziel: "rechnung_bestellung:rechnung", mehrfach: true, verweisart: bezug, hilfe: Die umgelegten Rechnungen dieses Jahres – Grundsteuer, Versicherung, Müll …, beschriftungen: { en: { label: "Invoices", hilfe: "The recharged invoices of this year – property tax, insurance, waste …" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [mietobjekt, jahr, von, bis, versenden_bis, versendet_am, kosten, ergebnis, steuerjahr, rechnungen], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
