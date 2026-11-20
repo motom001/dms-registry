@@ -27,7 +27,7 @@ JavaScript lesbar: Jede Sprache ist eine eigene erzeugte Seite, der Umschalter i
 
 Braucht: pip install pyyaml markdown
 """
-import hashlib, html, json, re, sys
+import hashlib, html, json, re, shutil, sys
 from datetime import datetime
 from pathlib import Path
 
@@ -1904,6 +1904,11 @@ def main():
     for sprache, ordner in SPRACHEN.items():
         (ausgabe / ordner).mkdir(parents=True, exist_ok=True)
         (ausgabe / ordner / 'index.html').write_text(uebersicht(katalog, pakete, sprache), encoding='utf-8')
+    # Seiten von Paketen, die es im Katalog nicht mehr gibt (zurückgezogen, ersetzt), fallen weg.
+    if (ausgabe / 'paket').is_dir():
+        for alt in (ausgabe / 'paket').iterdir():
+            if alt.is_dir() and alt.name not in {p['id'] for p in pakete}:
+                shutil.rmtree(alt)
     for p in pakete:
         ziel = ausgabe / 'paket' / p['id']
         ziel.mkdir(parents=True, exist_ok=True)

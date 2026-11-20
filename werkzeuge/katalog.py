@@ -194,11 +194,32 @@ def herausgeber_und_umzug(pakete: dict, manifeste: dict) -> list[str]:
     return fehler
 
 
+def zurueckgezogen() -> set[str]:
+    """Tags <id>-v<version> aus werkzeuge/zurueckgezogen.yaml – bewusst aus dem Katalog genommene Versionen."""
+    pfad = WURZEL / 'werkzeuge' / 'zurueckgezogen.yaml'
+    return {str(x) for x in (yaml.safe_load(pfad.read_text(encoding='utf-8')) or [])} if pfad.exists() else set()
+
+
+def ohne_zurueckgezogene(pakete: dict, weg: set[str]) -> list[tuple[str, str]]:
+    """Nimmt zurückgezogene Versionen aus dem bisherigen Katalog – sonst blieben sie für immer stehen, weil veröffentlichte
+    Versionen ohne Paketordner bewusst erhalten bleiben. Ein Paket ohne Versionen fällt ganz heraus (z. B. Rechnungen, #208)."""
+    raus: list[tuple[str, str]] = []
+    for pid in list(pakete):
+        p = pakete[pid]
+        raus += [(pid, v['version']) for v in p['versionen'] if f'{pid}-v{v["version"]}' in weg]
+        p['versionen'] = [v for v in p['versionen'] if f'{pid}-v{v["version"]}' not in weg]
+        if not p['versionen']:
+            pakete.pop(pid)
+    return raus
+
+
 def baue(ausgabe: Path, probe: bool) -> list[str]:
     fehler: list[str] = []
     alt_pfad = ausgabe / 'katalog.json'
     alt = json.loads(alt_pfad.read_text(encoding='utf-8')) if alt_pfad.exists() else {'pakete': []}
     pakete = {p['id']: p for p in alt.get('pakete', [])}
+    weg = zurueckgezogen()
+    raus = ohne_zurueckgezogene(pakete, weg)
     jetzt = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
     neu: list[tuple[str, bytes]] = []
     manifeste: dict[str, dict] = {}  # Manifest der neuesten Version je Paket (für Kategorien und Symbol)
@@ -207,6 +228,9 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
         m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
         pid, version = m['id'], m['version']
         name = f'{pid}-{version}.zip'
+        if f'{pid}-v{version}' in weg:
+            fehler.append(f'{pid}: Version {version} steht in werkzeuge/zurueckgezogen.yaml – bitte die Version erhöhen')
+            continue
         inhalt = dateien(ordner)
         vorhanden = ausgabe / 'archive' / name
         p = pakete.setdefault(pid, {'id': pid, 'versionen': []})
@@ -298,6 +322,9 @@ def baue(ausgabe: Path, probe: bool) -> list[str]:
     if fehler or probe:
         return fehler
     (ausgabe / 'archive').mkdir(parents=True, exist_ok=True)
+    for pid, version in raus:
+        (ausgabe / 'archive' / f'{pid}-{version}.zip').unlink(missing_ok=True)
+        print(f'Zurückgezogen, aus dem Katalog genommen: {pid} {version}')
     for name, daten in neu:
         (ausgabe / 'archive' / name).write_bytes(daten)
     alt_pfad.write_text(json.dumps(katalog, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

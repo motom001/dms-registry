@@ -34,3 +34,20 @@ class PasstZu(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class Zurueckgezogen(unittest.TestCase):
+    """Zurückgezogene Versionen (werkzeuge/zurueckgezogen.yaml) fallen aus dem bisherigen Katalog, ein Paket ohne
+    Versionen ganz (Rechnungen, #208)."""
+
+    def test_versionen_und_paket_fallen_weg(self):
+        pakete = {'alt': {'id': 'alt', 'versionen': [{'version': '1.1.0'}, {'version': '1.0.0'}]},
+                  'teil': {'id': 'teil', 'versionen': [{'version': '2.0.0'}, {'version': '1.0.0'}]},
+                  'bleibt': {'id': 'bleibt', 'versionen': [{'version': '1.0.0'}]}}
+        raus = katalog.ohne_zurueckgezogene(pakete, {'alt-v1.1.0', 'alt-v1.0.0', 'teil-v1.0.0'})
+        self.assertEqual(sorted(pakete), ['bleibt', 'teil'])
+        self.assertEqual([v['version'] for v in pakete['teil']['versionen']], ['2.0.0'])
+        self.assertEqual(sorted(raus), [('alt', '1.0.0'), ('alt', '1.1.0'), ('teil', '1.0.0')])
+
+    def test_liste_im_repository(self):
+        self.assertIn('rechnungen-v1.3.0', katalog.zurueckgezogen())
