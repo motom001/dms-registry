@@ -39,7 +39,7 @@ Ein **Ablageort** hält fest, wo das Papier zu einem eingescannten Dokument lieg
 
 Andere Pakete (Haushalt, Haus, Vermietung, Fahrzeuge) verweisen im Feld *Verbleib Originaldokumente* auf ihn – mit `basis:ablageort`. Früher brachte Ablago den Ablageort selbst mit; gibt es ihn in deiner Ablage schon, **übernimmt** Basis ihn beim Installieren bzw. beim Update auf 1.6.0 mit allen Orten und Verweisen. Es entsteht kein zweiter.
 
-**Sichten:** *Organisationen* mit *Versicherungen*, *Banken*, *Behörden*, *Ärzte und Praxen* und *Niederlassungen*; *Personen* mit *Familie und Freunde* und *Ansprechpartner*; *Ablageorte*.
+**Ansichten:** *Basis* mit Symbol, darunter *Organisationen*, *Personen* und *Ablageorte* – jede mit eigenem Symbol. Niederlassungen findest du an ihrer Organisation, alles Weitere über die Suche.
 
 **Gleichbedeutende Wörter für die Suche:** *Rechnung, Beleg* · *Quittung, Kassenbon, Kassenzettel* · *Vertrag, Vereinbarung* · *Kündigung, Beendigung* · *Police, Versicherungsschein, Versicherungspolice* · *Mahnung, Zahlungserinnerung* · *Gutschrift, Erstattung, Rückerstattung* · *Lastschrift, Abbuchung* · *Anschrift, Adresse*. Wer eines sucht, findet auch die anderen. Das sind nur allgemeine Wörter, die in jeder Ablage vorkommen; fachliche Wörter bringen die Fachpakete mit (z. B. Kfz/Auto in Fahrzeuge). Sie stehen in Ablago unter Werkbank → Suche; eigene Gruppen kannst du dort ergänzen.
 
