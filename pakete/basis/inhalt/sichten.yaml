@@ -1,74 +1,35 @@
-# Sicht „Organisationen“ und darunter je eine Sicht für häufige Arten.
+# Ab 1.8.0: eine Ansicht „Basis“ mit drei Ansichten darunter – Organisationen, Personen und Ablageorte, je mit Symbol.
+# Die feineren Ansichten (Versicherungen, Banken, Behörden, Ärzte und Praxen, Niederlassungen, Familie und Freunde,
+# Ansprechpartner) sind weggefallen: Niederlassungen legt man an der Organisation an, alles andere findet die Suche.
+# Ein Update nimmt keine Ansichten weg – die alten bleiben in bestehenden Ablagen, bis man sie löscht.
+- schluessel: basis
+  name: Basis
+  beschreibung: Organisationen, Personen und Ablageorte
+  beschriftungen: { en: { name: "Basics", beschreibung: "Organisations, people and storage locations" } }
+  symbol: box
+  typen: [organisation, person, ablageort]
+
 - schluessel: organisationen
   name: Organisationen
-  beschreibung: Alle Organisationen
-  beschriftungen: { en: { name: "Organisations", beschreibung: "All organisations" } }
+  beschreibung: Firmen, Banken, Versicherungen, Behörden und Praxen – mit ihren Niederlassungen
+  beschriftungen: { en: { name: "Organisations", beschreibung: "Companies, banks, insurers, authorities and practices – with their branches" } }
+  eltern: basis
+  symbol: landmark
   typen: [organisation]
-
-- schluessel: versicherungen
-  name: Versicherungen
-  beschriftungen: { en: { name: "Insurance policies" } }
-  eltern: organisationen
-  typen: [organisation]
-  bedingungen:
-    - { feld: art, operator: einerVon, wert: [Versicherung] }
-
-- schluessel: banken
-  name: Banken
-  beschriftungen: { en: { name: "Banks" } }
-  eltern: organisationen
-  typen: [organisation]
-  bedingungen:
-    - { feld: art, operator: einerVon, wert: [Bank] }
-
-- schluessel: behoerden
-  name: Behörden
-  beschriftungen: { en: { name: "Authorities" } }
-  eltern: organisationen
-  typen: [organisation]
-  bedingungen:
-    - { feld: art, operator: einerVon, wert: [Behörde] }
-
-- schluessel: aerzte
-  name: Ärzte und Praxen
-  beschriftungen: { en: { name: "Doctors and practices" } }
-  eltern: organisationen
-  typen: [organisation]
-  bedingungen:
-    - { feld: art, operator: einerVon, wert: [Arzt/Praxis] }
-
-# Ab 1.1.0: Niederlassungen und Personen.
-- schluessel: niederlassungen
-  name: Niederlassungen
-  beschriftungen: { en: { name: "Branches" } }
-  eltern: organisationen
-  typen: [niederlassung]
 
 - schluessel: personen
   name: Personen
-  beschreibung: Kontakte – keine Benutzer des DMS
+  beschreibung: Kontakte – keine Benutzer von Ablago
   beschriftungen: { en: { name: "People", beschreibung: "Contacts – not users of Ablago" } }
+  eltern: basis
+  symbol: users
   typen: [person]
-
-- schluessel: familie
-  name: Familie und Freunde
-  beschriftungen: { en: { name: "Family and friends" } }
-  eltern: personen
-  typen: [person]
-  bedingungen:
-    - { feld: beziehung, operator: einerVon, wert: [Familie, Freund/in] }
-
-- schluessel: ansprechpartner
-  name: Ansprechpartner
-  beschriftungen: { en: { name: "Contacts" } }
-  eltern: personen
-  typen: [person]
-  bedingungen:
-    - { feld: beziehung, operator: einerVon, wert: [Ansprechpartner, Handwerker, Arzt/Ärztin] }
 
 # Ab 1.6.0: Ablageorte (DMS #883). Hat die Ablage schon die Ansicht des früheren Ablageorts, übernimmt Basis diese.
 - schluessel: ablageorte
   name: Ablageorte
   beschreibung: Wo Originale liegen
   beschriftungen: { en: { name: "Storage locations", beschreibung: "Where originals are kept" } }
+  eltern: basis
+  symbol: archive
   typen: [ablageort]

@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.8.0
+
+- **Weniger Ansichten:** oben *Basis* (Symbol Kiste), darunter *Organisationen* (Gebäude), *Personen* (Personen) und *Ablageorte* (Archivkiste – der Posteingang gehört schon zu „Neue Post“). Die Ansichten *Versicherungen*, *Banken*, *Behörden*, *Ärzte und Praxen*, *Niederlassungen*, *Familie und Freunde* und *Ansprechpartner* sind weggefallen – Niederlassungen legst du an der Organisation an, den Rest findet die Suche. In bestehenden Ablagen bleiben die alten Ansichten nach einem Update stehen, bis du sie löschst.
+
 ## 1.7.2
 
 - Beispiele ohne echt wirkende Daten (dms-registry #205): Kundenberaterin, Hausarzt und Oma heißen nach ihrer Rolle statt „Sabine Beraterin“, „Dr. Bernd Beispiel“ und „Oma Muster“; die Praxis heißt „Hausarztpraxis am Lindenweg“. E-Mail- und Internetadressen liegen unter example.org (z. B. `service@stadtwerke.example.org`) statt unter der Endung `.example`. Bereits angelegte Beispiel-Mappen bleiben, wie sie sind.
