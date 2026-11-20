@@ -560,7 +560,7 @@ Ein Paket kann **Automatisierungsvorlagen** mitbringen (ab Ablago 0.256.0, Ablag
 
 ## Rundgänge und Tipps { #rundgaenge-und-tipps }
 
-Ein Paket kann **Rundgänge** und **Tipps** mitbringen (ab Ablago 0.285.0, Ablago #831, #832, Registry #132). Im Manifest stehen `inhalt.rundgaenge: inhalt/rundgaenge.yaml` und `inhalt.tipps: inhalt/tipps.yaml`, dazu `dms: ">=0.285.0"`. Die Texte stehen direkt in der Datei, in Du-Form und mit den Begriffen aus dem [Glossar](https://github.com/motom001/dms/blob/main/docs/glossar.yml). Ein Beispiel liegt in `vorlage/inhalt/`, ein echtes im Paket *Haushalt*.
+Ein Paket kann **Rundgänge** und **Tipps** mitbringen (ab Ablago 0.285.0, Ablago #831, #832, Registry #132). Im Manifest stehen `inhalt.rundgaenge: inhalt/rundgaenge.yaml` und `inhalt.tipps: inhalt/tipps.yaml`, dazu `dms: ">=0.285.0"`. Die Texte in Du-Form und mit den Begriffen aus dem [Glossar](https://github.com/motom001/dms/blob/main/docs/glossar.yml) stehen in **Sprachdateien** (ab 0.293.2, siehe unten) oder, nur Deutsch, direkt in der YAML-Datei. Ein Beispiel liegt in `vorlage/inhalt/`, echte in den Paketen *Haushalt* und *Finanzen*.
 
 ```yaml
 # inhalt/rundgaenge.yaml
@@ -579,6 +579,16 @@ Ein Paket kann **Rundgänge** und **Tipps** mitbringen (ab Ablago 0.285.0, Ablag
 - **Ziele sind Anker,** keine HTML-Ids: die Liste steht in `werkzeuge/anker.yaml` – eine Kopie aus Ablago (`shared/entdecken/anker.yaml`) in der Version, mit der die CI prüft; nicht von Hand ändern. `mappe.feld:<key>` und `mappe.register:<key>` müssen im geöffneten Mappentyp vorkommen. Zu jedem Schritt mit Ziel gehört `ort` (wo das Element steht – für Screenreader).
 - **Tipps:** höchstens 20, je höchstens 160 Zeichen und zwei Sätze. Genau eines von `ziel` (Anker mit fester Seite; `mappe.feld:`/`mappe.register:` nur mit `typ`) oder `rundgang` (ein Rundgang dieses Pakets). `ab_version` („Neu seit deinem letzten Besuch“) ist höchstens die Version des Pakets. `bereich` (Vorgabe `mappen`), `fuer` (`lesen`, `verwalten`) und `funktion` (`fragen`, `laufwerk`, `mail`) sind freiwillig.
 - **Prüfung:** `pruefen.py` lehnt ab, was Ablago beim Installieren ablehnt – unbekannte Felder und Anker, Felder und Register, die es im Mappentyp nicht gibt, fremde Mappentypen ohne Abhängigkeit, `nach_installation` mehr als einmal, mehr als zwei Sätze.
+- **Sprachen** (ab Ablago 0.293.2, Ablago #1307, `dms: ">=0.293.2"`): Die YAML-Dateien enthalten dann nur den Aufbau, die Texte stehen in `texte/<sprache>/entdecken.json` – flach, Schlüssel `rundgang.<rundgang>.titel | .beschreibung | .ende | .ersatz`, je Schritt `rundgang.<rundgang>.<schritt>.titel | .text | .text-handy | .text-verwalten | .ort | .sonst-verwalten` und `tipp.<tipp>`; Unterstriche in Schlüsseln werden zu Bindestrichen. Deutsch (`texte/de/`) ist die Grundsprache. Ablago zeigt die Sprache der Person, sonst den Text in der YAML-Datei, sonst Deutsch.
+
+  ```json
+  { "rundgang.ausweis-ablegen.titel": "Ausweis ablegen",
+    "rundgang.ausweis-ablegen.gueltig-bis.text": "Trag ein, bis wann der Ausweis gilt.",
+    "tipp.garantie": "Trag „Garantie bis“ ein – dann erinnert dich Ablago rechtzeitig." }
+  ```
+
+  `pruefen.py` prüft jede Sprache wie Deutsch (Längen, keine spitzen Klammern, zwei Sätze je Tipp) und lehnt Schlüssel ab, die zu keinem Rundgang, Schritt oder Tipp gehören. Höchstens 30 Sprachen, je Datei 64 KB, nur Texte. Fehlende Übersetzungen und Texte nur in einer Sprache sind ein **Hinweis**.
+- **Tipp an jeder Mappe** (ab 0.293.2): Anker wie `mappe.aktionen` („Mappe ▾“) oder `mappe.stern` gehen auch ohne `typ` – Ablago öffnet dann die zuletzt geänderte Mappe, die die Person lesen darf.
 - Der Katalog zeigt an der Kachel „mit Rundgang“ und auf der Paketseite unter „Was mitkommt“ Titel und Beschreibung jedes Rundgangs und den Wortlaut der Tipps.
 
 ## Dateien umwandeln

@@ -1142,6 +1142,15 @@ def detail(p: dict, pakete: list) -> str:
     # Rundgänge und Tipps (Ablago #831, #832; Registry #132): Titel und Beschreibung, Tipps im Wortlaut.
     rundgaenge = [r for r in lies_yaml(ordner, (m.get('inhalt') or {}).get('rundgaenge')) if isinstance(r, dict)] if vorhanden else []
     tipps = [x for x in lies_yaml(ordner, (m.get('inhalt') or {}).get('tipps')) if isinstance(x, dict)] if vorhanden else []
+    # Texte stehen in texte/de/entdecken.json (Ablago #1307) oder direkt in der Datei.
+    de_pfad = ordner / 'texte' / 'de' / 'entdecken.json'
+    try:
+        de = json.loads(de_pfad.read_text(encoding='utf-8')) if vorhanden and de_pfad.exists() else {}
+    except ValueError:
+        de = {}
+    teil = lambda x: str(x).replace('_', '-')  # noqa: E731
+    rundgaenge = [{**r, **{f: r.get(f, de.get(f'rundgang.{teil(r.get("schluessel"))}.{f}', '')) for f in ('titel', 'beschreibung')}} for r in rundgaenge]
+    tipps = [{**x, 'text': x.get('text', de.get(f'tipp.{teil(x.get("schluessel"))}', ''))} for x in tipps]
     auto_html += entdecken_block(rundgaenge, tipps)
     # Vorgaben (DMS #1038) und Einstellungen (#164): erscheinen, sobald ein Paket sie mitbringt.
     vorgaben = lies_yaml(ordner, (m.get('inhalt') or {}).get('vorgaben')) if vorhanden else []

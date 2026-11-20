@@ -19,13 +19,13 @@ Das Paket **Finanzen** bringt Konten, Kontoauszüge, Freistellungsaufträge und 
 
 **Automatisierung:** „Einspruchsfrist beim Steuerbescheid“ erinnert 7 Tage vor *Einspruch bis*. Sie ist nach der Installation aus; du schaltest sie unter Werkbank → Automatisierungen ein.
 
-**Tipps:** Drei kurze Tipps führen zu *Einspruch bis* und *Belege* am Steuerjahr und zu den *Kontoauszügen* am Konto.
+**Tipps:** Drei kurze Tipps führen zu *Einspruch bis* und *Belege* am Steuerjahr und zu den *Kontoauszügen* am Konto – auf Deutsch und Englisch, je nach Sprache der Person.
 
 **Beispiele:** Das Paket bringt selbst keine mit. Mit dem Paket Haushalt kommen Konten, ein Kontoauszug, ein Freistellungsauftrag und das Steuerjahr 2025 der erfundenen Familie Muster.
 
 ## Voraussetzungen
 
-- Ablago ab 0.285.0 (Tipps)
+- Ablago ab 0.293.2 (Tipps in mehreren Sprachen)
 - Paket **Basis** ab 1.7.0 (Organisation für Bank und Steuerberater, Person für Inhaber) – kommt bei der Installation aus dem Katalog mit
 
 ## Rechte und Netz

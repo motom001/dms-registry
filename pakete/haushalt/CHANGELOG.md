@@ -1,5 +1,9 @@
 # Änderungen
 
+## 3.1.0
+
+- **Rundgang und Tipp auf Englisch** (Ablago #1307, dms-registry #202): Die Texte von „Ausweis ablegen“ und vom Tipp zu *Garantie bis* stehen jetzt in `texte/de/entdecken.json` und `texte/en/entdecken.json`. Ablago zeigt sie in der Sprache der Person. Braucht **Ablago 0.293.2**.
+
 ## 3.0.0
 
 - **Konto und Steuerjahr kommen aus dem Paket Finanzen** (dms-registry #212). Haushalt hängt von Finanzen 1.0.0 ab; *Steuerjahr* an Arbeitsverhältnis, Gesundheit, Anschaffung und Bildung zeigt auf das Steuerjahr aus Finanzen. Ansichten *Konten* und *Steuerjahre*, die Automatisierung „Einspruchsfrist beim Steuerbescheid“ und die beiden Tipps zum Steuerjahr sind jetzt dort.

@@ -1,6 +1,8 @@
 # Tipps dieses Pakets (Ablago ab 0.285.0, dann dms: ">=0.285.0"). Schema: schema/inhalt.schema.json
 # Im Manifest einkommentieren: inhalt.tipps: inhalt/tipps.yaml – höchstens 20 Tipps, je höchstens 160 Zeichen und
 # zwei Sätze, Du-Form. Genau eines von ziel (Anker) oder rundgang (ein Rundgang dieses Pakets).
+# Texte in mehreren Sprachen (ab 0.293.2): text weglassen, dafür „tipp.<schluessel>“ in texte/<sprache>/entdecken.json.
+# Anker an jeder Mappe wie mappe.aktionen („Mappe ▾“) gehen ab 0.293.2 auch ohne typ.
 
 - schluessel: beispiel_anlegen
   text: Neu hier? Ein kurzer Rundgang zeigt dir, wie du ein Beispiel anlegst.
