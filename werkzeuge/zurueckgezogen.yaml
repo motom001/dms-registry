@@ -1,9 +1,10 @@
-# Bewusst zurückgezogene Paketversionen (Tag <id>-v<version>), z. B. wegen eines Fehlers. Zurückziehen heißt: Version
-# aus dem Katalog nehmen, hier eintragen und das Release von Hand löschen – sonst bleibt die Datei öffentlich ladbar.
+# Bewusst zurückgezogene Paketversionen (Tag <id>-v<version>), z. B. wegen eines Fehlers. Zurückziehen heißt: hier
+# eintragen – katalog.py nimmt die Version beim nächsten Lauf aus katalog.json und von der Webseite, ein Paket ohne
+# Versionen ganz – und das Release von Hand löschen, sonst bleibt die Datei öffentlich ladbar.
 # Ohne Eintrag meldet werkzeuge/releases.py zaehlen ein Release ohne Katalog-Version als Fehler (Schutz vor Verlust).
 
 # Paket Rechnungen (dms-registry #208, 19.11.2026): abgelöst durch „Rechnungen und Bestellungen“ (rechnung_bestellung),
-# das die Mappen beim Installieren per Umbau übernimmt. Es gab nur eine Installation; die Releases löscht Thomas von Hand.
+# ohne Umzug. Es gab nur eine Installation; die Releases löscht Thomas von Hand.
 - rechnungen-v1.0.0
 - rechnungen-v1.0.1
 - rechnungen-v1.1.0
