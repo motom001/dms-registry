@@ -88,12 +88,6 @@ mappentypen:
       dokumente: { name: "Belgeler" }
       historie: { name: "Geçmiş" }
 sichten:
-  organisationen: { name: "Kuruluşlar", beschreibung: "Tüm kuruluşlar" }
-  versicherungen: { name: "Sigortalar" }
-  banken: { name: "Bankalar" }
-  behoerden: { name: "Resmî kurumlar" }
-  aerzte: { name: "Doktorlar ve muayenehaneler" }
-  niederlassungen: { name: "Şubeler" }
+  basis: { name: "Temel", beschreibung: "Kuruluşlar, kişiler ve saklama yerleri" }
+  organisationen: { name: "Kuruluşlar", beschreibung: "Şirketler, bankalar, sigortacılar, kurumlar ve muayenehaneler – şubeleriyle" }
   personen: { name: "Kişiler", beschreibung: "Kişiler – Ablago kullanıcısı değil" }
-  familie: { name: "Aile ve arkadaşlar" }
-  ansprechpartner: { name: "İlgili kişiler" }
