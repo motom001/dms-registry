@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.0
+
+- Ansichten mit Symbolen. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
+
 ## 1.0.1
 
 - Texte: Die Felder an der Rechnung bringt jetzt das Paket **Rechnungen und Bestellungen** mit (Nachfolger des Pakets Rechnungen); den Steuerschlüssel gibt es dort an Position und Steuerzeile.

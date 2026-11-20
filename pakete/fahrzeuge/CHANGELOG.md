@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.2.0
+
+- Ansichten: *Fahrzeuge* mit Symbol, darunter nur noch *HU fällig*. *Alle Fahrzeuge* (doppelt) und *Rechnungen zu Fahrzeugen* (stehen am Fahrzeug unter *Rechnungen*) entfallen. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
+
 ## 2.1.0
 
 - **Rechnungen kommen aus dem Paket Rechnungen und Bestellungen** (dms-registry #208), dem Nachfolger des Pakets Rechnungen. Register, Ansichten und Verweise zeigen auf dessen Rechnung. Einen Umzug aus dem alten Paket gibt es nicht (nur eine Installation, die neu aufgebaut wird). Braucht **Ablago 0.248.0**.

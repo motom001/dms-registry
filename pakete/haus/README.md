@@ -23,7 +23,7 @@ Das Paket **Haus** bringt die Mappentypen **Immobilie**, **Wartung** und **Zähl
 
 **Fristen:** Trag nach jeder Wartung *Zuletzt am* und *Nächste fällig* ein („Zuletzt am“ plus Turnus). Ablago erinnert 30 Tage vorher unter **Zu erledigen** und in der Ansicht **Anstehend**.
 
-**Ansichten:** *Haus* mit allem und darunter *Immobilien*, *Wartungen*, *Zählerstände* (darunter *dieses Jahr* und *letztes Jahr* zum Vergleich) sowie *Wartung fällig* – Wartungen, die in den nächsten drei Monaten fällig oder schon überfällig sind.
+**Ansichten:** *Haus* mit allem und darunter *Immobilien*, *Wartungen*, *Zählerstände* sowie *Wartung fällig* – Wartungen, die in den nächsten drei Monaten fällig oder schon überfällig sind.
 
 **Beispiele (optional):** das Einfamilienhaus Musterweg 1 der Familie Muster mit Heizungs- und Rauchmelderwartung sowie je zwei Ablesungen von Strom- und Gaszähler. Wartungen und Zählerstände hängen schon am Haus; Fachbetrieb, Wartungsvertrag und Ablageort setzt du selbst.
 

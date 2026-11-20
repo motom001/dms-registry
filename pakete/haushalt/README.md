@@ -29,10 +29,11 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 **Ansichten:** *Haushalt* mit allen Unterlagen und darunter
 
-- je eine Ansicht pro Mappentyp (*Arbeitsverhältnisse* … *Bildung*), dazu *Verträge* und *Versicherungen* (Verträge mit ausgefüllter Versicherung) aus dem Paket Verträge; unter *Versicherungen* die *Sachversicherungen* (Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz) und die *Personenversicherungen* (Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall),
-- *Kündigung in den nächsten 3 Monaten* – Verträge und Versicherungen, bei denen „Kündigen bis“ in den nächsten drei Monaten liegt,
+- je eine Ansicht pro Mappentyp (*Arbeitsverhältnisse* … *Bildung*), jede mit Symbol,
 - *Läuft bald ab* – Ausweise, die in den nächsten sechs Monaten ablaufen oder schon abgelaufen sind,
 - *Garantie läuft ab* – Anschaffungen, deren Garantie in den nächsten drei Monaten endet.
+
+Verträge und Versicherungen (mit Sach- und Personenversicherungen) zeigt das Paket **Verträge** in seinen Ansichten.
 
 **Beispiele (optional):** 15 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas als **Personen**, je Typ ein bis zwei Mappen, dazu Konten, ein Kontoauszug, ein Freistellungsauftrag und das Steuerjahr 2025 aus dem Paket Finanzen. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, Jonas’ Impfung auf die Hausarztpraxis (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
 

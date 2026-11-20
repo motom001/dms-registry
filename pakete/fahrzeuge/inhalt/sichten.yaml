@@ -1,24 +1,19 @@
 # Ansichten des Pakets Fahrzeuge. Schema: schema/inhalt.schema.json
-# Ab 2.0.0: Rechnungen zu Fahrzeugen sind Rechnungen aus dem Paket Rechnungen mit „Betrifft“ = Fahrzeug.
+# Ab dieser Version (Thomas, 20.11.2026): oben eine Ansicht mit dem Namen des Pakets und Symbol, darunter je Mappentyp
+# eine Ansicht. Fristen-Ansichten bleiben vorerst hier und ziehen unter „Fristen“ aus Basis, sobald Ablago das kann (dms #1517).
+# Ab 2.2.0 ohne „Alle Fahrzeuge“ (doppelt) und „Rechnungen zu Fahrzeugen“ (stehen am Fahrzeug unter „Rechnungen“).
 - schluessel: fahrzeuge
   name: Fahrzeuge
-  beschreibung: Fahrzeuge und ihre Rechnungen
-  beschriftungen: { en: { name: "Vehicles", beschreibung: "Vehicles and their invoices" } }
+  beschreibung: Alle Fahrzeuge
+  beschriftungen: { en: { name: "Vehicles", beschreibung: "All vehicles" } }
+  symbol: car
   typen: [fahrzeug]
-- { schluessel: alle_fahrzeuge, name: Alle Fahrzeuge, eltern: fahrzeuge, typen: [fahrzeug], beschriftungen: { en: { name: "All vehicles" } }  }
-- schluessel: werkstattrechnungen
-  name: Rechnungen zu Fahrzeugen
-  beschreibung: Rechnungen, die ein Fahrzeug betreffen – Werkstatt, Reifen, Zubehör
-  beschriftungen: { en: { name: "Vehicle invoices", beschreibung: "Invoices concerning a vehicle – garage, tyres, accessories" } }
-  eltern: fahrzeuge
-  typen: ["rechnung_bestellung:rechnung"]
-  bedingungen:
-    - { feld: betrifft, operator: zeigtAufTyp, wert: ["fahrzeuge:fahrzeug"] }
 - schluessel: hu_faellig
   name: HU fällig
   beschreibung: Fahrzeuge, deren Hauptuntersuchung in den nächsten 3 Monaten fällig oder schon überfällig ist
   beschriftungen: { en: { name: "MOT due", beschreibung: "Vehicles whose main inspection is due in the next 3 months or already overdue" } }
   eltern: fahrzeuge
+  symbol: alarm-clock
   typen: [fahrzeug]
   bedingungen:
     - { feld: hu_faellig, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }

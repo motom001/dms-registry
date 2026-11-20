@@ -1,4 +1,6 @@
 # Ansichten des Pakets Verträge. Schema: schema/inhalt.schema.json
+# Ab 1.7.0 (Thomas, 20.11.2026): Symbole; „Versicherungen“ mit Sach- und Personenversicherungen kommt aus Haushalt hierher.
+# „Kündigen bald“ und „Gekündigt“ ziehen unter „Fristen“ aus Basis, sobald Ablago das kann (dms #1517).
 - schluessel: vertraege
   name: Verträge
   beschreibung: Alle Verträge
@@ -10,6 +12,7 @@
   beschreibung: Verträge, die du in den nächsten drei Monaten kündigen müsstest, damit sie frühestmöglich enden
   beschriftungen: { en: { name: "Cancel soon", beschreibung: "Contracts you would have to cancel within the next three months to end them at the earliest date" } }
   eltern: vertraege
+  symbol: alarm-clock
   typen: [vertrag]
   bedingungen:
     - { feld: kuendigen_bis, operator: zwischen, wert: [{ art: heute }, { art: heute, versatz: 3, einheit: monate }] }
@@ -18,6 +21,7 @@
   beschreibung: Verträge mit Kündigung, die noch nicht beendet sind
   beschriftungen: { en: { name: "Cancelled", beschreibung: "Cancelled contracts that have not ended yet" } }
   eltern: vertraege
+  symbol: clock
   typen: [vertrag]
   bedingungen:
     - { feld: gekuendigt_am, operator: nichtLeer }
@@ -27,4 +31,30 @@
   beschreibung: Arten von Verträgen mit üblichen Fristen und Vorlagen
   beschriftungen: { en: { name: "Contract types", beschreibung: "Types of contracts with usual periods and templates" } }
   eltern: vertraege
+  symbol: tag
   typen: [vertragsart]
+- schluessel: versicherungen
+  name: Versicherungen
+  beschreibung: Verträge der Art Versicherung
+  beschriftungen: { en: { name: "Insurance policies", beschreibung: "Contracts of the type insurance" } }
+  eltern: vertraege
+  symbol: umbrella
+  typen: [vertrag]
+  bedingungen:
+    - { feld: versicherung_art, operator: nichtLeer }
+- schluessel: sachversicherungen
+  name: Sachversicherungen
+  beschriftungen: { en: { name: "Property insurance" } }
+  eltern: versicherungen
+  symbol: shield-check
+  typen: [vertrag]
+  bedingungen:
+    - { feld: versicherung_art, operator: einerVon, wert: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz] }
+- schluessel: personenversicherungen
+  name: Personenversicherungen
+  beschriftungen: { en: { name: "Personal insurance" } }
+  eltern: versicherungen
+  symbol: heart
+  typen: [vertrag]
+  bedingungen:
+    - { feld: versicherung_art, operator: einerVon, wert: [Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall] }

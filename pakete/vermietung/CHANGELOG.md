@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.2.0
+
+- Ansichten mit Symbolen. *Ausgaben dieses Jahr*, *letztes Jahr* und *Umlagefähig letztes Jahr* entfallen – solche Ansichten legst du dir bei Bedarf selbst an. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
+
 ## 2.1.1
 
 - *Steuerjahr* an der Nebenkostenabrechnung zeigt auf das Steuerjahr aus dem Paket **Finanzen** (dms-registry #212); das Steuerjahr aus Haushalt gibt es ab Haushalt 3.0.0 nicht mehr.
