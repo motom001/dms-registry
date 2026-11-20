@@ -88,12 +88,6 @@ mappentypen:
       dokumente: { name: "Dokumenty" }
       historie: { name: "Historia" }
 sichten:
-  organisationen: { name: "Organizacje", beschreibung: "Wszystkie organizacje" }
-  versicherungen: { name: "Ubezpieczenia" }
-  banken: { name: "Banki" }
-  behoerden: { name: "Urzędy" }
-  aerzte: { name: "Lekarze i gabinety" }
-  niederlassungen: { name: "Oddziały" }
+  basis: { name: "Podstawy", beschreibung: "Organizacje, osoby i miejsca przechowywania" }
+  organisationen: { name: "Organizacje", beschreibung: "Firmy, banki, ubezpieczyciele, urzędy i gabinety – wraz z oddziałami" }
   personen: { name: "Osoby", beschreibung: "Kontakty – nie są użytkownikami Ablago" }
-  familie: { name: "Rodzina i przyjaciele" }
-  ansprechpartner: { name: "Osoby kontaktowe" }

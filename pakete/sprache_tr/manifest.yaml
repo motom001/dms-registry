@@ -3,7 +3,8 @@
 schema: 1
 id: sprache_tr
 name: "Sprache: Türkisch (Türkçe)"
-version: 1.0.0
+herausgeber: app.ablago
+version: 1.1.0
 beschreibung: Ablago auf Türkisch – Anmeldung, Start, Notfallzugang und Seitenrahmen sowie die Beschriftungen des Pakets Basis. Maschinell übersetzt aus dem Englischen; was fehlt, erscheint auf Englisch.
 autor:
   name: Thomas Meissner
