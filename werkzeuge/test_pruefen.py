@@ -2,6 +2,7 @@
 
     python3 -m unittest werkzeuge/test_pruefen.py
 """
+import json
 import shutil, sys, tempfile, unittest
 from pathlib import Path
 
@@ -1722,7 +1723,7 @@ class ManifestFelder202(unittest.TestCase):
     NEU = '>=0.287.0'
 
     def paket(self, code: dict | None = None, dms: str = NEU, rundgaenge=None, tipps=None, version: str = '1.0.0',
-              abh: dict | None = None) -> list[str]:
+              abh: dict | None = None, texte: dict | None = None, hinweise: list | None = None) -> list[str]:
         with tempfile.TemporaryDirectory() as tmp:
             ziel = Path(tmp) / 'probe'
             shutil.copytree(WURZEL / 'vorlage', ziel)
@@ -1739,8 +1740,13 @@ class ManifestFelder202(unittest.TestCase):
                 if daten is not None:
                     m['inhalt'][art] = f'inhalt/{art}.yaml'
                     (ziel / 'inhalt' / f'{art}.yaml').write_text(yaml.safe_dump(daten, allow_unicode=True), encoding='utf-8')
+            for spr, d in (texte or {}).items():
+                (ziel / 'texte' / spr).mkdir(parents=True, exist_ok=True)
+                (ziel / 'texte' / spr / 'entdecken.json').write_text(d if isinstance(d, str) else json.dumps(d, ensure_ascii=False), encoding='utf-8')
             (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
             (ziel / 'CHANGELOG.md').write_text(f'# Änderungen\n\n## {version}\n\n- Probe\n', encoding='utf-8')
+            if hinweise is not None:
+                hinweise.extend(pruefen.entdecken_hinweise_von(ziel))
             (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
             return pruefen.pruefe(ziel, None)
 
@@ -1862,6 +1868,84 @@ class ManifestFelder202(unittest.TestCase):
         self.assertTrue(pruefen.anker_bekannt('werkbank.bereich:pakete', liste))
         self.assertFalse(pruefen.anker_bekannt('mappe.register:', liste))
         self.assertFalse(pruefen.anker_bekannt('mappe.register:a b', liste))
+
+    # ---------- Sprachdateien texte/<sprache>/entdecken.json (Ablago #1307) ----------
+
+    T = '>=0.293.2'
+
+    @staticmethod
+    def ohne_texte(r: dict) -> dict:
+        """Rundgang nur mit Aufbau – die Texte kommen aus texte/<sprache>/entdecken.json."""
+        r = {k: v for k, v in r.items() if k not in ('titel', 'beschreibung', 'ende', 'ersatz')}
+        r['schritte'] = [{k: v for k, v in st.items() if k not in ('titel', 'text', 'ort')} for st in r['schritte']]
+        return r
+
+    DE = {'rundgang.beispiel-kennenlernen.titel': 'Beispiel anlegen', 'rundgang.beispiel-kennenlernen.beschreibung': 'Wo Datum und Betrag stehen.',
+          'rundgang.beispiel-kennenlernen.ersatz': 'Lege zuerst ein Beispiel an.',
+          'rundgang.beispiel-kennenlernen.datum.titel': 'Datum', 'rundgang.beispiel-kennenlernen.datum.text': 'Hier steht das Datum.',
+          'rundgang.beispiel-kennenlernen.datum.ort': 'Rechts in der Mappe',
+          'rundgang.beispiel-kennenlernen.neu.titel': 'Neu', 'rundgang.beispiel-kennenlernen.neu.text': 'Hier legst du weitere an.',
+          'rundgang.beispiel-kennenlernen.neu.ort': 'Oben links',
+          'rundgang.beispiel-kennenlernen.ende.titel': 'Fertig', 'rundgang.beispiel-kennenlernen.ende.text': 'Das war es schon.',
+          'tipp.datum': 'Wusstest du schon? Ablago erinnert dich an das Datum.'}
+
+    def test_texte_gueltig(self):
+        r, t = self.ohne_texte(self.rundgang()), {k: v for k, v in self.tipp().items() if k != 'text'}
+        en = {k: 'In English.' for k in self.DE}
+        self.assertEqual(self.paket(rundgaenge=[r], tipps=[t], texte={'de': self.DE, 'en': en}, dms=self.T), [])
+        # Deutsch direkt in der Datei, nur die Übersetzung in texte/
+        self.assertEqual(self.paket(rundgaenge=[self.rundgang()], tipps=[self.tipp()], texte={'pt-BR': {'tipp.datum': 'Em português.'}}, dms=self.T), [])
+        self.assertEqual(list(pruefen.inhalt_validator('rundgaenge').iter_errors([r])), [])
+
+    def test_texte_braucht_0293_2(self):
+        r = self.ohne_texte(self.rundgang())
+        self.assertIn('erst ab 0.293.2', self.fehler(rundgaenge=[r], texte={'de': self.DE}, dms='>=0.290.0'))
+
+    def test_texte_fehlen(self):
+        de = dict(self.DE)
+        del de['rundgang.beispiel-kennenlernen.datum.text']
+        f = self.fehler(rundgaenge=[self.ohne_texte(self.rundgang())], texte={'de': de}, dms=self.T)
+        self.assertIn('Text „text“ fehlt', f)
+        del de['rundgang.beispiel-kennenlernen.datum.ort']
+        self.assertIn('gehört „ort“', self.fehler(rundgaenge=[self.ohne_texte(self.rundgang())], texte={'de': de}, dms=self.T))
+        t = {k: v for k, v in self.tipp().items() if k != 'text'}
+        self.assertIn('Text „text“ fehlt', self.fehler(tipps=[t], dms=self.T))
+
+    def test_texte_je_sprache_geprueft(self):
+        r = self.ohne_texte(self.rundgang())
+        f = self.fehler(rundgaenge=[r], texte={'de': self.DE, 'en': {'rundgang.beispiel-kennenlernen.titel': 'x' * 61}}, dms=self.T)
+        self.assertIn('texte/en/entdecken.json, inhalt/rundgaenge.yaml: Rundgang „beispiel_kennenlernen“: „titel“ ist 61 Zeichen lang', f)
+        f = self.fehler(tipps=[self.tipp()], texte={'en': {'tipp.datum': 'One. Two. Three.'}}, dms=self.T)
+        self.assertIn('texte/en/entdecken.json', f)
+        self.assertIn('höchstens zwei Sätze', f)
+        self.assertIn('spitze Klammern', self.fehler(tipps=[self.tipp()], texte={'en': {'tipp.datum': 'See <b>here</b>.'}}, dms=self.T))
+
+    def test_texte_ueberzaehlig_und_format(self):
+        self.assertIn('Diese Schlüssel gehören zu keinem Rundgang, Schritt oder Tipp des Pakets: tipp.dattum',
+                      self.fehler(tipps=[self.tipp()], texte={'en': {'tipp.dattum': 'Typo.'}}, dms=self.T))
+        self.assertIn('Erwartet wird ein JSON-Objekt', self.fehler(tipps=[self.tipp()], texte={'en': '["kein Objekt"]'}, dms=self.T))
+        self.assertIn('Erwartet wird ein JSON-Objekt', self.fehler(tipps=[self.tipp()], texte={'en': {'tipp.datum': 3}}, dms=self.T))
+        self.assertIn('Die Sprache heißt wie', self.fehler(tipps=[self.tipp()], texte={'English': {'tipp.datum': 'x.'}}, dms=self.T))
+        self.assertIn('größer als 64 KB', self.fehler(tipps=[self.tipp()], texte={'en': {'tipp.datum': 'x' * 70000}}, dms=self.T))
+
+    def test_texte_hinweise(self):
+        h: list = []
+        self.paket(tipps=[self.tipp()], dms=self.T, hinweise=h)
+        self.assertTrue(any('nur in einer Sprache' in x for x in h))
+        h = []
+        r = self.ohne_texte(self.rundgang())
+        de = {k: v for k, v in self.DE.items() if not k.startswith('tipp.')}
+        self.assertEqual(self.paket(rundgaenge=[r], texte={'de': de, 'en': {'rundgang.beispiel-kennenlernen.titel': 'Create an example'}},
+                                    dms=self.T, hinweise=h), [])
+        self.assertTrue(any('Rundgänge und Tipps auf en: ' in x and 'Texte fehlen' in x for x in h), h)
+
+    def test_tipp_an_jeder_mappe_ohne_typ(self):
+        t = {'schluessel': 'erinnern', 'text': 'Über „Mappe ▾“ lässt du dich erinnern.', 'ziel': 'mappe.aktionen'}
+        self.assertEqual(self.paket(tipps=[t], dms=self.T), [])
+        self.assertIn('erst ab 0.293.2', self.fehler(tipps=[t], dms='>=0.290.0'))
+        self.assertEqual(self.paket(tipps=[dict(t, typ='beispiel')], dms='>=0.290.0'), [])
+        # Muster wie mappe.feld: brauchen weiter typ
+        self.assertIn('hat keine feste Seite', self.fehler(tipps=[dict(t, ziel='mappe.feld:datum')], dms=self.T))
 
     # ---------- Einstellungen: Feldarten des Kerns und Prüfregeln ----------
 

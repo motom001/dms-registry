@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.0
+
+- **Tipps auf Englisch** (Ablago #1307, dms-registry #202): Die Texte der drei Tipps stehen jetzt in `texte/de/entdecken.json` und `texte/en/entdecken.json`. Ablago zeigt sie in der Sprache der Person. Braucht **Ablago 0.293.2**.
+
 ## 1.0.0
 
 - Erste Fassung (dms-registry #212): **Konto** und **Steuerjahr** aus dem Paket Haushalt, dazu **Kontoauszug** und **Freistellungsauftrag**.

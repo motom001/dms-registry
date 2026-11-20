@@ -346,10 +346,10 @@
     }
   },
   "rundgaenge": {
-    "description": "Rundgänge durch eine Aufgabe (Ablago #831, ab 0.285.0, Registry #132): Ablago hebt Schritt für Schritt eine Stelle der Oberfläche hervor. Startet nie von selbst – mit nach_installation/nach_update bietet Ablago ihn 30 Tage als Tipp an. Texte direkt in der Datei (meist Deutsch).",
+    "description": "Rundgänge durch eine Aufgabe (Ablago #831, ab 0.285.0, Registry #132): Ablago hebt Schritt für Schritt eine Stelle der Oberfläche hervor. Startet nie von selbst – mit nach_installation/nach_update bietet Ablago ihn 30 Tage als Tipp an. Texte (titel, beschreibung, text …) in texte/<sprache>/entdecken.json (ab 0.293.2, Ablago #1307) oder nur Deutsch direkt in der Datei; Pflicht sind titel und beschreibung, je Schritt titel und text.",
     "type": "array",
     "items": {
-      "type": "object", "required": ["schluessel", "titel", "beschreibung", "schritte"], "additionalProperties": false,
+      "type": "object", "required": ["schluessel", "schritte"], "additionalProperties": false,
       "properties": {
         "schluessel": { "$ref": "#/$defs/entdecken_schluessel" },
         "start": { "enum": ["manuell", "nach_installation", "nach_update"], "description": "manuell (Vorgabe) · nach_installation (höchstens einmal je Paket) · nach_update" },
@@ -369,7 +369,7 @@
         "schritte": {
           "type": "array", "minItems": 1, "maxItems": 8,
           "items": {
-            "type": "object", "required": ["schluessel", "titel", "text"], "additionalProperties": false,
+            "type": "object", "required": ["schluessel"], "additionalProperties": false,
             "properties": {
               "schluessel": { "$ref": "#/$defs/entdecken_schluessel" },
               "ziel": { "description": "Anker oder Liste von Ankern – der erste sichtbare gilt; ohne Ziel steht der Schritt in der Mitte. Mit Ziel ist ort Pflicht.", "anyOf": [{ "$ref": "#/$defs/anker" }, { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/anker" } }] },
@@ -389,16 +389,16 @@
     }
   },
   "tipps": {
-    "description": "Tipps (Ablago #832, ab 0.285.0, Registry #132): ein kurzer Satz, der an eine Stelle führt oder einen Rundgang des Pakets startet. Text direkt in der Datei.",
+    "description": "Tipps (Ablago #832, ab 0.285.0, Registry #132): ein kurzer Satz, der an eine Stelle führt oder einen Rundgang des Pakets startet. Text unter tipp.<schluessel> in texte/<sprache>/entdecken.json (ab 0.293.2, Ablago #1307) oder nur Deutsch direkt in der Datei.",
     "type": "array", "maxItems": 20,
     "items": {
-      "type": "object", "required": ["schluessel", "text"], "additionalProperties": false,
+      "type": "object", "required": ["schluessel"], "additionalProperties": false,
       "properties": {
         "schluessel": { "$ref": "#/$defs/entdecken_schluessel" },
         "bereich": { "enum": ["suche", "post", "fristen", "mappen", "konto", "verwalten"], "description": "Vorgabe: mappen" },
         "text": { "type": "string", "minLength": 1, "maxLength": 160, "description": "Höchstens zwei Sätze, Du-Form, nur Begriffe aus dem Glossar" },
         "fuer": { "$ref": "#/$defs/fuer" },
-        "ziel": { "$ref": "#/$defs/anker", "description": "Anker mit fester Seite – oder mappe.feld:/mappe.register: zusammen mit typ (genau eines von ziel und rundgang)" },
+        "ziel": { "$ref": "#/$defs/anker", "description": "Anker mit fester Seite, ein Anker an jeder Mappe wie mappe.aktionen (ohne typ ab 0.293.2) – oder mappe.feld:/mappe.register: zusammen mit typ (genau eines von ziel und rundgang)" },
         "rundgang": { "$ref": "#/$defs/entdecken_schluessel", "description": "Rundgang dieses Pakets (genau eines von ziel und rundgang)" },
         "funktion": { "enum": ["fragen", "laufwerk", "mail"], "description": "nur zeigen, wenn diese Funktion eingeschaltet ist" },
         "ab_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "„Neu seit deinem letzten Besuch“ nach dem Update auf diese Version des Pakets (höchstens die Version des Pakets)" },

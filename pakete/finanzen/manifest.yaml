@@ -6,7 +6,7 @@ schema: 1
 id: finanzen
 name: Finanzen
 herausgeber: app.ablago
-version: 1.0.0
+version: 1.1.0
 beschreibung: Konten, Kontoauszüge, Freistellungsaufträge und Steuerjahre an einem Ort – privat wie im Betrieb. Ablago legt die Unterlagen ab, es bucht nicht.
 autor:
   name: Thomas Meissner
@@ -26,7 +26,8 @@ kurzanleitung:
     - In a tax year, “Receipts” shows everything you assigned to that year. Enter “Objection by” and Ablago reminds you in time.
     - With “used for business”, the tax year also has VAT, trade tax and the annual accounts.
 # 0.285.0: Rundgänge und Tipps (dms-registry #132); darin enthalten Anzeige-Bedingungen mit Merkmal (beruflich) und frist.
-dms: ">=0.285.0"
+# 0.293.2: Texte der Rundgänge und Tipps in texte/<sprache>/entdecken.json (Ablago #1307)
+dms: ">=0.293.2"
 abhaengigkeiten:
   basis: ">=1.7.0"
 inhalt:

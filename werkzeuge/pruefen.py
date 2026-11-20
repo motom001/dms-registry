@@ -184,6 +184,8 @@ HERAUSGEBER = 'app.ablago'
 # Neue Manifest-Felder aus Ablago (#202): Rundgänge und Tipps (DMS #1244), Feldarten des Kerns, Prüfregeln, Anzeigen,
 # eigene Prüfung und Ausprobieren (DMS #1245), Einrichtung und Nachweise lesen, eigene Karten (DMS #1246).
 DMS_RUNDGAENGE_AB = (0, 285, 0)
+# Texte der Rundgänge und Tipps in texte/<sprache>/entdecken.json und Tipp-Ziele an jeder Mappe ohne typ (Ablago #1307)
+DMS_ENTDECKEN_TEXTE_AB = (0, 293, 2)
 DMS_PAKETREITER_AB = (0, 286, 0)
 DMS_PAKETDATEN_AB = (0, 287, 0)
 KERN_FELDARTEN = ('ki_mappentypen', 'fragen_grenzen', 'erkennung_standard', 'mappenaktionen')
@@ -1325,11 +1327,94 @@ def _mappen_teil(anker: str) -> tuple[str, str] | None:
     return (t.group(1), t.group(2)) if t else None
 
 
-def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, version: str, dms_bereich: str,
-                     datei_r: str = 'inhalt.rundgaenge', datei_t: str = 'inhalt.tipps', anker: list[dict] | None = None) -> list[str]:
-    """inhalt.rundgaenge und inhalt.tipps über das Schema hinaus – lehnt ab, was Ablago beim Installieren ablehnt."""
-    anker = anker_liste() if anker is None else anker
+# Sprachdateien der Rundgänge und Tipps (Ablago #1307, shared/src/entdecken-paket.ts): texte/<sprache>/entdecken.json,
+# flach, Schlüssel wie Ablagos entdecken.json ohne „entdecken.“ (Unterstriche werden zu Bindestrichen). Deutsch ist die
+# Grundsprache. Angezeigt wird: Übersetzung, sonst Text in der YAML-Datei, sonst Deutsch aus texte/de.
+ENTDECKEN_TEXTE_DATEI = re.compile(r'^texte/([a-z]{2,3}(?:-[A-Z]{2})?)/entdecken\.json$')
+ENTDECKEN_SPRACHEN_MAX = 30
+ENTDECKEN_TEXTE_MAX = 64 * 1024
+ENTDECKEN_GRUNDSPRACHE = 'de'
+# (Feld in der YAML-Datei, Pflicht, höchstens Zeichen)
+ENTDECKEN_RUNDGANG_FELDER = (('titel', True, 60), ('beschreibung', True, 200), ('ende', False, 200), ('ersatz', False, 200))
+ENTDECKEN_SCHRITT_FELDER = (('titel', True, 60), ('text', True, 200), ('text_handy', False, 200), ('text_verwalten', False, 200),
+                            ('ort', False, 200), ('sonst_verwalten', False, 200))
+
+
+def lies_entdecken_texte(ordner: Path) -> tuple[dict[str, dict[str, str]], list[str]]:
+    """texte/<sprache>/entdecken.json eines Pakets: (Sprache → Schlüssel → Text, Fehler) – Grenzen wie in Ablago."""
+    texte: dict[str, dict[str, str]] = {}
     fehler: list[str] = []
+    dateien = sorted(p.relative_to(ordner).as_posix() for p in (ordner / 'texte').glob('*/entdecken.json')) if (ordner / 'texte').is_dir() else []
+    for d in dateien:
+        if not ENTDECKEN_TEXTE_DATEI.match(d):
+            fehler.append(f'{d}: Die Sprache heißt wie „de“, „en“ oder „pt-BR“ (texte/<sprache>/entdecken.json)')
+    dateien = [d for d in dateien if ENTDECKEN_TEXTE_DATEI.match(d)]
+    if len(dateien) > ENTDECKEN_SPRACHEN_MAX:
+        fehler.append(f'Höchstens {ENTDECKEN_SPRACHEN_MAX} Sprachen für Rundgänge und Tipps (texte/<sprache>/entdecken.json)')
+    for d in dateien[:ENTDECKEN_SPRACHEN_MAX]:
+        roh = (ordner / d).read_bytes()
+        if len(roh) > ENTDECKEN_TEXTE_MAX:
+            fehler.append(f'{d}: größer als {ENTDECKEN_TEXTE_MAX // 1024} KB')
+            continue
+        try:
+            j = json.loads(roh.decode('utf-8'))
+        except Exception:  # noqa: BLE001
+            j = None
+        if not isinstance(j, dict) or any(not isinstance(v, str) for v in j.values()):
+            fehler.append(f'{d}: Erwartet wird ein JSON-Objekt mit Texten, Schlüssel wie „rundgang.<rundgang>.titel“ oder „tipp.<tipp>“')
+            continue
+        texte[ENTDECKEN_TEXTE_DATEI.match(d).group(1)] = j
+    return texte, fehler
+
+
+def _entdecken_teil(s) -> str:
+    return str(s).replace('_', '-')
+
+
+def entdecken_stellen(rundgaenge, tipps) -> list[tuple[str, bool, bool]]:
+    """Wie paketTextstellen in Ablago: (Schlüssel in der Sprachdatei, Pflicht, steht direkt in der YAML-Datei)."""
+    stellen: list[tuple[str, bool, bool]] = []
+    for r in rundgaenge if isinstance(rundgaenge, list) else []:
+        if not isinstance(r, dict) or not isinstance(r.get('schluessel'), str):
+            continue
+        rk = _entdecken_teil(r['schluessel'])
+        for feld, pflicht, _ in ENTDECKEN_RUNDGANG_FELDER:
+            stellen.append((f'rundgang.{rk}.{feld}', pflicht, isinstance(r.get(feld), str)))
+        for st in r.get('schritte') or []:
+            if not isinstance(st, dict) or not isinstance(st.get('schluessel'), str):
+                continue
+            sk = _entdecken_teil(st['schluessel'])
+            for feld, pflicht, _ in ENTDECKEN_SCHRITT_FELDER:
+                stellen.append((f'rundgang.{rk}.{sk}.{_entdecken_teil(feld)}', pflicht, isinstance(st.get(feld), str)))
+    for t in tipps if isinstance(tipps, list) else []:
+        if isinstance(t, dict) and isinstance(t.get('schluessel'), str):
+            stellen.append((f'tipp.{_entdecken_teil(t["schluessel"])}', True, isinstance(t.get('text'), str)))
+    return stellen
+
+
+def entdecken_text(roh: dict, feld: str, schluessel: str, texte: dict[str, dict[str, str]], sprache: str | None = None) -> str | None:
+    """Der Text, den Ablago zeigt: Übersetzung in `sprache`, sonst direkt in der YAML-Datei, sonst Deutsch aus texte/de."""
+    if sprache:
+        u = (texte.get(sprache) or texte.get(sprache.split('-')[0]) or {}).get(schluessel)
+        if isinstance(u, str) and u.strip():
+            return u.strip()
+    d = roh.get(feld)
+    if isinstance(d, str):
+        return d.strip()
+    g = (texte.get(ENTDECKEN_GRUNDSPRACHE) or {}).get(schluessel)
+    return g.strip() if isinstance(g, str) else None
+
+
+def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, version: str, dms_bereich: str,
+                     datei_r: str = 'inhalt.rundgaenge', datei_t: str = 'inhalt.tipps', anker: list[dict] | None = None,
+                     texte: dict[str, dict[str, str]] | None = None) -> list[str]:
+    """inhalt.rundgaenge und inhalt.tipps über das Schema hinaus – lehnt ab, was Ablago beim Installieren ablehnt.
+    `texte`: Sprachdateien (texte/<sprache>/entdecken.json); jede Sprache wird wie die Grundsprache geprüft."""
+    anker = anker_liste() if anker is None else anker
+    texte = texte or {}
+    fehler: list[str] = []
+    sprachen = [None] + sorted(x for x in texte if x != ENTDECKEN_GRUNDSPRACHE)
+    braucht_1307: list[str] = []
     eigene = {t.get('schluessel'): t for t in typen if isinstance(t, dict)}
 
     def typ_info(roh) -> tuple[str, list | None, list | None] | None:
@@ -1354,10 +1439,21 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
             return f'{wo}: {"Das Feld" if teil[0] == "feld" else "Das Register"} „{teil[1]}“ gibt es im Mappentyp „{typ[0]}“ nicht'
         return None
 
-    def texte(roh: dict, felder: tuple, wo: str):
-        for k in felder:
-            if isinstance(roh.get(k), str) and ENTDECKEN_STEUERZEICHEN.search(roh[k].strip()):
-                fehler.append(f'{wo}: „{k}“ enthält Steuerzeichen oder spitze Klammern')
+    def text(roh: dict, feld: str, schluessel: str, pflicht: bool, max_: int, wo: str, saetze: bool = False):
+        """Prüft den Text in jeder Sprache (Ablago: textVon); gleiche Meldungen nur einmal."""
+        for spr in sprachen:
+            t = entdecken_text(roh, feld, schluessel, texte, spr)
+            u = spr and isinstance((texte.get(spr) or {}).get(schluessel), str) and texte[spr][schluessel].strip()
+            ort = f'texte/{spr}/entdecken.json, {wo}' if u else wo
+            if not t:
+                if pflicht and not spr:
+                    fehler.append(f'{wo}: Text „{feld}“ fehlt (weder in der Datei noch unter „{schluessel}“ in texte/de/entdecken.json)')
+                continue
+            for f in ((f'{ort}: „{feld}“ ist {len(t)} Zeichen lang, höchstens {max_}' if len(t) > max_ else None),
+                      (f'{ort}: „{feld}“ enthält Steuerzeichen oder spitze Klammern' if ENTDECKEN_STEUERZEICHEN.search(t) else None),
+                      (f'{ort}: höchstens zwei Sätze' if saetze and len(TIPP_SATZENDE.findall(t)) > 2 else None)):
+                if f and f not in fehler:
+                    fehler.append(f)
 
     neu = []
     schluessel_r: list[str] = []
@@ -1377,7 +1473,8 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
                 nach_installation += 1
                 if nach_installation == 2:
                     fehler.append(f'{wo}: „nach_installation“ darf es nur einmal je Paket geben')
-            texte(r, ('titel', 'beschreibung', 'ende', 'ersatz'), wo)
+            for feld, pflicht, max_ in ENTDECKEN_RUNDGANG_FELDER:
+                text(r, feld, f'rundgang.{_entdecken_teil(s)}.{feld}', pflicht, max_, wo)
             typ = None
             oeffne = r.get('oeffne')
             if isinstance(oeffne, dict) and len(oeffne) == 1 and next(iter(oeffne)) in ('mappe', 'neu') and isinstance(oeffne[next(iter(oeffne))], dict):
@@ -1400,9 +1497,10 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
                 for z in ziele:
                     if isinstance(z, str) and (f := ziel_fehler(z, typ, ws)):
                         fehler.append(f)
-                if ziele and not (isinstance(st.get('ort'), str) and st['ort'].strip()):
+                if ziele and not entdecken_text(st, 'ort', f'rundgang.{_entdecken_teil(s)}.{_entdecken_teil(st.get("schluessel"))}.ort', texte):
                     fehler.append(f'{ws}: Zu einem Ziel gehört „ort“ (wo das Element steht, für Screenreader)')
-                texte(st, ('titel', 'text', 'text_handy', 'text_verwalten', 'ort', 'sonst_verwalten'), ws)
+                for feld, pflicht, max_ in ENTDECKEN_SCHRITT_FELDER:
+                    text(st, feld, f'rundgang.{_entdecken_teil(s)}.{_entdecken_teil(st.get("schluessel"))}.{_entdecken_teil(feld)}', pflicht, max_, ws)
     if isinstance(tipps, list):
         if tipps:
             neu.append('inhalt.tipps')
@@ -1415,9 +1513,7 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
             if s in gesehen:
                 fehler.append(f'{wo}: den Schlüssel gibt es doppelt')
             gesehen.append(s)
-            texte(t, ('text',), wo)
-            if isinstance(t.get('text'), str) and len(TIPP_SATZENDE.findall(t['text'].strip())) > 2:
-                fehler.append(f'{wo}: höchstens zwei Sätze')
+            text(t, 'text', f'tipp.{_entdecken_teil(s)}', True, 160, wo, saetze=True)
             typ = None
             if 'typ' in t:
                 typ = typ_info(t['typ'])
@@ -1429,6 +1525,10 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
                 z = t['ziel']
                 if (f := ziel_fehler(z, typ, wo)):
                     fehler.append(f)
+                elif z.startswith('mappe.') and ':' not in z:
+                    # Anker an jeder Mappe (Ablago #1307, anJederMappe): ohne typ öffnet Ablago die zuletzt geänderte Mappe.
+                    if not typ:
+                        braucht_1307.append(f'{wo}: Ziel „{z}“ ohne „typ“')
                 elif not (_mappen_teil(z) and typ) and not next((a for a in anker if a['anker'] == z), {}).get('seite'):
                     fehler.append(f'{wo}: Der Anker „{z}“ hat keine feste Seite – als Ziel eines Tipps geht er nur mit „typ“ (Feld oder Register einer Mappe)')
             if 'rundgang' in t and t['rundgang'] not in schluessel_r:
@@ -1437,11 +1537,39 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
             if isinstance(ab_v, str) and re.match(r'^\d+\.\d+\.\d+$', ab_v) and re.match(r'^\d+\.\d+\.\d+', version or '') \
                     and tuple(map(int, ab_v.split('.'))) > tuple(map(int, re.match(r'^(\d+)\.(\d+)\.(\d+)', version).groups())):
                 fehler.append(f'{wo}: ab_version {ab_v} ist neuer als die Version des Pakets ({version})')
+    # Schlüssel der Sprachdateien, die zu keinem Rundgang, Schritt oder Tipp gehören (Tippfehler).
+    bekannt = {k for k, _, _ in entdecken_stellen(rundgaenge, tipps)}
+    for spr in sorted(texte):
+        zuviel = [k for k in texte[spr] if k not in bekannt]
+        if zuviel:
+            fehler.append(f'texte/{spr}/entdecken.json: Diese Schlüssel gehören zu keinem Rundgang, Schritt oder Tipp des Pakets: {", ".join(zuviel)}')
+    if texte:
+        braucht_1307.insert(0, 'texte/<sprache>/entdecken.json')
     ab = dms_untergrenze(dms_bereich)
     if neu and (ab is None or ab < DMS_RUNDGAENGE_AB):
         v = version_text(DMS_RUNDGAENGE_AB)
         fehler.append(f'{" und ".join(neu)} kennt Ablago erst ab {v} – bitte dms: ">={v}" angeben')
+    elif braucht_1307 and (ab is None or ab < DMS_ENTDECKEN_TEXTE_AB):
+        v = version_text(DMS_ENTDECKEN_TEXTE_AB)
+        fehler.append(f'{braucht_1307[0]}: kennt Ablago erst ab {v} (Ablago #1307) – bitte dms: ">={v}" angeben')
     return fehler
+
+
+def entdecken_hinweise(rundgaenge, tipps, texte: dict[str, dict[str, str]]) -> list[str]:
+    """Wie die Vorschau in Ablago: fehlende Übersetzungen und Texte nur in einer Sprache (kein Fehler)."""
+    stellen = entdecken_stellen(rundgaenge, tipps)
+    grund = texte.get(ENTDECKEN_GRUNDSPRACHE) or {}
+    da = [k for k, _, in_datei in stellen if in_datei or k in grund]
+    h = []
+    for spr in sorted(x for x in texte if x != ENTDECKEN_GRUNDSPRACHE):
+        n = sum(1 for k in da if k not in texte[spr])
+        if n:
+            h.append(f'Rundgänge und Tipps auf {spr}: '
+                     + ('ein Text fehlt, dort erscheint der deutsche' if n == 1 else f'{n} Texte fehlen, dort erscheinen die deutschen'))
+    if any(in_datei for _, _, in_datei in stellen) and not any(x != ENTDECKEN_GRUNDSPRACHE for x in texte):
+        h.append('Die Rundgänge und Tipps dieses Pakets gibt es nur in einer Sprache: Ihre Texte stehen direkt in der Datei statt in '
+                 'texte/<sprache>/entdecken.json (REGELN.md, „Rundgänge und Tipps“)')
+    return h
 
 
 # Beschriftungen je Sprache (Ablago #728, Registry #135): Form prüft das Schema; hier, was es nicht kann.
@@ -2410,9 +2538,13 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
                                        tuple((m.get('code') or {}).get('ereignisse') or []) if isinstance(m.get('code'), dict) else ())
     fehler += pruefe_ablaufvorlagen(geladen.get('ablaufvorlagen', []) or [], typfelder, str(m.get('id')), abh, str(m.get('dms', '')))
     if 'rundgaenge' in inhalte or 'tipps' in inhalte:
+        e_texte, e_fehler = lies_entdecken_texte(ordner)
+        fehler += e_fehler
         fehler += pruefe_entdecken(geladen.get('rundgaenge'), geladen.get('tipps'), geladen.get('mappentypen', []) or [], str(m.get('id')), abh,
                                    str(m.get('version', '')), str(m.get('dms', '')), str(inhalte.get('rundgaenge', 'inhalt.rundgaenge')),
-                                   str(inhalte.get('tipps', 'inhalt.tipps')))
+                                   str(inhalte.get('tipps', 'inhalt.tipps')), texte=e_texte)
+    elif (ordner / 'texte').is_dir() and any((ordner / 'texte').glob('*/entdecken.json')) and not m.get('sprache'):
+        fehler.append('texte/<sprache>/entdecken.json: Das Paket hat weder inhalt.rundgaenge noch inhalt.tipps')
 
     # tests/erwartung.yaml stimmt mit dem Inhalt überein.
     erw_pfad = ordner / 'tests' / 'erwartung.yaml'
@@ -2724,6 +2856,7 @@ def hinweise(ordner: Path, basis: str | None = None) -> list[str]:
     veraltet = (veraltete_verweise(ordner) if (ordner / 'manifest.yaml').exists() else []) + beispiel_groessen(ordner)
     if ordner.name != 'vorlage' and (ordner / 'manifest.yaml').exists():
         veraltet += sprach_hinweise(ordner, basis)
+        veraltet += entdecken_hinweise_von(ordner)
     if ordner.name == 'vorlage' or not (ordner / 'manifest.yaml').exists():
         return veraltet
     if not (WURZEL / 'werkzeuge' / 'vorlagen.py').exists() or not (WURZEL / 'werkzeuge' / 'kategorien.yaml').exists():
@@ -2744,6 +2877,19 @@ def hinweise(ordner: Path, basis: str | None = None) -> list[str]:
                  f'Bitte ein Symbol im Manifest setzen (symbol: …), erlaubt: {", ".join(vorlagen.symbolnamen())} (REGELN.md, „Symbol“)')
     h += kurzanleitung_hinweise(m)
     return h
+
+
+def entdecken_hinweise_von(ordner: Path) -> list[str]:
+    """Hinweise zu den Sprachen der Rundgänge und Tipps eines Paketordners (Ablago #1307)."""
+    try:
+        m = yaml.safe_load((ordner / 'manifest.yaml').read_text(encoding='utf-8'))
+        inh = (m or {}).get('inhalt') or {}
+        if not isinstance(inh, dict) or not (inh.get('rundgaenge') or inh.get('tipps')):
+            return []
+        lade = lambda k: yaml.safe_load((ordner / inh[k]).read_text(encoding='utf-8')) if inh.get(k) else None  # noqa: E731
+        return entdecken_hinweise(lade('rundgaenge'), lade('tipps'), lies_entdecken_texte(ordner)[0])
+    except Exception:  # noqa: BLE001 – meldet schon pruefe()
+        return []
 
 
 def kurzanleitung_hinweise(m: dict) -> list[str]:

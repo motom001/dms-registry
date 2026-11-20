@@ -1,7 +1,10 @@
 # Rundgänge dieses Pakets (Ablago ab 0.285.0, dann dms: ">=0.285.0"). Schema: schema/inhalt.schema.json
 # Im Manifest einkommentieren: inhalt.rundgaenge: inhalt/rundgaenge.yaml – REGELN.md, „Rundgänge und Tipps“.
 # Ein Rundgang führt durch eine Aufgabe; Ablago hebt Schritt für Schritt eine Stelle hervor. Er startet nie von selbst:
-# Mit nach_installation bietet Ablago ihn 30 Tage lang als Tipp an. Texte direkt hier, in Du-Form.
+# Mit nach_installation bietet Ablago ihn 30 Tage lang als Tipp an. Texte in Du-Form.
+# Texte in mehreren Sprachen (Ablago ab 0.293.2, #1307): titel, beschreibung, text, ort … weglassen und stattdessen in
+# texte/de/entdecken.json und texte/en/entdecken.json schreiben – Schlüssel wie „rundgang.beispiel-anlegen.titel“ oder
+# „rundgang.beispiel-anlegen.datum.text“ (Unterstriche werden zu Bindestrichen). REGELN.md, „Rundgänge und Tipps“.
 # Ziele sind Anker aus werkzeuge/anker.yaml (Kopie aus Ablago), z. B. neu, liste, mappe.feld:<key>, mappe.register:<key>.
 
 - schluessel: beispiel_anlegen
