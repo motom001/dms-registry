@@ -38,6 +38,10 @@ Ein Mappentyp für **alle Verträge** – Strom, Internet, Handy, Streaming, Mit
 
 Beispiele für den Status: „läuft – kündigen bis 14.02.2028, Ende dann 14.03.2028“ · „läuft – jederzeit kündbar mit 3 Monaten zum Monatsende, frühestens zum 28.02.2027“ · „läuft – endet am 31.12.2026 von selbst“ · „gekündigt zum 20.06.2028“ · „beendet am 20.06.2028“.
 
+## Ansichten
+
+*Verträge* mit Symbol, darunter *Kündigen bald*, *Gekündigt*, *Vertragsarten* und *Versicherungen* (Verträge mit ausgefüllter Versicherung) mit *Sachversicherungen* (Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz) und *Personenversicherungen* (Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall).
+
 ## Vertragsarten
 
 Mitgeliefert (als Vorgaben, sie bleiben nach der Installation und du kannst sie ändern): Strom, Gas, Wasser, Internet, Mobilfunk, Streaming, Zeitschrift, Mitgliedschaft, Miete, Versicherung, Sonstiges. Wählst du am Vertrag eine Vertragsart, schlägt Ablago ihre üblichen Fristen in leere Felder vor. Eigene Vertragsarten legst du einfach dazu; jede mitgelieferte hat im Register *Vorlagen* die Vorlage „Kündigung“.

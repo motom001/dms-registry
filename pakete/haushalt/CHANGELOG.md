@@ -1,5 +1,9 @@
 # Änderungen
 
+## 3.2.0
+
+- Ansichten mit Symbolen: *Haushalt*, darunter je Mappentyp eine Ansicht sowie *Läuft bald ab* und *Garantie läuft ab*. *Verträge*, *Versicherungen* (mit Sach- und Personenversicherungen) und *Kündigung in den nächsten 3 Monaten* entfallen – sie stehen im Paket Verträge. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
+
 ## 3.1.0
 
 - **Rundgang und Tipp auf Englisch** (Ablago #1307, dms-registry #202): Die Texte von „Ausweis ablegen“ und vom Tipp zu *Garantie bis* stehen jetzt in `texte/de/entdecken.json` und `texte/en/entdecken.json`. Ablago zeigt sie in der Sprache der Person. Braucht **Ablago 0.293.2**.

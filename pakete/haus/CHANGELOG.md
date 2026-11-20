@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.6.0
+
+- Ansichten mit Symbolen: *Haus*, darunter *Immobilien*, *Wartungen*, *Zählerstände* und *Wartung fällig*. *Zählerstände dieses Jahr* und *letztes Jahr* entfallen – solche Ansichten legst du dir bei Bedarf selbst an. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
+
 ## 1.5.1
 
 - Kurzanleitung „So nutzt du es“ im Katalog und nach der Installation in Ablago (dms-registry #198, motom001/dms#1047).

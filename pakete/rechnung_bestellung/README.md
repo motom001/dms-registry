@@ -36,7 +36,7 @@ Eine Bestellung ist in Ablago **kein Vertrag**: Verträge laufen (Laufzeit, Verl
 
 **Beispiel:** Lena bestellt online einen Wasserkocher. Sie legt eine Bestellung an (Händler, Bestellnummer, Rücksendefrist bis) und hängt die Bestellbestätigung aus der E-Mail an. Kommt die Rechnung, wählt sie dort unter *Einzelheiten* bei „Gehört zu Vertrag / Bestellung“ die Bestellung – die Rechnung erscheint an der Bestellung, Bestätigung und Rechnung liegen zusammen.
 
-Ansichten: *Rechnungen* mit *Offen*, *Dieses Jahr*, *Lieferscheine* und *Bestellungen* (darunter *Unterwegs*: bestellt, versandt oder teilweise angekommen).
+Ansichten: *Rechnungen und Bestellungen*, darunter *Rechnungen* (mit *Offen*), *Bestellungen* (mit *Unterwegs*: bestellt, versandt oder teilweise angekommen) und *Lieferscheine*.
 
 ## So rechnet das Paket
 

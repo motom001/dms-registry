@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.7.0
+
+- Ansichten mit Symbolen; neu *Versicherungen* mit *Sachversicherungen* und *Personenversicherungen* (bisher im Paket Haushalt). Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
+
 ## 1.6.0
 
 - **Abbuchung vom Konto** (dms-registry #212): Unter *Kosten* die Felder **Abbuchung von Konto** (ein Konto aus dem Paket Finanzen, wenn es installiert ist) und **Mandatsreferenz**. Am Konto steht der Vertrag dann unter „Was läuft über dieses Konto?“ – praktisch beim Kontowechsel.

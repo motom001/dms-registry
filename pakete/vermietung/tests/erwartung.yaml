@@ -1,6 +1,6 @@
 # Was nach der Installation im DMS vorhanden sein muss.
 mappentypen: [mietobjekt, wohnung, nebenkostenabrechnung]
-sichten: [vermietung, mietobjekte, wohnungen, mietvertraege, nebenkosten, ausgaben, ausgaben_dieses_jahr, ausgaben_letztes_jahr, ausgaben_umlagefaehig, abrechnung_offen, mieterhoehung, vertrag_endet]
+sichten: [vermietung, mietobjekte, wohnungen, mietvertraege, nebenkosten, ausgaben, abrechnung_offen, mieterhoehung, vertrag_endet]
 beispiele: 12
 wortlisten: 5
 automatisierungen: 2

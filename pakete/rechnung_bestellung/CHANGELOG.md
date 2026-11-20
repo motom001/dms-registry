@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.0
+
+- Ansichten: *Rechnungen und Bestellungen*, darunter je Mappentyp eine Ansicht mit Symbol – *Rechnungen* (mit *Offen*), *Bestellungen* (mit *Unterwegs*) und *Lieferscheine*. *Dieses Jahr* entfällt. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
+
 ## 1.1.0
 
 - **Steuerjahr und Konto aus dem Paket Finanzen** (dms-registry #212): Rechnungen und Bestellungen hängt jetzt von Finanzen 1.0.0 ab. *Steuerjahr* zeigt auf das Steuerjahr aus Finanzen (bisher optional aus Haushalt), neben *Bezahlt per* gibt es das Feld **Konto** – von welchem Konto bezahlt oder auf welches eingegangen.

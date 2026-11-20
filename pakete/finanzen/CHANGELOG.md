@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.0
+
+- Ansichten mit Symbolen. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
+
 ## 1.1.0
 
 - **Tipps auf Englisch** (Ablago #1307, dms-registry #202): Die Texte der drei Tipps stehen jetzt in `texte/de/entdecken.json` und `texte/en/entdecken.json`. Ablago zeigt sie in der Sprache der Person. Braucht **Ablago 0.293.2**.

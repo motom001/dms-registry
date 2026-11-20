@@ -29,7 +29,7 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 - **Nächste Mieterhöhung möglich ab** am Mietvertrag (Abschnitt *Miete*): je nach Vertrag die nächste Staffel, die nächste Indexanpassung oder der früheste Termin für eine Erhöhung – das Datum trägst du selbst ein.
 - **Kündigen bis** und **Endet am** am Mietvertrag rechnet das Paket Verträge aus und erinnert über seine Automatisierung „Vertrag rechtzeitig kündigen“.
 
-**Ansichten:** *Vermietung* mit allem und darunter *Mietobjekte*, *Wohnungen*, *Mietverträge*, *Nebenkostenabrechnungen*, *Ausgaben* (darunter *dieses Jahr*, *letztes Jahr* für die Anlage V und *Umlagefähig letztes Jahr* für die nächste Abrechnung) sowie *Abrechnung offen*, *Mieterhöhung möglich* und *Vertrag endet bald*.
+**Ansichten:** *Vermietung* mit allem und darunter *Mietobjekte*, *Wohnungen*, *Mietverträge*, *Nebenkostenabrechnungen*, *Ausgaben* sowie *Abrechnung offen*, *Mieterhöhung möglich* und *Vertrag endet bald*.
 
 **Gleichbedeutende Wörter für die Suche:** *Nebenkosten, Betriebskosten* · *Nebenkostenabrechnung, Betriebskostenabrechnung* · *Kaltmiete, Nettokaltmiete, Grundmiete* · *Kaution, Mietkaution, Mietsicherheit* · *Mieter, Mietpartei*. Sie stehen in Ablago unter Werkbank → Suche.
 

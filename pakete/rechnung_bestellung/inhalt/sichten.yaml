@@ -1,30 +1,28 @@
 # Ansichten des Pakets Rechnungen und Bestellungen. Schema: schema/inhalt.schema.json
 # Oben „Rechnungen und Bestellungen“ (nicht „Rechnungen“): Solange das alte Paket Rechnungen noch installiert ist, hat
 # seine Ansicht diesen Namen – zwei gleich benannte Ansichten auf der obersten Ebene lässt Ablago nicht zu.
+# Ab 1.2.0 (Thomas, 20.11.2026): darunter je Mappentyp eine Ansicht mit Symbol – Rechnungen (mit „Offen“), Bestellungen
+# (mit „Unterwegs“), Lieferscheine; „Dieses Jahr“ entfällt.
 - { schluessel: rechnungen, name: Rechnungen und Bestellungen, beschreibung: Alle Rechnungen, Quittungen, Gutschriften, Bestellungen und Lieferscheine, symbol: receipt, typen: [rechnung, bestellung, lieferschein], beschriftungen: { en: { name: "Invoices and orders", beschreibung: "All invoices, receipts, credit notes, orders and delivery notes" } } }
+- { schluessel: rechnungen_liste, name: Rechnungen, symbol: euro, beschreibung: Rechnungen, Quittungen und Gutschriften, eltern: rechnungen, typen: [rechnung], beschriftungen: { en: { name: "Invoices", beschreibung: "Invoices, receipts and credit notes" } } }
 - schluessel: offen
   name: Offen
   beschreibung: Noch nicht bezahlt
   beschriftungen: { en: { name: "Open", beschreibung: "Not paid yet" } }
-  eltern: rechnungen
+  eltern: rechnungen_liste
+  symbol: clock
   typen: [rechnung]
   bedingungen:
     - { feld: bezahlt_am, operator: leer }
     - { feld: zahlungseingang_am, operator: leer }
-- schluessel: dieses_jahr
-  name: Dieses Jahr
-  beschriftungen: { en: { name: "This year" } }
-  eltern: rechnungen
-  typen: [rechnung]
-  bedingungen:
-    - { feld: datum, operator: imZeitraum, wert: { art: jahr } }
-- { schluessel: lieferscheine, name: Lieferscheine, eltern: rechnungen, typen: [lieferschein], beschriftungen: { en: { name: "Delivery notes" } } }
-- { schluessel: bestellungen, name: Bestellungen, beschreibung: Einkäufe von der Bestellung bis zur Lieferung, eltern: rechnungen, typen: [bestellung], beschriftungen: { en: { name: "Orders", beschreibung: "Purchases from order to delivery" } } }
+- { schluessel: lieferscheine, name: Lieferscheine, symbol: file-text, eltern: rechnungen, typen: [lieferschein], beschriftungen: { en: { name: "Delivery notes" } } }
+- { schluessel: bestellungen, name: Bestellungen, symbol: shopping-cart, beschreibung: Einkäufe von der Bestellung bis zur Lieferung, eltern: rechnungen, typen: [bestellung], beschriftungen: { en: { name: "Orders", beschreibung: "Purchases from order to delivery" } } }
 - schluessel: unterwegs
   name: Unterwegs
   beschreibung: Bestellt oder versandt, noch nicht angekommen
   beschriftungen: { en: { name: "On the way", beschreibung: "Ordered or shipped, not arrived yet" } }
   eltern: bestellungen
+  symbol: send
   typen: [bestellung]
   bedingungen:
     - { feld: lieferstand, operator: einerVon, wert: { art: fest, wert: [bestellt, versandt, teilweise] } }
