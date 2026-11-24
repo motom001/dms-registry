@@ -1,5 +1,12 @@
 # Änderungen
 
+## 3.0.0
+
+- **Kontoauszug ohne „Zeitraum“** (dms-registry #252): Das Feld wurde nirgends ausgewertet und ergibt sich aus „Von“ und „Bis“. Es entfällt.
+- **Titel sprechender:** z. B. „Kontoauszug 12: 01/2026 - 03/2026 – Girokonto Sparkasse“ (Art, Nummer, Monat/Jahr von–bis, Konto gekürzt auf 25 Zeichen).
+- **Aus dem Dokument:** Art, Von und Bis werden bei „Aus Dokument ausfüllen“ gelesen; „Bis“ darf nicht in der Zukunft liegen.
+- **„Woran man ihn erkennt“** ist vorbelegt (de/en) – hilft der Klassifizierung beim Übernehmen von Dokumenten. Ein Update setzt es nur, wenn das Feld in Ablago noch leer ist.
+
 ## 2.2.0
 
 - **Neuer Typ Steuernachweis** (dms-registry #250): Jahresbescheinigungen für die Steuer, die nicht von der Bank kommen – Lohnsteuerbescheinigung, Beitragsbescheinigung, Altersvorsorge, Spendenquittung, haushaltsnahe Dienstleistungen, Kinderbetreuung. Mit Steuerjahr (Pflicht, steht dann unter „Belege“), Person, „Ausgestellt von“, „Betrifft“ (Arbeitsverhältnis, Vertrag, Vorsorge, Wohnung) und Betrag – bei der Lohnsteuerbescheinigung „Bruttoarbeitslohn“. Neue Ansicht *Steuernachweise*.

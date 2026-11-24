@@ -1,5 +1,9 @@
 # Änderungen
 
+## 5.2.0
+
+- **Beispiele:** Die Kontoauszüge von Familie Muster ohne „Zeitraum“ – das Feld gibt es ab Finanzen 3.0.0 nicht mehr (dms-registry #252).
+
 ## 5.1.0
 
 - **Tipp am Arbeitsverhältnis** (dms-registry #250): Die Lohnsteuerbescheinigung legst du als **Steuernachweis** (Paket Finanzen 2.2.0) an und wählst unter „Betrifft“ das Arbeitsverhältnis – dann steht sie dort unter „Verknüpfungen“ und am Steuerjahr unter „Belege“. Braucht Finanzen ab 2.2.0.

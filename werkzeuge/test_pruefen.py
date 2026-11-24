@@ -1203,6 +1203,20 @@ class Stufe(unittest.TestCase):
             self.assertTrue(any('nutzt netz, netz_strom, netz_weiter, aber code.netz nennt keine Ziele' in f for f in pruefen.pruefe(ziel, None)))
 
 
+
+class ErkennbarAn(unittest.TestCase):
+    """„Woran man ihn erkennt“ am Mappentyp (Registry #252, DMS #937)."""
+
+    def test_schema(self):
+        import json, jsonschema
+        schema = json.loads((WURZEL / 'schema' / 'inhalt.schema.json').read_text(encoding='utf-8'))
+        typ = {'$ref': '#/$defs/mappentyp', '$defs': schema['$defs']}
+        basis = {'schluessel': 'probe', 'name': 'Probe', 'beschreibung': 'Probe.', 'felder': [{'key': 'titel', 'label': 'Titel', 'typ': 'text'}], 'register': [{'key': 'allgemein', 'name': 'Allgemein', 'art': 'felder', 'felder': ['titel']}]}
+        jsonschema.validate({**basis, 'erkennbarAn': 'Überschrift „Probe“', 'beschriftungen': {'en': {'erkennbarAn': 'Heading “Probe”'}}}, typ)
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate({**basis, 'erkennbarAn': 'x' * 301}, typ)
+
+
 if __name__ == '__main__':
     unittest.main()
 
