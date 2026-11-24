@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.5.1
+
+- **Zeitgrenze verständlich** (dms-registry #241): Am Feld steht der erlaubte Bereich „10–55 Sekunden“, die Hilfe nennt keine weiteren Zahlen mehr. Vorgabe (50), Prüfung und Text passen zusammen.
+
 ## 1.5.0
 
 - **Claude (Anthropic) als Anbieter** (dms-registry #229): Neue Einstellung **Anbieter** – *OpenAI-kompatibel* wie bisher (Ollama, LM Studio, LocalAI …) oder *Claude (Anthropic)*. Für Claude spricht das Paket die Messages API: Kopf `x-api-key` und `anthropic-version`, Hinweis von Ablago als `system`, ohne `temperature` (neuere Modelle lehnen Werte unter 1 ab), **Structured Outputs** (`output_config.format`) für „Aus Dokument ausfüllen“ und „Wohin gehört das?“ und die Antwort Stück für Stück als Ereignisse. „Verbindung testen“ zeigt Modell und Antwortzeit wie bisher.
