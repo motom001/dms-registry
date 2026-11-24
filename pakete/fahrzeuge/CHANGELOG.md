@@ -1,5 +1,11 @@
 # Änderungen
 
+## 2.3.0
+
+- **Neuer Mappentyp „Hauptuntersuchung“** (dms-registry #227): der Prüfbericht mit Prüfstelle, Bericht-Nr., Kilometerstand, Ergebnis, Mängeln und nächster HU. „Nachprüfung bis“ erscheint nur bei erheblichen oder gefährlichen Mängeln; die Automatisierung „Nachprüfung der HU“ erinnert eine Woche vorher. Am Fahrzeug stehen die Hauptuntersuchungen unter „Verknüpfungen“. Dazu eine Ansicht und ein Beispiel zum Familienauto. „HU fällig“ am Fahrzeug trägst du vorerst noch selbst ein – eine Automatisierung übernimmt das, sobald Ablago es kann.
+- **An- und Abmeldung am Fahrzeug:** Status (zugelassen, vorübergehend abgemeldet, außer Betrieb), zugelassen seit, abgemeldet am, Saisonkennzeichen und Zulassungsstelle. Fahrzeuge außer Betrieb fallen aus „Fahrzeuge“ und „HU fällig“. Neue Fahrzeuge starten als „zugelassen“; bei vorhandenen setzt du den Status einmal selbst, sonst fehlen sie in den Ansichten.
+- **Tipp:** Beim Abmelden oder Verkaufen an die Kfz-Versicherung denken. Braucht Ablago 0.293.2.
+
 ## 2.2.1
 
 - **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Fahrzeuge“ statt „12 × Fahrzeug“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.

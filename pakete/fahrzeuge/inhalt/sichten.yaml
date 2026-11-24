@@ -1,6 +1,7 @@
 # Ansichten des Pakets Fahrzeuge. Schema: schema/inhalt.schema.json
 # Ab dieser Version (Thomas, 20.11.2026): oben eine Ansicht mit dem Namen des Pakets und Symbol, darunter je Mappentyp
 # eine Ansicht. Fristen-Ansichten bleiben vorerst hier und ziehen unter „Fristen“ aus Basis, sobald Ablago das kann (dms #1517).
+# Ab 2.3.0 (#227): Fahrzeuge außer Betrieb fallen aus „Fahrzeuge“ und „HU fällig“; neu „Hauptuntersuchungen“.
 # Ab 2.2.0 ohne „Alle Fahrzeuge“ (doppelt) und „Rechnungen zu Fahrzeugen“ (stehen am Fahrzeug unter „Rechnungen“).
 - schluessel: fahrzeuge
   name: Fahrzeuge
@@ -8,6 +9,8 @@
   beschriftungen: { en: { name: "Vehicles", beschreibung: "All vehicles" } }
   symbol: car
   typen: [fahrzeug]
+  bedingungen:
+    - { feld: status, operator: einerVon, wert: { art: fest, wert: [zugelassen, vorübergehend abgemeldet] } }
 - schluessel: hu_faellig
   name: HU fällig
   beschreibung: Fahrzeuge, deren Hauptuntersuchung in den nächsten 3 Monaten fällig oder schon überfällig ist
@@ -17,3 +20,5 @@
   typen: [fahrzeug]
   bedingungen:
     - { feld: hu_faellig, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }
+    - { feld: status, operator: einerVon, wert: { art: fest, wert: [zugelassen, vorübergehend abgemeldet] } }
+- { schluessel: hauptuntersuchungen, name: Hauptuntersuchungen, symbol: clipboard-check, eltern: fahrzeuge, typen: [hauptuntersuchung], beschriftungen: { en: { name: "Main inspections" } } }
