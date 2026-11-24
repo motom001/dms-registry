@@ -34,7 +34,7 @@ Antrag, Bescheid, Änderungsbescheid und Widerspruch zeigen aufeinander. Am Besc
 
 **Rundgang und Tipps:** Der Rundgang **Ausweis ablegen** zeigt an einem leeren Formular, wo Art, Person, *Gültig bis* und der Ort des Originals hingehören und wohin Briefe dazu kommen. Zwei Tipps führen zu *Einspruch bis* und *Betrifft* am Bescheid – auf Deutsch und Englisch.
 
-**Beispiele (optional):** Für die erfundene Familie Muster (Personen aus Basis) der Steuerbescheid 2025, der Kfz-Steuerbescheid zum Familienauto „MU-ST 123“, Jonas' Personalausweis und seine Geburtsurkunde. *Betrifft* setzt du selbst, wenn Finanzen bzw. Fahrzeuge installiert sind.
+**Beispiele (optional):** Finanzamt und Hauptzollamt Musterstadt als Organisationen, dazu für die erfundene Familie Muster (Personen aus Basis) der Steuerbescheid 2025, der Kfz-Steuerbescheid zum Familienauto „MU-ST 123“, Jonas' Personalausweis und seine Geburtsurkunde. *Betrifft* setzt du selbst, wenn Finanzen bzw. Fahrzeuge installiert sind.
 
 **Bisher woanders:** „Ausweis & Urkunde“ stand bis Haushalt 3.x im Paket Haushalt, die Bescheid-Felder bis Finanzen 1.x am Steuerjahr. Einen Umzug gibt es nicht.
 
