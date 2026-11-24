@@ -5,3 +5,7 @@
 - haushalt-v4.0.0   # Ausweis & Urkunde ziehen ohne Umzug nach „Ämter & Papiere“ (#225, Thomas 24.11.2026)
 - finanzen-v2.0.0   # Bescheid-Felder am Steuerjahr entfallen, Steuerbescheid ist ein Bescheid aus „Ämter & Papiere“ (#225, Thomas 24.11.2026)
 - haushalt-v5.0.0   # Gesundheit zieht ohne Umzug in das Paket Gesundheit (#226, Thomas 24.11.2026)
+# Haushalt 5.1.0 (#250): Auf main scheitert Haushalt 5.0.0 zusammen mit Finanzen 2.1.0 (Beispiel-Kontoauszug ohne die
+# damals pflichtige Art, #248) – den alten Stand kann die CI nicht mehr installieren. Finanzen 2.2.0 macht die Art
+# wieder optional (Vorgabe Kontoauszug); geprüft wird hier nur die frische Installation.
+- haushalt-v5.1.0
