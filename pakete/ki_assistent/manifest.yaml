@@ -1,9 +1,10 @@
-# Paket KI-Assistent (Stufe 2 des KI-Pakets, #31/#45): Adapter zu einem OpenAI-kompatiblen KI-Dienst.
+# Paket KI-Assistent (Stufe 2 des KI-Pakets, #31/#45): Adapter zu einem OpenAI-kompatiblen KI-Dienst oder (ab 1.5.0,
+# dms-registry #229) zu Claude über die Messages API von Anthropic.
 # Schema: schema/manifest.schema.json
 schema: 1
 id: ki_assistent
 name: KI-Assistent
-version: 1.4.0
+version: 1.5.0
 beschreibung: Beantwortet Fragen an deine Ablage, füllt Felder aus Dokumenten aus und schlägt vor, wohin neue Post gehört. Dafür brauchst du einen KI-Dienst, den du selbst wählst, z. B. Ollama auf deinem Heimserver – das Paket stellt nur die Verbindung her.
 autor:
   name: Thomas Meissner
@@ -40,24 +41,31 @@ code:
   netz: []
   einstellungen:
     - abschnitt: KI-Dienst
-      hilfe: Ein Dienst mit OpenAI-kompatibler Schnittstelle, z. B. Ollama, LocalAI oder der Server von llama.cpp. Betrieb und Hosting des Dienstes liegen außerhalb von Ablago – im eigenen Netz verlässt nichts das Haus, bei einem anderen Anbieter ist es eine Vertrauensbeziehung zu diesem Dienstleister.
+      hilfe: Ein Dienst mit OpenAI-kompatibler Schnittstelle, z. B. Ollama, LocalAI oder der Server von llama.cpp, oder Claude von Anthropic. Betrieb und Hosting des Dienstes liegen außerhalb von Ablago – im eigenen Netz verlässt nichts das Haus, bei einem anderen Anbieter ist es eine Vertrauensbeziehung zu diesem Dienstleister.
       felder:
+        # Ab 1.5.0 (#229): Anbieter. Fehlt der Wert (Einstellungen von vorher), gilt OpenAI-kompatibel.
+        - schluessel: anbieter
+          name: Anbieter
+          typ: auswahl
+          optionen: [OpenAI-kompatibel, Claude (Anthropic)]
+          standard: OpenAI-kompatibel
+          hilfe: OpenAI-kompatibel für Ollama, LM Studio, LocalAI, llama.cpp und ähnliche Dienste. Claude (Anthropic) mit der Adresse https://api.anthropic.com/v1 und einem API-Schlüssel aus der Claude Console – dann verlassen die Ausschnitte dein Haus und gehen an Anthropic.
         - schluessel: dienst
           name: Dienst-Adresse
           typ: adresse
           pflicht: true
           beispiel: "http://ollama:11434/v1"
-          hilfe: Adresse der Schnittstelle, endet meist auf /v1 – bei Ollama im selben Docker-Netz z. B. http://ollama:11434/v1, auf einem anderen Rechner http://192.168.1.20:11434/v1.
+          hilfe: Adresse der Schnittstelle, endet meist auf /v1 – bei Ollama im selben Docker-Netz z. B. http://ollama:11434/v1, auf einem anderen Rechner http://192.168.1.20:11434/v1. Für Claude https://api.anthropic.com/v1.
         - schluessel: modell
           name: Modell
           typ: text
           pflicht: true
           laenge_max: 200
-          hilfe: Name des Modells beim Dienst, z. B. ministral-3:3b oder granite4.1:3b (bei Ollama vorher mit „ollama pull …“ holen). „Verbindung testen“ zeigt, welche Modelle der Dienst kennt.
+          hilfe: Name des Modells beim Dienst, z. B. ministral-3:3b oder granite4.1:3b (bei Ollama vorher mit „ollama pull …“ holen), bei Claude z. B. claude-haiku-5-5. „Verbindung testen“ zeigt, welche Modelle der Dienst kennt.
         - schluessel: schluessel
           name: Schlüssel (API-Key)
           typ: geheim
-          hilfe: Nur für Dienste mit Anmeldung. Ollama im Heimnetz braucht keinen.
+          hilfe: Nur für Dienste mit Anmeldung. Ollama im Heimnetz braucht keinen, Claude immer – den API-Schlüssel aus der Claude Console (ein Claude-Abo allein reicht nicht). Ablago speichert ihn verschlüsselt.
         - schluessel: antwortlaenge
           name: Antwort höchstens (Tokens)
           typ: zahl

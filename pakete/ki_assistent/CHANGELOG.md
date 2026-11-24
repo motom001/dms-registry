@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.5.0
+
+- **Claude (Anthropic) als Anbieter** (dms-registry #229): Neue Einstellung **Anbieter** – *OpenAI-kompatibel* wie bisher (Ollama, LM Studio, LocalAI …) oder *Claude (Anthropic)*. Für Claude spricht das Paket die Messages API: Kopf `x-api-key` und `anthropic-version`, Hinweis von Ablago als `system`, ohne `temperature` (neuere Modelle lehnen Werte unter 1 ab), **Structured Outputs** (`output_config.format`) für „Aus Dokument ausfüllen“ und „Wohin gehört das?“ und die Antwort Stück für Stück als Ereignisse. „Verbindung testen“ zeigt Modell und Antwortzeit wie bisher.
+- Nötig ist ein **API-Schlüssel aus der Claude Console** und die Adresse `https://api.anthropic.com/v1`. Bei Claude verlassen die Ausschnitte dein Haus – die Einstellungen sagen das; „Was die KI lesen darf“ gilt unverändert.
+- Der Weg über Ollama und andere OpenAI-kompatible Dienste bleibt unverändert; bisherige Einstellungen gelten als *OpenAI-kompatibel*.
+- Tests mit einer Attrappe der Messages API (`tests/attrappe.mjs` kann jetzt beides).
+
 ## 1.4.0
 
 - **Alles Einstellbare im Reiter „Einstellungen“** (dms-registry #202, Ablago #996): Die Abschnitte **Was die KI lesen darf**, **Frag deine Ablage** (Höchstmenge je Frage) und **Als Standard für alle Mappentypen nutzen** unter *Aus Dokument ausfüllen* stehen jetzt an der passenden Stelle zwischen den Einstellungen des Pakets, mit eigener Hilfe. Die Werte hält weiter Ablago; bisherige Einstellungen bleiben.
