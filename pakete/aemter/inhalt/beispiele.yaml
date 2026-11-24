@@ -1,11 +1,17 @@
 # Beispiel-Mappen der erfundenen Familie Muster (Personen aus den Beispielen von Basis ab 1.10.0).
 # Behörden legst du selbst an; „Betrifft“ (Steuerjahr, Fahrzeug …) wählst du, wenn das andere Paket installiert ist.
 # Keine echten Nummern: Aktenzeichen und Steuernummer sind erfunden, die Steuer-ID fehlt bewusst.
+- typ: "basis:organisation"
+  schluessel: finanzamt
+  werte: { name: Finanzamt Musterstadt, art: [Behörde], ort: Musterstadt }
+- typ: "basis:organisation"
+  schluessel: hauptzollamt
+  werte: { name: Hauptzollamt Musterstadt, art: [Behörde], beschreibung: Zuständig für die Kfz-Steuer, ort: Musterstadt }
 - typ: bescheid
   schluessel: steuer2025
-  werte: { art: Steuer, an: [{ beispiel: "basis:lena" }, { beispiel: "basis:tom" }], aktenzeichen: "123/456/78901", bescheid_vom: "2026-08-12", betrag: 843.17, einspruch_bis: "2026-09-16", status: geprüft – in Ordnung, notiz: "Einkommensteuer 2025 – unter „Betrifft“ das Steuerjahr 2025 wählen, wenn das Paket Finanzen installiert ist." }
+  werte: { art: Steuer, von: { beispiel: finanzamt }, an: [{ beispiel: "basis:lena" }, { beispiel: "basis:tom" }], aktenzeichen: "123/456/78901", bescheid_vom: "2026-08-12", betrag: 843.17, einspruch_bis: "2026-09-16", status: geprüft – in Ordnung, notiz: "Einkommensteuer 2025 – unter „Betrifft“ das Steuerjahr 2025 wählen, wenn das Paket Finanzen installiert ist." }
 - typ: bescheid
-  werte: { art: Kfz-Steuer, an: [{ beispiel: "basis:tom" }], aktenzeichen: "KFZ-MU-ST-123", kassenzeichen: "4711.0815.2026", bescheid_vom: "2026-02-03", gilt_ab: "2026-01-01", betrag: -146, faellig_am: "2026-03-01", zahlweise: jährlich, status: offen, notiz: "Kfz-Steuer für das Familienauto MU-ST 123 – unter „Betrifft“ das Fahrzeug wählen, wenn das Paket Fahrzeuge installiert ist." }
+  werte: { art: Kfz-Steuer, von: { beispiel: hauptzollamt }, an: [{ beispiel: "basis:tom" }], aktenzeichen: "KFZ-MU-ST-123", kassenzeichen: "4711.0815.2026", bescheid_vom: "2026-02-03", gilt_ab: "2026-01-01", betrag: -146, faellig_am: "2026-03-01", zahlweise: jährlich, status: offen, notiz: "Kfz-Steuer für das Familienauto MU-ST 123 – unter „Betrifft“ das Fahrzeug wählen, wenn das Paket Fahrzeuge installiert ist." }
 - typ: ausweis
   werte: { art: Personalausweis, person_verweis: { beispiel: "basis:jonas" }, nummer: L01X00T47, ausgestellt_am: "2026-06-02", ende: "2032-06-01" }
 - typ: urkunde

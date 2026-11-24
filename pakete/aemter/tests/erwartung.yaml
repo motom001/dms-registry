@@ -1,6 +1,6 @@
 # Was nach der Installation in Ablago vorhanden sein muss (pruefen.py vergleicht das mit inhalt/).
 mappentypen: [antrag, bescheid, widerspruch, ausweis, urkunde, bescheinigung]
 sichten: [aemter, antraege, bescheide, widersprueche, ausweise, urkunden, bescheinigungen]
-beispiele: 4
+beispiele: 6
 wortlisten: 4
 automatisierungen: 4
