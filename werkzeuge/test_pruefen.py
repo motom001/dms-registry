@@ -1860,6 +1860,16 @@ class ManifestFelder202(unittest.TestCase):
         self.assertIn('ist neuer als die Version des Pakets', self.fehler(tipps=[self.tipp(ab_version='1.1.0')]))
         self.assertIn('den Schlüssel gibt es doppelt', self.fehler(tipps=[self.tipp(), self.tipp()]))
 
+    def test_tipp_mit_handbuch(self):
+        # Ablago #1524 (ab 0.305.0): genau eines von ziel, rundgang und handbuch; Startart erster_besuch bleibt Ablago vorbehalten.
+        t = {'schluessel': 'knoepfe', 'text': 'So sehen Knöpfe aus.', 'handbuch': 'benutzer/knoepfe/'}
+        self.assertEqual(self.paket(tipps=[t], dms='>=0.305.0'), [])
+        self.assertIn('erst ab 0.305.0', self.fehler(tipps=[t], dms='>=0.293.2'))
+        self.assertIn('genau eines von „ziel“', self.fehler(tipps=[{**t, 'ziel': 'startseite.suche'}], dms='>=0.305.0'))
+        v = pruefen.inhalt_validator('tipps')
+        self.assertTrue(list(v.iter_errors([{**t, 'handbuch': 'https://example.org/'}])))
+        self.assertTrue(list(pruefen.inhalt_validator('rundgaenge').iter_errors([{**self.rundgang(), 'start': 'erster_besuch'}])))
+
     def test_anker_aus_ablago(self):
         # Die Liste ist eine Kopie aus Ablago und kennt Muster.
         liste = pruefen.anker_liste()
