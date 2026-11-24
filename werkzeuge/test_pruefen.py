@@ -1166,6 +1166,43 @@ class Mappenaktionen(unittest.TestCase):
         self.assertEqual(self.pruefe(a, code=False), [])
 
 
+
+class Stufe(unittest.TestCase):
+    """Widersprüche zur Stufe für „Was Ablago darf“ (Registry #234)."""
+
+    def pruefe(self, quelltext: bool) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['id'] = 'probe'
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            if quelltext:
+                (ziel / 'code' / 'main.rs').write_text('fn main() {}\n', encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_vorlage_ohne_code(self):
+        self.assertFalse(any('Abschnitt code' in f for f in self.pruefe(False)))
+
+    def test_code_ohne_manifest(self):
+        self.assertTrue(any('Ablago hielte es für „nur Vorlagen“' in f for f in self.pruefe(True)))
+
+    @unittest.skipUnless((WURZEL / 'pakete' / 'ki_assistent' / 'code' / 'modul.wasm').exists(), 'Modul nicht gebaut')
+    def test_netz_ohne_ziele(self):
+        # Modul ruft dms.netz*, das Manifest nennt aber keine Ziele: Ablago führte es als „nur hier“.
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'ki_assistent'
+            shutil.copytree(WURZEL / 'pakete' / 'ki_assistent', ziel)
+            self.assertFalse(any('keine Ziele' in f for f in pruefen.pruefe(ziel, None)))
+            m = yaml.safe_load((ziel / 'manifest.yaml').read_text(encoding='utf-8'))
+            m['code']['netz'] = []
+            for b in m['code'].get('einstellungen') or []:
+                b['felder'] = [f for f in b.get('felder') or [] if f.get('typ') != 'adresse']
+            (ziel / 'manifest.yaml').write_text(yaml.safe_dump(m, allow_unicode=True), encoding='utf-8')
+            self.assertTrue(any('nutzt netz, netz_strom, netz_weiter, aber code.netz nennt keine Ziele' in f for f in pruefen.pruefe(ziel, None)))
+
+
 if __name__ == '__main__':
     unittest.main()
 
