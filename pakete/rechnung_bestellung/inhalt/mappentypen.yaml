@@ -5,8 +5,9 @@
 
 - schluessel: rechnung
   name: Rechnung
+  mehrzahl: Rechnungen
   beschreibung: Rechnung, Quittung, Kassenbon, Gutschrift oder Erstattung – eingehend oder ausgehend. Eine Gutschrift trägst du mit Minus ein.
-  beschriftungen: { en: { name: "Invoice", beschreibung: "Invoice, receipt, till receipt, credit note or refund – incoming or outgoing. Enter a credit note with a minus sign." } }
+  beschriftungen: { en: { name: "Invoice", mehrzahl: "Invoices", beschreibung: "Invoice, receipt, till receipt, credit note or refund – incoming or outgoing. Enter a credit note with a minus sign." } }
   titelVorlage: "{von} – {datum}"
   felder:
     # Oben, immer sichtbar (#208): je Reihe Rechnungssteller · Rechnungsempfänger · Status, Betrag · Rechnungsnummer ·
@@ -116,8 +117,9 @@
 
 - schluessel: steuerzeile
   name: Steuerzeile
+  mehrzahl: Steuerzeilen
   beschreibung: Umsatzsteuer zu einem Satz auf einer Rechnung. Gehört immer zu ihrer Rechnung und erscheint nur dort.
-  beschriftungen: { en: { name: "VAT line", beschreibung: "VAT at one rate on an invoice. Always belongs to its invoice and only appears there." } }
+  beschriftungen: { en: { name: "VAT line", mehrzahl: "VAT lines", beschreibung: "VAT at one rate on an invoice. Always belongs to its invoice and only appears there." } }
   # dms-registry #210: je Satz eine Zeile, beliebig viele; die Summen an der Rechnung rechnet das Paket.
   titelVorlage: "{satz}"
   gehoertZu: rechnung
@@ -141,8 +143,9 @@
 
 - schluessel: bestellung
   name: Bestellung
+  mehrzahl: Bestellungen
   beschreibung: Ein Einkauf von der Bestellung bis zur Lieferung – online oder im Betrieb. Bestätigungen hängen als Dokumente daran, Rechnung und Lieferschein zeigen darauf.
-  beschriftungen: { en: { name: "Order", beschreibung: "A purchase from order to delivery – online or for the business. Confirmations are attached as documents; invoice and delivery note point to it." } }
+  beschriftungen: { en: { name: "Order", mehrzahl: "Orders", beschreibung: "A purchase from order to delivery – online or for the business. Confirmations are attached as documents; invoice and delivery note point to it." } }
   # dms-registry #211: kein Vertrag (der ist für laufende Verträge mit Laufzeit und Kündigung), sondern ein einmaliger Vorgang.
   titelVorlage: "{von} – {datum}"
   felder:
@@ -176,8 +179,9 @@
 
 - schluessel: lieferschein
   name: Lieferschein
+  mehrzahl: Lieferscheine
   beschreibung: Lieferschein zu einer Bestellung – was geliefert wurde, und ob es vollständig war.
-  beschriftungen: { en: { name: "Delivery note", beschreibung: "Delivery note for an order – what was delivered and whether it was complete." } }
+  beschriftungen: { en: { name: "Delivery note", mehrzahl: "Delivery notes", beschreibung: "Delivery note for an order – what was delivered and whether it was complete." } }
   titelVorlage: "{von} – {datum}"
   felder:
     - { key: von, label: Lieferant, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, erkennung: { art: verweis }, beschriftungen: { en: { label: "Supplier" } } }
@@ -202,8 +206,9 @@
 
 - schluessel: rechnungsposition
   name: Rechnungsposition
+  mehrzahl: Rechnungspositionen
   beschreibung: Eine Zeile einer Rechnung. Gehört immer zu ihrer Rechnung und erscheint nur dort.
-  beschriftungen: { en: { name: "Invoice item", beschreibung: "One line of an invoice. Always belongs to its invoice and only appears there." } }
+  beschriftungen: { en: { name: "Invoice item", mehrzahl: "Invoice items", beschreibung: "One line of an invoice. Always belongs to its invoice and only appears there." } }
   # Ohne Nummer: „{nr}. …“ ergäbe sonst „. Bremsen vorne“ (Fund Entwicklung 11.11.); die Nr. steht in der Tabelle.
   titelVorlage: "{beschreibung}"
   gehoertZu: rechnung

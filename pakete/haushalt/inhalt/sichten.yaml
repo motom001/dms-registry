@@ -10,11 +10,12 @@
   beschreibung: Alle Unterlagen des Haushalts
   beschriftungen: { en: { name: "Household", beschreibung: "All household documents" } }
   symbol: sofa
-  typen: [arbeitsverhaeltnis, vorsorge, ausweis, gesundheit, anschaffung, bildung]
+  typen: [arbeitsverhaeltnis, arbeitsmedizin, vorsorge, ausweis, gesundheit, anschaffung, bildung]
 
-- { schluessel: arbeit, name: Arbeitsverhältnisse, symbol: briefcase, eltern: haushalt, typen: [arbeitsverhaeltnis], beschriftungen: { en: { name: "Employments" } }  }
+- { schluessel: arbeit, name: Arbeitsverhältnisse, symbol: briefcase-business, eltern: haushalt, typen: [arbeitsverhaeltnis], beschriftungen: { en: { name: "Employments" } }  }
+- { schluessel: arbeitsmedizin, name: Arbeitsmedizinische Vorsorge, symbol: stethoscope, eltern: haushalt, typen: [arbeitsmedizin], beschriftungen: { en: { name: "Occupational health checks" } }  }
 - { schluessel: vorsorge, name: Vorsorge, symbol: piggy-bank, eltern: haushalt, typen: [vorsorge], beschriftungen: { en: { name: "Pension" } }  }
-- { schluessel: ausweise, name: Ausweise & Urkunden, symbol: signature, eltern: haushalt, typen: [ausweis], beschriftungen: { en: { name: "IDs & certificates" } }  }
+- { schluessel: ausweise, name: Ausweise & Urkunden, symbol: id-card, eltern: haushalt, typen: [ausweis], beschriftungen: { en: { name: "IDs & certificates" } }  }
 - { schluessel: gesundheit, name: Gesundheit, symbol: heart-pulse, eltern: haushalt, typen: [gesundheit], beschriftungen: { en: { name: "Health" } }  }
 - { schluessel: anschaffungen, name: Anschaffungen, symbol: shopping-cart, eltern: haushalt, typen: [anschaffung], beschriftungen: { en: { name: "Purchases" } }  }
 - { schluessel: bildung, name: Bildung, symbol: graduation-cap, eltern: haushalt, typen: [bildung], beschriftungen: { en: { name: "Education" } }  }
@@ -25,7 +26,7 @@
   beschreibung: Ausweise, die in den nächsten 6 Monaten ablaufen oder schon abgelaufen sind
   beschriftungen: { en: { name: "Expiring soon", beschreibung: "IDs that expire in the next 6 months or have already expired" } }
   eltern: haushalt
-  symbol: bell
+  symbol: calendar-clock
   typen: [ausweis]
   bedingungen:
     - { feld: gueltig_bis, operator: kleiner, wert: { art: heute, versatz: 6, einheit: monate } }
@@ -34,7 +35,7 @@
   beschreibung: Anschaffungen, deren Garantie in den nächsten 3 Monaten endet
   beschriftungen: { en: { name: "Warranty expiring", beschreibung: "Purchases whose warranty ends in the next 3 months" } }
   eltern: haushalt
-  symbol: shield-check
+  symbol: badge-check
   typen: [anschaffung]
   bedingungen:
     - { feld: garantie_bis, operator: zwischen, wert: [{ art: heute }, { art: heute, versatz: 3, einheit: monate }] }

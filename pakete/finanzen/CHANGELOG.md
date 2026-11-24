@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.1
+
+- **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Kontoauszüge“ statt „12 × Kontoauszug“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.
+- **Treffendere Symbole** der Ansichten aus den 259 Symbolen von Ablago 0.304 (dms-registry #230): Konten (Bank), Kontoauszüge, Freistellungsaufträge, Steuerjahre. Ältere Ablago-Versionen zeigen ein neues Symbol einfach nicht.
+
 ## 1.2.0
 
 - Ansichten mit Symbolen. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).

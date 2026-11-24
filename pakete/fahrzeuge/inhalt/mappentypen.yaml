@@ -6,8 +6,9 @@
 
 - schluessel: fahrzeug
   name: Fahrzeug
+  mehrzahl: Fahrzeuge
   beschreibung: Auto, Motorrad, Wohnmobil, Anhänger oder E-Bike.
-  beschriftungen: { en: { name: "Vehicle", beschreibung: "Car, motorbike, motorhome, trailer or e-bike." } }
+  beschriftungen: { en: { name: "Vehicle", mehrzahl: "Vehicles", beschreibung: "Car, motorbike, motorhome, trailer or e-bike." } }
   titelVorlage: "{bezeichnung} – {kennzeichen}"
   felder:
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: "z. B. „Familienauto“ oder „VW Golf“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Family car” or “VW Golf”" } }  }

@@ -14,7 +14,7 @@
   beschreibung: Firmen, Banken, Versicherungen, Behörden und Praxen – mit ihren Niederlassungen
   beschriftungen: { en: { name: "Organisations", beschreibung: "Companies, banks, insurers, authorities and practices – with their branches" } }
   eltern: basis
-  symbol: landmark
+  symbol: building-2
   typen: [organisation]
 
 - schluessel: personen
@@ -31,5 +31,5 @@
   beschreibung: Wo Originale liegen
   beschriftungen: { en: { name: "Storage locations", beschreibung: "Where originals are kept" } }
   eltern: basis
-  symbol: archive
+  symbol: folder-archive
   typen: [ablageort]

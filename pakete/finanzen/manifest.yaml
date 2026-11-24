@@ -6,7 +6,7 @@ schema: 1
 id: finanzen
 name: Finanzen
 herausgeber: app.ablago
-version: 1.2.0
+version: 1.2.1
 beschreibung: Konten, Kontoauszüge, Freistellungsaufträge und Steuerjahre an einem Ort – privat wie im Betrieb. Ablago legt die Unterlagen ab, es bucht nicht.
 autor:
   name: Thomas Meissner

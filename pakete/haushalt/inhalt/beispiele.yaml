@@ -26,7 +26,10 @@
   schluessel: steuer2025
   werte: { jahr: "2025", abgegeben_am: "2026-05-20", bescheid_vom: "2026-08-12", ergebnis: 843.17, einspruch_bis: "2026-09-12" }
 - typ: arbeitsverhaeltnis
+  schluessel: tom_arbeit
   werte: { steuerjahr: [{ beispiel: steuer2025 }], person_verweis: { beispiel: tom }, taetigkeit: Elektroniker, beginn: "2018-08-01" }
+- typ: arbeitsmedizin
+  werte: { person_verweis: { beispiel: tom }, arbeitsverhaeltnis: { beispiel: tom_arbeit }, datum: "2025-11-12", anlass: Lärm, art: Pflichtvorsorge, naechste_vorsorge: "2028-11-12" }
 - typ: vorsorge
   werte: { art: gesetzliche Rente, person_verweis: { beispiel: lena }, vertragsnummer: "12 150378 M 007" }  # Beispielnummer mit ungültiger Prüfziffer
 - typ: ausweis

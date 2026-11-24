@@ -8,8 +8,9 @@
 
 - schluessel: mietobjekt
   name: Mietobjekt
+  mehrzahl: Mietobjekte
   beschreibung: Ein vermietetes Haus oder eine vermietete Eigentumswohnung – mit allen Wohnungen, Abrechnungen und Ausgaben.
-  beschriftungen: { en: { name: "Rental property", beschreibung: "A house or owned flat you let – with all units, statements and expenses." } }
+  beschriftungen: { en: { name: "Rental property", mehrzahl: "Rental properties", beschreibung: "A house or owned flat you let – with all units, statements and expenses." } }
   titelVorlage: "{bezeichnung}"
   felder:
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Mehrfamilienhaus Lindenstraße 4“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Apartment building Lindenstraße 4”" } }  }
@@ -55,8 +56,9 @@
 
 - schluessel: wohnung
   name: Wohnung
+  mehrzahl: Wohnungen
   beschreibung: Eine vermietbare Einheit in einem Mietobjekt – Wohnung, Gewerbeeinheit, Garage oder Stellplatz.
-  beschriftungen: { en: { name: "Unit", beschreibung: "A lettable unit in a rental property – flat, commercial unit, garage or parking space." } }
+  beschriftungen: { en: { name: "Unit", mehrzahl: "Units", beschreibung: "A lettable unit in a rental property – flat, commercial unit, garage or parking space." } }
   titelVorlage: "{mietobjekt} – {bezeichnung}"
   felder:
     - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Rental property" } }  }
@@ -91,8 +93,9 @@
 
 - schluessel: nebenkostenabrechnung
   name: Nebenkostenabrechnung
+  mehrzahl: Nebenkostenabrechnungen
   beschreibung: Die Betriebskostenabrechnung eines Jahres für ein Mietobjekt – mit Frist für den Versand an die Mieter.
-  beschriftungen: { en: { name: "Service charge statement", beschreibung: "One year’s operating cost statement for a rental property – with the deadline for sending it to the tenants." } }
+  beschriftungen: { en: { name: "Service charge statement", mehrzahl: "Service charge statements", beschreibung: "One year’s operating cost statement for a rental property – with the deadline for sending it to the tenants." } }
   titelVorlage: "Nebenkosten {jahr} – {mietobjekt}"
   felder:
     - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Rental property" } }  }

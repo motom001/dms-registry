@@ -23,7 +23,9 @@ Das Basis-Paket bringt die Mappentypen **Organisation**, **Niederlassung**, **Pe
 
 Dazu *Dokumente* und *Historie*. Die **Kundennummer** ist *deine* Nummer bei der Organisation – Kunden-, Mitglieds-, Versicherten- oder Patientennummer. Sie steht so auf Briefen und Rechnungen und hilft beim Zuordnen.
 
-**Eigene Organisation** (ab 1.7.0): Kennzeichne deine eigene Firma oder dein Gewerbe so. Ablago nimmt Name, Anschrift und Kontakt von dort für Datenschutz-Auskünfte und den Briefkopf von Vorlagen und liest die eigene Organisation nie als Absender eingehender Post. Den Haken setzt nur, wer Ablago verwaltet; mehrere eigene Organisationen sind möglich. Im Abschnitt **Datenschutz** stehen dann Verantwortlicher und – falls es einen gibt – Datenschutzbeauftragter (keine Rechtsberatung). AGB und Preislisten legst du unter *Dokumente* mit ihrem Stand im Namen ab, z. B. „AGB Stand 2026-01“.
+**Eigene Organisation** (ab 1.7.0): Kennzeichne deine eigene Firma oder dein Gewerbe so. Ablago nimmt Name, Anschrift und Kontakt von dort für Datenschutz-Auskünfte und den Briefkopf von Vorlagen und liest die eigene Organisation nie als Absender eingehender Post. Den Haken setzt nur, wer Ablago verwaltet; mehrere eigene Organisationen sind möglich. Ab 1.9.0 erscheint er nur, wenn die Ablage beruflich genutzt wird (Werkbank) – privat bleibt die Organisation aufgeräumt. Im Abschnitt **Datenschutz** stehen dann Verantwortlicher und – falls es einen gibt – Datenschutzbeauftragter (keine Rechtsberatung). **Verantwortlicher leer lassen**, wenn die Organisation selbst verantwortlich ist – das ist der Normalfall; ausfüllen nur, wenn jemand anderes verantwortlich ist, z. B. du als Person bei einem Einzelunternehmen. AGB und Preislisten legst du unter *Dokumente* mit ihrem Stand im Namen ab, z. B. „AGB Stand 2026-01“.
+
+**Wohin mit Hinweisschreiben?** Ein Brief ohne eigene Sache – etwa „das Gehalt kommt künftig später“ – gehört als Dokument zu der Sache, um die es geht (hier das Arbeitsverhältnis aus dem Paket Haushalt). Gibt es keine, leg ihn beim Absender unter *Dokumente* ab. Ein Tipp in Ablago erinnert daran (ab 1.9.0).
 
 ### Niederlassung
 
@@ -47,7 +49,7 @@ Andere Pakete (Haushalt, Haus, Vermietung, Fahrzeuge) verweisen im Feld *Verblei
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.230 (vorläufig; eigene Organisation und Datenschutz, Etappe 15). 1.6 lief ab 0.212 (Ablageort aus Basis), 1.5 ab 0.127, 1.0.0 ab 0.63.
+- Ablago ab Version 0.293.2 (Tipp mit Texten je Sprache). 1.8 lief ab 0.238 (eigene Organisation und Datenschutz), 1.6 ab 0.212 (Ablageort aus Basis), 1.5 ab 0.127, 1.0.0 ab 0.63.
 - keine weiteren Pakete
 
 ## Rechte und Netz

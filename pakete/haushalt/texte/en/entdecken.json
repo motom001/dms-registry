@@ -15,5 +15,8 @@
   "rundgang.ausweis-ablegen.original.titel": "Where is the original?",
   "rundgang.ausweis-ablegen.original.text": "Choose where you keep the paper, for example “Study › Cupboard › red folder”.",
   "rundgang.ausweis-ablegen.original.ort": "At the bottom of the form",
+  "rundgang.ausweis-ablegen.schreiben.titel": "And letters about it?",
+  "rundgang.ausweis-ablegen.schreiben.text": "File a letter as a document with the matter it is about – mail from the citizens’ office here, mail from your employer with the employment. If there is no such matter, file it with the sender.",
+  "rundgang.ausweis-ablegen.schreiben.ort": "At the top in the “Documents” tab",
   "tipp.garantie": "Enter “Warranty until” for a purchase – then Ablago reminds you in time before the warranty ends."
 }

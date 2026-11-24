@@ -12,7 +12,7 @@
   beschreibung: Verträge, die du in den nächsten drei Monaten kündigen müsstest, damit sie frühestmöglich enden
   beschriftungen: { en: { name: "Cancel soon", beschreibung: "Contracts you would have to cancel within the next three months to end them at the earliest date" } }
   eltern: vertraege
-  symbol: alarm-clock
+  symbol: calendar-clock
   typen: [vertrag]
   bedingungen:
     - { feld: kuendigen_bis, operator: zwischen, wert: [{ art: heute }, { art: heute, versatz: 3, einheit: monate }] }
@@ -21,7 +21,7 @@
   beschreibung: Verträge mit Kündigung, die noch nicht beendet sind
   beschriftungen: { en: { name: "Cancelled", beschreibung: "Cancelled contracts that have not ended yet" } }
   eltern: vertraege
-  symbol: clock
+  symbol: calendar-x
   typen: [vertrag]
   bedingungen:
     - { feld: gekuendigt_am, operator: nichtLeer }
@@ -31,7 +31,7 @@
   beschreibung: Arten von Verträgen mit üblichen Fristen und Vorlagen
   beschriftungen: { en: { name: "Contract types", beschreibung: "Types of contracts with usual periods and templates" } }
   eltern: vertraege
-  symbol: tag
+  symbol: tags
   typen: [vertragsart]
 - schluessel: versicherungen
   name: Versicherungen
@@ -54,7 +54,7 @@
   name: Personenversicherungen
   beschriftungen: { en: { name: "Personal insurance" } }
   eltern: versicherungen
-  symbol: heart
+  symbol: shield-user
   typen: [vertrag]
   bedingungen:
     - { feld: versicherung_art, operator: einerVon, wert: [Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall] }
