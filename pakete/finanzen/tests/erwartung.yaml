@@ -2,4 +2,3 @@
 mappentypen: [konto, kontoauszug, freistellungsauftrag, steuerjahr]
 sichten: [finanzen, konten, kontoauszuege, freistellungsauftraege, steuerjahre]
 beispiele: 0
-automatisierungen: 1

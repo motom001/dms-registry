@@ -90,28 +90,16 @@
 - schluessel: steuerjahr
   name: Steuerjahr
   mehrzahl: Steuerjahre
-  beschreibung: Die Steuern eines Jahres – Erklärung, Bescheid und die Belege dazu; im Betrieb auch Umsatzsteuer, Gewerbesteuer und Jahresabschluss.
+  beschreibung: Die Steuern eines Jahres – Erklärung, Bescheide und die Belege dazu; im Betrieb auch Umsatzsteuer, Gewerbesteuer und Jahresabschluss.
   beschriftungen: { en: { name: "Tax year", mehrzahl: "Tax years", beschreibung: "The taxes of one year – return, assessment and the receipts for it; for a business also VAT, trade tax and the annual accounts." } }
   titelVorlage: "Steuerjahr {jahr}"
   felder:
     - { key: jahr, label: Jahr, typ: text, pflicht: true, eindeutig: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025", beschriftungen: { en: { label: "Year", hilfe: "Four digits, e.g. 2025" } } }
     - { key: abgegeben_am, label: Abgegeben am, typ: datum, hilfe: Die Einkommensteuererklärung, beschriftungen: { en: { label: "Filed on", hilfe: "The income tax return" } } }
-    - { key: bescheid_vom, label: Bescheid vom, typ: datum, beschriftungen: { en: { label: "Assessment dated" } } }
-    - { key: ergebnis, label: Erstattung/Nachzahlung, typ: betrag, waehrung: EUR, hilfe: Erstattung positiv, Nachzahlung negativ, beschriftungen: { en: { label: "Refund/back payment", hilfe: "Refund positive, back payment negative" } } }
-    - key: einspruch_bis
-      label: Einspruch bis
-      beschriftungen: { en: { label: "Objection by", hilfe: "One month after the assessment (assessment date + 1 month). The included automation reminds you 7 days before." } }
-      typ: datum
-      hilfe: Ein Monat nach dem Bescheid (Bescheid vom + 1 Monat). Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
-      frist: { vorlauf: 7, einheit: tage }
     - { key: steuerberater, label: Steuerberater, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Tax adviser" } } }
     # Im Betrieb (#212): kein eigenes Geschäftsjahr – Umsatzsteuer, Gewerbesteuer und Jahresabschluss stehen im Steuerjahr.
     - { key: ust_abgegeben_am, label: Umsatzsteuererklärung abgegeben am, typ: datum, beschriftungen: { en: { label: "VAT return filed on" } } }
-    - { key: ust_bescheid_vom, label: Umsatzsteuerbescheid vom, typ: datum, beschriftungen: { en: { label: "VAT assessment dated" } } }
-    - { key: ust_ergebnis, label: Umsatzsteuer Erstattung/Nachzahlung, typ: betrag, waehrung: EUR, hilfe: Erstattung positiv, Nachzahlung negativ, beschriftungen: { en: { label: "VAT refund/back payment", hilfe: "Refund positive, back payment negative" } } }
     - { key: gewst_abgegeben_am, label: Gewerbesteuererklärung abgegeben am, typ: datum, beschriftungen: { en: { label: "Trade tax return filed on" } } }
-    - { key: gewst_bescheid_vom, label: Gewerbesteuerbescheid vom, typ: datum, hilfe: Den Bescheid schickt die Gemeinde, beschriftungen: { en: { label: "Trade tax assessment dated", hilfe: "The municipality sends the assessment" } } }
-    - { key: gewst_betrag, label: Gewerbesteuer, typ: betrag, waehrung: EUR, beschriftungen: { en: { label: "Trade tax" } } }
     - key: abschluss_art
       label: Jahresabschluss
       typ: auswahl
@@ -123,15 +111,14 @@
       name: Allgemein
       beschriftungen: { en: { name: "General" } }
       art: felder
-      felder: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis, steuerberater,
-               ust_abgegeben_am, ust_bescheid_vom, ust_ergebnis, gewst_abgegeben_am, gewst_bescheid_vom, gewst_betrag,
-               abschluss_art, abschluss_am]
+      felder: [jahr, abgegeben_am, steuerberater, ust_abgegeben_am, gewst_abgegeben_am, abschluss_art, abschluss_am]
       abschnitte:
         - { vor: ust_abgegeben_am, titel: Umsatzsteuer, beschriftungen: { en: { titel: "VAT" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
         - { vor: gewst_abgegeben_am, titel: Gewerbesteuer, beschriftungen: { en: { titel: "Trade tax" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
         - { vor: abschluss_art, titel: Jahresabschluss, beschriftungen: { en: { titel: "Annual accounts" } }, anzeigen: { bedingungen: [{ art: merkmal, merkmal: beruflich }] } }
-    # Alles, was auf das Steuerjahr zeigt (Feld „steuerjahr“ an Rechnungen, Anschaffungen, Arbeitsverhältnissen …).
+    # Alles, was auf das Steuerjahr zeigt (Feld „steuerjahr“ an Rechnungen, Anschaffungen, Arbeitsverhältnissen …);
+    # ab 2.0.0 (#225) auch die Steuerbescheide (Bescheid aus „Ämter & Papiere“, Betrifft = Steuerjahr).
     - { key: belege, name: Belege, art: verknuepfungen, beschriftungen: { en: { name: "Receipts" } } }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
-  trefferliste: [jahr, abgegeben_am, bescheid_vom, ergebnis, einspruch_bis]
+  trefferliste: [jahr, abgegeben_am, steuerberater]

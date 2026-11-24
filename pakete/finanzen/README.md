@@ -9,19 +9,17 @@ Das Paket **Finanzen** bringt Konten, Kontoauszüge, Freistellungsaufträge und 
 | Konto | Girokonto, Sparkonto, Tagesgeld, Depot, Kreditkarte, Kredit, Bausparvertrag – auch PayPal und ähnliche Dienste | Bank, Art, Inhaber (Personen oder im Betrieb die Firma), IBAN, Konto- oder Kartennummer, Online-Zugang (Passwort), eröffnet/gekündigt am | – |
 | Kontoauszug | Auszug zu einem Konto, je Monat oder Quartal | Konto, Auszugsnummer, Zeitraum, von, bis | – |
 | Freistellungsauftrag | steuerfreie Kapitalerträge je Bank und Person | Bank, Betrag, Jahr, Person | – |
-| Steuerjahr | die Steuern eines Jahres | Jahr (eindeutig), abgegeben am, Bescheid vom, Erstattung/Nachzahlung, Steuerberater | **Einspruch bis** (7 Tage vorher) |
+| Steuerjahr | die Steuern eines Jahres | Jahr (eindeutig), abgegeben am, Steuerberater | – |
 
 **Konto:** Der Titel lautet „{Bank} von {Inhaber} ({Art})“, z. B. „Sparkasse Musterstadt von Lena Muster, Tom Muster (Girokonto)“. Bei PayPal und ähnlichen Diensten ist der Dienst die Bank, als Art wählst du das Konto oder die Karte dahinter. Unter *Kontoauszüge* stehen die Auszüge des Kontos, unter **Was läuft über dieses Konto?** alles, was darauf zeigt: Verträge mit *Abbuchung von Konto* (Paket Verträge), Rechnungen mit *Konto* (Paket Rechnungen und Bestellungen), Mietverträge mit *Kautionskonto* und die Auszüge. Das hilft beim Kontowechsel.
 
-**Steuerjahr:** Unter *Belege* steht alles, was auf das Steuerjahr zeigt – Rechnungen, Anschaffungen, Arztkosten, Fortbildungen, Arbeitsverhältnisse, Nebenkostenabrechnungen, je nachdem, welche Pakete installiert sind. Ist die Ablage als „beruflich genutzt“ eingerichtet, hat das Steuerjahr zusätzlich die Abschnitte **Umsatzsteuer**, **Gewerbesteuer** und **Jahresabschluss** (Einnahmenüberschussrechnung oder Bilanz). Ein eigenes Geschäftsjahr gibt es nicht.
+**Steuerjahr:** Unter *Belege* steht alles, was auf das Steuerjahr zeigt – ab 2.0.0 auch der Steuerbescheid (ein **Bescheid** aus dem Paket „Ämter & Papiere“ mit *Betrifft* = Steuerjahr, dort mit Einspruchsfrist und Erinnerung), dazu Rechnungen, Anschaffungen, Arztkosten, Fortbildungen, Arbeitsverhältnisse, Nebenkostenabrechnungen, je nachdem, welche Pakete installiert sind. Ist die Ablage als „beruflich genutzt“ eingerichtet, hat das Steuerjahr zusätzlich die Abschnitte **Umsatzsteuer**, **Gewerbesteuer** und **Jahresabschluss** (Einnahmenüberschussrechnung oder Bilanz). Ein eigenes Geschäftsjahr gibt es nicht.
 
 **Ansichten:** *Finanzen* mit allem, darunter *Konten*, *Kontoauszüge*, *Freistellungsaufträge* und *Steuerjahre*.
 
-**Automatisierung:** „Einspruchsfrist beim Steuerbescheid“ erinnert 7 Tage vor *Einspruch bis*. Sie ist nach der Installation aus; du schaltest sie unter Werkbank → Automatisierungen ein.
+**Tipps:** Zwei kurze Tipps führen zu *Belege* am Steuerjahr und zu den *Kontoauszügen* am Konto – auf Deutsch und Englisch, je nach Sprache der Person.
 
-**Tipps:** Drei kurze Tipps führen zu *Einspruch bis* und *Belege* am Steuerjahr und zu den *Kontoauszügen* am Konto – auf Deutsch und Englisch, je nach Sprache der Person.
-
-**Beispiele:** Das Paket bringt selbst keine mit. Mit dem Paket Haushalt kommen Konten, ein Kontoauszug, ein Freistellungsauftrag und das Steuerjahr 2025 der erfundenen Familie Muster.
+**Beispiele:** Das Paket bringt selbst keine mit. Mit dem Paket Haushalt kommen Konten, ein Kontoauszug, ein Freistellungsauftrag und das Steuerjahr 2025 der erfundenen Familie Muster; den Steuerbescheid dazu bringt „Ämter & Papiere“ mit.
 
 ## Voraussetzungen
 

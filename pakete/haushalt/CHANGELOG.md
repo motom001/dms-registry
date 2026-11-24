@@ -1,5 +1,11 @@
 # Änderungen
 
+## 4.0.0
+
+- **„Ausweis & Urkunde“ ist umgezogen** (dms-registry #225): Ausweise und Urkunden legst du im Paket „Ämter & Papiere“ an (getrennt in Ausweis und Urkunde). Mit ihnen sind die Ansichten „Ausweise & Urkunden“ und „Läuft bald ab“, die Automatisierung „Ausweis läuft bald ab“, der Rundgang „Ausweis ablegen“ und die Beispiele dorthin gezogen; Zeugnisse bleiben bei Bildung.
+- **Familie Muster** kommt jetzt aus den Beispielen von Basis (ab 1.10.0); die Beispiele hier zeigen darauf.
+- **Ohne Update-Weg:** Ablago wird neu aufgesetzt.
+
 ## 3.3.0
 
 - **Neuer Mappentyp „Arbeitsmedizinische Vorsorge“** (dms-registry #228): die Vorsorgebescheinigung nach ArbMedVV mit Person, Arbeitsverhältnis, Datum, Ärztin/Arzt, Anlass, Art (Pflicht-, Angebots-, Wunschvorsorge) und nächster Vorsorge. Eine Mappe je Anlass; am Arbeitsverhältnis erscheinen sie unter „Verknüpfungen“. Dazu eine Ansicht, ein Beispiel für Tom und die Automatisierung „Nächste arbeitsmedizinische Vorsorge“ (6 Wochen vorher, nach der Installation aus).

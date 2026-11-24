@@ -1,9 +1,5 @@
 # Tipps (Ablago ab 0.285.0, dms-registry #132): je ein kurzer Satz, der an die Stelle in einer Mappe führt.
 # Ab 1.1.0 stehen die Texte unter tipp.<schluessel> in texte/<sprache>/entdecken.json (Ablago #1307).
-- schluessel: einspruch
-  bereich: fristen
-  typ: steuerjahr
-  ziel: mappe.feld:einspruch_bis
 - schluessel: belege
   typ: steuerjahr
   ziel: mappe.register:belege

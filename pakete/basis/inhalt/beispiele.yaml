@@ -95,3 +95,14 @@
     hausnummer: "2"
     plz: "12345"
     ort: Musterstadt
+# Ab 1.10.0 (#225): Familie Muster (Lena, Tom und Sohn Jonas) – bisher in Haushalt. So können alle Pakete auf sie zeigen
+# ({ beispiel: "basis:lena" }), ohne von Haushalt abzuhängen.
+- typ: person
+  schluessel: lena
+  werte: { anrede: Frau, vorname: Lena, nachname: Muster, beziehung: [Familie], geburtstag: "1988-03-14" }
+- typ: person
+  schluessel: tom
+  werte: { anrede: Herr, vorname: Tom, nachname: Muster, beziehung: [Familie], geburtstag: "1986-09-02" }
+- typ: person
+  schluessel: jonas
+  werte: { anrede: Herr, vorname: Jonas, nachname: Muster, beziehung: [Familie], geburtstag: "2010-05-28" }

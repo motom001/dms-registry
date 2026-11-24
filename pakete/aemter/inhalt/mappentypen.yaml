@@ -1,0 +1,223 @@
+# Mappentypen des Pakets „Ämter & Papiere“ (dms-registry #225). Schema: schema/inhalt.schema.json
+# Post vom Amt: Antrag → Bescheid → Widerspruch zeigen aufeinander und stehen dort unter „Verknüpfungen“ (keine eigenen Register).
+# Eigene Papiere nach Verhalten: Ausweis (läuft ab), Urkunde (gilt für immer), Bescheinigung (Nummer oder Stand).
+# Ab 1.0.0 statt „Ausweis & Urkunde“ aus Haushalt und der Bescheid-Felder am Steuerjahr (Finanzen) – ohne Umzug.
+
+- schluessel: antrag
+  name: Antrag
+  mehrzahl: Anträge
+  beschreibung: Was du bei einem Amt beantragt hast – Kindergeld, Elterngeld, Wohngeld, Pflegegrad, BAföG und mehr.
+  beschriftungen: { en: { name: "Application", mehrzahl: "Applications", beschreibung: "What you applied for at an authority – child benefit, parental allowance, housing benefit, care level, student aid and more." } }
+  titelVorlage: "{art} – {an}"
+  felder:
+    - { key: behoerde, label: Behörde, typ: referenz, ziel: "basis:organisation", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Authority" } } }
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Kindergeld": "Child benefit", "Elterngeld": "Parental allowance", "Wohngeld": "Housing benefit", "Pflegegrad": "Care level", "BAföG": "Student aid (BAföG)", "Rente": "Pension", "Sonstiges": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Kindergeld, Elterngeld, Wohngeld, Pflegegrad, BAföG, Rente, Sonstiges]
+    - { key: an, label: Für, typ: referenz, ziel: ["basis:person", "basis:organisation"], verweisart: bezug, beschriftungen: { en: { label: "For" } } }
+    - { key: gestellt_am, label: Gestellt am, typ: datum, max: heute, beschriftungen: { en: { label: "Submitted on" } } }
+    - { key: aktenzeichen, label: Aktenzeichen, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Reference" } } }
+    - key: status
+      label: Status
+      beschriftungen: { en: { label: "Status", optionen: { "gestellt": "submitted", "in Bearbeitung": "in progress", "bewilligt": "granted", "abgelehnt": "refused" } } }
+      typ: auswahl
+      standard: gestellt
+      optionen: [gestellt, in Bearbeitung, bewilligt, abgelehnt]
+    - key: nachfragen_am
+      label: Nachfragen am
+      beschriftungen: { en: { label: "Follow up on", hilfe: "If you have heard nothing by then. The included automation reminds you on the day." } }
+      typ: datum
+      hilfe: Wenn bis dahin nichts kam. Die mitgelieferte Automatisierung erinnert dich am Tag.
+      frist: { vorlauf: 0, einheit: tage }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [behoerde, art, an, gestellt_am, aktenzeichen, status, nachfragen_am], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, an, behoerde, gestellt_am, status]
+
+- schluessel: bescheid
+  name: Bescheid
+  mehrzahl: Bescheide
+  beschreibung: Post vom Amt mit Rechtsbehelfsbelehrung – Steuer, Grundsteuer, Kfz-Steuer, Rente, Pflege, Beiträge, Gebühren und mehr.
+  beschriftungen: { en: { name: "Notice", mehrzahl: "Notices", beschreibung: "Official notice from an authority – tax, property tax, vehicle tax, pension, care, contributions, fees and more." } }
+  titelVorlage: "{art} – {von} – {bescheid_vom}"
+  felder:
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Steuer": "Tax", "Grundsteuer": "Property tax", "Kfz-Steuer": "Vehicle tax", "Rente": "Pension", "Pflege": "Care", "Beiträge Sozialversicherung": "Social security contributions", "Familienleistung": "Family benefit", "Sozialleistung": "Social benefit", "Gebühren": "Fees", "Bußgeld": "Fine", "Sonstiges": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Steuer, Grundsteuer, Kfz-Steuer, Rente, Pflege, Beiträge Sozialversicherung, Familienleistung, Sozialleistung, Gebühren, Bußgeld, Sonstiges]
+    - { key: von, label: Von, typ: referenz, ziel: "basis:organisation", pflicht: true, verweisart: bezug, hilfe: Die Behörde, beschriftungen: { en: { label: "From", hilfe: "The authority" } } }
+    - { key: an, label: Für, typ: referenz, ziel: ["basis:person", "basis:organisation"], mehrfach: true, verweisart: bezug, beschriftungen: { en: { label: "For" } } }
+    - { key: aktenzeichen, label: Aktenzeichen/Steuernummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Reference/tax number" } } }
+    - { key: kassenzeichen, label: Kassenzeichen, typ: text, maxLen: 60, erkennung: { art: nummer }, hilfe: Gehört bei einer Zahlung in den Verwendungszweck, beschriftungen: { en: { label: "Payment reference", hilfe: "Belongs in the payment reference when you pay" } } }
+    - { key: bescheid_vom, label: Bescheid vom, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Dated" } } }
+    # Betrifft (#225): nur Typen anderer Pakete – Ablago nimmt sie dazu, sobald das Paket installiert ist.
+    - key: betrifft
+      label: Betrifft
+      beschriftungen: { en: { label: "Concerns", hilfe: "What the notice is about – the tax year, a vehicle, a property, a job or a contract. It then shows up there." } }
+      typ: referenz
+      zielOptional: ["finanzen:steuerjahr", "fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "haushalt:arbeitsverhaeltnis", "haushalt:vorsorge", "vertraege:vertrag"]
+      mehrfach: true
+      verweisart: bezug
+      hilfe: Worum es geht – Steuerjahr, Fahrzeug, Immobilie, Arbeitsverhältnis oder Vertrag. Dort steht der Bescheid dann auch.
+    - { key: gilt_ab, label: Gilt ab, typ: datum, beschriftungen: { en: { label: "Valid from" } } }
+    - { key: gilt_bis, label: Gilt bis, typ: datum, beschriftungen: { en: { label: "Valid until" } } }
+    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, hilfe: "Erstattung oder Leistung positiv, Zahlung negativ", beschriftungen: { en: { label: "Amount", hilfe: "Refund or benefit positive, payment negative" } } }
+    - { key: faellig_am, label: Fällig am, typ: datum, beschriftungen: { en: { label: "Due on" } } }
+    - key: zahlweise
+      label: Zahlweise
+      beschriftungen: { en: { label: "Payment interval", optionen: { "einmalig": "once", "monatlich": "monthly", "vierteljährlich": "quarterly", "halbjährlich": "half-yearly", "jährlich": "yearly" } } }
+      typ: auswahl
+      optionen: [einmalig, monatlich, vierteljährlich, halbjährlich, jährlich]
+    - { key: vorlaeufig, label: Vorläufig/unter Vorbehalt, typ: janein, standard: false, hilfe: Steht so im Bescheid – er kann sich noch ändern, beschriftungen: { en: { label: "Provisional/subject to review", hilfe: "Says so in the notice – it may still change" } } }
+    - key: einspruch_bis
+      label: Einspruch/Widerspruch bis
+      beschriftungen: { en: { label: "Objection by", hilfe: "Since 2025 a notice counts as delivered on the fourth day after it was posted (§ 122 AO); the deadline is then one month. What counts is the instruction on legal remedies in the notice – Ablago does not calculate the deadline. The included automation reminds you 7 days before." } }
+      typ: datum
+      hilfe: Bescheide gelten seit 2025 am vierten Tag nach der Aufgabe zur Post als bekannt gegeben (§ 122 AO), die Frist beträgt dann einen Monat. Maßgeblich ist die Rechtsbehelfsbelehrung im Bescheid – Ablago rechnet die Frist nicht selbst. Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
+      frist: { vorlauf: 7, einheit: tage }
+    - key: status
+      label: Status
+      beschriftungen: { en: { label: "Status", optionen: { "offen": "open", "geprüft – in Ordnung": "checked – fine", "Einspruch eingelegt": "objection filed", "erledigt": "done" } } }
+      typ: auswahl
+      standard: offen
+      optionen: [offen, geprüft – in Ordnung, Einspruch eingelegt, erledigt]
+    - { key: antrag, label: Antwort auf Antrag, typ: referenz, ziel: antrag, verweisart: bezug, beschriftungen: { en: { label: "Reply to application" } } }
+    - { key: aendert, label: Ändert Bescheid, typ: referenz, ziel: bescheid, verweisart: bezug, hilfe: Bei einem Änderungsbescheid der vorige Bescheid, beschriftungen: { en: { label: "Amends notice", hilfe: "For an amended notice, the previous one" } } }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } } }
+    - { key: notiz, label: Notiz, typ: langtext, beschriftungen: { en: { label: "Note" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, von, an, aktenzeichen, kassenzeichen, bescheid_vom, betrifft, gilt_ab, gilt_bis, betrag, faellig_am, zahlweise, vorlaeufig, einspruch_bis, status, antrag, aendert, verbleib_original, notiz], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, von, bescheid_vom, betrag, einspruch_bis, status]
+
+- schluessel: widerspruch
+  name: Widerspruch
+  mehrzahl: Widersprüche
+  beschreibung: Einspruch beim Finanzamt oder Widerspruch gegen einen Bescheid – mit Frist für die Begründung und Ergebnis.
+  beschriftungen: { en: { name: "Objection", mehrzahl: "Objections", beschreibung: "Objection to the tax office or appeal against a notice – with deadline for the reasons and the result." } }
+  titelVorlage: "{art} – {bescheid}"
+  felder:
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Einspruch beim Finanzamt": "Objection (tax office)", "Widerspruch": "Appeal" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Einspruch beim Finanzamt, Widerspruch]
+    - { key: bescheid, label: Gegen Bescheid, typ: referenz, ziel: bescheid, pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Against notice" } } }
+    - { key: eingelegt_am, label: Eingelegt am, typ: datum, max: heute, beschriftungen: { en: { label: "Filed on" } } }
+    - key: begruendung_bis
+      label: Begründung nachreichen bis
+      beschriftungen: { en: { label: "Send reasons by", hilfe: "If you filed without reasons. The included automation reminds you 7 days before." } }
+      typ: datum
+      hilfe: Wenn du ohne Begründung eingelegt hast. Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
+      frist: { vorlauf: 7, einheit: tage }
+    - key: status
+      label: Status
+      beschriftungen: { en: { label: "Status", optionen: { "eingelegt": "filed", "begründet": "reasons sent", "entschieden": "decided", "zurückgenommen": "withdrawn" } } }
+      typ: auswahl
+      standard: eingelegt
+      optionen: [eingelegt, begründet, entschieden, zurückgenommen]
+    - key: ergebnis
+      label: Ergebnis
+      beschriftungen: { en: { label: "Result", optionen: { "abgeholfen": "granted", "teilweise abgeholfen": "partly granted", "zurückgewiesen": "rejected" } } }
+      typ: auswahl
+      optionen: [abgeholfen, teilweise abgeholfen, zurückgewiesen]
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, bescheid, eingelegt_am, begruendung_bis, status, ergebnis], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, bescheid, eingelegt_am, status, ergebnis]
+
+- schluessel: ausweis
+  name: Ausweis
+  mehrzahl: Ausweise
+  beschreibung: Ausweise, die ablaufen – Personalausweis, Reisepass, Führerschein und mehr.
+  beschriftungen: { en: { name: "ID document", mehrzahl: "ID documents", beschreibung: "IDs that expire – identity card, passport, driving licence and more." } }
+  titelVorlage: "{art} – {person_verweis}"
+  felder:
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Personalausweis": "ID card", "Reisepass": "Passport", "Kinderreisepass": "Child passport", "Führerschein": "Driving licence", "Sozialversicherungsausweis": "Social security card", "Schwerbehindertenausweis": "Disability card", "Sonstige": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Personalausweis, Reisepass, Kinderreisepass, Führerschein, Sozialversicherungsausweis, Schwerbehindertenausweis, Sonstige]
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
+    - { key: nummer, label: Nummer, typ: text, maxLen: 60, beschriftungen: { en: { label: "Number" } } }
+    - { key: behoerde, label: Ausstellende Behörde, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Issuing authority" } } }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, beschriftungen: { en: { label: "Issued on" } } }
+    - key: ende
+      label: Gültig bis
+      beschriftungen: { en: { label: "Valid until", hilfe: "The included automation reminds you 90 days before – enough time for an appointment at the citizens’ office." } }
+      typ: datum
+      hilfe: Die mitgelieferte Automatisierung erinnert 90 Tage vorher – Zeit genug für einen Termin beim Bürgeramt.
+      frist: { vorlauf: 90, einheit: tage }
+    - { key: klassen, label: Führerscheinklassen, typ: text, maxLen: 60, hilfe: "z. B. B, BE, A2", anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: art, op: einerVon, wert: { art: fest, wert: [Führerschein] } } }] }, beschriftungen: { en: { label: "Licence categories", hilfe: "e.g. B, BE, A2" } } }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, person_verweis, nummer, behoerde, ausgestellt_am, ende, klassen, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, person_verweis, ende, verbleib_original]
+
+- schluessel: urkunde
+  name: Urkunde
+  mehrzahl: Urkunden
+  beschreibung: Urkunden, die für immer gelten – Geburt, Heirat, Scheidung, Taufe, Namensänderung und mehr.
+  beschriftungen: { en: { name: "Certificate", mehrzahl: "Certificates", beschreibung: "Certificates that are valid for ever – birth, marriage, divorce, baptism, change of name and more." } }
+  titelVorlage: "{art} – {personen}"
+  felder:
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Geburtsurkunde": "Birth certificate", "Heiratsurkunde": "Marriage certificate", "Lebenspartnerschaftsurkunde": "Civil partnership certificate", "Scheidungsurteil": "Divorce decree", "Sterbeurkunde": "Death certificate", "Taufurkunde": "Baptism certificate", "Konfirmation": "Confirmation", "Kommunion/Firmung": "Communion/confirmation", "Namensänderung": "Change of name", "Sonstige": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Geburtsurkunde, Heiratsurkunde, Lebenspartnerschaftsurkunde, Scheidungsurteil, Sterbeurkunde, Taufurkunde, Konfirmation, Kommunion/Firmung, Namensänderung, Sonstige]
+    - { key: personen, label: Personen, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, beschriftungen: { en: { label: "People" } } }
+    - { key: ereignis_am, label: Datum des Ereignisses, typ: datum, max: heute, beschriftungen: { en: { label: "Date of the event" } } }
+    - { key: ort, label: Ort, typ: text, maxLen: 80, beschriftungen: { en: { label: "Place" } } }
+    - { key: stelle, label: Ausstellende Stelle, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Standesamt, Gericht oder Pfarramt, beschriftungen: { en: { label: "Issued by", hilfe: "Registry office, court or parish office" } } }
+    - { key: registernummer, label: Registernummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Register number" } } }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, beschriftungen: { en: { label: "Issued on" } } }
+    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, personen, ereignis_am, ort, stelle, registernummer, ausgestellt_am, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, personen, ereignis_am, verbleib_original]
+
+- schluessel: bescheinigung
+  name: Bescheinigung
+  mehrzahl: Bescheinigungen
+  beschreibung: Amtliche Nummern und Bescheinigungen – Steuer-ID, Meldebescheinigung, Rentenversicherungsnummer und mehr.
+  beschriftungen: { en: { name: "Official record", mehrzahl: "Official records", beschreibung: "Official numbers and certificates – tax ID, certificate of registration, pension insurance number and more." } }
+  titelVorlage: "{art} – {person_verweis}"
+  felder:
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Steuer-Identifikationsnummer": "Tax identification number", "Meldebescheinigung": "Certificate of registration", "Rentenversicherungsnummer": "Pension insurance number", "Sonstige": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Steuer-Identifikationsnummer, Meldebescheinigung, Rentenversicherungsnummer, Sonstige]
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
+    - { key: nummer, label: Nummer, typ: text, maxLen: 60, erkennung: { art: nummer }, hilfe: So findest du sie über die Suche, beschriftungen: { en: { label: "Number", hilfe: "So you can find it with the search" } } }
+    - { key: behoerde, label: Behörde, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Authority" } } }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, beschriftungen: { en: { label: "Issued on" } } }
+    - { key: anschrift, label: Anschrift, typ: langtext, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: art, op: einerVon, wert: { art: fest, wert: [Meldebescheinigung] } } }] }, beschriftungen: { en: { label: "Address" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, person_verweis, nummer, behoerde, ausgestellt_am, anschrift], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, person_verweis, nummer, ausgestellt_am]

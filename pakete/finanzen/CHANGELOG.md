@@ -1,5 +1,10 @@
 # Änderungen
 
+## 2.0.0
+
+- **Steuerbescheide sind Bescheide** (dms-registry #225): Am Steuerjahr entfallen „Bescheid vom“, „Erstattung/Nachzahlung“, „Einspruch bis“ und die Bescheid-Felder bei Umsatz- und Gewerbesteuer. Den Steuerbescheid legst du als **Bescheid** aus dem Paket „Ämter & Papiere“ an und wählst unter „Betrifft“ das Steuerjahr – dort steht er dann unter „Belege“. Die Automatisierung „Einspruchsfrist“ und der Tipp dazu sind mitgezogen.
+- **Ohne Update-Weg:** Ablago wird neu aufgesetzt; bestehende Werte in den entfallenen Feldern zieht kein Umzug um.
+
 ## 1.2.1
 
 - **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Kontoauszüge“ statt „12 × Kontoauszug“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.

@@ -1,5 +1,5 @@
 # Was nach der Installation im DMS vorhanden sein muss.
 mappentypen: [organisation, niederlassung, person, ablageort]
 sichten: [basis, organisationen, personen, ablageorte]
-beispiele: 8
+beispiele: 11
 wortlisten: 9

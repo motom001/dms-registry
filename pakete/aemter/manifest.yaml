@@ -1,0 +1,37 @@
+# Paket „Ämter & Papiere“ (dms-registry #225). Schema: schema/manifest.schema.json
+schema: 1
+id: aemter
+name: Ämter & Papiere
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: 'Post vom Amt und die eigenen amtlichen Papiere: Anträge, Bescheide mit Einspruchsfrist und Widersprüche, dazu Ausweise, Urkunden und Bescheinigungen wie die Steuer-ID.'
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: file-text
+# 0.230.0: mehrere Ziele und zielOptional (Betrifft, #1036); 0.293.2: Rundgang und Tipps mit Texten je Sprache (#1307)
+dms: ">=0.293.2"
+# „So nutzt du es“ (dms-registry #164)
+kurzanleitung:
+  de:
+    - Leg jeden Bescheid vom Amt als Bescheid an – von wem, für wen, wie viel und bis wann Einspruch geht.
+    - Wähl unter „Betrifft“, worum es geht – das Steuerjahr, das Fahrzeug oder die Wohnung; dort findest du den Bescheid wieder.
+    - Antrag, Bescheid und Widerspruch zeigen aufeinander – so siehst du den ganzen Vorgang unter „Verknüpfungen“.
+    - Ausweise, Urkunden und Bescheinigungen wie die Steuer-ID legst du hier ab; bei Ausweisen erinnert Ablago vor dem Ablauf.
+  en:
+    - File every notice from an authority as a notice – from whom, for whom, how much and until when you can object.
+    - Choose under “Concerns” what it is about – the tax year, the vehicle or the flat; you will find the notice there too.
+    - Application, notice and objection point to each other – so you see the whole matter under “Links”.
+    - File IDs, certificates and documents such as your tax ID here; for IDs Ablago reminds you before they expire.
+abhaengigkeiten:
+  basis: ">=1.10.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  beispiele: inhalt/beispiele.yaml
+  wortlisten: inhalt/wortlisten.yaml
+  automatisierungen: inhalt/automatisierungen.yaml
+  rundgaenge: inhalt/rundgaenge.yaml
+  tipps: inhalt/tipps.yaml

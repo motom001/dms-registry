@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.10.0
+
+- **Familie Muster jetzt in Basis** (dms-registry #225): Lena, Tom und Jonas sind Beispiel-Personen von Basis (bisher Haushalt). So können alle Pakete ihre Beispiele auf sie beziehen, etwa „Ämter & Papiere“.
+
 ## 1.9.0
 
 - **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Organisationen“ statt „12 × Organisation“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.
