@@ -1,4 +1,5 @@
 # Was nach der Installation in Ablago vorhanden sein muss (pruefen.py vergleicht das mit inhalt/).
-mappentypen: [konto, kontoauszug, freistellungsauftrag, steuerjahr]
-sichten: [finanzen, konten, kontoauszuege, freistellungsauftraege, steuerjahre]
+mappentypen: [konto, kontoauszug, freistellungsauftrag, steuerjahr, steuernachweis]
+sichten: [finanzen, konten, kontoauszuege, freistellungsauftraege, steuerjahre, steuernachweise]
 beispiele: 0
+wortlisten: 4

@@ -4,3 +4,7 @@
   bereich: fristen
   typ: anschaffung
   ziel: mappe.feld:garantie_bis
+# Lohnsteuerbescheinigung (dms-registry #250): liegt als Steuernachweis (Paket Finanzen) und steht dann hier unter „Verknüpfungen“.
+- schluessel: lohnsteuerbescheinigung
+  typ: arbeitsverhaeltnis
+  ziel: mappe.register:verknuepfungen

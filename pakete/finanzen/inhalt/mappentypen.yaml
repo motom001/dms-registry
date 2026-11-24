@@ -133,3 +133,39 @@
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
   trefferliste: [jahr, abgegeben_am, steuerberater]
+
+# Steuernachweis (dms-registry #250): Jahresbescheinigungen für die Steuer, die nicht von der Bank kommen – die Bank-
+# Belege sind Kontoauszüge mit Art (#248). Vertrag, Arbeitsverhältnis usw. laufen über Jahre, der Nachweis gehört zu
+# genau einem Steuerjahr. Kennungen nach REGELN.md („Gleiche Kennungen“): von, betrifft, person_verweis, betrag, steuerjahr.
+- schluessel: steuernachweis
+  name: Steuernachweis
+  mehrzahl: Steuernachweise
+  beschreibung: Eine Jahresbescheinigung für die Steuer – Lohnsteuerbescheinigung, Beitragsbescheinigung der Versicherung, Altersvorsorge, Spendenquittung, haushaltsnahe Dienstleistungen oder Kinderbetreuung. Belege der Bank sind Kontoauszüge.
+  beschriftungen: { en: { name: "Tax certificate", mehrzahl: "Tax certificates", beschreibung: "An annual certificate for your taxes – wage tax certificate, insurance contribution certificate, pension, donation receipt, household services or childcare. Documents from the bank are bank statements." } }
+  titelVorlage: "{art} – {person_verweis} – {steuerjahr}"
+  felder:
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      optionen: [Lohnsteuerbescheinigung, Beitragsbescheinigung, Altersvorsorge, Spendenquittung, Haushaltsnahe Dienstleistungen, Kinderbetreuung, Sonstige]
+      hilfe: Beitragsbescheinigung z. B. von Kranken-, Pflege- oder Haftpflichtversicherung; Altersvorsorge z. B. Riester oder Rürup; Spendenquittung heißt amtlich Zuwendungsbestätigung; haushaltsnahe Dienstleistungen und Handwerker z. B. aus der Nebenkostenabrechnung
+      beschriftungen: { en: { label: "Type", hilfe: "Contribution certificate e.g. from health, care or liability insurance; pension e.g. Riester or Rürup; donation receipt (Zuwendungsbestätigung); household services and tradespeople e.g. from the service charge statement", optionen: { Lohnsteuerbescheinigung: Wage tax certificate, Beitragsbescheinigung: Contribution certificate, Altersvorsorge: Pension, Spendenquittung: Donation receipt, Haushaltsnahe Dienstleistungen: Household services, Kinderbetreuung: Childcare, Sonstige: Other } } }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, pflicht: true, verweisart: zugehoerigkeit, hilfe: Dann steht der Nachweis unter „Belege“ am Steuerjahr, beschriftungen: { en: { label: "Tax year", hilfe: "The certificate then appears under “Receipts” on the tax year" } } }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: Für wen – bei Ehepaaren ggf. beide, beschriftungen: { en: { label: "Person", hilfe: "For whom – both for married couples if applicable" } } }
+    - { key: von, label: Ausgestellt von, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, erkennung: { art: verweis }, hilfe: Arbeitgeber, Versicherung, Verein, Hausverwaltung …, beschriftungen: { en: { label: "Issued by", hilfe: "Employer, insurer, association, property manager …" } } }
+    - key: betrifft
+      label: Betrifft
+      typ: referenz
+      zielOptional: ["vertraege:vertrag", "haushalt:arbeitsverhaeltnis", "haushalt:vorsorge", "vermietung:mietobjekt", "vermietung:wohnung"]
+      verweisart: bezug
+      hilfe: Wozu der Nachweis gehört – Arbeitsverhältnis, Vertrag, Vorsorge oder Wohnung; dort steht er dann unter „Verknüpfungen“
+      beschriftungen: { en: { label: "Concerns", hilfe: "What the certificate belongs to – employment, contract, pension or flat; it then appears there under “Links”" } }
+    - { key: betrag, label: Betrag, typ: betrag, erkennung: { art: betrag }, hilfe: Der bescheinigte Betrag – Beitrag, Spende oder Kosten im Jahr, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: art, op: einerVon, wert: { art: fest, wert: [Beitragsbescheinigung, Altersvorsorge, Spendenquittung, "Haushaltsnahe Dienstleistungen", Kinderbetreuung, Sonstige] } } }] }, beschriftungen: { en: { label: "Amount", hilfe: "The certified amount – contribution, donation or costs for the year" } } }
+    - { key: bruttolohn, label: Bruttoarbeitslohn, typ: betrag, hilfe: Optional – die Werte meldet der Arbeitgeber ohnehin ans Finanzamt, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: art, op: einerVon, wert: { art: fest, wert: [Lohnsteuerbescheinigung] } } }] }, beschriftungen: { en: { label: "Gross wages", hilfe: "Optional – the employer reports the figures to the tax office anyway" } } }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Issued on" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, steuerjahr, person_verweis, von, betrifft, betrag, bruttolohn, ausgestellt_am], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, steuerjahr, person_verweis, von, betrag]

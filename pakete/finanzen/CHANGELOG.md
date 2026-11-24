@@ -1,5 +1,10 @@
 # Änderungen
 
+## 2.2.0
+
+- **Neuer Typ Steuernachweis** (dms-registry #250): Jahresbescheinigungen für die Steuer, die nicht von der Bank kommen – Lohnsteuerbescheinigung, Beitragsbescheinigung, Altersvorsorge, Spendenquittung, haushaltsnahe Dienstleistungen, Kinderbetreuung. Mit Steuerjahr (Pflicht, steht dann unter „Belege“), Person, „Ausgestellt von“, „Betrifft“ (Arbeitsverhältnis, Vertrag, Vorsorge, Wohnung) und Betrag – bei der Lohnsteuerbescheinigung „Bruttoarbeitslohn“. Neue Ansicht *Steuernachweise*.
+- **Suchwörter:** Entgeltaufstellung/Gebührenübersicht, Jahressteuerbescheinigung/Steuerbescheinigung, Spendenquittung/Zuwendungsbestätigung, Beitragsbescheinigung/Beitragsnachweis.
+
 ## 2.1.0
 
 - **Jahresbelege der Bank** (dms-registry #248): Der Kontoauszug hat jetzt eine **Art** (Kontoauszug, Entgeltaufstellung, Jahressteuerbescheinigung, Zinsbescheinigung, Saldenbestätigung), den Zeitraum **Jahr** und einen Verweis aufs **Steuerjahr** – damit steht z. B. die Entgeltaufstellung unter „Belege“ am Steuerjahr. Der Titel nennt die Art; bestehende Auszüge ohne Art zeigen sie erst nach dem Speichern.

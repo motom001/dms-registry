@@ -10,6 +10,7 @@ Das Paket **Finanzen** bringt Konten, Kontoauszüge, Freistellungsaufträge und 
 | Kontoauszug | Auszug oder Jahresbeleg zu einem Konto | Konto, Art, Auszugsnummer, Zeitraum (Monat, Quartal, Jahr), von, bis, Steuerjahr | – |
 | Freistellungsauftrag | steuerfreie Kapitalerträge je Bank und Person | Bank, Betrag, Jahr, Person | – |
 | Steuerjahr | die Steuern eines Jahres | Jahr (eindeutig), abgegeben am, Steuerberater | – |
+| Steuernachweis | Jahresbescheinigung für die Steuer, die nicht von der Bank kommt | Art, Steuerjahr (Pflicht), Person, ausgestellt von, betrifft, Betrag bzw. Bruttoarbeitslohn, ausgestellt am | – |
 
 **Konto:** Der Titel lautet „{Bank} von {Inhaber} ({Art})“, z. B. „Sparkasse Musterstadt von Lena Muster, Tom Muster (Girokonto)“. Bei PayPal und ähnlichen Diensten ist der Dienst die Bank, als Art wählst du das Konto oder die Karte dahinter. Unter *Kontoauszüge* stehen die Auszüge des Kontos, unter **Was läuft über dieses Konto?** alles, was darauf zeigt: Verträge mit *Abbuchung von Konto* (Paket Verträge), Rechnungen mit *Konto* (Paket Rechnungen und Bestellungen), Mietverträge mit *Kautionskonto* und die Auszüge. Das hilft beim Kontowechsel.
 
@@ -25,9 +26,22 @@ Das Paket **Finanzen** bringt Konten, Kontoauszüge, Freistellungsaufträge und 
 | Saldenbestätigung | Kontostand zum 31.12. | Jahresabschluss im Betrieb |
 | Kontoauszug, Zeitraum Monat | Gebührenübersicht von PayPal, SumUp und ähnlichen Diensten | Betriebsausgaben (den Dienst als Konto anlegen) |
 
+**Steuernachweise:** Alles andere, was du einmal im Jahr für die Steuer bekommst, legst du als *Steuernachweis* an – mit der Art im Titel, z. B. „Lohnsteuerbescheinigung – Lena Muster – Steuerjahr 2025“:
+
+| Art | kommt von | betrifft |
+| --- | --- | --- |
+| Lohnsteuerbescheinigung | Arbeitgeber | Arbeitsverhältnis (Paket Haushalt) |
+| Beitragsbescheinigung | Kranken-, Pflege-, Haftpflichtversicherung | Vertrag (Paket Verträge) |
+| Altersvorsorge | Anbieter von Riester, Rürup, betrieblicher Vorsorge | Vorsorge (Paket Haushalt) |
+| Spendenquittung | Verein, Stiftung (amtlich: Zuwendungsbestätigung) | – |
+| Haushaltsnahe Dienstleistungen | Hausverwaltung, Vermieter, Handwerker | Wohnung (Paket Vermietung) |
+| Kinderbetreuung | Kita, Tagesmutter | Vertrag |
+
+Am Vertrag, Arbeitsverhältnis usw. steht der Nachweis dann unter „Verknüpfungen“, am Steuerjahr unter „Belege“. Die Suche findet auch Synonyme (Zuwendungsbestätigung → Spendenquittung, Gebührenübersicht → Entgeltaufstellung).
+
 Monatsabrechnungen mit Rechnungsnummer und Umsatzsteuer (z. B. Tankkarte, Maut, Zahlungsanbieter) sind dagegen **Rechnungen** (Paket „Rechnungen und Bestellungen“).
 
-**Ansichten:** *Finanzen* mit allem, darunter *Konten*, *Kontoauszüge*, *Freistellungsaufträge* und *Steuerjahre*.
+**Ansichten:** *Finanzen* mit allem, darunter *Konten*, *Kontoauszüge*, *Freistellungsaufträge*, *Steuerjahre* und *Steuernachweise*.
 
 **Tipps:** Zwei kurze Tipps führen zu *Belege* am Steuerjahr und zu den *Kontoauszügen* am Konto – auf Deutsch und Englisch, je nach Sprache der Person.
 

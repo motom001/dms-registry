@@ -1,5 +1,10 @@
 # Änderungen
 
+## 5.1.0
+
+- **Tipp am Arbeitsverhältnis** (dms-registry #250): Die Lohnsteuerbescheinigung legst du als **Steuernachweis** (Paket Finanzen 2.2.0) an und wählst unter „Betrifft“ das Arbeitsverhältnis – dann steht sie dort unter „Verknüpfungen“ und am Steuerjahr unter „Belege“. Braucht Finanzen ab 2.2.0.
+- **Beispiele:** Familie Muster hat jetzt eine Jahressteuerbescheinigung vom Depot und Toms Lohnsteuerbescheinigung 2025, beide am Steuerjahr 2025; der Kontoauszug nennt seine Art.
+
 ## 5.0.0
 
 - **„Gesundheit“ ist umgezogen** (dms-registry #226): Gesundheitsunterlagen legst du im neuen Paket **Gesundheit** an – mit Behandlungsfall, Arztbrief & Befund, Therapie, Arbeitsunfähigkeit, Medikamentenplan, Gesundheitspass und Impfung. Mit dem Typ sind die Ansicht und das Beispiel weggefallen.

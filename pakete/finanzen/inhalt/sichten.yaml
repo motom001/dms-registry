@@ -1,11 +1,12 @@
 # Ansichten des Pakets Finanzen. Schema: schema/inhalt.schema.json
 - schluessel: finanzen
   name: Finanzen
-  beschreibung: Konten, Kontoauszüge, Freistellungsaufträge und Steuerjahre
-  beschriftungen: { en: { name: "Finances", beschreibung: "Accounts, bank statements, exemption orders and tax years" } }
+  beschreibung: Konten, Kontoauszüge, Freistellungsaufträge, Steuerjahre und Steuernachweise
+  beschriftungen: { en: { name: "Finances", beschreibung: "Accounts, bank statements, exemption orders, tax years and tax certificates" } }
   symbol: wallet
-  typen: [konto, kontoauszug, freistellungsauftrag, steuerjahr]
+  typen: [konto, kontoauszug, freistellungsauftrag, steuerjahr, steuernachweis]
 - { schluessel: konten, name: Konten, symbol: landmark, eltern: finanzen, typen: [konto], beschriftungen: { en: { name: "Accounts" } } }
 - { schluessel: kontoauszuege, name: Kontoauszüge, symbol: file-spreadsheet, eltern: finanzen, typen: [kontoauszug], beschriftungen: { en: { name: "Bank statements" } } }
 - { schluessel: freistellungsauftraege, name: Freistellungsaufträge, symbol: badge-percent, eltern: finanzen, typen: [freistellungsauftrag], beschriftungen: { en: { name: "Exemption orders" } } }
 - { schluessel: steuerjahre, name: Steuerjahre, symbol: badge-euro, eltern: finanzen, typen: [steuerjahr], beschriftungen: { en: { name: "Tax years" } } }
+- { schluessel: steuernachweise, name: Steuernachweise, symbol: receipt, eltern: finanzen, typen: [steuernachweis], beschriftungen: { en: { name: "Tax certificates" } } }
