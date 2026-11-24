@@ -7,13 +7,25 @@ Das Paket **Finanzen** bringt Konten, Kontoauszüge, Freistellungsaufträge und 
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
 | Konto | Girokonto, Sparkonto, Tagesgeld, Depot, Kreditkarte, Kredit, Bausparvertrag – auch PayPal und ähnliche Dienste | Bank, Art, Inhaber (Personen oder im Betrieb die Firma), IBAN, Konto- oder Kartennummer, Online-Zugang (Passwort), eröffnet/gekündigt am | – |
-| Kontoauszug | Auszug zu einem Konto, je Monat oder Quartal | Konto, Auszugsnummer, Zeitraum, von, bis | – |
+| Kontoauszug | Auszug oder Jahresbeleg zu einem Konto | Konto, Art, Auszugsnummer, Zeitraum (Monat, Quartal, Jahr), von, bis, Steuerjahr | – |
 | Freistellungsauftrag | steuerfreie Kapitalerträge je Bank und Person | Bank, Betrag, Jahr, Person | – |
 | Steuerjahr | die Steuern eines Jahres | Jahr (eindeutig), abgegeben am, Steuerberater | – |
 
 **Konto:** Der Titel lautet „{Bank} von {Inhaber} ({Art})“, z. B. „Sparkasse Musterstadt von Lena Muster, Tom Muster (Girokonto)“. Bei PayPal und ähnlichen Diensten ist der Dienst die Bank, als Art wählst du das Konto oder die Karte dahinter. Unter *Kontoauszüge* stehen die Auszüge des Kontos, unter **Was läuft über dieses Konto?** alles, was darauf zeigt: Verträge mit *Abbuchung von Konto* (Paket Verträge), Rechnungen mit *Konto* (Paket Rechnungen und Bestellungen), Mietverträge mit *Kautionskonto* und die Auszüge. Das hilft beim Kontowechsel.
 
 **Steuerjahr:** Unter *Belege* steht alles, was auf das Steuerjahr zeigt – ab 2.0.0 auch der Steuerbescheid (ein **Bescheid** aus dem Paket „Ämter & Papiere“ mit *Betrifft* = Steuerjahr, dort mit Einspruchsfrist und Erinnerung), dazu Rechnungen, Anschaffungen, Arztkosten, Fortbildungen, Arbeitsverhältnisse, Nebenkostenabrechnungen, je nachdem, welche Pakete installiert sind. Ist die Ablage als „beruflich genutzt“ eingerichtet, hat das Steuerjahr zusätzlich die Abschnitte **Umsatzsteuer**, **Gewerbesteuer** und **Jahresabschluss** (Einnahmenüberschussrechnung oder Bilanz). Ein eigenes Geschäftsjahr gibt es nicht.
+
+**Jahresbelege der Bank:** Alles, was die Bank zu einem Konto für ein Jahr schickt, ist ein *Kontoauszug* mit passender **Art** – mit „Steuerjahr“ steht er dann unter *Belege* am Steuerjahr. Das Konto selbst läuft über viele Jahre und hat kein Steuerjahr.
+
+| Art | Beispiel | Wofür |
+| --- | --- | --- |
+| Entgeltaufstellung | Übersicht der Kontogebühren eines Jahres (§ 10 Zahlungskontengesetz) | Kontogebühren bei Vermietung oder im Betrieb absetzen |
+| Jahressteuerbescheinigung | Kapitalerträge und Steuern vom Depot | Anlage KAP |
+| Zinsbescheinigung | gezahlte Zinsen für einen Kredit | Schuldzinsen bei Vermietung, Betriebsausgaben |
+| Saldenbestätigung | Kontostand zum 31.12. | Jahresabschluss im Betrieb |
+| Kontoauszug, Zeitraum Monat | Gebührenübersicht von PayPal, SumUp und ähnlichen Diensten | Betriebsausgaben (den Dienst als Konto anlegen) |
+
+Monatsabrechnungen mit Rechnungsnummer und Umsatzsteuer (z. B. Tankkarte, Maut, Zahlungsanbieter) sind dagegen **Rechnungen** (Paket „Rechnungen und Bestellungen“).
 
 **Ansichten:** *Finanzen* mit allem, darunter *Konten*, *Kontoauszüge*, *Freistellungsaufträge* und *Steuerjahre*.
 
