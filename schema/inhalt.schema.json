@@ -405,8 +405,9 @@
         "bereich": { "enum": ["suche", "post", "fristen", "mappen", "konto", "verwalten"], "description": "Vorgabe: mappen" },
         "text": { "type": "string", "minLength": 1, "maxLength": 160, "description": "Höchstens zwei Sätze, Du-Form, nur Begriffe aus dem Glossar" },
         "fuer": { "$ref": "#/$defs/fuer" },
-        "ziel": { "$ref": "#/$defs/anker", "description": "Anker mit fester Seite, ein Anker an jeder Mappe wie mappe.aktionen (ohne typ ab 0.293.2) – oder mappe.feld:/mappe.register: zusammen mit typ (genau eines von ziel und rundgang)" },
-        "rundgang": { "$ref": "#/$defs/entdecken_schluessel", "description": "Rundgang dieses Pakets (genau eines von ziel und rundgang)" },
+        "ziel": { "$ref": "#/$defs/anker", "description": "Anker mit fester Seite, ein Anker an jeder Mappe wie mappe.aktionen (ohne typ ab 0.293.2) – oder mappe.feld:/mappe.register: zusammen mit typ (genau eines von ziel, rundgang und handbuch)" },
+        "rundgang": { "$ref": "#/$defs/entdecken_schluessel", "description": "Rundgang dieses Pakets (genau eines von ziel, rundgang und handbuch)" },
+        "handbuch": { "type": "string", "pattern": "^(benutzer|admin)/([a-z0-9_-]+/)*(#[a-z0-9_-]{1,60})?$", "description": "Seite im mitgelieferten Handbuch, z. B. benutzer/knoepfe/ (Ablago #1524, ab 0.305.0; genau eines von ziel, rundgang und handbuch)" },
         "funktion": { "enum": ["fragen", "laufwerk", "mail"], "description": "nur zeigen, wenn diese Funktion eingeschaltet ist" },
         "ab_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "„Neu seit deinem letzten Besuch“ nach dem Update auf diese Version des Pakets (höchstens die Version des Pakets)" },
         "typ": { "$ref": "#/$defs/typverweis", "description": "nur für Personen, die diesen Mappentyp lesen dürfen; Ziele in einer Mappe öffnen die erste davon" }

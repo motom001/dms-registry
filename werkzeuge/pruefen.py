@@ -186,6 +186,8 @@ HERAUSGEBER = 'app.ablago'
 DMS_RUNDGAENGE_AB = (0, 285, 0)
 # Texte der Rundgänge und Tipps in texte/<sprache>/entdecken.json und Tipp-Ziele an jeder Mappe ohne typ (Ablago #1307)
 DMS_ENTDECKEN_TEXTE_AB = (0, 293, 2)
+# Tipp mit „handbuch“ statt ziel/rundgang – eine Seite im mitgelieferten Handbuch (Ablago #1524, PR #1558, ab 0.305.0)
+DMS_TIPP_HANDBUCH_AB = (0, 305, 0)
 DMS_PAKETREITER_AB = (0, 286, 0)
 DMS_PAKETDATEN_AB = (0, 287, 0)
 KERN_FELDARTEN = ('ki_mappentypen', 'fragen_grenzen', 'erkennung_standard', 'mappenaktionen')
@@ -1415,6 +1417,7 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
     fehler: list[str] = []
     sprachen = [None] + sorted(x for x in texte if x != ENTDECKEN_GRUNDSPRACHE)
     braucht_1307: list[str] = []
+    braucht_handbuch: list[str] = []
     eigene = {t.get('schluessel'): t for t in typen if isinstance(t, dict)}
 
     def typ_info(roh) -> tuple[str, list | None, list | None] | None:
@@ -1519,8 +1522,10 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
                 typ = typ_info(t['typ'])
                 if typ is None:
                     fehler.append(f'{wo}: Den Mappentyp „{t["typ"]}“ gibt es weder in diesem Paket noch in einer Abhängigkeit')
-            if ('ziel' in t) == ('rundgang' in t):
-                fehler.append(f'{wo}: genau eines von „ziel“ (Anker) oder „rundgang“')
+            if sum(k in t for k in ('ziel', 'rundgang', 'handbuch')) != 1:
+                fehler.append(f'{wo}: genau eines von „ziel“ (Anker), „rundgang“ oder „handbuch“ (Seite im Handbuch)')
+            if 'handbuch' in t:
+                braucht_handbuch.append(f'{wo}: „handbuch“')
             if isinstance(t.get('ziel'), str):
                 z = t['ziel']
                 if (f := ziel_fehler(z, typ, wo)):
@@ -1552,6 +1557,9 @@ def pruefe_entdecken(rundgaenge, tipps, typen: list, paket_id: str, abh: set, ve
     elif braucht_1307 and (ab is None or ab < DMS_ENTDECKEN_TEXTE_AB):
         v = version_text(DMS_ENTDECKEN_TEXTE_AB)
         fehler.append(f'{braucht_1307[0]}: kennt Ablago erst ab {v} (Ablago #1307) – bitte dms: ">={v}" angeben')
+    if braucht_handbuch and (ab is None or ab < DMS_TIPP_HANDBUCH_AB):
+        v = version_text(DMS_TIPP_HANDBUCH_AB)
+        fehler.append(f'{braucht_handbuch[0]}: kennt Ablago erst ab {v} (Ablago #1524) – bitte dms: ">={v}" angeben')
     return fehler
 
 
