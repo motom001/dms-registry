@@ -1785,7 +1785,7 @@ SAMMEL_SKRIPT = r'''
       box.checked = an; box.disabled = !v || mit;
       box.addEventListener('change', function () { document.getElementById('sammel-ergebnis').textContent = ''; if (box.checked) gewaehlt.push(p.id); else gewaehlt = gewaehlt.filter(function (x) { return x !== p.id; }); zeichne(); });
       var zeige = (im && im.v) || v || p.versionen[0];
-      var unter = !v ? 'Braucht Ablago ' + p.versionen[0].dms + (dms ? ' – du hast ' + dms + '.' : '.') : (zeige.code ? 'Enthält Code – die Rechte bestätigst du in Ablago für dieses Paket einzeln.' : 'Kein Code – legt Mappentypen und Ansichten an.');
+      var unter = !v ? 'Braucht Ablago ' + p.versionen[0].dms + (dms ? ' – du hast ' + dms + '.' : '.') : ({ netz: 'Helfer mit Internet – Ablago installiert ihn nur, wenn ihr das Internet erlaubt habt.', lokal: 'Helfer, der nur hier arbeitet – nichts verlässt Ablago.' }[zeige.stufe] || (zeige.code ? 'Enthält Code.' : 'Nur Vorlagen – legt Mappentypen und Ansichten an.'));
       var empfohlen = VORAUSWAHL.indexOf(p.id) >= 0 && v;
       liste.appendChild(el('li', { className: an ? 'an' : '' }, [el('label', { for: 'p-' + p.id }, [box, el('span', {}, [
         el('strong', { text: p.name }), ' ', el('span', { className: 'leise', text: zeige.version }),

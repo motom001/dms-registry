@@ -2601,6 +2601,12 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
         fehler += pruefe_einstellungen(m['code'], str(m.get('id')), typen, abh, str(m.get('dms', '')))
         fehler += pruefe_rechte(m['code'], str(m.get('dms', '')))
         fehler += pruefe_mappentypen(m['code'], str(m.get('id')), typen, str(m.get('dms', '')))
+    # Stufe für „Was Ablago darf“ (motom001/dms#1562, Registry #234): Ablago leitet sie aus dem Manifest ab
+    # (werkzeuge/katalog.py paket_stufe). Widersprüche lehnt die Prüfung ab, damit Katalog und Ablago dasselbe sagen.
+    # README.md und bauen.sh kommen aus der Vorlage (vorlage/code) und sind noch kein Code.
+    if 'code' not in m and (ordner / 'code').is_dir() and any(p.is_file() and p.name not in ('README.md', 'bauen.sh') for p in (ordner / 'code').rglob('*')):
+        fehler.append('code/: das Paket bringt Code mit, das Manifest aber keinen Abschnitt code – Ablago hielte es für '
+                      '„nur Vorlagen“. Bitte code im Manifest angeben oder den Ordner entfernen')
     if 'code' in m:
         quelle = ordner / str(m['code'].get('quelle', ''))
         if not quelle.is_dir() or not any(p.is_file() and p.name != 'README.md' for p in quelle.rglob('*')):
@@ -2623,6 +2629,13 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
             import wasm  # erst hier: pruefen.py läuft auch allein (z. B. kopiert im Test des DMS)
             fehler += wasm.pruefe(modul.read_bytes())
             # netz_strom, netz_weiter und teil (DMS #444): Ältere DMS lehnen ein solches Modul ab.
+            # Netz ohne Ziele (Registry #234): Das Modul ruft dms.netz*, das Manifest nennt aber weder code.netz noch eine
+            # Dienst-Adresse – Ablago führt es als „nur hier“ und würde jeden Aufruf ablehnen.
+            netzrufe = sorted(wasm.dms_importe(modul.read_bytes()) & {'netz', 'netz_strom', 'netz_weiter'})
+            if netzrufe and not (m['code'].get('netz') or [f for b in m['code'].get('einstellungen') or [] if isinstance(b, dict)
+                                                         for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']):
+                fehler.append(f'code/modul.wasm: nutzt {", ".join(netzrufe)}, aber code.netz nennt keine Ziele und es gibt keine Dienst-Adresse – '
+                              'bitte die Adressen in code.netz angeben')
             neu = sorted(wasm.dms_importe(modul.read_bytes()) & DMS_FUNKTIONEN_ANTWORTEN)
             ab = dms_untergrenze(str(m.get('dms', '')))
             if neu and (ab is None or ab < DMS_ANTWORTEN_AB):

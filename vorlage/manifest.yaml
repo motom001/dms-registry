@@ -55,7 +55,7 @@ inhalt:
 #     lesen: [vorlage:beispiel]      # Mappentypen, die es lesen darf
 #     schreiben: [vorlage:beispiel]  # … und ändern darf
 #     dokumente: lesen               # keine | lesen | schreiben
-#   netz: []                         # erlaubte Adressen, z. B. ["https://api.beispiel.de"]
+#   netz: []                         # nur mit Internet: erlaubte Adressen, z. B. ["https://api.beispiel.de"]
 #   einstellungen:                   # daraus baut Ablago ein Formular (Werkbank → Pakete → Einstellungen)
 #     - abschnitt: Allgemein         # Abschnitt: Überschrift, optional hilfe, felder
 #       felder:

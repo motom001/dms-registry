@@ -57,6 +57,18 @@ Before installation, Ablago shows the permissions of a package with code, and th
 
 They are explained in the administrator manual under [Pakete mit Code](https://help.ablago.app/admin/aktuell/pakete/#rechte-eines-pakets) (packages with code, German). In the README of a package with code, describe in the section „Rechte und Netzwerkzugriff“ (permissions and network access, as in the [template](vorlage/README.md)) what the package may do and why, using the same words.
 
+### What Ablago may do: a package's level { #stufe }
+
+During setup, Ablago decides which packages it may install and update (motom001/dms#1562). It derives a package's level from the manifest; there is no separate field:
+
+| Level | When | In the catalog (`stufe`) |
+|---|---|---|
+| Templates only | no `code` section | `vorlagen` |
+| Helpers that only work here | `code`, but neither `code.netz` nor a service address | `lokal` |
+| Helpers with internet | `code.netz` with addresses or a setting of type `adresse` | `netz` |
+
+The check rejects contradictions: source code under `code/` without a `code` section in the manifest, and a module that calls `dms.netz…` while neither `code.netz` nor a service address names a target. An update that newly goes online moves the package to “with internet” – Ablago only installs it if that is allowed. Say so in the CHANGELOG.
+
 ## Mandatory
 
 - `manifest.yaml`, `README.md`, `LICENSE`, `CHANGELOG.md`, `inhalt/` (empty if need be), `tests/`

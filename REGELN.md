@@ -57,6 +57,18 @@ Vor der Installation zeigt Ablago die Rechte eines Pakets mit Code, die Katalog-
 
 Erklärt sind sie im Administratorhandbuch unter [Pakete mit Code](https://help.ablago.app/admin/aktuell/pakete/#rechte-eines-pakets). Schreibe im README eines Pakets mit Code im Abschnitt „Rechte und Netzwerkzugriff“ (wie in der [Vorlage](vorlage/README.md)) mit denselben Worten, was das Paket darf und wozu.
 
+### Was Ablago darf: die Stufe eines Pakets { #stufe }
+
+Ablago legt bei der Einrichtung fest, welche Pakete es installieren und aktualisieren darf (motom001/dms#1562). Die Stufe eines Pakets leitet es aus dem Manifest ab, eine eigene Angabe gibt es nicht:
+
+| Stufe | Wann | Im Katalog (`stufe`) |
+|---|---|---|
+| Nur Vorlagen | kein Abschnitt `code` | `vorlagen` |
+| Helfer, die nur hier arbeiten | `code`, aber weder `code.netz` noch eine Dienst-Adresse | `lokal` |
+| Helfer mit Internet | `code.netz` mit Adressen oder eine Einstellung vom Typ `adresse` | `netz` |
+
+Die Prüfung lehnt Widersprüche ab: Quellcode unter `code/` ohne Abschnitt `code` im Manifest, und ein Modul, das `dms.netz…` aufruft, ohne dass `code.netz` oder eine Dienst-Adresse ein Ziel nennt. Ein Update, das neu ins Netz geht, hebt das Paket in die Stufe „mit Internet“ – Ablago installiert es nur, wenn das erlaubt ist. Das gehört in den CHANGELOG.
+
 ## Pflicht
 
 - `manifest.yaml`, `README.md`, `LICENSE`, `CHANGELOG.md`, `inhalt/` (ggf. leer), `tests/`

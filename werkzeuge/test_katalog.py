@@ -1,6 +1,8 @@
 """Tests für werkzeuge/katalog.py: Empfehlungsliste und passtZu (#198)."""
 import sys
 import unittest
+
+import yaml
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -30,6 +32,24 @@ class PasstZu(unittest.TestCase):
         pakete = {'alt': {'id': 'alt', 'passtZu': ['beruflich']}}
         katalog.herausgeber_und_umzug(pakete, {})
         self.assertEqual(pakete['alt']['passtZu'], ['beruflich'])
+
+
+
+class Stufe(unittest.TestCase):
+    """Stufe für „Was Ablago darf“ wie paketStufe in Ablago (Registry #234, motom001/dms#1562)."""
+
+    def test_stufen(self):
+        self.assertEqual(katalog.paket_stufe({}), 'vorlagen')
+        self.assertEqual(katalog.paket_stufe({'code': {'netz': []}}), 'lokal')
+        self.assertEqual(katalog.paket_stufe({'code': {'netz': ['https://api.example.org']}}), 'netz')
+        dienst = {'einstellungen': [{'abschnitt': 'A', 'felder': [{'schluessel': 'url', 'typ': 'adresse'}]}]}
+        self.assertEqual(katalog.paket_stufe({'code': {'netz': [], **dienst}}), 'netz')
+
+    def test_offizielle_pakete(self):
+        # Nur KI-Assistent und Sicherung (WebDAV) nutzen das Internet; alle anderen Helfer arbeiten nur hier.
+        manifeste = {d.name: yaml.safe_load((d / 'manifest.yaml').read_text(encoding='utf-8'))
+                     for d in (katalog.WURZEL / 'pakete').iterdir() if (d / 'manifest.yaml').exists()}
+        self.assertEqual(sorted(k for k, m in manifeste.items() if katalog.paket_stufe(m) == 'netz'), ['ki_assistent', 'sicherung_webdav'])
 
 
 if __name__ == '__main__':

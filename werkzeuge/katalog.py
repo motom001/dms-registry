@@ -130,6 +130,8 @@ def eintrag(ordner: Path, m: dict, archivname: str, daten: bytes, veroeffentlich
             **({'beispieldokumente': n} if (n := sum(len(b.get('dokumente') or []) for b in beispiele if isinstance(b, dict))) else {}),
         },
         'code': 'code' in m,
+        # Was Ablago darf (motom001/dms#1562, Registry #234): Stufe wie in Ablago (shared/src/pakete/stufe.ts).
+        'stufe': paket_stufe(m),
         'archiv': release_url(pid, m['version']),
         'sha256': hashlib.sha256(daten).hexdigest(),
         'groesse': len(daten),
@@ -142,6 +144,17 @@ def eintrag(ordner: Path, m: dict, archivname: str, daten: bytes, veroeffentlich
         # Sprachpaket (motom001/dms#731): Ablago und die Katalog-Webseite zeigen „Maschinell übersetzt …“ bzw. „Geprüft von …“.
         **({'sprache': sprache_von(m)} if isinstance(m.get('sprache'), dict) else {}),
     }
+
+
+def paket_stufe(m: dict) -> str:
+    """Stufe für „Was Ablago darf“ wie paketStufe in Ablago: ohne Code `vorlagen`, mit code.netz oder einer Einstellung
+    vom Typ adresse (Dienst-Adresse) `netz`, sonst `lokal` (Helfer, die nur hier arbeiten)."""
+    code = m.get('code')
+    if not isinstance(code, dict):
+        return 'vorlagen'
+    adressen = [f for b in code.get('einstellungen') or [] if isinstance(b, dict)
+                for f in (b.get('felder') or []) if isinstance(f, dict) and f.get('typ') == 'adresse']
+    return 'netz' if code.get('netz') or adressen else 'lokal'
 
 
 def sprache_von(m: dict) -> dict:
