@@ -12,6 +12,8 @@
     "typverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59}$" },
     "beschriftung": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "^[^<>]*$" },
     "sprachkennung": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$" },
+    "teile_typ": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" }, "beschreibung": { "$ref": "#/$defs/beschriftung" }, "mehrzahl": { "$ref": "#/$defs/mehrzahl" } } },
+    "mehrzahl": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "\\S", "description": "Mehrzahl des Mappentyps (DMS #1446, Registry #223), z. B. „Verträge“ – Listen zeigen „12 Verträge“ statt „12 × Vertrag“; höchstens 80 Zeichen" },
     "teile_name": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" }, "beschreibung": { "$ref": "#/$defs/beschriftung" } } },
     "teile_register": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" } } },
     "teile_feld": {
@@ -24,6 +26,10 @@
     "beschriftungen_name": {
       "description": "Beschriftungen je Sprache (Ablago #728, Registry #135): Sprache → name, beschreibung. Der Ausgangstext (name) bleibt Deutsch.",
       "type": "object", "propertyNames": { "$ref": "#/$defs/sprachkennung" }, "maxProperties": 30, "additionalProperties": { "$ref": "#/$defs/teile_name" }
+    },
+    "beschriftungen_typ": {
+      "description": "Beschriftungen eines Mappentyps je Sprache: name, beschreibung, mehrzahl (Registry #223). Der Ausgangstext bleibt Deutsch.",
+      "type": "object", "propertyNames": { "$ref": "#/$defs/sprachkennung" }, "maxProperties": 30, "additionalProperties": { "$ref": "#/$defs/teile_typ" }
     },
     "beschriftungen_register": {
       "type": "object", "propertyNames": { "$ref": "#/$defs/sprachkennung" }, "maxProperties": 30, "additionalProperties": { "$ref": "#/$defs/teile_register" }
@@ -168,7 +174,8 @@
         "felder": { "type": "array", "items": { "$ref": "#/$defs/feld" } },
         "register": { "type": "array", "items": { "$ref": "#/$defs/register" }, "minItems": 1 },
         "trefferliste": { "type": "array", "items": { "type": "string" } },
-        "beschriftungen": { "$ref": "#/$defs/beschriftungen_name" },
+        "mehrzahl": { "$ref": "#/$defs/mehrzahl" },
+        "beschriftungen": { "$ref": "#/$defs/beschriftungen_typ" },
         "gehoertZu": { "$ref": "#/$defs/schluessel", "description": "DMS #1031: Mappen dieses Typs gehören immer zu einer anderen Mappe – Kennung des Verweisfelds (Pflicht), nicht in Ansichten und Suche" },
         "inSuche": { "type": "boolean", "description": "DMS #1220 (ab Ablago 0.276.0, ältere ignorieren es): false = Mappen dieses Typs nicht in der allgemeinen Suche (Suchfeld oben, Frag deine Ablage) – für reine Auswahllisten; fehlt = ja" }
       }

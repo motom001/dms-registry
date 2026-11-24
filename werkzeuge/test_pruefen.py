@@ -2063,3 +2063,50 @@ class InSuche(unittest.TestCase):
     def test_vertragsart_nicht_in_der_suche(self):
         typen = yaml.safe_load((WURZEL / 'pakete' / 'vertraege' / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
         self.assertIs(next(t for t in typen if t['schluessel'] == 'vertragsart')['inSuche'], False)
+
+
+class Mehrzahl(unittest.TestCase):
+    """dms-registry #223, DMS #1446: mehrzahl am Mappentyp und unter beschriftungen.<sprache>, höchstens 80 Zeichen."""
+
+    def paket(self, **teile) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            ziel = Path(tmp) / 'probe'
+            shutil.copytree(WURZEL / 'vorlage', ziel)
+            typen = yaml.safe_load((ziel / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'))
+            typen[0].update(teile)
+            (ziel / 'inhalt' / 'mappentypen.yaml').write_text(yaml.safe_dump(typen, allow_unicode=True), encoding='utf-8')
+            (ziel / 'LICENSE').write_text((ziel / 'LICENSE').read_text(encoding='utf-8').replace('<Name>', 'Test').replace('<Jahr>', '2026'), encoding='utf-8')
+            return pruefen.pruefe(ziel, None)
+
+    def test_mit_mehrzahl_wie_ohne(self):
+        self.assertEqual(self.paket(mehrzahl='Beispiele', beschriftungen={'en': {'name': 'Example', 'mehrzahl': 'Examples'}}),
+                         self.paket(beschriftungen={'en': {'name': 'Example'}}))
+
+    def test_zu_lang_oder_leer(self):
+        for wert in ('x' * 81, '', '   '):
+            fehler = self.paket(mehrzahl=wert)
+            self.assertTrue(any('mehrzahl' in f for f in fehler), (wert, fehler))
+        fehler = self.paket(beschriftungen={'en': {'mehrzahl': 'x' * 81}})
+        self.assertTrue(any('mehrzahl' in f for f in fehler), fehler)
+
+    def test_offizielle_pakete_haben_mehrzahl(self):
+        for datei in sorted((WURZEL / 'pakete').glob('*/inhalt/mappentypen.yaml')):
+            for t in yaml.safe_load(datei.read_text(encoding='utf-8')) or []:
+                self.assertTrue(t.get('mehrzahl'), f'{datei.parent.parent.name}:{t["schluessel"]} ohne mehrzahl')
+                en = (t.get('beschriftungen') or {}).get('en') or {}
+                if en.get('name'):
+                    self.assertTrue(en.get('mehrzahl'), f'{datei.parent.parent.name}:{t["schluessel"]} ohne mehrzahl auf Englisch')
+
+
+class Ansichtsymbole(unittest.TestCase):
+    """dms-registry #230: Symbole der Ansichten aus Ablagos fester Liste (werkzeuge/ansichtsymbole.txt)."""
+
+    def test_liste(self):
+        s = pruefen.ansichtsymbole()
+        self.assertEqual(len(s), 259)
+        self.assertTrue({'house', 'calendar-clock', 'id-card'} <= s)
+
+    def test_unbekannt(self):
+        fehler = pruefen.pruefe_sichtsymbole([{'schluessel': 'a', 'symbol': 'rakete'}, {'schluessel': 'b', 'symbol': 'house'}, {'schluessel': 'c'}])
+        self.assertEqual(len(fehler), 1)
+        self.assertIn('rakete', fehler[0])
