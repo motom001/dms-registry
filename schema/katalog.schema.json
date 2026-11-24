@@ -30,6 +30,7 @@
           }
         },
         "code": { "type": "boolean" },
+        "stufe": { "enum": ["vorlagen", "lokal", "netz"], "description": "Stufe für „Was Ablago darf“ (motom001/dms#1562), aus dem Manifest abgeleitet wie in Ablago (Registry #234)" },
         "archiv": { "type": "string", "description": "Adresse des Archivs – absolut (Release-Datei, #156) oder, in älteren Katalogen, relativ zu katalog.json; Ablago löst sie relativ zur Katalog-Adresse auf" },
         "spiegel": { "type": "string", "pattern": "^archive/[a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?-\\d+\\.\\d+\\.\\d+\\.zip$", "description": "Optional (#133): Kopie des Archivs auf GitHub Pages, relativ zu katalog.json – nur für die letzten Versionen je Paket; daraus stellt die Webseite die Sammeldatei zusammen. Ablago liest das Feld nicht." },
         "downloads": { "type": "integer", "minimum": 0, "description": "Optional (#156): Downloads dieser Version laut GitHub (Release-Datei), inklusive Updates und Tests. Ablago liest das Feld nicht." },
