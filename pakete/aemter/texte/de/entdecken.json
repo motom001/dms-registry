@@ -1,0 +1,23 @@
+{
+  "rundgang.ausweis-ablegen.titel": "Ausweis ablegen",
+  "rundgang.ausweis-ablegen.beschreibung": "Wie du einen Ausweis ablegst und dich vor dem Ablauf erinnern lässt.",
+  "rundgang.ausweis-ablegen.ersatz": "Ausweise legst du unter „+ Neu“ als „Ausweis“ an.",
+  "rundgang.ausweis-ablegen.ende": "Ablago erinnert dich 90 Tage vor „Gültig bis“, wenn du unter Werkbank → Automatisierungen „Ausweis läuft bald ab“ einschaltest.",
+  "rundgang.ausweis-ablegen.art.titel": "Was ist es?",
+  "rundgang.ausweis-ablegen.art.text": "Wähle Personalausweis, Reisepass, Führerschein oder einen anderen Ausweis.",
+  "rundgang.ausweis-ablegen.art.ort": "Im Formular oben",
+  "rundgang.ausweis-ablegen.person.titel": "Für wen?",
+  "rundgang.ausweis-ablegen.person.text": "Wähle die Person aus deinem Haushalt. So findest du später alle Ausweise einer Person.",
+  "rundgang.ausweis-ablegen.person.ort": "Im Formular unter der Art",
+  "rundgang.ausweis-ablegen.gueltig-bis.titel": "Gültig bis",
+  "rundgang.ausweis-ablegen.gueltig-bis.text": "Trag ein, bis wann der Ausweis gilt.",
+  "rundgang.ausweis-ablegen.gueltig-bis.ort": "Im Formular unter „Ausgestellt am“",
+  "rundgang.ausweis-ablegen.original.titel": "Wo liegt das Original?",
+  "rundgang.ausweis-ablegen.original.text": "Wähle, wo du das Papier aufbewahrst, zum Beispiel „Arbeitszimmer › Schrank › roter Ordner“.",
+  "rundgang.ausweis-ablegen.original.ort": "Im Formular unten",
+  "rundgang.ausweis-ablegen.schreiben.titel": "Und Briefe dazu?",
+  "rundgang.ausweis-ablegen.schreiben.text": "Ein Schreiben legst du als Dokument zu der Sache ab, um die es geht – Post vom Bürgeramt hier, Post vom Arbeitgeber beim Arbeitsverhältnis. Gibt es keine Sache, leg es beim Absender ab.",
+  "rundgang.ausweis-ablegen.schreiben.ort": "Oben im Register „Dokumente“",
+  "tipp.einspruch": "Trag beim Bescheid „Einspruch/Widerspruch bis“ ein. So verpasst du die Frist nicht.",
+  "tipp.betrifft": "Wähl unter „Betrifft“, worum es im Bescheid geht – dann steht er auch dort, zum Beispiel am Steuerjahr."
+}

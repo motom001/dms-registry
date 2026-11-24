@@ -6,7 +6,7 @@ schema: 1
 id: finanzen
 name: Finanzen
 herausgeber: app.ablago
-version: 1.2.1
+version: 2.0.0
 beschreibung: Konten, Kontoauszüge, Freistellungsaufträge und Steuerjahre an einem Ort – privat wie im Betrieb. Ablago legt die Unterlagen ab, es bucht nicht.
 autor:
   name: Thomas Meissner
@@ -18,12 +18,12 @@ kurzanleitung:
   de:
     - Lege deine Bank einmal als Organisation an und dann je Konto eine Mappe – mit Inhaber, Art und IBAN.
     - Kontoauszüge legst du am Konto ab; unter „Was läuft über dieses Konto?“ siehst du Verträge, Rechnungen und Auszüge dazu.
-    - Im Steuerjahr findest du unter „Belege“ alles, was du diesem Jahr zugeordnet hast. Trag „Einspruch bis“ ein, dann erinnert Ablago rechtzeitig.
+    - Im Steuerjahr findest du unter „Belege“ alles, was du diesem Jahr zugeordnet hast – auch den Steuerbescheid, wenn du ihn als Bescheid (Paket „Ämter & Papiere“) mit „Betrifft“ = Steuerjahr ablegst.
     - Bei „beruflich genutzt“ hat das Steuerjahr dazu Umsatzsteuer, Gewerbesteuer und Jahresabschluss.
   en:
     - Create your bank once as an organisation, then one folder per account – with holder, type and IBAN.
     - File bank statements with the account; “What runs through this account?” shows the contracts, invoices and statements for it.
-    - In a tax year, “Receipts” shows everything you assigned to that year. Enter “Objection by” and Ablago reminds you in time.
+    - In a tax year, “Receipts” shows everything you assigned to that year – also the tax assessment if you file it as a notice (package “Authorities & papers”) concerning that tax year.
     - With “used for business”, the tax year also has VAT, trade tax and the annual accounts.
 # 0.285.0: Rundgänge und Tipps (dms-registry #132); darin enthalten Anzeige-Bedingungen mit Merkmal (beruflich) und frist.
 # 0.293.2: Texte der Rundgänge und Tipps in texte/<sprache>/entdecken.json (Ablago #1307)
@@ -33,5 +33,4 @@ abhaengigkeiten:
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml
-  automatisierungen: inhalt/automatisierungen.yaml
   tipps: inhalt/tipps.yaml

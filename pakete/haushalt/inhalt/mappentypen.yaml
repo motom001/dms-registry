@@ -1,3 +1,4 @@
+# Ab 4.0.0 (#225): „Ausweis & Urkunde“ ist in das Paket „Ämter & Papiere“ gezogen (Ausweis, Urkunde) – ohne Umzug.
 # Mappentypen des Pakets Haushalt. Schema: schema/inhalt.schema.json
 # Ablago legt sie als haushalt:<schluessel> an; angezeigt wird der Name.
 # Ab 3.0.0 (dms-registry #212): Konto und Steuerjahr kommen aus dem Paket Finanzen (finanzen:konto, finanzen:steuerjahr);
@@ -93,36 +94,6 @@
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [art, person_verweis, anbieter, vertragsnummer]
-
-- schluessel: ausweis
-  name: Ausweis & Urkunde
-  mehrzahl: "Ausweise & Urkunden"
-  beschreibung: Personalausweis, Reisepass, Führerschein, Geburts- und Heiratsurkunde, Zeugnisse.
-  beschriftungen: { en: { name: "ID & certificate", mehrzahl: "IDs & certificates", beschreibung: "ID card, passport, driving licence, birth and marriage certificate, school reports." } }
-  titelVorlage: "{art} – {person_verweis}"
-  felder:
-    - key: art
-      label: Art
-      beschriftungen: { en: { label: "Type", optionen: { "Personalausweis": "ID card", "Reisepass": "Passport", "Führerschein": "Driving licence", "Geburtsurkunde": "Birth certificate", "Heiratsurkunde": "Marriage certificate", "Zeugnis": "Certificate", "Sonstige": "Other" } } }
-      typ: auswahl
-      pflicht: true
-      optionen: [Personalausweis, Reisepass, Führerschein, Geburtsurkunde, Heiratsurkunde, Zeugnis, Sonstige]
-    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
-    - { key: nummer, label: Nummer, typ: text, maxLen: 60, beschriftungen: { en: { label: "Number" } }  }
-    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, beschriftungen: { en: { label: "Issued on" } }  }
-    - key: gueltig_bis
-      label: Gültig bis
-      beschriftungen: { en: { label: "Valid until", hilfe: "The included automation reminds you 90 days before – enough time for an appointment at the citizens’ office." } }
-      typ: datum
-      hilfe: Die mitgelieferte Automatisierung erinnert 90 Tage vorher – Zeit genug für einen Termin beim Bürgeramt.
-      frist: { vorlauf: 90, einheit: tage }
-    - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the originals are" } }  }
-  register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [art, person_verweis, nummer, ausgestellt_am, gueltig_bis, verbleib_original], beschriftungen: { en: { name: "General" } }  }
-    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
-    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
-  trefferliste: [art, person_verweis, gueltig_bis, verbleib_original]
 
 - schluessel: gesundheit
   name: Gesundheit

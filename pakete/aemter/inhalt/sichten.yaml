@@ -1,0 +1,15 @@
+# Ansichten des Pakets „Ämter & Papiere“ (#225). Schema: schema/inhalt.schema.json
+# Oben der Paketname mit Symbol, darunter je Mappentyp eine Ansicht (Thomas, 20.11.2026). Die Fristen „Einspruch läuft“
+# und „Ausweis läuft bald ab“ kommen unter „Fristen“ aus Basis, sobald Ablago das kann (dms #1517).
+- schluessel: aemter
+  name: Ämter & Papiere
+  beschreibung: Post vom Amt und die eigenen amtlichen Papiere
+  beschriftungen: { en: { name: "Authorities & papers", beschreibung: "Mail from authorities and your own official papers" } }
+  symbol: stamp
+  typen: [antrag, bescheid, widerspruch, ausweis, urkunde, bescheinigung]
+- { schluessel: antraege, name: Anträge, symbol: file-pen, eltern: aemter, typen: [antrag], beschriftungen: { en: { name: "Applications" } } }
+- { schluessel: bescheide, name: Bescheide, symbol: mail, eltern: aemter, typen: [bescheid], beschriftungen: { en: { name: "Notices" } } }
+- { schluessel: widersprueche, name: Widersprüche, symbol: gavel, eltern: aemter, typen: [widerspruch], beschriftungen: { en: { name: "Objections" } } }
+- { schluessel: ausweise, name: Ausweise, symbol: id-card, eltern: aemter, typen: [ausweis], beschriftungen: { en: { name: "ID documents" } } }
+- { schluessel: urkunden, name: Urkunden, symbol: scroll-text, eltern: aemter, typen: [urkunde], beschriftungen: { en: { name: "Certificates" } } }
+- { schluessel: bescheinigungen, name: Bescheinigungen, symbol: file-user, eltern: aemter, typen: [bescheinigung], beschriftungen: { en: { name: "Official records" } } }

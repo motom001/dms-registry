@@ -248,8 +248,8 @@ class RundgaengeUndTipps(unittest.TestCase):
         self.assertEqual(w.entdecken_block([], []), '')
 
     def test_kachel_mit_rundgang(self):
-        self.assertIn('mit Rundgang', w.kennzeichen({'id': 'haushalt'}, 'de'))
-        self.assertIn('with a tour', w.kennzeichen({'id': 'haushalt'}, 'en'))
+        self.assertIn('mit Rundgang', w.kennzeichen({'id': 'aemter'}, 'de'))  # Rundgang „Ausweis ablegen“ ab Ämter & Papiere 1.0.0 (#225)
+        self.assertIn('with a tour', w.kennzeichen({'id': 'aemter'}, 'en'))
         self.assertNotIn('mit Rundgang', w.kennzeichen({'id': 'basis'}, 'de'))
 
 

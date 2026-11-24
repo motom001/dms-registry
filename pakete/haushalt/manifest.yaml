@@ -3,8 +3,8 @@ schema: 1
 id: haushalt
 name: Haushalt
 herausgeber: app.ablago
-version: 3.3.0
-beschreibung: Die typischen Unterlagen eines Haushalts – Ausweise und Urkunden, Gesundheit, Arbeit, Vorsorge, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Konten und Steuerjahre kommen aus dem Paket Finanzen, Verträge und Versicherungen aus Verträge, Rechnungen aus Rechnungen und Bestellungen.
+version: 4.0.0
+beschreibung: Die typischen Unterlagen eines Haushalts – Gesundheit, Arbeit, Vorsorge, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Konten und Steuerjahre kommen aus dem Paket Finanzen, Verträge und Versicherungen aus Verträge, Rechnungen aus Rechnungen und Bestellungen.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -22,17 +22,17 @@ dms: ">=0.293.2"
 kurzanleitung:
   de:
     - Lege deine Bank, Versicherer und Ärzte einmal als Organisation an – du wählst sie danach überall aus.
-    - Leg Ausweise, Arztbriefe und Anschaffungen als Mappe an; Konten im Paket Finanzen, Verträge und Versicherungen als Vertrag.
-    - Trag beim Ausweis „Gültig bis“ und bei der Anschaffung „Garantie bis“ ein – die mitgelieferten Automatisierungen erinnern rechtzeitig, wenn du sie einschaltest.
+    - Leg Arztbriefe, Arbeitsverhältnisse und Anschaffungen als Mappe an; Konten im Paket Finanzen, Verträge und Versicherungen als Vertrag, Ausweise im Paket „Ämter & Papiere“.
+    - Trag bei der Anschaffung „Garantie bis“ ein – die mitgelieferte Automatisierung erinnert rechtzeitig, wenn du sie einschaltest.
     - Ordne Anschaffungen, Arztkosten und Fortbildungen einem Steuerjahr zu – im Steuerjahr (Paket Finanzen) stehen sie dann unter „Belege“.
   en:
     - Create your bank, insurers and doctors once as an organisation – then you can choose them everywhere.
-    - Create IDs, medical letters and purchases as folders; accounts in the Finances package, contracts and insurance policies as a contract.
-    - Enter “Valid until” for IDs and “Warranty until” for purchases – the included automations remind you in time once you turn them on.
+    - Create medical letters, jobs and purchases as folders; accounts in the Finances package, contracts and insurance policies as a contract, IDs in the “Authorities & papers” package.
+    - Enter “Warranty until” for purchases – the included automation reminds you in time once you turn it on.
     - Assign purchases, medical costs and training to a tax year – the tax year (Finances package) then lists them under “Receipts”.
 abhaengigkeiten:
   # Ab 2.0.0 (dms-registry #163): Vertrag und Versicherung aus Verträge, Rechnungen und Kassenbons aus Rechnungen.
-  basis: ">=1.7.0"
+  basis: ">=1.10.0"
   vertraege: ">=1.1.0"
   rechnung_bestellung: ">=1.1.0"
   # Ab 3.0.0 (dms-registry #212): Konto und Steuerjahr aus Finanzen.
@@ -42,5 +42,4 @@ inhalt:
   sichten: inhalt/sichten.yaml
   beispiele: inhalt/beispiele.yaml
   automatisierungen: inhalt/automatisierungen.yaml
-  rundgaenge: inhalt/rundgaenge.yaml
   tipps: inhalt/tipps.yaml

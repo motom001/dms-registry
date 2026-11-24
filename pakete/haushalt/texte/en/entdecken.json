@@ -1,22 +1,3 @@
 {
-  "rundgang.ausweis-ablegen.titel": "File an ID",
-  "rundgang.ausweis-ablegen.beschreibung": "How to file an ID or a certificate and get a reminder before it expires.",
-  "rundgang.ausweis-ablegen.ersatz": "You create IDs under “+ New” as “ID & certificate”.",
-  "rundgang.ausweis-ablegen.ende": "Ablago reminds you 90 days before “Valid until” once you turn on “ID expiring soon” under Workbench → Automations.",
-  "rundgang.ausweis-ablegen.art.titel": "What is it?",
-  "rundgang.ausweis-ablegen.art.text": "Choose ID card, passport, driving licence or a certificate.",
-  "rundgang.ausweis-ablegen.art.ort": "At the top of the form",
-  "rundgang.ausweis-ablegen.person.titel": "For whom?",
-  "rundgang.ausweis-ablegen.person.text": "Choose the person from your household. That way you will find all IDs of a person later.",
-  "rundgang.ausweis-ablegen.person.ort": "In the form below the type",
-  "rundgang.ausweis-ablegen.gueltig-bis.titel": "Valid until",
-  "rundgang.ausweis-ablegen.gueltig-bis.text": "Enter until when the ID is valid. For certificates the field stays empty.",
-  "rundgang.ausweis-ablegen.gueltig-bis.ort": "In the form below “Issued on”",
-  "rundgang.ausweis-ablegen.original.titel": "Where is the original?",
-  "rundgang.ausweis-ablegen.original.text": "Choose where you keep the paper, for example “Study › Cupboard › red folder”.",
-  "rundgang.ausweis-ablegen.original.ort": "At the bottom of the form",
-  "rundgang.ausweis-ablegen.schreiben.titel": "And letters about it?",
-  "rundgang.ausweis-ablegen.schreiben.text": "File a letter as a document with the matter it is about – mail from the citizens’ office here, mail from your employer with the employment. If there is no such matter, file it with the sender.",
-  "rundgang.ausweis-ablegen.schreiben.ort": "At the top in the “Documents” tab",
   "tipp.garantie": "Enter “Warranty until” for a purchase – then Ablago reminds you in time before the warranty ends."
 }

@@ -1,0 +1,9 @@
+# Tipps (Ablago ab 0.285.0, dms-registry #132); Texte unter tipp.<schluessel> in texte/<sprache>/entdecken.json.
+# Bis Finanzen 1.x stand der Tipp zum Einspruch am Steuerjahr.
+- schluessel: einspruch
+  bereich: fristen
+  typ: bescheid
+  ziel: mappe.feld:einspruch_bis
+- schluessel: betrifft
+  typ: bescheid
+  ziel: mappe.feld:betrifft

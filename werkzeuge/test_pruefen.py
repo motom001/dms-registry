@@ -487,7 +487,7 @@ class Inhalt(unittest.TestCase):
         self.assertIn('en', a['beschriftungen'])
         for p in ('haushalt', 'haus', 'vermietung', 'fahrzeuge'):
             m = yaml.safe_load((WURZEL / 'pakete' / p / 'manifest.yaml').read_text(encoding='utf-8'))
-            self.assertIn(m['abhaengigkeiten']['basis'], ('>=1.6.0', '>=1.7.0'), p)
+            self.assertIn(m['abhaengigkeiten']['basis'], ('>=1.6.0', '>=1.7.0', '>=1.10.0'), p)
             self.assertIn('basis:ablageort', (WURZEL / 'pakete' / p / 'inhalt' / 'mappentypen.yaml').read_text(encoding='utf-8'), p)
 
     def test_unbekannter_dms_typ(self):

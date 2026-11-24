@@ -1,5 +1,6 @@
 # Ansichten des Pakets Haushalt. Schema: schema/inhalt.schema.json
 # Ordner „Haushalt“ mit je einer Ansicht pro Mappentyp, dazu Ansichten für anstehende Fristen.
+# Ab 4.0.0 (#225): Ausweise und „Läuft bald ab“ zeigt das Paket „Ämter & Papiere“.
 # Ab 3.2.0 (Thomas, 20.11.2026): Symbole; Verträge, Versicherungen und „Kündigung in den nächsten 3 Monaten“ zeigt das
 # Paket Verträge. „Läuft bald ab“ und „Garantie läuft ab“ ziehen unter „Fristen“ aus Basis, sobald Ablago das kann (dms #1517).
 # Ab 3.0.0: Konten und Steuerjahre zeigt das Paket Finanzen.
@@ -10,26 +11,16 @@
   beschreibung: Alle Unterlagen des Haushalts
   beschriftungen: { en: { name: "Household", beschreibung: "All household documents" } }
   symbol: sofa
-  typen: [arbeitsverhaeltnis, arbeitsmedizin, vorsorge, ausweis, gesundheit, anschaffung, bildung]
+  typen: [arbeitsverhaeltnis, arbeitsmedizin, vorsorge, gesundheit, anschaffung, bildung]
 
 - { schluessel: arbeit, name: Arbeitsverhältnisse, symbol: briefcase-business, eltern: haushalt, typen: [arbeitsverhaeltnis], beschriftungen: { en: { name: "Employments" } }  }
 - { schluessel: arbeitsmedizin, name: Arbeitsmedizinische Vorsorge, symbol: stethoscope, eltern: haushalt, typen: [arbeitsmedizin], beschriftungen: { en: { name: "Occupational health checks" } }  }
 - { schluessel: vorsorge, name: Vorsorge, symbol: piggy-bank, eltern: haushalt, typen: [vorsorge], beschriftungen: { en: { name: "Pension" } }  }
-- { schluessel: ausweise, name: Ausweise & Urkunden, symbol: id-card, eltern: haushalt, typen: [ausweis], beschriftungen: { en: { name: "IDs & certificates" } }  }
 - { schluessel: gesundheit, name: Gesundheit, symbol: heart-pulse, eltern: haushalt, typen: [gesundheit], beschriftungen: { en: { name: "Health" } }  }
 - { schluessel: anschaffungen, name: Anschaffungen, symbol: shopping-cart, eltern: haushalt, typen: [anschaffung], beschriftungen: { en: { name: "Purchases" } }  }
 - { schluessel: bildung, name: Bildung, symbol: graduation-cap, eltern: haushalt, typen: [bildung], beschriftungen: { en: { name: "Education" } }  }
 
 # Fristen
-- schluessel: laeuft_ab
-  name: Läuft bald ab
-  beschreibung: Ausweise, die in den nächsten 6 Monaten ablaufen oder schon abgelaufen sind
-  beschriftungen: { en: { name: "Expiring soon", beschreibung: "IDs that expire in the next 6 months or have already expired" } }
-  eltern: haushalt
-  symbol: calendar-clock
-  typen: [ausweis]
-  bedingungen:
-    - { feld: gueltig_bis, operator: kleiner, wert: { art: heute, versatz: 6, einheit: monate } }
 - schluessel: garantie_bald
   name: Garantie läuft ab
   beschreibung: Anschaffungen, deren Garantie in den nächsten 3 Monaten endet

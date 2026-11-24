@@ -1,5 +1,5 @@
 # Was nach der Installation im DMS vorhanden sein muss.
-mappentypen: [arbeitsverhaeltnis, arbeitsmedizin, vorsorge, ausweis, gesundheit, anschaffung, bildung]
-sichten: [haushalt, arbeit, arbeitsmedizin, vorsorge, ausweise, gesundheit, anschaffungen, bildung, laeuft_ab, garantie_bald]
-beispiele: 16
-automatisierungen: 4
+mappentypen: [arbeitsverhaeltnis, arbeitsmedizin, vorsorge, gesundheit, anschaffung, bildung]
+sichten: [haushalt, arbeit, arbeitsmedizin, vorsorge, gesundheit, anschaffungen, bildung, garantie_bald]
+beispiele: 11
+automatisierungen: 3

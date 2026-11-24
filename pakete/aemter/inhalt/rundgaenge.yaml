@@ -1,6 +1,6 @@
 # Rundgang (Ablago ab 0.285.0, dms-registry #132): führt durch eine Aufgabe. Ablago bietet ihn nach der Installation
 # 30 Tage lang als Tipp an und zeigt ihn unter „Ablago entdecken“; er startet nie von selbst.
-# Ab 3.1.0 stehen die Texte in texte/<sprache>/entdecken.json (Ablago #1307) – hier nur der Aufbau.
+# Ab 1.0.0 aus dem Paket Haushalt hierher (#225); Texte in texte/<sprache>/entdecken.json (Ablago #1307) – hier nur der Aufbau.
 - schluessel: ausweis_ablegen
   start: nach_installation
   fuer: lesen
@@ -9,6 +9,6 @@
   schritte:
     - { schluessel: art, ziel: mappe.feld:art }
     - { schluessel: person, ziel: mappe.feld:person_verweis }
-    - { schluessel: gueltig_bis, ziel: mappe.feld:gueltig_bis }
+    - { schluessel: gueltig_bis, ziel: mappe.feld:ende }
     - { schluessel: original, ziel: mappe.feld:verbleib_original }
     - { schluessel: schreiben, ziel: mappe.register:dokumente }   # Wohin mit Hinweisschreiben (#228)

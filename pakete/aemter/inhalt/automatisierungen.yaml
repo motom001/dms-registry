@@ -1,0 +1,26 @@
+# Mitgelieferte Automatisierungen (Ablago #712). Nach der Installation aus – beim Installieren fragt Ablago,
+# welche gleich eingeschaltet werden. Einspruchsfrist bis Finanzen 1.x am Steuerjahr, „Ausweis läuft ab“ bis Haushalt 3.x.
+- schluessel: einspruch
+  name: Einspruchsfrist beim Bescheid
+  beschreibung: 7 Tage vor dem Ende der Einspruchs- oder Widerspruchsfrist.
+  wenn: { art: datum, typ: bescheid, feld: einspruch_bis, vorlauf: 7, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Einspruch bis {datum}: {titel}" }
+- schluessel: begruendung
+  name: Begründung zum Widerspruch
+  beschreibung: 7 Tage bevor du die Begründung nachreichen musst.
+  wenn: { art: datum, typ: widerspruch, feld: begruendung_bis, vorlauf: 7, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Begründung bis {datum}: {titel}" }
+- schluessel: ausweis_gueltig
+  name: Ausweis läuft bald ab
+  beschreibung: 90 Tage vor dem Ablauf – Zeit genug für einen Termin beim Bürgeramt.
+  wenn: { art: datum, typ: ausweis, feld: ende, vorlauf: 90, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Gültig bis {datum}: {titel}" }
+- schluessel: antrag_nachfragen
+  name: Beim Antrag nachfragen
+  beschreibung: Am Tag „Nachfragen am“ – wenn das Amt sich noch nicht gemeldet hat.
+  wenn: { art: datum, typ: antrag, feld: nachfragen_am, vorlauf: 0, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Nachfragen am {datum}: {titel}" }
