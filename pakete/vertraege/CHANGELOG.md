@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.8.0
+
+- **Krankenversicherung und Pflegeversicherung** als Versicherungsarten (dms-registry #226), bisher nur „Kranken-Zusatz“. Beide erscheinen unter „Personenversicherungen“. Die Mitgliedsbescheinigung legst du als Dokument am Vertrag ab.
+
 ## 1.7.1
 
 - **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Verträge“ statt „12 × Vertrag“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.

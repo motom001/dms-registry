@@ -31,14 +31,14 @@
     # Einzelheiten
     - key: betrifft
       label: Betrifft
-      beschriftungen: { en: { label: "Concerns", hilfe: "What the invoice is for – a vehicle, flat, purchase or contract" } }
+      beschriftungen: { en: { label: "Concerns", hilfe: "What the invoice is for – a vehicle, flat, purchase, medical case or contract" } }
       typ: referenz
       ziel: "vertraege:vertrag"
-      zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"]
+      zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung", "gesundheit:behandlungsfall"]
       mehrfach: true
       gleicherTyp: true
       verweisart: bezug
-      hilfe: Wofür die Rechnung ist – Fahrzeug, Wohnung, Anschaffung oder Vertrag
+      hilfe: Wofür die Rechnung ist – Fahrzeug, Wohnung, Anschaffung, Behandlungsfall oder Vertrag
     # Vertrag oder Bestellung, mehrfach und gemischt – z. B. ein Vertrag, den eine Bestellung erweitert (#208, #211).
     - { key: gehoert_zu, label: Gehört zu Vertrag / Bestellung, typ: referenz, ziel: ["vertraege:vertrag", bestellung], mehrfach: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to contract / order" } } }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: Wenn du die Kosten absetzen willst, beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs" } } }

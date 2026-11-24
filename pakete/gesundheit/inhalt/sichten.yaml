@@ -1,0 +1,24 @@
+# Ansichten des Pakets Gesundheit (#226). Schema: schema/inhalt.schema.json
+# Oben der Paketname mit Symbol, darunter je Mappentyp eine Ansicht und „Wichtige Befunde“. Fristen (Auffrischung,
+# nächster Termin, Verordnung) kommen unter „Fristen“ aus Basis, sobald Ablago das kann (dms #1517).
+- schluessel: gesundheit
+  name: Gesundheit
+  beschreibung: Alle Gesundheitsunterlagen
+  beschriftungen: { en: { name: "Health", beschreibung: "All health documents" } }
+  symbol: heart-pulse
+  typen: [behandlungsfall, befund, therapie, arbeitsunfaehigkeit, medikamentenplan, gesundheitspass, impfung]
+- { schluessel: behandlungsfaelle, name: Behandlungsfälle, symbol: activity, eltern: gesundheit, typen: [behandlungsfall], beschriftungen: { en: { name: "Medical cases" } } }
+- { schluessel: befunde, name: Arztbriefe & Befunde, symbol: hospital, eltern: gesundheit, typen: [befund], beschriftungen: { en: { name: "Doctor’s letters & findings" } } }
+- schluessel: wichtige_befunde
+  name: Wichtige Befunde
+  beschriftungen: { en: { name: "Important findings" } }
+  eltern: gesundheit
+  symbol: star
+  typen: [befund]
+  bedingungen:
+    - { feld: wichtig, operator: gleich, wert: true }
+- { schluessel: therapien, name: Therapien, symbol: bandage, eltern: gesundheit, typen: [therapie], beschriftungen: { en: { name: "Treatments" } } }
+- { schluessel: arbeitsunfaehigkeiten, name: Arbeitsunfähigkeiten, symbol: bed, eltern: gesundheit, typen: [arbeitsunfaehigkeit], beschriftungen: { en: { name: "Sick notes" } } }
+- { schluessel: medikamentenplaene, name: Medikamentenpläne, symbol: pill, eltern: gesundheit, typen: [medikamentenplan], beschriftungen: { en: { name: "Medication plans" } } }
+- { schluessel: gesundheitspaesse, name: Gesundheitspässe, symbol: calendar-heart, eltern: gesundheit, typen: [gesundheitspass], beschriftungen: { en: { name: "Health cards" } } }
+- { schluessel: impfungen, name: Impfungen, symbol: syringe, eltern: gesundheit, typen: [impfung], beschriftungen: { en: { name: "Vaccinations" } } }

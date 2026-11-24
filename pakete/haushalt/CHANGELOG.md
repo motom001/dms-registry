@@ -1,5 +1,10 @@
 # Änderungen
 
+## 5.0.0
+
+- **„Gesundheit“ ist umgezogen** (dms-registry #226): Gesundheitsunterlagen legst du im neuen Paket **Gesundheit** an – mit Behandlungsfall, Arztbrief & Befund, Therapie, Arbeitsunfähigkeit, Medikamentenplan, Gesundheitspass und Impfung. Mit dem Typ sind die Ansicht und das Beispiel weggefallen.
+- **Ohne Update-Weg:** Ablago wird neu aufgesetzt.
+
 ## 4.0.0
 
 - **„Ausweis & Urkunde“ ist umgezogen** (dms-registry #225): Ausweise und Urkunden legst du im Paket „Ämter & Papiere“ an (getrennt in Ausweis und Urkunde). Mit ihnen sind die Ansichten „Ausweise & Urkunden“ und „Läuft bald ab“, die Automatisierung „Ausweis läuft bald ab“, der Rundgang „Ausweis ablegen“ und die Beispiele dorthin gezogen; Zeugnisse bleiben bei Bildung.

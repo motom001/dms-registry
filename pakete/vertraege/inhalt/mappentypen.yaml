@@ -274,9 +274,9 @@
     # Versicherung – nur bei Vertragsart Versicherung
     - key: versicherung_art
       label: Versicherung
-      beschriftungen: { en: { label: "Insurance", optionen: { "Haftpflicht": "Liability", "Hausrat": "Contents", "Wohngebäude": "Buildings", "Kfz": "Motor", "Rechtsschutz": "Legal expenses", "Berufsunfähigkeit": "Disability", "Leben": "Life", "Kranken-Zusatz": "Supplementary health", "Reise": "Travel", "Unfall": "Accident", "Betriebshaftpflicht": "Business liability", "Sonstige": "Other" } } }
+      beschriftungen: { en: { label: "Insurance", optionen: { "Haftpflicht": "Liability", "Hausrat": "Contents", "Wohngebäude": "Buildings", "Kfz": "Motor", "Rechtsschutz": "Legal expenses", "Berufsunfähigkeit": "Disability", "Leben": "Life", "Krankenversicherung": "Health", "Pflegeversicherung": "Long-term care", "Kranken-Zusatz": "Supplementary health", "Reise": "Travel", "Unfall": "Accident", "Betriebshaftpflicht": "Business liability", "Sonstige": "Other" } } }
       typ: auswahl
-      optionen: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz, Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall, Betriebshaftpflicht, Sonstige]
+      optionen: [Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz, Berufsunfähigkeit, Leben, Krankenversicherung, Pflegeversicherung, Kranken-Zusatz, Reise, Unfall, Betriebshaftpflicht, Sonstige]
     - { key: versicherte_personen, label: Versicherte Personen, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, beschriftungen: { en: { label: "Insured persons" } } }
     - { key: selbstbeteiligung, label: Selbstbeteiligung, typ: betrag, beschriftungen: { en: { label: "Excess" } } }
     - { key: hauptfaelligkeit, label: Hauptfälligkeit, typ: datum, hilfe: Tag, an dem das Versicherungsjahr beginnt, beschriftungen: { en: { label: "Main due date", hilfe: "Day the insurance year starts" } } }

@@ -1,15 +1,14 @@
 # Haushalt
 
-Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mit: Arbeitsverhältnisse, Vorsorge, Gesundheit, Anschaffungen und Bildung – Konten und Steuerjahre aus dem Paket **Finanzen**, Verträge und Versicherungen aus dem Paket **Verträge**, Rechnungen und Kassenbons aus dem Paket **Rechnungen und Bestellungen**. Statt die Werkbank selbst einzurichten, installierst du es mit einem Klick unter **Werkbank → Pakete** und kannst sofort ablegen. Die Pakete **Basis** (Organisation, Person, Ablageort), **Finanzen**, **Verträge** und **Rechnungen und Bestellungen** kommen dabei automatisch mit.
+Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mit: Arbeitsverhältnisse, Vorsorge, Anschaffungen und Bildung – Konten und Steuerjahre aus dem Paket **Finanzen**, Verträge und Versicherungen aus dem Paket **Verträge**, Rechnungen und Kassenbons aus dem Paket **Rechnungen und Bestellungen**. Statt die Werkbank selbst einzurichten, installierst du es mit einem Klick unter **Werkbank → Pakete** und kannst sofort ablegen. Die Pakete **Basis** (Organisation, Person, Ablageort), **Finanzen**, **Verträge** und **Rechnungen und Bestellungen** kommen dabei automatisch mit.
 
 ## Inhalt
 
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
 | Arbeitsverhältnis | Anstellung, Minijob, Ausbildung | Arbeitgeber, Person, Tätigkeit, Beginn, Ende, Steuerjahre | – |
-| Arbeitsmedizinische Vorsorge (ab 3.3.0) | Vorsorgebescheinigung nach ArbMedVV, eine Mappe je Anlass (Befunde gehören zu *Gesundheit*) | Person, Arbeitsverhältnis, Datum, Ärztin/Arzt, Anlass, Art (Pflicht-, Angebots-, Wunschvorsorge) | **Nächste Vorsorge** (6 Wochen vorher; leer = keine weitere nötig) |
+| Arbeitsmedizinische Vorsorge (ab 3.3.0) | Vorsorgebescheinigung nach ArbMedVV, eine Mappe je Anlass (Befunde gehören ins Paket **Gesundheit**) | Person, Arbeitsverhältnis, Datum, Ärztin/Arzt, Anlass, Art (Pflicht-, Angebots-, Wunschvorsorge) | **Nächste Vorsorge** (6 Wochen vorher; leer = keine weitere nötig) |
 | Vorsorge | Rente, Riester, Rürup … (Bausparverträge sind Konten im Paket Finanzen) | Art, Anbieter, Vertragsnummer, Person, Beginn | – |
-| Gesundheit | Arztbriefe, Befunde, Impfungen, Rezepte, Rechnungen | Person, Art, Datum, Praxis, Betrag, Steuerjahr | – |
 | Anschaffung | Geräte und Möbel | Gegenstand, Händler, Kaufdatum, Preis, Seriennummer, Steuerjahr; Register *Rechnungen* (Kassenbon und Rechnung aus dem Paket Rechnungen und Bestellungen) | **Garantie bis** (30 Tage vorher) |
 | Bildung | Schule, Ausbildung, Studium, Kurse | Person, Art, Einrichtung, von, bis, Abschluss, Steuerjahr | – |
 
@@ -17,7 +16,7 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 **Wohin mit Briefen ohne eigene Sache?** Ein Schreiben legst du als Dokument zu der Sache, um die es geht: Teilt der Arbeitgeber mit, dass das Gehalt künftig später kommt, gehört der Brief zum **Arbeitsverhältnis**. Weitere Beispiele: neue AGB der Bank → Konto, Preisänderung der Stadtwerke → Vertrag, neuer Beitragssatz der Krankenkasse → Versicherung. Gibt es keine Sache, leg ihn beim Absender (Organisation aus Basis) unter *Dokumente* ab. Einen eigenen Mappentyp für Hinweisschreiben gibt es bewusst nicht.
 
-**Konten und Steuerjahre** kommen aus dem Paket **Finanzen**. Trägst du an einer Anschaffung, einem Arztbrief, einem Bildungsnachweis oder einem Arbeitsverhältnis ein *Steuerjahr* ein, steht die Mappe dort unter *Belege*.
+**Konten und Steuerjahre** kommen aus dem Paket **Finanzen**. Trägst du an einer Anschaffung, einem Bildungsnachweis oder einem Arbeitsverhältnis ein *Steuerjahr* ein, steht die Mappe dort unter *Belege*.
 
 **Verträge und Versicherungen** legst du als **Vertrag** aus dem Paket Verträge an – eine Versicherung ist dort die Vertragsart *Versicherung*. Das Paket Verträge rechnet *Kündigen bis* selbst aus und erinnert rechtzeitig.
 
@@ -36,9 +35,11 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 Verträge und Versicherungen (mit Sach- und Personenversicherungen) zeigt das Paket **Verträge** in seinen Ansichten.
 
-**Beispiele (optional):** 11 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas sind ab 4.0.0 **Personen** aus den Beispielen von Basis; je Typ ein bis zwei Mappen, dazu Konten, ein Kontoauszug, ein Freistellungsauftrag und das Steuerjahr 2025 aus dem Paket Finanzen. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, Jonas’ Impfung auf die Hausarztpraxis (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
+**Beispiele (optional):** 10 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas sind ab 4.0.0 **Personen** aus den Beispielen von Basis; je Typ ein bis zwei Mappen, dazu Konten, ein Kontoauszug, ein Freistellungsauftrag und das Steuerjahr 2025 aus dem Paket Finanzen. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, Jonas’ Impfung auf die Hausarztpraxis (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
 
 **Tipps:** Ein Tipp führt zu *Garantie bis* an der Anschaffung. Den Rundgang „Ausweis ablegen“ bringt ab 4.0.0 das Paket „Ämter & Papiere“ mit.
+
+**Gesundheit** (bis 4.x hier ein Mappentyp) bringt ab 5.0.0 das eigene Paket **Gesundheit** mit – mit Behandlungsfall, Befunden, Therapien, Impfungen und Pässen.
 
 **Ausweise und Urkunden** (bis 3.x hier als „Ausweis & Urkunde“) legst du ab 4.0.0 im Paket **„Ämter & Papiere“** an – dort getrennt in Ausweis (läuft ab, mit Erinnerung) und Urkunde (gilt für immer). Zeugnisse bleiben bei *Bildung*. Einen Umzug gibt es nicht; Ablago wird neu aufgesetzt.
 
@@ -53,12 +54,12 @@ Dieses Paket enthält keinen Code. Es legt nur Mappentypen, Ansichten und auf Wu
 
 ## Wer was sehen darf
 
-Nicht alles gehört vor alle Augen: Gesundheitsunterlagen und Konten (mit den Zugangsdaten zum Online-Banking) sollen meist nur die Eltern sehen. Das Paket schreibt dafür nichts vor – du richtest es nach der Installation selbst ein. Berechtigungen pflegst du am **Mappentyp** (Werkbank → Mappentypen → *Gesundheit* bzw. *Konto* aus dem Paket Finanzen, Abschnitt **Berechtigungen**). Ein Beispiel:
+Nicht alles gehört vor alle Augen: Konten (mit den Zugangsdaten zum Online-Banking) sollen meist nur die Eltern sehen – Gesundheitsunterlagen ebenso (Paket Gesundheit). Das Paket schreibt dafür nichts vor – du richtest es nach der Installation selbst ein. Berechtigungen pflegst du am **Mappentyp** (Werkbank → Mappentypen → *Gesundheit* bzw. *Konto* aus dem Paket Finanzen, Abschnitt **Berechtigungen**). Ein Beispiel:
 
 1. Unter **Werkbank → Benutzer** eine Rolle **Eltern** anlegen und Lena und Tom geben.
-2. Am Mappentyp **Gesundheit** eine Regel anlegen: **Nur Eltern** – wenn *Benutzer hat nicht Rolle Eltern* → **✗ C R U D P**.
-3. Dieselbe Regel mit **Regel in andere Mappentypen kopieren** auch an den Mappentyp **Konto** geben und **Mappentyp speichern**.
-4. Im **Testlauf** darunter mit dem Benutzer von Jonas prüfen: Er darf keine Gesundheits- oder Kontomappe lesen.
+2. Am Mappentyp **Konto** eine Regel anlegen: **Nur Eltern** – wenn *Benutzer hat nicht Rolle Eltern* → **✗ C R U D P**.
+3. Dieselbe Regel mit **Regel in andere Mappentypen kopieren** auch an die Mappentypen des Pakets **Gesundheit** geben und **Mappentyp speichern**.
+4. Im **Testlauf** darunter mit dem Benutzer von Jonas prüfen: Er darf keine Konto- oder Gesundheitsmappe lesen.
 
 Wer nur die Passwörter schützen will, entzieht statt **R** nur **P** (Passwörter sehen). Mehr dazu im Administratorhandbuch unter „Berechtigungen“.
 

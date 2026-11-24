@@ -1,0 +1,17 @@
+# Beispiel-Mappen der erfundenen Familie Muster (Personen aus den Beispielen von Basis ab 1.10.0).
+# Die Praxis ist die „Hausarztpraxis am Lindenweg“ aus Basis.
+- typ: gesundheitspass
+  schluessel: u_heft_jonas
+  werte: { person_verweis: { beispiel: "basis:jonas" }, art: U-Heft, ausgestellt_am: "2010-05-28", letzter_eintrag_am: "2025-09-10" }
+- typ: gesundheitspass
+  schluessel: impfpass_lena
+  werte: { person_verweis: { beispiel: "basis:lena" }, art: Impfpass, ausgestellt_am: "1988-06-01", letzter_eintrag_am: "2024-03-05" }
+- typ: impfung
+  werte: { person_verweis: { beispiel: "basis:lena" }, gegen: Tetanus, datum: "2024-03-05", impfstoff: Tdap-Kombinationsimpfstoff, naechste_auffrischung: "2034-03-05", gesundheitspass: { beispiel: impfpass_lena } }
+- typ: behandlungsfall
+  schluessel: ruecken_tom
+  werte: { person_verweis: { beispiel: "basis:tom" }, bezeichnung: Rückenschmerzen nach dem Umzug, fachgebiet: Orthopädie, festgestellt_am: "2026-02-02", status: in Behandlung }
+- typ: befund
+  werte: { art: Befund, datum: "2026-02-09", person_verweis: { beispiel: "basis:tom" }, praxis: { beispiel: "basis:praxis" }, behandlungsfall: { beispiel: ruecken_tom }, wichtig: true }
+- typ: therapie
+  werte: { behandlungsfall: { beispiel: ruecken_tom }, art: Physiotherapie, bezeichnung: Krankengymnastik 6 ×, beginn: "2026-02-16", einheiten: 6, status: läuft }

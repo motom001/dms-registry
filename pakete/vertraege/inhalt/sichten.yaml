@@ -57,4 +57,4 @@
   symbol: shield-user
   typen: [vertrag]
   bedingungen:
-    - { feld: versicherung_art, operator: einerVon, wert: [Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall] }
+    - { feld: versicherung_art, operator: einerVon, wert: [Berufsunfähigkeit, Leben, Krankenversicherung, Pflegeversicherung, Kranken-Zusatz, Reise, Unfall] }
