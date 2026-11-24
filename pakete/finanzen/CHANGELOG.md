@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.1.0
+
+- **Jahresbelege der Bank** (dms-registry #248): Der Kontoauszug hat jetzt eine **Art** (Kontoauszug, Entgeltaufstellung, Jahressteuerbescheinigung, Zinsbescheinigung, Saldenbestätigung), den Zeitraum **Jahr** und einen Verweis aufs **Steuerjahr** – damit steht z. B. die Entgeltaufstellung unter „Belege“ am Steuerjahr. Der Titel nennt die Art; bestehende Auszüge ohne Art zeigen sie erst nach dem Speichern.
+
 ## 2.0.0
 
 - **Steuerbescheide sind Bescheide** (dms-registry #225): Am Steuerjahr entfallen „Bescheid vom“, „Erstattung/Nachzahlung“, „Einspruch bis“ und die Bescheid-Felder bei Umsatz- und Gewerbesteuer. Den Steuerbescheid legst du als **Bescheid** aus dem Paket „Ämter & Papiere“ an und wählst unter „Betrifft“ das Steuerjahr – dort steht er dann unter „Belege“. Die Automatisierung „Einspruchsfrist“ und der Tipp dazu sind mitgezogen.

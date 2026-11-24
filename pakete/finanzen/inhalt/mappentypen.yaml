@@ -50,25 +50,36 @@
 - schluessel: kontoauszug
   name: Kontoauszug
   mehrzahl: Kontoauszüge
-  beschreibung: Ein Auszug zu einem Konto, für einen Monat oder ein Quartal – z. B. vom Depot auf Papier oder als PDF.
-  beschriftungen: { en: { name: "Bank statement", mehrzahl: "Bank statements", beschreibung: "A statement for an account, for a month or a quarter – e.g. from the securities account on paper or as a PDF." } }
-  titelVorlage: "Auszug {nummer} – {konto}"
+  beschreibung: Ein Auszug oder Jahresbeleg zu einem Konto – Monatsauszug, Entgeltaufstellung (Kontogebühren), Jahressteuerbescheinigung, Zinsbescheinigung oder Saldenbestätigung zum 31.12., auf Papier oder als PDF.
+  beschriftungen: { en: { name: "Bank statement", mehrzahl: "Bank statements", beschreibung: "A statement or annual document for an account – monthly statement, statement of fees, annual tax certificate, interest certificate or balance confirmation at 31 December, on paper or as a PDF." } }
+  titelVorlage: "{art} {nummer} – {konto}"
   felder:
     - { key: konto, label: Konto, typ: referenz, ziel: konto, pflicht: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Account" } } }
     - { key: nummer, label: Auszugsnummer, typ: text, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, hilfe: z. B. 3/2026, beschriftungen: { en: { label: "Statement number", hilfe: "e.g. 3/2026" } } }
+    # Jahresbelege der Bank (dms-registry #248): Art, Zeitraum Jahr und Steuerjahr – das Konto läuft über viele Jahre,
+    # der Beleg gehört zu genau einem; über „steuerjahr“ steht er unter „Belege“ am Steuerjahr.
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      standard: Kontoauszug
+      optionen: [Kontoauszug, Entgeltaufstellung, Jahressteuerbescheinigung, Zinsbescheinigung, Saldenbestätigung]
+      hilfe: Entgeltaufstellung = Übersicht der Kontogebühren eines Jahres
+      beschriftungen: { en: { label: "Type", hilfe: "Statement of fees = overview of a year's account fees", optionen: { Kontoauszug: Bank statement, Entgeltaufstellung: Statement of fees, Jahressteuerbescheinigung: Annual tax certificate, Zinsbescheinigung: Interest certificate, Saldenbestätigung: Balance confirmation } } }
     - key: zeitraum
       label: Zeitraum
       typ: auswahl
-      optionen: [Monat, Quartal]
-      beschriftungen: { en: { label: "Period", optionen: { Monat: Month, Quartal: Quarter } } }
+      optionen: [Monat, Quartal, Jahr]
+      beschriftungen: { en: { label: "Period", optionen: { Monat: Month, Quartal: Quarter, Jahr: Year } } }
     - { key: beginn, label: Von, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "From" } } }
     - { key: ende, label: Bis, typ: datum, beschriftungen: { en: { label: "To" } } }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Für die Steuer – dann steht der Beleg unter „Belege“ am Steuerjahr, beschriftungen: { en: { label: "Tax year", hilfe: "For your taxes – the document then appears under “Receipts” on the tax year" } } }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Auszug auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper statement is kept" } } }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [konto, nummer, zeitraum, beginn, ende, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [konto, art, nummer, zeitraum, beginn, ende, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } } }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
-  trefferliste: [konto, nummer, zeitraum, beginn, ende]
+  trefferliste: [konto, art, nummer, zeitraum, beginn, ende]
 
 - schluessel: freistellungsauftrag
   name: Freistellungsauftrag
