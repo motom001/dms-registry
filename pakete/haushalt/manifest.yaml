@@ -3,7 +3,7 @@ schema: 1
 id: haushalt
 name: Haushalt
 herausgeber: app.ablago
-version: 5.0.0
+version: 5.1.0
 beschreibung: Die typischen Unterlagen eines Haushalts – Arbeit, Vorsorge, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Konten und Steuerjahre kommen aus dem Paket Finanzen, Verträge und Versicherungen aus Verträge, Rechnungen aus Rechnungen und Bestellungen.
 autor:
   name: Thomas Meissner
@@ -36,7 +36,7 @@ abhaengigkeiten:
   vertraege: ">=1.1.0"
   rechnung_bestellung: ">=1.1.0"
   # Ab 3.0.0 (dms-registry #212): Konto und Steuerjahr aus Finanzen.
-  finanzen: ">=1.0.0"
+  finanzen: ">=2.2.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
   sichten: inhalt/sichten.yaml
