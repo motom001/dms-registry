@@ -68,7 +68,7 @@
       hilfe: Worum es geht – Steuerjahr, Fahrzeug, Immobilie, Arbeitsverhältnis oder Vertrag. Dort steht der Bescheid dann auch.
     - { key: gilt_ab, label: Gilt ab, typ: datum, beschriftungen: { en: { label: "Valid from" } } }
     - { key: gilt_bis, label: Gilt bis, typ: datum, beschriftungen: { en: { label: "Valid until" } } }
-    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, hilfe: "Erstattung oder Leistung positiv, Zahlung negativ", beschriftungen: { en: { label: "Amount", hilfe: "Refund or benefit positive, payment negative" } } }
+    - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, negativ: true, hilfe: "Erstattung oder Leistung positiv, Zahlung negativ", beschriftungen: { en: { label: "Amount", hilfe: "Refund or benefit positive, payment negative" } } }
     - { key: faellig_am, label: Fällig am, typ: datum, beschriftungen: { en: { label: "Due on" } } }
     - key: zahlweise
       label: Zahlweise
