@@ -65,7 +65,7 @@
   mehrzahl: Therapien
   beschreibung: Medikament, Physiotherapie, Operation, Reha, Psychotherapie oder Hilfsmittel – mit Verordnung.
   beschriftungen: { en: { name: "Treatment", mehrzahl: "Treatments", beschreibung: "Medication, physiotherapy, surgery, rehab, psychotherapy or medical aid – with prescription." } }
-  titelVorlage: "{art} – {bezeichnung}"
+  titelVorlage: "{art} – {bezeichnung} – {beginn|datum:MM/JJJJ}"
   felder:
     - { key: behandlungsfall, label: Behandlungsfall, typ: referenz, ziel: behandlungsfall, verweisart: bezug, beschriftungen: { en: { label: "Medical case" } } }
     - key: art

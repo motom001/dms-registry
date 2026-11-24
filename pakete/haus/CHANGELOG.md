@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.7.0
+
+- **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Zählerstand (mit Ablesedatum). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.
+
 ## 1.6.1
 
 - **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Zählerstände“ statt „12 × Zählerstand“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.

@@ -19,7 +19,7 @@
   mehrzahl: Arbeitsverhältnisse
   beschreibung: Anstellung, Minijob oder Ausbildung – mit Arbeitsvertrag, Gehaltsabrechnungen und Zeugnis.
   beschriftungen: { en: { name: "Employment", mehrzahl: "Jobs", beschreibung: "Job, mini-job or apprenticeship – with employment contract, payslips and reference." } }
-  titelVorlage: "{person_verweis} – {arbeitgeber}"
+  titelVorlage: "{person_verweis} – {arbeitgeber|kurz:25} – {beginn|jahr}"
   felder:
     - { key: arbeitgeber, label: Arbeitgeber, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Employer" } }  }
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
@@ -40,7 +40,7 @@
   mehrzahl: Arbeitsmedizinische Vorsorgen
   beschreibung: Vorsorgebescheinigung nach der ArbMedVV – Datum, Anlass, Art und nächster Termin. Eine Mappe je Anlass; Befunde gehören ins Paket Gesundheit.
   beschriftungen: { en: { name: "Occupational health check", mehrzahl: "Occupational health checks", beschreibung: "Certificate of an occupational health check (German ArbMedVV) – date, reason, type and next appointment. One folder per reason; findings belong in the Health package." } }
-  titelVorlage: "{anlass} – {person_verweis}"
+  titelVorlage: "{anlass} – {person_verweis} – {datum}"
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } } }
     - { key: arbeitsverhaeltnis, label: Arbeitsverhältnis, typ: referenz, ziel: arbeitsverhaeltnis, verweisart: bezug, hilfe: Die Vorsorge erscheint dort unter „Verknüpfungen“, beschriftungen: { en: { label: "Employment", hilfe: "The check then shows up there under “Links”" } } }
@@ -76,7 +76,7 @@
   mehrzahl: Vorsorgeverträge
   beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester und Rürup. Bausparverträge sind Konten (Paket Finanzen).
   beschriftungen: { en: { name: "Pension", mehrzahl: "Pension plans", beschreibung: "State, company and private pensions, Riester and Rürup. Building savings contracts are accounts (Finances package)." } }
-  titelVorlage: "{art} – {person_verweis} – {anbieter}"
+  titelVorlage: "{art} – {person_verweis} – {anbieter|kurz:25}"
   felder:
     - key: art
       label: Art
@@ -101,7 +101,7 @@
   mehrzahl: Anschaffungen
   beschreibung: Gekaufte Geräte und Möbel – mit Kassenbon, Garantie und Seriennummer.
   beschriftungen: { en: { name: "Purchase", mehrzahl: "Purchases", beschreibung: "Appliances and furniture you bought – with receipt, warranty and serial number." } }
-  titelVorlage: "{gegenstand}"
+  titelVorlage: "{gegenstand} – {kaufdatum|datum:MM/JJJJ}"
   felder:
     - { key: gegenstand, label: Gegenstand, typ: text, pflicht: true, maxLen: 120, beschriftungen: { en: { label: "Item" } }  }
     - { key: haendler, label: Händler, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Retailer" } }  }

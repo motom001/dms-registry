@@ -11,7 +11,7 @@
   beschreibung: Girokonto, Sparkonto, Tagesgeld, Depot, Kreditkarte, Kredit oder Bausparvertrag – auch PayPal und ähnliche Dienste.
   beschriftungen: { en: { name: "Account", mehrzahl: "Accounts", beschreibung: "Current account, savings account, overnight money, securities account, credit card, loan or building savings contract – also PayPal and similar services." } }
   # #212: wessen Konto es ist, steht vorne; bei Bezahldiensten stand sonst nur der Anbieter da.
-  titelVorlage: "{bank} von {inhaber_verweis} ({art})"
+  titelVorlage: "{art} – {bank|kurz:25} – {inhaber_verweis}"
   felder:
     - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Bank oder Anbieter, z. B. auch PayPal, beschriftungen: { en: { label: "Bank", hilfe: "Bank or provider, e.g. also PayPal" } } }
     - key: art
@@ -53,7 +53,7 @@
   beschreibung: Ein Auszug oder Jahresbeleg zu einem Konto – Monatsauszug, Entgeltaufstellung (Kontogebühren), Jahressteuerbescheinigung, Zinsbescheinigung oder Saldenbestätigung zum 31.12., auf Papier oder als PDF.
   beschriftungen: { en: { name: "Bank statement", mehrzahl: "Bank statements", beschreibung: "A statement or annual document for an account – monthly statement, statement of fees, annual tax certificate, interest certificate or balance confirmation at 31 December, on paper or as a PDF.", erkennbarAn: "Bank statement or annual document from a bank: balance, transactions, period “from … to …”, IBAN or account number; also statement of fees, annual tax or interest certificate, balance confirmation." } }
   # Titel (Thomas, #252): z. B. „Kontoauszug 12: 01/2026 - 03/2026 – Girokonto Sparkasse“; leere Teile fallen samt Trenner weg.
-  titelVorlage: "{art} {nummer}: {beginn|datum:MM/JJJJ} - {ende|datum:MM/JJJJ} – {konto|kurz:25}"
+  titelVorlage: "{art} {nummer}: {beginn|datum:MM/JJJJ}–{ende|datum:MM/JJJJ} – {konto|kurz:25}"
   # „Woran man ihn erkennt“ (#252): Text für die Klassifizierung (Ablago ab 0.218.0, höchstens 300 Zeichen; die Klassifizierung nutzt die ersten 200).
   erkennbarAn: "Kontoauszug oder Jahresbeleg einer Bank: Kontostand, Buchungen, Zeitraum „vom … bis …“, IBAN oder Kontonummer; auch Entgeltaufstellung, Jahressteuer-, Zinsbescheinigung, Saldenbestätigung."
   felder:
@@ -84,7 +84,7 @@
   mehrzahl: Freistellungsaufträge
   beschreibung: Wie viel deiner Kapitalerträge eine Bank in einem Jahr steuerfrei auszahlt – je Person und Bank.
   beschriftungen: { en: { name: "Exemption order", mehrzahl: "Exemption orders", beschreibung: "How much of your investment income a bank pays out tax-free in a year – per person and bank." } }
-  titelVorlage: "Freistellungsauftrag {jahr} – {bank} – {person_verweis}"
+  titelVorlage: "Freistellungsauftrag {jahr} – {bank|kurz:25} – {person_verweis}"
   felder:
     - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Bank" } } }
     - { key: betrag, label: Betrag, typ: betrag, waehrung: EUR, beschriftungen: { en: { label: "Amount" } } }

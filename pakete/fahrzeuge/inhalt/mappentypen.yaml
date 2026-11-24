@@ -71,7 +71,7 @@
   mehrzahl: Hauptuntersuchungen
   beschreibung: Prüfbericht der HU – Ergebnis, Mängel, Nachprüfung und nächste HU.
   beschriftungen: { en: { name: "Main inspection", mehrzahl: "Main inspections", beschreibung: "Inspection report of the German main inspection (HU) – result, defects, re-inspection and next inspection." } }
-  titelVorlage: "HU {geprueft_am} – {fahrzeug}"
+  titelVorlage: "HU {geprueft_am|datum:MM/JJJJ} – {fahrzeug|kurz:25} – {ergebnis}"
   felder:
     - { key: fahrzeug, label: Fahrzeug, typ: referenz, ziel: fahrzeug, pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Vehicle" } } }
     - { key: geprueft_am, label: Geprüft am, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Inspected on" } } }

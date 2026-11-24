@@ -1,5 +1,9 @@
 # Änderungen
 
+## 3.1.0
+
+- **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Konto, Freistellungsauftrag, Kontoauszug (Zeitraum „01/2026–03/2026“). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.
+
 ## 3.0.0
 
 - **Kontoauszug ohne „Zeitraum“** (dms-registry #252): Das Feld wurde nirgends ausgewertet und ergibt sich aus „Von“ und „Bis“. Es entfällt.

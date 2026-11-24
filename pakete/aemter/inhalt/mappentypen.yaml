@@ -8,7 +8,7 @@
   mehrzahl: Anträge
   beschreibung: Was du bei einem Amt beantragt hast – Kindergeld, Elterngeld, Wohngeld, Pflegegrad, BAföG und mehr.
   beschriftungen: { en: { name: "Application", mehrzahl: "Applications", beschreibung: "What you applied for at an authority – child benefit, parental allowance, housing benefit, care level, student aid and more." } }
-  titelVorlage: "{art} – {an}"
+  titelVorlage: "{art} – {behoerde|kurz:25} – {gestellt_am}"
   felder:
     - { key: behoerde, label: Behörde, typ: referenz, ziel: "basis:organisation", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Authority" } } }
     - key: art
@@ -44,7 +44,7 @@
   mehrzahl: Bescheide
   beschreibung: Post vom Amt mit Rechtsbehelfsbelehrung – Steuer, Grundsteuer, Kfz-Steuer, Rente, Pflege, Beiträge, Gebühren und mehr.
   beschriftungen: { en: { name: "Notice", mehrzahl: "Notices", beschreibung: "Official notice from an authority – tax, property tax, vehicle tax, pension, care, contributions, fees and more." } }
-  titelVorlage: "{art} – {von} – {bescheid_vom}"
+  titelVorlage: "{art} – {von|kurz:25} – {bescheid_vom}"
   felder:
     - key: art
       label: Art
@@ -104,7 +104,7 @@
   mehrzahl: Widersprüche
   beschreibung: Einspruch beim Finanzamt oder Widerspruch gegen einen Bescheid – mit Frist für die Begründung und Ergebnis.
   beschriftungen: { en: { name: "Objection", mehrzahl: "Objections", beschreibung: "Objection to the tax office or appeal against a notice – with deadline for the reasons and the result." } }
-  titelVorlage: "{art} – {bescheid}"
+  titelVorlage: "{art} {eingelegt_am} – {bescheid|kurz:40}"
   felder:
     - key: art
       label: Art

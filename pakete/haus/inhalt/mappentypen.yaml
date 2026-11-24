@@ -84,7 +84,7 @@
   mehrzahl: Zählerstände
   beschreibung: Eine Ablesung eines Strom-, Gas-, Wasser- oder Wärmezählers.
   beschriftungen: { en: { name: "Meter reading", mehrzahl: "Meter readings", beschreibung: "One reading of an electricity, gas, water or heat meter." } }
-  titelVorlage: "{zaehlerart} {zaehlernummer} – {stand} {einheit}"
+  titelVorlage: "{zaehlerart} {abgelesen_am}: {stand} {einheit}"
   felder:
     - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Property" } }  }
     - key: zaehlerart

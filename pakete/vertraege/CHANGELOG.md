@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.9.0
+
+- **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Vertrag: Vertragsart – Bezeichnung – Vertragspartner. Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.
+
 ## 1.8.0
 
 - **Krankenversicherung und Pflegeversicherung** als Versicherungsarten (dms-registry #226), bisher nur „Kranken-Zusatz“. Beide erscheinen unter „Personenversicherungen“. Die Mitgliedsbescheinigung legst du als Dokument am Vertrag ab.
