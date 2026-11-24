@@ -69,11 +69,18 @@ static std::string kurz(const std::string &t, size_t n) { return t.size() <= n ?
 
 struct Dienst {
   std::string basis, modell, schluessel;
+  /** Anbieter „Claude (Anthropic)“ (ab 1.5.0, dms-registry #229): Messages API statt OpenAI-kompatibel. */
+  bool claude = false;
   int laenge = 800;
   /** Kontextlänge des Dienstes in Token: Anfrage und Antwort zusammen (ab 1.2.0). */
   int kontext = 8192;
   std::string fehler;
 };
+
+/** Wert der Einstellung „Anbieter“ für Claude (wie in manifest.yaml); alles andere ist OpenAI-kompatibel. */
+static const char *ANBIETER_CLAUDE = "Claude (Anthropic)";
+/** Version der Messages API (Kopf anthropic-version). */
+static const char *ANTHROPIC_VERSION = "2023-06-01";
 
 static Dienst dienstAus(const Json &e) {
   Dienst d;
@@ -82,19 +89,22 @@ static Dienst dienstAus(const Json &e) {
   while (!d.basis.empty() && d.basis.back() == '/') d.basis.pop_back();
   d.modell = s["modell"].text();
   d.schluessel = s["schluessel"].text();
+  d.claude = s["anbieter"].text() == ANBIETER_CLAUDE;
   int l = (int)s["antwortlaenge"].zahl(800);
   d.laenge = l < 64 ? 64 : l > 4096 ? 4096 : l;
   int k = (int)s["kontext"].zahl(8192);
   d.kontext = k < 2048 ? 2048 : k > 131072 ? 131072 : k;
   if (d.basis.empty()) d.fehler = "Es ist keine Dienst-Adresse eingetragen (Werkbank → Pakete → KI-Assistent → Einstellungen).";
   else if (d.modell.empty()) d.fehler = "Es ist kein Modell eingetragen (Werkbank → Pakete → KI-Assistent → Einstellungen).";
+  else if (d.claude && d.schluessel.empty()) d.fehler = "Für Claude fehlt der API-Schlüssel aus der Claude Console (Werkbank → Pakete → KI-Assistent → Einstellungen).";
   return d;
 }
 
 /** Anfrage-JSON für dms.netz bzw. dms.netz_strom. */
 static std::string anfrage(const Dienst &d, const char *methode, const std::string &pfad, bool strom) {
   std::string k = "{\"content-type\":\"application/json\",\"accept\":" + jsonText(strom ? "text/event-stream" : "application/json");
-  if (!d.schluessel.empty()) k += ",\"authorization\":" + jsonText("Bearer " + d.schluessel);
+  if (d.claude) k += ",\"x-api-key\":" + jsonText(d.schluessel) + ",\"anthropic-version\":" + jsonText(ANTHROPIC_VERSION);
+  else if (!d.schluessel.empty()) k += ",\"authorization\":" + jsonText("Bearer " + d.schluessel);
   return "{\"methode\":" + jsonText(methode) + ",\"url\":" + jsonText(d.basis + pfad) + ",\"kopf\":" + k + "}}";
 }
 
@@ -110,9 +120,79 @@ static std::string problem(const Dienst &d, int status, const std::string &text)
   char s[16]; snprintf(s, sizeof s, "%d", status);
   if (status == 401 || status == 403) return std::string("Der KI-Dienst lehnt die Anmeldung ab (HTTP ") + s + ") – bitte den Schlüssel prüfen" + zusatz + ".";
   if (status == 404) return std::string("Der KI-Dienst kennt die Adresse oder das Modell „") + d.modell + "“ nicht (HTTP 404) – endet die Adresse auf /v1, ist das Modell geladen?" + zusatz;
-  if (status == 429) return std::string("Der KI-Dienst ist gerade ausgelastet (HTTP 429) – bitte gleich noch einmal") + zusatz + ".";
+  if (status == 429 || status == 529) return std::string("Der KI-Dienst ist gerade ausgelastet (HTTP ") + s + ") – bitte gleich noch einmal" + zusatz + ".";
   return std::string("Der KI-Dienst antwortet mit HTTP ") + s + zusatz + ".";
 }
+
+/* ---------- Claude (Anthropic): Messages API (ab 1.5.0, dms-registry #229) ---------- */
+
+/*
+ * Das Paket baut jede Anfrage OpenAI-kompatibel. Für Claude übersetzt fuerClaude() den Körper in die Messages API:
+ *  - POST <dienst>/messages statt /chat/completions, Kopf x-api-key und anthropic-version statt Bearer;
+ *  - Systemnachrichten in "system", aufeinanderfolgende Nachrichten gleicher Rolle zusammengefasst;
+ *  - ohne "temperature" (neuere Modelle lehnen Werte unter 1 ab) und ohne "reasoning_effort";
+ *  - response_format json_schema → "output_config": {"format": {"type": "json_schema", "schema": …}} (Structured
+ *    Outputs); Schlüsselwörter, die Claude im Schema nicht kennt, fallen weg, Objekte bekommen
+ *    "additionalProperties": false. response_format json_object (zweiter Versuch nach HTTP 400) → ohne Format, das
+ *    Schema steht ohnehin in der Nachricht.
+ * Die Antwort kommt als Ereignisse (content_block_delta mit text_delta, message_stop, error) – siehe Leser.
+ */
+static const char *CHAT_PFAD = "/chat/completions";
+static const char *CLAUDE_PFAD = "/messages";
+static const char *pfadFuerChat(const Dienst &d) { return d.claude ? CLAUDE_PFAD : CHAT_PFAD; }
+
+/** Schema für Structured Outputs: nur, was Claude kennt. */
+static Json schemaFuerClaude(const Json &s) {
+  if (s.art == Json::LISTE) { Json r = s; for (Json &x : r.l) x = schemaFuerClaude(x); return r; }
+  if (s.art != Json::OBJEKT) return s;
+  static const char *WEG[] = {"minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf", "minLength", "maxLength",
+                              "maxItems", "pattern", "$schema"};
+  Json r; r.art = Json::OBJEKT;
+  for (const auto &kv : s.o) {
+    bool weg = false;
+    for (const char *w : WEG) if (kv.first == w) weg = true;
+    if (kv.first == "minItems" && !(kv.second.art == Json::ZAHL && kv.second.z <= 1)) weg = true;
+    if (kv.first.compare(0, 2, "x-") == 0) weg = true;
+    if (weg) continue;
+    // Unter properties sind die Schlüssel Feldnamen, keine Schlüsselwörter.
+    if ((kv.first == "properties" || kv.first == "$defs") && kv.second.art == Json::OBJEKT) {
+      Json p; p.art = Json::OBJEKT;
+      for (const auto &f : kv.second.o) p.o[f.first] = schemaFuerClaude(f.second);
+      r.o[kv.first] = p;
+    } else r.o[kv.first] = schemaFuerClaude(kv.second);
+  }
+  if (r["type"].text() == "object" || r["properties"].art == Json::OBJEKT) { Json f; f.art = Json::BOOL; f.b = false; r.o["additionalProperties"] = f; }
+  return r;
+}
+
+/** OpenAI-kompatiblen Körper in die Messages API übersetzen (leer, wenn er kein JSON-Objekt ist). */
+static std::string fuerClaude(const std::string &body) {
+  Json j = JsonLeser::lies(body.data(), body.size());
+  if (j.art != Json::OBJEKT) return "";
+  std::string system;
+  std::vector<std::pair<std::string, std::string>> m;  // Rolle, Inhalt
+  for (const Json &n : j["messages"].l) {
+    std::string rolle = n["role"].text(), inhalt = n["content"].text();
+    if (rolle == "system") { system += (system.empty() ? "" : "\n\n") + inhalt; continue; }
+    if (rolle != "assistant") rolle = "user";
+    // Claude beginnt immer mit einer Nachricht der Person.
+    if (m.empty() && rolle == "assistant") m.push_back({"user", "(Gesprächsbeginn)"});
+    if (!m.empty() && m.back().first == rolle) m.back().second += "\n\n" + inhalt;
+    else m.push_back({rolle, inhalt});
+  }
+  std::string r = "{\"model\":" + jsonSchreib(j["model"]) + ",\"max_tokens\":" + jsonSchreib(j["max_tokens"]) + ",\"stream\":" + (j["stream"].wahr() ? "true" : "false");
+  if (!system.empty()) r += ",\"system\":" + jsonText(system);
+  r += ",\"messages\":[";
+  for (size_t i = 0; i < m.size(); i++) r += std::string(i ? "," : "") + "{\"role\":" + jsonText(m[i].first) + ",\"content\":" + jsonText(m[i].second) + "}";
+  r += "]";
+  const Json &f = j["response_format"];
+  if (f["type"].text() == "json_schema" && f["json_schema"]["schema"].art == Json::OBJEKT)
+    r += ",\"output_config\":{\"format\":{\"type\":\"json_schema\",\"schema\":" + jsonSchreib(schemaFuerClaude(f["json_schema"]["schema"])) + "}}";
+  return r + "}";
+}
+
+/** Körper für den Anbieter des Dienstes. */
+static std::string koerperFuer(const Dienst &d, const std::string &body) { return d.claude ? fuerClaude(body) : body; }
 
 /* ---------- Kontextlänge: Token schätzen und kürzen (ab 1.2.0) ---------- */
 
@@ -316,6 +396,16 @@ struct Leser {
     if (d == "[DONE]") { fertig = true; return; }
     Json j = JsonLeser::lies(d.data(), d.size());
     if (j["error"].art != Json::NUL) { fehler = j["error"]["message"].text(j["error"].text("Fehler des Dienstes").c_str()); return; }
+    // Claude (Messages API): Text in content_block_delta, Ende mit message_stop.
+    std::string typ = j["type"].text();
+    if (typ == "message_stop") { fertig = true; return; }
+    if (typ == "content_block_delta") {
+      std::string t = j["delta"]["text"].text();
+      if (t.empty()) return;
+      text += t;
+      if (weitergeben) dms_teil(t.data(), (int32_t)t.size());
+      return;
+    }
     const Json &c = j["choices"];
     if (c.art != Json::LISTE || c.l.empty()) return;
     std::string t = c.l[0]["delta"]["content"].text();
@@ -345,7 +435,8 @@ struct Chat { int status = 0; std::string text, fehler; bool zeitUm = false; };
  */
 static Chat chat(const Dienst &d, std::string body, bool weitergeben, double bisMs) {
   Chat c;
-  std::string q = anfrage(d, "POST", "/chat/completions", true);
+  std::string q = anfrage(d, "POST", pfadFuerChat(d), true);
+  body = koerperFuer(d, body);
   c.status = dms_netz_strom(q.data(), (int32_t)q.size(), body.data(), (int32_t)body.size());
   body.clear(); body.shrink_to_fit();
   if (c.status < 0) { c.fehler = problem(d, c.status, antwort()); return c; }
@@ -371,6 +462,7 @@ static Chat chat(const Dienst &d, std::string body, bool weitergeben, double bis
     Json j = JsonLeser::lies(roh.data(), roh.size());
     const Json &ch = j["choices"];
     if (ch.art == Json::LISTE && !ch.l.empty()) l.text = ch.l[0]["message"]["content"].text();
+    for (const Json &b : j["content"].l) if (b["type"].text() == "text") l.text += b["text"].text();  // Claude
     if (l.text.empty()) { c.fehler = "Der KI-Dienst hat keine Antwort geliefert."; return c; }
   }
   c.text = l.text;
@@ -385,6 +477,7 @@ static const char *OHNE_NACHDENKEN = ",\"reasoning_effort\":\"none\"";
  * mit HTTP 400 (kennt das Feld oder den Wert nicht), einmal ohne das Feld; aufwand ist danach aus.
  */
 static Chat chatOhneNachdenken(const Dienst &d, const std::string &vorne, const std::string &hinten, bool weitergeben, double bisMs, bool &aufwand) {
+  if (d.claude) aufwand = false;  // fuerClaude() lässt das Feld ohnehin weg
   if (aufwand) {
     Chat c = chat(d, vorne + OHNE_NACHDENKEN + hinten, weitergeben, bisMs);
     if (c.status != 400 || c.zeitUm || (bisMs > 0 && jetztMs() >= bisMs)) return c;
@@ -847,10 +940,10 @@ static int32_t verbindungTesten(const Json &e) {
   // Wie bei den Fragen ohne „Nachdenken“; lehnt der Dienst das Feld ab (HTTP 400), einmal ohne.
   std::string vorne = "{\"model\":" + jsonText(d.modell) + ",\"stream\":false,\"max_tokens\":8";
   std::string hinten = ",\"messages\":[" + nachricht("user", "Antworte nur mit dem Wort OK.") + "]}";
-  q = anfrage(d, "POST", "/chat/completions", false);
-  std::string body = vorne + OHNE_NACHDENKEN + hinten;
+  q = anfrage(d, "POST", pfadFuerChat(d), false);
+  std::string body = koerperFuer(d, d.claude ? vorne + hinten : vorne + OHNE_NACHDENKEN + hinten);
   status = dms_netz(q.data(), (int32_t)q.size(), body.data(), (int32_t)body.size());
-  if (status == 400) {
+  if (status == 400 && !d.claude) {
     body = vorne + hinten;
     status = dms_netz(q.data(), (int32_t)q.size(), body.data(), (int32_t)body.size());
   }

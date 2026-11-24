@@ -12,6 +12,8 @@
 // (nach der Systemnachricht) – im Paket die Kontextlänge 2048 eintragen, dann kürzt das Paket vorher selbst.
 // Mit dem Schema „klassifizierung“ (Wohin gehört das?, ab 1.3.0) wählt sie den ersten Mappentyp der Liste, dessen Name
 // oder ein Wort aus „erkennbar an“ im Text steht, und zitiert die Zeile, in der er steht.
+// Claude (ab 1.5.0): POST /v1/messages wie die Messages API von Anthropic, Modell „claude-attrappe-1“, Schlüssel
+// „sk-ant-attrappe“ – im DMS Anbieter „Claude (Anthropic)“ und die Adresse http://<rechner>:<port>/v1.
 // Schreibt nichts mit außer der Anzahl der Anfragen. Die Antwortfunktionen nutzt auch tests/modul_test.mjs.
 import { createServer } from 'node:http';
 import { pathToFileURL } from 'node:url';
@@ -83,11 +85,84 @@ export function klassenFuer(nachrichten) {
   return JSON.stringify({ typen: aus });
 }
 
+/* ---------- Claude (Anthropic): Messages API (ab 1.5.0, dms-registry #229) ---------- */
+// POST /v1/messages mit x-api-key und anthropic-version, Antwort als Ereignisse. Wie der echte Dienst: "temperature"
+// unter 1 und unbekannte Felder (reasoning_effort, response_format) sind HTTP 400, ebenso Schlüsselwörter im Schema von
+// output_config.format, die Structured Outputs nicht kennen, und Objekte ohne "additionalProperties": false.
+export const CLAUDE_MODELL = 'claude-attrappe-1';
+export const CLAUDE_SCHLUESSEL = 'sk-ant-attrappe';
+const CLAUDE_FELDER = new Set(['model', 'max_tokens', 'stream', 'system', 'messages', 'output_config', 'temperature', 'stop_sequences', 'metadata']);
+const SCHEMA_NEIN = ['minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf', 'minLength', 'maxLength', 'maxItems', 'pattern'];
+
+/** Fehler wie bei Anthropic ({ type: 'error', error: { type, message } }) oder null. */
+export function claudeFehler(kopf, body) {
+  const f = (status, type, message) => ({ status, text: JSON.stringify({ type: 'error', error: { type, message } }) });
+  if (kopf['x-api-key'] !== CLAUDE_SCHLUESSEL) return f(401, 'authentication_error', 'invalid x-api-key');
+  if (!kopf['anthropic-version']) return f(400, 'invalid_request_error', 'anthropic-version header is required');
+  if (body.model !== CLAUDE_MODELL) return f(404, 'not_found_error', `model: ${body.model}`);
+  for (const k of Object.keys(body)) if (!CLAUDE_FELDER.has(k)) return f(400, 'invalid_request_error', `${k}: Extra inputs are not permitted`);
+  if (typeof body.temperature === 'number' && body.temperature < 1) return f(400, 'invalid_request_error', 'temperature: this model only supports temperature 1');
+  if (!Number.isInteger(body.max_tokens)) return f(400, 'invalid_request_error', 'max_tokens: Field required');
+  const m = body.messages ?? [];
+  if (!m.length || m[0].role !== 'user' || m.some((x, i) => i && x.role === m[i - 1].role) || m.some((x) => x.role === 'system'))
+    return f(400, 'invalid_request_error', 'messages: roles must alternate between "user" and "assistant", starting with "user"');
+  const pruefe = (s) => {
+    if (!s || typeof s !== 'object') return null;
+    if (Array.isArray(s)) { for (const x of s) { const e = pruefe(x); if (e) return e; } return null; }
+    for (const k of SCHEMA_NEIN) if (k in s) return `output_config.format.schema: '${k}' is not supported`;
+    if (s.type === 'object' && s.additionalProperties !== false) return "output_config.format.schema: objects need 'additionalProperties': false";
+    for (const [k, v] of Object.entries(s)) { if (k === 'properties') { for (const x of Object.values(v)) { const e = pruefe(x); if (e) return e; } } else if (typeof v === 'object') { const e = pruefe(v); if (e) return e; } }
+    return null;
+  };
+  const e = body.output_config?.format?.type === 'json_schema' ? pruefe(body.output_config.format.schema) : null;
+  return e ? f(400, 'invalid_request_error', e) : null;
+}
+
+/** Antwort als Ereignisse der Messages API, in Stücken zu höchstens groesse Zeichen. */
+export function claudeStrom(text, groesse = 12) {
+  const ev = (type, daten) => `event: ${type}\ndata: ${JSON.stringify({ type, ...daten })}\n\n`;
+  return [
+    ev('message_start', { message: { id: 'msg_attrappe', type: 'message', role: 'assistant', model: CLAUDE_MODELL, content: [] } }),
+    ev('content_block_start', { index: 0, content_block: { type: 'text', text: '' } }),
+    ...(text.match(new RegExp(`.{1,${groesse}}`, 'gsu')) ?? []).map((t) => ev('content_block_delta', { index: 0, delta: { type: 'text_delta', text: t } })),
+    ev('content_block_stop', { index: 0 }),
+    ev('message_delta', { delta: { stop_reason: 'end_turn' } }),
+    ev('message_stop', {}),
+  ];
+}
+
+/** Was die Attrappe auf eine Anfrage an die Messages API antwortet (Text oder JSON nach dem Schema). */
+export function claudeText(body) {
+  const nachrichten = [...(body.system ? [{ role: 'system', content: body.system }] : []), ...(body.messages ?? [])];
+  const schema = body.output_config?.format?.schema;
+  const klass = /Mappentypen zur Wahl/.test(JSON.stringify(body.messages ?? []));
+  if (klass) return klassenFuer(nachrichten);
+  if (schema || /Antworte nur mit einem JSON-Objekt/.test(JSON.stringify(body.messages ?? []))) return felderFuer(nachrichten, schema);
+  return antwortFuer(nachrichten);
+}
+
 const server = createServer((q, a) => {
   anfragen++;
   let roh = '';
   q.on('data', (d) => { roh += d; });
   q.on('end', () => {
+    if (q.method === 'POST' && q.url === '/v1/messages') {
+      let j;
+      try { j = JSON.parse(roh); } catch { a.writeHead(400).end('{"type":"error","error":{"type":"invalid_request_error","message":"invalid json"}}'); return; }
+      const f = claudeFehler(q.headers, j);
+      if (f) { a.writeHead(f.status, { 'content-type': 'application/json' }).end(f.text); return; }
+      const text = claudeText(j);
+      if (!j.stream) { a.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ id: 'msg_attrappe', type: 'message', role: 'assistant', content: [{ type: 'text', text }], stop_reason: 'end_turn' })); return; }
+      a.writeHead(200, { 'content-type': 'text/event-stream' });
+      const teile = claudeStrom(text);
+      const weiter = () => { const t = teile.shift(); if (t === undefined) { a.end(); return; } a.write(t); setTimeout(weiter, 20); };
+      weiter();
+      return;
+    }
+    if (q.method === 'GET' && q.url === '/v1/models' && q.headers['x-api-key']) {
+      a.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ data: [{ type: 'model', id: CLAUDE_MODELL, display_name: 'Claude Attrappe' }], has_more: false }));
+      return;
+    }
     if (q.method === 'GET' && q.url === '/v1/models') {
       a.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ object: 'list', data: MODELLE.map((id) => ({ id, object: 'model' })) }));
       return;

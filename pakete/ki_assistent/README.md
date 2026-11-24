@@ -4,7 +4,7 @@ Das Paket **KI-Assistent** beantwortet Fragen an deine Ablage: Auf der Startseit
 
 Ab Version 1.1.0 füllt es auf Wunsch auch **„Aus Dokument ausfüllen“**: Der KI-Dienst liest die Felder aus Visitenkarten, Verträgen, Bescheiden und Briefen ohne festes Muster und schlägt sie vor (siehe *Aus Dokument ausfüllen* unter „Was geht wann wohin“). Ab 1.3.0 zeigt Ablago dabei, **wo** im Dokument er jeden Wert gefunden hat, und der Dienst schlägt auf der Seite *Dokument übernehmen* vor, **wohin neue Post gehört** (siehe *Wohin gehört das?*).
 
-Das Paket **rechnet nicht selbst**. Es ist ein Adapter zu einem **KI-Dienst, den du betreibst oder bewusst wählst** – zum Beispiel [Ollama](https://ollama.com) auf deinem Heimserver. Es spricht die verbreitete **OpenAI-kompatible Schnittstelle** (Chat Completions); damit gehen auch LocalAI, der Server von llama.cpp und – wenn du das willst – Anbieter im Internet.
+Das Paket **rechnet nicht selbst**. Es ist ein Adapter zu einem **KI-Dienst, den du betreibst oder bewusst wählst** – zum Beispiel [Ollama](https://ollama.com) auf deinem Heimserver. Es spricht die verbreitete **OpenAI-kompatible Schnittstelle** (Chat Completions); damit gehen auch LocalAI, der Server von llama.cpp und – wenn du das willst – Anbieter im Internet. Ab 1.5.0 kann es auch **Claude** von Anthropic ansprechen (siehe *Einrichten*) – dann verlassen die Ausschnitte dein Haus.
 
 ## Was geht wann wohin
 
@@ -100,13 +100,24 @@ Ins Compose-Projekt von Ablago eintragen (oder beide Projekte in ein gemeinsames
 
 **Ein anderer Rechner mit Grafikkarte** im Heimnetz ist oft deutlich schneller als ein NAS: Ollama dort installieren, mit `OLLAMA_HOST=0.0.0.0` starten und in Ablago `http://<ip-des-rechners>:11434/v1` eintragen. Die Verbindung im Heimnetz ist dann unverschlüsselt (`http://`) – das ist bei einem eigenen Netz üblich; über das Internet nimm immer `https://`.
 
+### Oder: Claude (Anthropic) statt eines eigenen Dienstes (ab 1.5.0)
+
+Ohne eigenen KI-Rechner geht es auch mit **Claude** von Anthropic. Dann verlassen die Ausschnitte, der Dokumenttext für „Aus Dokument ausfüllen“ und der Anfang neuer Post für „Wohin gehört das?“ **dein Haus** und gehen an Anthropic – nur aus den Mappentypen, die du unter *Was die KI lesen darf* zulässt.
+
+1. In der **[Claude Console](https://platform.claude.com)** einen **API-Schlüssel** anlegen. Ein Claude-Abo allein reicht nicht; bei Max, Ultra und Team ist ein monatliches API-Guthaben dabei, sonst zahlst du je Anfrage.
+2. Im Paket: **Anbieter** *Claude (Anthropic)*, **Dienst-Adresse** `https://api.anthropic.com/v1`, **Modell** z. B. `claude-haiku-5-5` (schnell und günstig) und den **Schlüssel** eintragen, speichern und die Adresse bestätigen.
+3. **Verbindung testen** – die Meldung nennt das Modell und die Antwortzeit.
+
+**Kosten grob:** Eine Frage an „Frag deine Ablage“ schickt mit den Standardeinstellungen höchstens etwa 2 000–3 000 Token und bekommt bis zu 800 zurück; „Aus Dokument ausfüllen“ je nach Dokument einige tausend Token. Mit einem kleinen Modell wie Haiku sind das eher Zehntel-Cent als Cent je Anfrage, mit größeren Modellen ein Vielfaches – die aktuellen Preise stehen bei Anthropic.
+
 ### 2. Paket installieren und einstellen
 
 1. *Werkbank → Pakete → KI-Assistent → Installieren* und die Rechte bestätigen.
 2. Reiter **Einstellungen**:
-   - **Dienst-Adresse**, z. B. `http://ollama:11434/v1` – im leeren Feld steht das nur als Beispiel.
+   - **Anbieter** (ab 1.5.0): *OpenAI-kompatibel* (Ollama & Co., Standard) oder *Claude (Anthropic)*.
+   - **Dienst-Adresse**, z. B. `http://ollama:11434/v1` – im leeren Feld steht das nur als Beispiel; für Claude `https://api.anthropic.com/v1`.
    - **Modell**, z. B. `ministral-3:3b`.
-   - **Schlüssel (API-Key)** nur, wenn der Dienst eine Anmeldung verlangt (Ollama nicht). Ablago speichert ihn verschlüsselt.
+   - **Schlüssel (API-Key)** nur, wenn der Dienst eine Anmeldung verlangt (Ollama nicht, Claude immer). Ablago speichert ihn verschlüsselt.
    - **Antwort höchstens (Tokens)**, Standard 800 – kleiner ist schneller (gilt für „Frag deine Ablage“).
    - **Kontextlänge (Tokens)**, Standard 8 192 – so groß wie beim Dienst, nie größer (siehe *Kontextlänge* oben).
    - Abschnitt **Was die KI lesen darf** (ab 1.4.0 an dieser Stelle): welche Mappentypen der Dienst bekommt. Neue Mappentypen sind gesperrt, bis du sie zulässt; die Auswahl gilt für alle KI-Pakete.
