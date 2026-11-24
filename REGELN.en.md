@@ -417,6 +417,15 @@ Ablago recognises incoming post and fills Mappen from documents (DMS #336, #391)
 
 `werkzeuge/pruefen.py` checks field type, `art` and Ablago version.
 
+
+### How the folder type is recognised { #erkennbar-an }
+
+When a document is taken over, Ablago suggests the folder type (DMS #939). For this, classification gets each type's name, description and **“How to recognise it”** – in the package `erkennbarAn` on the folder type, translation under `beschriftungen.<language>.erkennbarAn` (DMS #937, from 0.218.0).
+
+- Name what is **on the paper**: typical headings, terms, numbers, senders – not what the type is for (that is the description).
+- At most 300 characters (Ablago cuts longer text); classification uses the **first 200**, so put the most important part first.
+- An update sets the text only while it is still empty in Ablago – whatever the administrators entered stays.
+
 ## Turning text into a reference
 
 If a package holds a person, a company or another thing as **text** where a **reference** belongs (e.g. "Halter: Lena Muster" on a vehicle), you turn it into a reference field in a new version and state with `aus_text` from which previous text field it can be filled (DMS #534):

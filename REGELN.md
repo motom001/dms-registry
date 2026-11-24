@@ -441,6 +441,19 @@ Ablago erkennt Post und füllt Mappen aus Dokumenten (DMS #336, #391) – ohne K
 
 `werkzeuge/pruefen.py` prüft Feldart, Art und Ablago-Version.
 
+### Woran man den Mappentyp erkennt { #erkennbar-an }
+
+Beim Übernehmen eines Dokuments schlägt Ablago den Mappentyp vor (DMS #939). Dafür bekommt die Klassifizierung je Typ Name, Beschreibung und **„Woran man ihn erkennt“** – im Paket `erkennbarAn` am Mappentyp, Übersetzung unter `beschriftungen.<sprache>.erkennbarAn` (DMS #937, ab 0.218.0):
+
+```yaml
+erkennbarAn: "Kontoauszug oder Jahresbeleg einer Bank: Kontostand, Buchungen, Zeitraum „vom … bis …“, IBAN oder Kontonummer; …"
+beschriftungen: { en: { erkennbarAn: "Bank statement or annual document from a bank: balance, transactions, …" } }
+```
+
+- Nenne, was **auf dem Papier** steht: typische Überschriften, Begriffe, Nummern, Absender – nicht, wofür der Typ gedacht ist (das sagt die Beschreibung).
+- Höchstens 300 Zeichen (sonst kürzt Ablago); die Klassifizierung nutzt davon die **ersten 200**, das Wichtigste gehört also nach vorn.
+- Ein Update setzt den Text nur, wenn er in Ablago noch leer ist – was die Verwaltung eingetragen hat, bleibt.
+
 ## Text in Verweis umwandeln
 
 Steht in einem Paket ein Mensch, eine Firma oder ein anderes Ding als **Text**, wo ein **Verweis** hingehört (z. B. „Halter: Lena Muster“ am Fahrzeug), machst du daraus in einer neuen Version ein Verweisfeld und sagst mit `aus_text`, aus welchem bisherigen Textfeld es sich füllen lässt (DMS #534):

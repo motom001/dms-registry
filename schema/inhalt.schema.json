@@ -11,8 +11,9 @@
     "datumsgrenze": { "anyOf": [{ "const": "heute" }, { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }] },
     "typverweis": { "type": "string", "pattern": "^([a-z][a-z0-9_]{1,39}(\\.[a-z][a-z0-9_]{0,19})?:)?[a-z][a-z0-9_]{0,59}$" },
     "beschriftung": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "^[^<>]*$" },
+    "erkennbar_an": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "^[^<>]*$" },
     "sprachkennung": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$" },
-    "teile_typ": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" }, "beschreibung": { "$ref": "#/$defs/beschriftung" }, "mehrzahl": { "$ref": "#/$defs/mehrzahl" } } },
+    "teile_typ": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" }, "beschreibung": { "$ref": "#/$defs/beschriftung" }, "mehrzahl": { "$ref": "#/$defs/mehrzahl" }, "erkennbarAn": { "$ref": "#/$defs/erkennbar_an" } } },
     "mehrzahl": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "\\S", "description": "Mehrzahl des Mappentyps (DMS #1446, Registry #223), z. B. „Verträge“ – Listen zeigen „12 Verträge“ statt „12 × Vertrag“; höchstens 80 Zeichen" },
     "teile_name": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" }, "beschreibung": { "$ref": "#/$defs/beschriftung" } } },
     "teile_register": { "type": "object", "additionalProperties": false, "properties": { "name": { "$ref": "#/$defs/beschriftung" } } },
@@ -177,6 +178,7 @@
         "mehrzahl": { "$ref": "#/$defs/mehrzahl" },
         "beschriftungen": { "$ref": "#/$defs/beschriftungen_typ" },
         "gehoertZu": { "$ref": "#/$defs/schluessel", "description": "DMS #1031: Mappen dieses Typs gehören immer zu einer anderen Mappe – Kennung des Verweisfelds (Pflicht), nicht in Ansichten und Suche" },
+        "erkennbarAn": { "$ref": "#/$defs/erkennbar_an", "description": "„Woran man ihn erkennt“ (DMS #937, ab Ablago 0.218.0): kurzer Text für die Klassifizierung von Dokumenten, höchstens 300 Zeichen; die Klassifizierung nutzt davon die ersten 200. Ein Update setzt ihn nur, wenn er in Ablago noch leer ist (Registry #252)." },
         "inSuche": { "type": "boolean", "description": "DMS #1220 (ab Ablago 0.276.0, ältere ignorieren es): false = Mappen dieses Typs nicht in der allgemeinen Suche (Suchfeld oben, Frag deine Ablage) – für reine Auswahllisten; fehlt = ja" }
       }
     },

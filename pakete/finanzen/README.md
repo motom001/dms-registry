@@ -7,7 +7,7 @@ Das Paket **Finanzen** bringt Konten, Kontoauszüge, Freistellungsaufträge und 
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
 | Konto | Girokonto, Sparkonto, Tagesgeld, Depot, Kreditkarte, Kredit, Bausparvertrag – auch PayPal und ähnliche Dienste | Bank, Art, Inhaber (Personen oder im Betrieb die Firma), IBAN, Konto- oder Kartennummer, Online-Zugang (Passwort), eröffnet/gekündigt am | – |
-| Kontoauszug | Auszug oder Jahresbeleg zu einem Konto | Konto, Art, Auszugsnummer, Zeitraum (Monat, Quartal, Jahr), von, bis, Steuerjahr | – |
+| Kontoauszug | Auszug oder Jahresbeleg zu einem Konto | Konto, Art, Auszugsnummer, von, bis, Steuerjahr | – |
 | Freistellungsauftrag | steuerfreie Kapitalerträge je Bank und Person | Bank, Betrag, Jahr, Person | – |
 | Steuerjahr | die Steuern eines Jahres | Jahr (eindeutig), abgegeben am, Steuerberater | – |
 | Steuernachweis | Jahresbescheinigung für die Steuer, die nicht von der Bank kommt | Art, Steuerjahr (Pflicht), Person, ausgestellt von, betrifft, Betrag bzw. Bruttoarbeitslohn, ausgestellt am | – |
@@ -24,7 +24,7 @@ Das Paket **Finanzen** bringt Konten, Kontoauszüge, Freistellungsaufträge und 
 | Jahressteuerbescheinigung | Kapitalerträge und Steuern vom Depot | Anlage KAP |
 | Zinsbescheinigung | gezahlte Zinsen für einen Kredit | Schuldzinsen bei Vermietung, Betriebsausgaben |
 | Saldenbestätigung | Kontostand zum 31.12. | Jahresabschluss im Betrieb |
-| Kontoauszug, Zeitraum Monat | Gebührenübersicht von PayPal, SumUp und ähnlichen Diensten | Betriebsausgaben (den Dienst als Konto anlegen) |
+| Kontoauszug | Gebührenübersicht von PayPal, SumUp und ähnlichen Diensten | Betriebsausgaben (den Dienst als Konto anlegen) |
 
 **Steuernachweise:** Alles andere, was du einmal im Jahr für die Steuer bekommst, legst du als *Steuernachweis* an – mit der Art im Titel, z. B. „Lohnsteuerbescheinigung – Lena Muster – Steuerjahr 2025“:
 

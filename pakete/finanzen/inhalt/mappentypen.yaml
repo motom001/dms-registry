@@ -51,8 +51,11 @@
   name: Kontoauszug
   mehrzahl: Kontoauszüge
   beschreibung: Ein Auszug oder Jahresbeleg zu einem Konto – Monatsauszug, Entgeltaufstellung (Kontogebühren), Jahressteuerbescheinigung, Zinsbescheinigung oder Saldenbestätigung zum 31.12., auf Papier oder als PDF.
-  beschriftungen: { en: { name: "Bank statement", mehrzahl: "Bank statements", beschreibung: "A statement or annual document for an account – monthly statement, statement of fees, annual tax certificate, interest certificate or balance confirmation at 31 December, on paper or as a PDF." } }
-  titelVorlage: "{art} {nummer} – {konto}"
+  beschriftungen: { en: { name: "Bank statement", mehrzahl: "Bank statements", beschreibung: "A statement or annual document for an account – monthly statement, statement of fees, annual tax certificate, interest certificate or balance confirmation at 31 December, on paper or as a PDF.", erkennbarAn: "Bank statement or annual document from a bank: balance, transactions, period “from … to …”, IBAN or account number; also statement of fees, annual tax or interest certificate, balance confirmation." } }
+  # Titel (Thomas, #252): z. B. „Kontoauszug 12: 01/2026 - 03/2026 – Girokonto Sparkasse“; leere Teile fallen samt Trenner weg.
+  titelVorlage: "{art} {nummer}: {beginn|datum:MM/JJJJ} - {ende|datum:MM/JJJJ} – {konto|kurz:25}"
+  # „Woran man ihn erkennt“ (#252): Text für die Klassifizierung (Ablago ab 0.218.0, höchstens 300 Zeichen; die Klassifizierung nutzt die ersten 200).
+  erkennbarAn: "Kontoauszug oder Jahresbeleg einer Bank: Kontostand, Buchungen, Zeitraum „vom … bis …“, IBAN oder Kontonummer; auch Entgeltaufstellung, Jahressteuer-, Zinsbescheinigung, Saldenbestätigung."
   felder:
     - { key: konto, label: Konto, typ: referenz, ziel: konto, pflicht: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Account" } } }
     - { key: nummer, label: Auszugsnummer, typ: text, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, hilfe: z. B. 3/2026, beschriftungen: { en: { label: "Statement number", hilfe: "e.g. 3/2026" } } }
@@ -62,23 +65,19 @@
       label: Art
       typ: auswahl
       standard: Kontoauszug
+      erkennung: {}
       optionen: [Kontoauszug, Entgeltaufstellung, Jahressteuerbescheinigung, Zinsbescheinigung, Saldenbestätigung]
       hilfe: Entgeltaufstellung = Übersicht der Kontogebühren eines Jahres
       beschriftungen: { en: { label: "Type", hilfe: "Statement of fees = overview of a year's account fees", optionen: { Kontoauszug: Bank statement, Entgeltaufstellung: Statement of fees, Jahressteuerbescheinigung: Annual tax certificate, Zinsbescheinigung: Interest certificate, Saldenbestätigung: Balance confirmation } } }
-    - key: zeitraum
-      label: Zeitraum
-      typ: auswahl
-      optionen: [Monat, Quartal, Jahr]
-      beschriftungen: { en: { label: "Period", optionen: { Monat: Month, Quartal: Quarter, Jahr: Year } } }
     - { key: beginn, label: Von, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "From" } } }
-    - { key: ende, label: Bis, typ: datum, beschriftungen: { en: { label: "To" } } }
+    - { key: ende, label: Bis, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "To" } } }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: steuerjahr, verweisart: bezug, hilfe: Für die Steuer – dann steht der Beleg unter „Belege“ am Steuerjahr, beschriftungen: { en: { label: "Tax year", hilfe: "For your taxes – the document then appears under “Receipts” on the tax year" } } }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Auszug auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper statement is kept" } } }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [konto, art, nummer, zeitraum, beginn, ende, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [konto, art, nummer, beginn, ende, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } } }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
-  trefferliste: [konto, art, nummer, zeitraum, beginn, ende]
+  trefferliste: [konto, art, nummer, beginn, ende]
 
 - schluessel: freistellungsauftrag
   name: Freistellungsauftrag
