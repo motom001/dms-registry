@@ -11,3 +11,4 @@
     - { schluessel: person, ziel: mappe.feld:person_verweis }
     - { schluessel: gueltig_bis, ziel: mappe.feld:gueltig_bis }
     - { schluessel: original, ziel: mappe.feld:verbleib_original }
+    - { schluessel: schreiben, ziel: mappe.register:dokumente }   # Wohin mit Hinweisschreiben (#228)

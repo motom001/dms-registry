@@ -5,8 +5,8 @@
   beschriftungen: { en: { name: "Account assignment", beschreibung: "Cost centres, cost units, accounts, tax codes and organisational units" } }
   symbol: calculator
   typen: [kostenstelle, kostentraeger, sachkonto, steuerschluessel, organisationseinheit]
-- { schluessel: kostenstellen, name: Kostenstellen, symbol: folder, eltern: kontierung, typen: [kostenstelle], beschriftungen: { en: { name: "Cost centres" } } }
-- { schluessel: kostentraeger_liste, name: Kostenträger, symbol: tag, eltern: kontierung, typen: [kostentraeger], beschriftungen: { en: { name: "Cost units" } } }
-- { schluessel: sachkonten, name: Sachkonten, symbol: book-open, eltern: kontierung, typen: [sachkonto], beschriftungen: { en: { name: "Accounts" } } }
+- { schluessel: kostenstellen, name: Kostenstellen, symbol: factory, eltern: kontierung, typen: [kostenstelle], beschriftungen: { en: { name: "Cost centres" } } }
+- { schluessel: kostentraeger_liste, name: Kostenträger, symbol: boxes, eltern: kontierung, typen: [kostentraeger], beschriftungen: { en: { name: "Cost units" } } }
+- { schluessel: sachkonten, name: Sachkonten, symbol: book-text, eltern: kontierung, typen: [sachkonto], beschriftungen: { en: { name: "Accounts" } } }
 - { schluessel: steuerschluessel_liste, name: Steuerschlüssel, symbol: percent, eltern: kontierung, typen: [steuerschluessel], beschriftungen: { en: { name: "Tax codes" } } }
-- { schluessel: organisationseinheiten, name: Organisationseinheiten, symbol: users, eltern: kontierung, typen: [organisationseinheit], beschriftungen: { en: { name: "Organisational units" } } }
+- { schluessel: organisationseinheiten, name: Organisationseinheiten, symbol: network, eltern: kontierung, typen: [organisationseinheit], beschriftungen: { en: { name: "Organisational units" } } }

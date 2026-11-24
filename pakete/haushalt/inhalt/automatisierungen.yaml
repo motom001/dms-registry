@@ -20,3 +20,9 @@
   wenn: { art: datum, typ: anschaffung, feld: garantie_bis, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
   dann:
     - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Garantie bis {datum}: {titel}" }
+- schluessel: arbeitsmedizin_naechste
+  name: Nächste arbeitsmedizinische Vorsorge
+  beschreibung: 6 Wochen vor der nächsten Vorsorge – Zeit, einen Termin beim Betriebsarzt zu machen.
+  wenn: { art: datum, typ: arbeitsmedizin, feld: naechste_vorsorge, vorlauf: 6, einheit: wochen, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Nächste Vorsorge am {datum}: {titel}" }

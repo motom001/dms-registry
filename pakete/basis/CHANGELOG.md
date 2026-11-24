@@ -1,5 +1,13 @@
 # Änderungen
 
+## 1.9.0
+
+- **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Organisationen“ statt „12 × Organisation“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.
+- **„Eigene Organisation“ nur bei beruflicher Nutzung** (dms-registry #195): Wird die Ablage nur privat genutzt, fehlen der Haken und damit auch der Abschnitt „Datenschutz“. Ein schon gesetzter Haken bleibt gespeichert.
+- **„Verantwortlicher“ erklärt** (dms-registry #196): Leer heißt, die Organisation selbst ist verantwortlich – das ist der Normalfall. Die Kurzanleitung sagt das jetzt auch.
+- **Neuer Tipp: Wohin mit Hinweisschreiben?** (dms-registry #228): Ein Schreiben gehört zu der Sache, um die es geht, sonst zum Absender unter „Dokumente“. Braucht Ablago 0.293.2.
+- **Treffendere Symbole** der Ansichten aus den 259 Symbolen von Ablago 0.304 (dms-registry #230): Organisationen (Gebäude), Ablageorte (Archivordner). Ältere Ablago-Versionen zeigen ein neues Symbol einfach nicht.
+
 ## 1.8.0
 
 - **Weniger Ansichten:** oben *Basis* (Symbol Kiste), darunter *Organisationen* (Gebäude), *Personen* (Personen) und *Ablageorte* (Archivkiste – der Posteingang gehört schon zu „Neue Post“). Die Ansichten *Versicherungen*, *Banken*, *Behörden*, *Ärzte und Praxen*, *Niederlassungen*, *Familie und Freunde* und *Ansprechpartner* sind weggefallen – Niederlassungen legst du an der Organisation an, den Rest findet die Suche. In bestehenden Ablagen bleiben die alten Ansichten nach einem Update stehen, bis du sie löschst.

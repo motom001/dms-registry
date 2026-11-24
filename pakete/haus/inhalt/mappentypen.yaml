@@ -4,8 +4,9 @@
 
 - schluessel: immobilie
   name: Immobilie
+  mehrzahl: Immobilien
   beschreibung: Haus, Wohnung, Ferienwohnung, Garage oder Grundstück – gekauft oder gemietet.
-  beschriftungen: { en: { name: "Property", beschreibung: "House, flat, holiday flat, garage or plot – owned or rented." } }
+  beschriftungen: { en: { name: "Property", mehrzahl: "Properties", beschreibung: "House, flat, holiday flat, garage or plot – owned or rented." } }
   titelVorlage: "{bezeichnung}"
   felder:
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Einfamilienhaus Musterweg 1“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Detached house Musterweg 1”" } }  }
@@ -48,8 +49,9 @@
 
 - schluessel: wartung
   name: Wartung
+  mehrzahl: Wartungen
   beschreibung: Regelmäßige Wartung oder Prüfung – Heizung, Schornstein, Rauchmelder, Photovoltaik und mehr.
-  beschriftungen: { en: { name: "Maintenance", beschreibung: "Regular maintenance or inspection – heating, chimney, smoke alarms, solar panels and more." } }
+  beschriftungen: { en: { name: "Maintenance", mehrzahl: "Maintenance tasks", beschreibung: "Regular maintenance or inspection – heating, chimney, smoke alarms, solar panels and more." } }
   titelVorlage: "{gegenstand} – {immobilie}"
   felder:
     - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Property" } }  }
@@ -79,8 +81,9 @@
 
 - schluessel: zaehlerstand
   name: Zählerstand
+  mehrzahl: Zählerstände
   beschreibung: Eine Ablesung eines Strom-, Gas-, Wasser- oder Wärmezählers.
-  beschriftungen: { en: { name: "Meter reading", beschreibung: "One reading of an electricity, gas, water or heat meter." } }
+  beschriftungen: { en: { name: "Meter reading", mehrzahl: "Meter readings", beschreibung: "One reading of an electricity, gas, water or heat meter." } }
   titelVorlage: "{zaehlerart} {zaehlernummer} – {stand} {einheit}"
   felder:
     - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Property" } }  }

@@ -4,25 +4,25 @@
 # Ab 1.2.0 (Thomas, 20.11.2026): darunter je Mappentyp eine Ansicht mit Symbol – Rechnungen (mit „Offen“), Bestellungen
 # (mit „Unterwegs“), Lieferscheine; „Dieses Jahr“ entfällt.
 - { schluessel: rechnungen, name: Rechnungen und Bestellungen, beschreibung: Alle Rechnungen, Quittungen, Gutschriften, Bestellungen und Lieferscheine, symbol: receipt, typen: [rechnung, bestellung, lieferschein], beschriftungen: { en: { name: "Invoices and orders", beschreibung: "All invoices, receipts, credit notes, orders and delivery notes" } } }
-- { schluessel: rechnungen_liste, name: Rechnungen, symbol: euro, beschreibung: Rechnungen, Quittungen und Gutschriften, eltern: rechnungen, typen: [rechnung], beschriftungen: { en: { name: "Invoices", beschreibung: "Invoices, receipts and credit notes" } } }
+- { schluessel: rechnungen_liste, name: Rechnungen, symbol: receipt-euro, beschreibung: Rechnungen, Quittungen und Gutschriften, eltern: rechnungen, typen: [rechnung], beschriftungen: { en: { name: "Invoices", beschreibung: "Invoices, receipts and credit notes" } } }
 - schluessel: offen
   name: Offen
   beschreibung: Noch nicht bezahlt
   beschriftungen: { en: { name: "Open", beschreibung: "Not paid yet" } }
   eltern: rechnungen_liste
-  symbol: clock
+  symbol: hourglass
   typen: [rechnung]
   bedingungen:
     - { feld: bezahlt_am, operator: leer }
     - { feld: zahlungseingang_am, operator: leer }
-- { schluessel: lieferscheine, name: Lieferscheine, symbol: file-text, eltern: rechnungen, typen: [lieferschein], beschriftungen: { en: { name: "Delivery notes" } } }
+- { schluessel: lieferscheine, name: Lieferscheine, symbol: clipboard-list, eltern: rechnungen, typen: [lieferschein], beschriftungen: { en: { name: "Delivery notes" } } }
 - { schluessel: bestellungen, name: Bestellungen, symbol: shopping-cart, beschreibung: Einkäufe von der Bestellung bis zur Lieferung, eltern: rechnungen, typen: [bestellung], beschriftungen: { en: { name: "Orders", beschreibung: "Purchases from order to delivery" } } }
 - schluessel: unterwegs
   name: Unterwegs
   beschreibung: Bestellt oder versandt, noch nicht angekommen
   beschriftungen: { en: { name: "On the way", beschreibung: "Ordered or shipped, not arrived yet" } }
   eltern: bestellungen
-  symbol: send
+  symbol: truck
   typen: [bestellung]
   bedingungen:
     - { feld: lieferstand, operator: einerVon, wert: { art: fest, wert: [bestellt, versandt, teilweise] } }

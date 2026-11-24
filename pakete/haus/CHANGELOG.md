@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.6.1
+
+- **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Zählerstände“ statt „12 × Zählerstand“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.
+- **Treffendere Symbole** der Ansichten aus den 259 Symbolen von Ablago 0.304 (dms-registry #230): Immobilien (Grundstück), Zählerstände (Zähler), „Wartung fällig“ mit Kalender und Uhr. Ältere Ablago-Versionen zeigen ein neues Symbol einfach nicht.
+
 ## 1.6.0
 
 - Ansichten mit Symbolen: *Haus*, darunter *Immobilien*, *Wartungen*, *Zählerstände* und *Wartung fällig*. *Zählerstände dieses Jahr* und *letztes Jahr* entfallen – solche Ansichten legst du dir bei Bedarf selbst an. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).

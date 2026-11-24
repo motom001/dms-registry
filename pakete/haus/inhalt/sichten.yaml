@@ -8,15 +8,15 @@
   beschriftungen: { en: { name: "House", beschreibung: "Properties, maintenance and meter readings" } }
   symbol: house
   typen: [immobilie, wartung, zaehlerstand]
-- { schluessel: immobilien, name: Immobilien, eltern: haus, symbol: map-pin, typen: [immobilie], beschriftungen: { en: { name: "Properties" } } }
+- { schluessel: immobilien, name: Immobilien, eltern: haus, symbol: land-plot, typen: [immobilie], beschriftungen: { en: { name: "Properties" } } }
 - { schluessel: wartungen, name: Wartungen, eltern: haus, symbol: wrench, typen: [wartung], beschriftungen: { en: { name: "Maintenance" } } }
-- { schluessel: zaehlerstaende, name: Zählerstände, eltern: haus, symbol: zap, typen: [zaehlerstand], beschriftungen: { en: { name: "Meter readings" } } }
+- { schluessel: zaehlerstaende, name: Zählerstände, eltern: haus, symbol: gauge, typen: [zaehlerstand], beschriftungen: { en: { name: "Meter readings" } } }
 - schluessel: wartung_faellig
   name: Wartung fällig
   beschreibung: Wartungen, die in den nächsten 3 Monaten fällig sind oder schon überfällig
   beschriftungen: { en: { name: "Maintenance due", beschreibung: "Maintenance due in the next 3 months or already overdue" } }
   eltern: haus
-  symbol: alarm-clock
+  symbol: calendar-clock
   typen: [wartung]
   bedingungen:
     - { feld: naechste_faellig, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }

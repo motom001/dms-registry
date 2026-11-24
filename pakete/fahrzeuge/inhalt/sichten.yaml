@@ -13,7 +13,7 @@
   beschreibung: Fahrzeuge, deren Hauptuntersuchung in den nächsten 3 Monaten fällig oder schon überfällig ist
   beschriftungen: { en: { name: "MOT due", beschreibung: "Vehicles whose main inspection is due in the next 3 months or already overdue" } }
   eltern: fahrzeuge
-  symbol: alarm-clock
+  symbol: calendar-clock
   typen: [fahrzeug]
   bedingungen:
     - { feld: hu_faellig, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }

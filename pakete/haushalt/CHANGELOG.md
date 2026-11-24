@@ -1,5 +1,12 @@
 # Änderungen
 
+## 3.3.0
+
+- **Neuer Mappentyp „Arbeitsmedizinische Vorsorge“** (dms-registry #228): die Vorsorgebescheinigung nach ArbMedVV mit Person, Arbeitsverhältnis, Datum, Ärztin/Arzt, Anlass, Art (Pflicht-, Angebots-, Wunschvorsorge) und nächster Vorsorge. Eine Mappe je Anlass; am Arbeitsverhältnis erscheinen sie unter „Verknüpfungen“. Dazu eine Ansicht, ein Beispiel für Tom und die Automatisierung „Nächste arbeitsmedizinische Vorsorge“ (6 Wochen vorher, nach der Installation aus).
+- **Rundgang „Ausweis ablegen“** mit einem Schritt mehr: Briefe gehören als Dokument zu ihrer Sache, sonst zum Absender (dms-registry #228).
+- **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Arbeitsverhältnisse“ statt „12 × Arbeitsverhältnis“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast. Wo es keine echte Mehrzahl gibt, heißt es „Gesundheitsmappen“, „Vorsorgeverträge“ und „Bildungswege“.
+- **Treffendere Symbole** der Ansichten aus den 259 Symbolen von Ablago 0.304 (dms-registry #230): Arbeitsverhältnisse (Aktentasche), Ausweise & Urkunden (Ausweis), „Läuft bald ab“ mit Kalender und Uhr, „Garantie läuft ab“ (Siegel). Ältere Ablago-Versionen zeigen ein neues Symbol einfach nicht.
+
 ## 3.2.0
 
 - Ansichten mit Symbolen: *Haushalt*, darunter je Mappentyp eine Ansicht sowie *Läuft bald ab* und *Garantie läuft ab*. *Verträge*, *Versicherungen* (mit Sach- und Personenversicherungen) und *Kündigung in den nächsten 3 Monaten* entfallen – sie stehen im Paket Verträge. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).

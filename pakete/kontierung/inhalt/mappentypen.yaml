@@ -5,8 +5,9 @@
 
 - schluessel: organisationseinheit
   name: Organisationseinheit
+  mehrzahl: Organisationseinheiten
   beschreibung: Eine Abteilung oder ein Bereich im Betrieb – verschachtelt, z. B. Vertrieb › Innendienst
-  beschriftungen: { en: { name: "Organisational unit", beschreibung: "A department or area of the business – nested, e.g. Sales › Inside sales" } }
+  beschriftungen: { en: { name: "Organisational unit", mehrzahl: "Organisational units", beschreibung: "A department or area of the business – nested, e.g. Sales › Inside sales" } }
   titelVorlage: "{name}"
   felder:
     - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Vertrieb, Buchhaltung, Werkstatt, beschriftungen: { en: { label: "Name", hilfe: "e.g. Sales, Accounting, Workshop" } } }
@@ -23,8 +24,9 @@
 
 - schluessel: kostenstelle
   name: Kostenstelle
+  mehrzahl: Kostenstellen
   beschreibung: Wo Kosten entstehen, z. B. 4100 Fuhrpark – mit verantwortlicher Person und übergeordneter Kostenstelle
-  beschriftungen: { en: { name: "Cost centre", beschreibung: "Where costs arise, e.g. 4100 Fleet – with the person responsible and a parent cost centre" } }
+  beschriftungen: { en: { name: "Cost centre", mehrzahl: "Cost centres", beschreibung: "Where costs arise, e.g. 4100 Fleet – with the person responsible and a parent cost centre" } }
   titelVorlage: "{nummer} {name}"
   felder:
     - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, hilfe: z. B. 4100, beschriftungen: { en: { label: "Number", hilfe: "e.g. 4100" } } }
@@ -44,8 +46,9 @@
 
 - schluessel: kostentraeger
   name: Kostenträger
+  mehrzahl: Kostenträger
   beschreibung: Wofür Kosten entstehen – ein Produkt, Projekt oder Auftrag
-  beschriftungen: { en: { name: "Cost unit", beschreibung: "What costs are for – a product, project or job" } }
+  beschriftungen: { en: { name: "Cost unit", mehrzahl: "Cost units", beschreibung: "What costs are for – a product, project or job" } }
   titelVorlage: "{nummer} {name}"
   felder:
     - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Number" } } }
@@ -65,8 +68,9 @@
 
 - schluessel: sachkonto
   name: Sachkonto
+  mehrzahl: Sachkonten
   beschreibung: Ein Konto aus dem Kontenrahmen der Buchhaltung, z. B. 4930 Bürobedarf – nur zur Auswahl, Ablago bucht nicht
-  beschriftungen: { en: { name: "General ledger account", beschreibung: "An account from the chart of accounts, e.g. 4930 Office supplies – for selection only, Ablago does not post entries" } }
+  beschriftungen: { en: { name: "General ledger account", mehrzahl: "General ledger accounts", beschreibung: "An account from the chart of accounts, e.g. 4930 Office supplies – for selection only, Ablago does not post entries" } }
   titelVorlage: "{nummer} {bezeichnung}"
   felder:
     - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, hilfe: z. B. 4930, beschriftungen: { en: { label: "Number", hilfe: "e.g. 4930" } } }
@@ -86,8 +90,9 @@
 
 - schluessel: steuerschluessel
   name: Steuerschlüssel
+  mehrzahl: Steuerschlüssel
   beschreibung: Ein Umsatzsteuersatz mit Bezeichnung und Kennzeichen für die Buchhaltung, gültig ab einem Datum
-  beschriftungen: { en: { name: "Tax code", beschreibung: "A VAT rate with a name and a code for the accountants, valid from a date" } }
+  beschriftungen: { en: { name: "Tax code", mehrzahl: "Tax codes", beschreibung: "A VAT rate with a name and a code for the accountants, valid from a date" } }
   titelVorlage: "{bezeichnung}"
   felder:
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Umsatzsteuer 19 %, beschriftungen: { en: { label: "Name", hilfe: "e.g. VAT 19 %" } } }

@@ -5,7 +5,7 @@
   beschriftungen: { en: { name: "Finances", beschreibung: "Accounts, bank statements, exemption orders and tax years" } }
   symbol: wallet
   typen: [konto, kontoauszug, freistellungsauftrag, steuerjahr]
-- { schluessel: konten, name: Konten, symbol: credit-card, eltern: finanzen, typen: [konto], beschriftungen: { en: { name: "Accounts" } } }
-- { schluessel: kontoauszuege, name: Kontoauszüge, symbol: file-text, eltern: finanzen, typen: [kontoauszug], beschriftungen: { en: { name: "Bank statements" } } }
-- { schluessel: freistellungsauftraege, name: Freistellungsaufträge, symbol: percent, eltern: finanzen, typen: [freistellungsauftrag], beschriftungen: { en: { name: "Exemption orders" } } }
-- { schluessel: steuerjahre, name: Steuerjahre, symbol: calculator, eltern: finanzen, typen: [steuerjahr], beschriftungen: { en: { name: "Tax years" } } }
+- { schluessel: konten, name: Konten, symbol: landmark, eltern: finanzen, typen: [konto], beschriftungen: { en: { name: "Accounts" } } }
+- { schluessel: kontoauszuege, name: Kontoauszüge, symbol: file-spreadsheet, eltern: finanzen, typen: [kontoauszug], beschriftungen: { en: { name: "Bank statements" } } }
+- { schluessel: freistellungsauftraege, name: Freistellungsaufträge, symbol: badge-percent, eltern: finanzen, typen: [freistellungsauftrag], beschriftungen: { en: { name: "Exemption orders" } } }
+- { schluessel: steuerjahre, name: Steuerjahre, symbol: badge-euro, eltern: finanzen, typen: [steuerjahr], beschriftungen: { en: { name: "Tax years" } } }

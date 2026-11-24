@@ -7,8 +7,9 @@
 
 - schluessel: konto
   name: Konto
+  mehrzahl: Konten
   beschreibung: Girokonto, Sparkonto, Tagesgeld, Depot, Kreditkarte, Kredit oder Bausparvertrag – auch PayPal und ähnliche Dienste.
-  beschriftungen: { en: { name: "Account", beschreibung: "Current account, savings account, overnight money, securities account, credit card, loan or building savings contract – also PayPal and similar services." } }
+  beschriftungen: { en: { name: "Account", mehrzahl: "Accounts", beschreibung: "Current account, savings account, overnight money, securities account, credit card, loan or building savings contract – also PayPal and similar services." } }
   # #212: wessen Konto es ist, steht vorne; bei Bezahldiensten stand sonst nur der Anbieter da.
   titelVorlage: "{bank} von {inhaber_verweis} ({art})"
   felder:
@@ -48,8 +49,9 @@
 
 - schluessel: kontoauszug
   name: Kontoauszug
+  mehrzahl: Kontoauszüge
   beschreibung: Ein Auszug zu einem Konto, für einen Monat oder ein Quartal – z. B. vom Depot auf Papier oder als PDF.
-  beschriftungen: { en: { name: "Bank statement", beschreibung: "A statement for an account, for a month or a quarter – e.g. from the securities account on paper or as a PDF." } }
+  beschriftungen: { en: { name: "Bank statement", mehrzahl: "Bank statements", beschreibung: "A statement for an account, for a month or a quarter – e.g. from the securities account on paper or as a PDF." } }
   titelVorlage: "Auszug {nummer} – {konto}"
   felder:
     - { key: konto, label: Konto, typ: referenz, ziel: konto, pflicht: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Account" } } }
@@ -70,8 +72,9 @@
 
 - schluessel: freistellungsauftrag
   name: Freistellungsauftrag
+  mehrzahl: Freistellungsaufträge
   beschreibung: Wie viel deiner Kapitalerträge eine Bank in einem Jahr steuerfrei auszahlt – je Person und Bank.
-  beschriftungen: { en: { name: "Exemption order", beschreibung: "How much of your investment income a bank pays out tax-free in a year – per person and bank." } }
+  beschriftungen: { en: { name: "Exemption order", mehrzahl: "Exemption orders", beschreibung: "How much of your investment income a bank pays out tax-free in a year – per person and bank." } }
   titelVorlage: "Freistellungsauftrag {jahr} – {bank} – {person_verweis}"
   felder:
     - { key: bank, label: Bank, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Bank" } } }
@@ -86,8 +89,9 @@
 
 - schluessel: steuerjahr
   name: Steuerjahr
+  mehrzahl: Steuerjahre
   beschreibung: Die Steuern eines Jahres – Erklärung, Bescheid und die Belege dazu; im Betrieb auch Umsatzsteuer, Gewerbesteuer und Jahresabschluss.
-  beschriftungen: { en: { name: "Tax year", beschreibung: "The taxes of one year – return, assessment and the receipts for it; for a business also VAT, trade tax and the annual accounts." } }
+  beschriftungen: { en: { name: "Tax year", mehrzahl: "Tax years", beschreibung: "The taxes of one year – return, assessment and the receipts for it; for a business also VAT, trade tax and the annual accounts." } }
   titelVorlage: "Steuerjahr {jahr}"
   felder:
     - { key: jahr, label: Jahr, typ: text, pflicht: true, eindeutig: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025", beschriftungen: { en: { label: "Year", hilfe: "Four digits, e.g. 2025" } } }

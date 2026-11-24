@@ -7,6 +7,7 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
 | Arbeitsverhältnis | Anstellung, Minijob, Ausbildung | Arbeitgeber, Person, Tätigkeit, Beginn, Ende, Steuerjahre | – |
+| Arbeitsmedizinische Vorsorge (ab 3.3.0) | Vorsorgebescheinigung nach ArbMedVV, eine Mappe je Anlass (Befunde gehören zu *Gesundheit*) | Person, Arbeitsverhältnis, Datum, Ärztin/Arzt, Anlass, Art (Pflicht-, Angebots-, Wunschvorsorge) | **Nächste Vorsorge** (6 Wochen vorher; leer = keine weitere nötig) |
 | Vorsorge | Rente, Riester, Rürup … (Bausparverträge sind Konten im Paket Finanzen) | Art, Anbieter, Vertragsnummer, Person, Beginn | – |
 | Ausweis & Urkunde | Personalausweis, Reisepass, Führerschein, Urkunden, Zeugnisse | Art, Person, Nummer, ausgestellt am | **Gültig bis** (90 Tage vorher) |
 | Gesundheit | Arztbriefe, Befunde, Impfungen, Rezepte, Rechnungen | Person, Art, Datum, Praxis, Betrag, Steuerjahr | – |
@@ -14,6 +15,8 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 | Bildung | Schule, Ausbildung, Studium, Kurse | Person, Art, Einrichtung, von, bis, Abschluss, Steuerjahr | – |
 
 **Register:** jeder Typ hat *Allgemein* (die Felder), *Dokumente*, *Verknüpfungen* und *Historie*.
+
+**Wohin mit Briefen ohne eigene Sache?** Ein Schreiben legst du als Dokument zu der Sache, um die es geht: Teilt der Arbeitgeber mit, dass das Gehalt künftig später kommt, gehört der Brief zum **Arbeitsverhältnis**. Weitere Beispiele: neue AGB der Bank → Konto, Preisänderung der Stadtwerke → Vertrag, neuer Beitragssatz der Krankenkasse → Versicherung. Gibt es keine Sache, leg ihn beim Absender (Organisation aus Basis) unter *Dokumente* ab. Einen eigenen Mappentyp für Hinweisschreiben gibt es bewusst nicht.
 
 **Konten und Steuerjahre** kommen aus dem Paket **Finanzen**. Trägst du an einer Anschaffung, einem Arztbrief, einem Bildungsnachweis oder einem Arbeitsverhältnis ein *Steuerjahr* ein, steht die Mappe dort unter *Belege*.
 
@@ -35,9 +38,9 @@ Das Paket **Haushalt** bringt die typischen Unterlagen eines Haushalts fertig mi
 
 Verträge und Versicherungen (mit Sach- und Personenversicherungen) zeigt das Paket **Verträge** in seinen Ansichten.
 
-**Beispiele (optional):** 15 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas als **Personen**, je Typ ein bis zwei Mappen, dazu Konten, ein Kontoauszug, ein Freistellungsauftrag und das Steuerjahr 2025 aus dem Paket Finanzen. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, Jonas’ Impfung auf die Hausarztpraxis (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
+**Beispiele (optional):** 16 Mappen der erfundenen Familie Muster – Lena, Tom und Sohn Jonas als **Personen**, je Typ ein bis zwei Mappen, dazu Konten, ein Kontoauszug, ein Freistellungsauftrag und das Steuerjahr 2025 aus dem Paket Finanzen. Sie hängen zusammen: Das Girokonto gehört Lena und Tom und zeigt auf die Sparkasse, Jonas’ Impfung auf die Hausarztpraxis (aus dem Paket Basis), Toms Arbeitsverhältnis auf das Steuerjahr 2025. Ablageorte setzt du selbst.
 
-**Rundgang und Tipps:** Der Rundgang **Ausweis ablegen** zeigt dir an einem leeren Formular, wo Art, Person, *Gültig bis* und der Ort des Originals hingehören – gespeichert wird dabei nichts. Ablago bietet ihn nach der Installation 30 Tage lang als Tipp an; danach findest du ihn unter **Ablago entdecken**. Rundgang und Tipp gibt es auf Deutsch und Englisch, je nach Sprache der Person. Ein kurzer Tipp führt zu *Garantie bis* an der Anschaffung; die Tipps zum Steuerjahr bringt das Paket Finanzen mit.
+**Rundgang und Tipps:** Der Rundgang **Ausweis ablegen** zeigt dir an einem leeren Formular, wo Art, Person, *Gültig bis* und der Ort des Originals hingehören und wohin Briefe dazu kommen – gespeichert wird dabei nichts. Ablago bietet ihn nach der Installation 30 Tage lang als Tipp an; danach findest du ihn unter **Ablago entdecken**. Rundgang und Tipp gibt es auf Deutsch und Englisch, je nach Sprache der Person. Ein kurzer Tipp führt zu *Garantie bis* an der Anschaffung; die Tipps zum Steuerjahr bringt das Paket Finanzen mit.
 
 ## Voraussetzungen
 

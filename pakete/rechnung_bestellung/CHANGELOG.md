@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.2.1
+
+- **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Rechnungen“ statt „12 × Rechnung“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.
+- **Treffendere Symbole** der Ansichten aus den 259 Symbolen von Ablago 0.304 (dms-registry #230): Rechnungen (Beleg mit Euro), Offen (Sanduhr), Unterwegs (Lastwagen), Lieferscheine (Klemmbrett). Ältere Ablago-Versionen zeigen ein neues Symbol einfach nicht.
+
 ## 1.2.0
 
 - Ansichten: *Rechnungen und Bestellungen*, darunter je Mappentyp eine Ansicht mit Symbol – *Rechnungen* (mit *Offen*), *Bestellungen* (mit *Unterwegs*) und *Lieferscheine*. *Dieses Jahr* entfällt. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).

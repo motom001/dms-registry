@@ -15,5 +15,8 @@
   "rundgang.ausweis-ablegen.original.titel": "Wo liegt das Original?",
   "rundgang.ausweis-ablegen.original.text": "Wähle, wo du das Papier aufbewahrst, zum Beispiel „Arbeitszimmer › Schrank › roter Ordner“.",
   "rundgang.ausweis-ablegen.original.ort": "Im Formular unten",
+  "rundgang.ausweis-ablegen.schreiben.titel": "Und Briefe dazu?",
+  "rundgang.ausweis-ablegen.schreiben.text": "Ein Schreiben legst du als Dokument zu der Sache ab, um die es geht – Post vom Bürgeramt hier, Post vom Arbeitgeber beim Arbeitsverhältnis. Gibt es keine Sache, leg es beim Absender ab.",
+  "rundgang.ausweis-ablegen.schreiben.ort": "Oben im Register „Dokumente“",
   "tipp.garantie": "Trag bei einer Anschaffung „Garantie bis“ ein – dann erinnert dich Ablago rechtzeitig, bevor die Garantie endet."
 }

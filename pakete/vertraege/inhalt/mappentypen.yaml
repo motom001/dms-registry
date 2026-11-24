@@ -5,10 +5,11 @@
 
 - schluessel: vertragsart
   name: Vertragsart
+  mehrzahl: Vertragsarten
   # Reine Auswahlliste: Vertragsarten sollen nicht als Treffer in der Suche oben erscheinen (dms-registry #197, DMS #1220).
   inSuche: false
   beschreibung: Art eines Vertrags mit typischer Laufzeit und Kündigungsfrist und den passenden Vorlagen – z. B. Mobilfunk, Miete oder Versicherung. Das Paket bringt die üblichen mit; eigene kannst du ergänzen.
-  beschriftungen: { en: { name: "Contract type", beschreibung: "Type of contract with its typical term, notice period and matching templates – e.g. mobile, rent or insurance. The package brings the usual ones; you can add your own." } }
+  beschriftungen: { en: { name: "Contract type", mehrzahl: "Contract types", beschreibung: "Type of contract with its typical term, notice period and matching templates – e.g. mobile, rent or insurance. The package brings the usual ones; you can add your own." } }
   titelVorlage: "{name}"
   felder:
     - { key: name, label: Name, typ: text, pflicht: true, eindeutig: true, maxLen: 80, beschriftungen: { en: { label: "Name" } } }
@@ -47,8 +48,9 @@
 
 - schluessel: vertrag
   name: Vertrag
+  mehrzahl: Verträge
   beschreibung: Jeder Vertrag mit Laufzeit oder Kündigungsfrist – Strom, Gas, Internet, Handy, Streaming, Zeitschrift, Mitgliedschaft, Miete, Versicherung, im Betrieb auch Leasing, Wartung oder Rahmenvertrag.
-  beschriftungen: { en: { name: "Contract", beschreibung: "Any contract with a term or notice period – electricity, gas, internet, mobile, streaming, magazine, membership, rent, insurance, and in a business also leasing, maintenance or framework contracts." } }
+  beschriftungen: { en: { name: "Contract", mehrzahl: "Contracts", beschreibung: "Any contract with a term or notice period – electricity, gas, internet, mobile, streaming, magazine, membership, rent, insurance, and in a business also leasing, maintenance or framework contracts." } }
   titelVorlage: "{bezeichnung}"
   felder:
     # Oben – das Wichtigste auf einen Blick

@@ -14,8 +14,9 @@
 
 - schluessel: arbeitsverhaeltnis
   name: Arbeitsverhältnis
+  mehrzahl: Arbeitsverhältnisse
   beschreibung: Anstellung, Minijob oder Ausbildung – mit Arbeitsvertrag, Gehaltsabrechnungen und Zeugnis.
-  beschriftungen: { en: { name: "Employment", beschreibung: "Job, mini-job or apprenticeship – with employment contract, payslips and reference." } }
+  beschriftungen: { en: { name: "Employment", mehrzahl: "Jobs", beschreibung: "Job, mini-job or apprenticeship – with employment contract, payslips and reference." } }
   titelVorlage: "{person_verweis} – {arbeitgeber}"
   felder:
     - { key: arbeitgeber, label: Arbeitgeber, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Employer" } }  }
@@ -32,10 +33,47 @@
     - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [person_verweis, arbeitgeber, taetigkeit, beginn, ende]
 
+- schluessel: arbeitsmedizin
+  name: Arbeitsmedizinische Vorsorge
+  mehrzahl: Arbeitsmedizinische Vorsorgen
+  beschreibung: Vorsorgebescheinigung nach der ArbMedVV – Datum, Anlass, Art und nächster Termin. Eine Mappe je Anlass; Befunde gehören zu Gesundheit.
+  beschriftungen: { en: { name: "Occupational health check", mehrzahl: "Occupational health checks", beschreibung: "Certificate of an occupational health check (German ArbMedVV) – date, reason, type and next appointment. One folder per reason; findings belong under Health." } }
+  titelVorlage: "{anlass} – {person_verweis}"
+  felder:
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } } }
+    - { key: arbeitsverhaeltnis, label: Arbeitsverhältnis, typ: referenz, ziel: arbeitsverhaeltnis, verweisart: bezug, hilfe: Die Vorsorge erscheint dort unter „Verknüpfungen“, beschriftungen: { en: { label: "Employment", hilfe: "The check then shows up there under “Links”" } } }
+    - { key: datum, label: Datum der Vorsorge, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Date of the check" } } }
+    - { key: arzt, label: Ärztin/Arzt, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, hilfe: Betriebsarzt oder arbeitsmedizinischer Dienst, beschriftungen: { en: { label: "Doctor", hilfe: "Company doctor or occupational health service" } } }
+    - key: anlass
+      label: Anlass
+      beschriftungen: { en: { label: "Reason", optionen: { "Bildschirmarbeit": "Screen work", "Lärm": "Noise", "Atemschutz": "Respiratory protection", "Feuchtarbeit": "Wet work", "Biostoffe": "Biological agents", "Gefahrstoffe": "Hazardous substances", "Hitze": "Heat", "Sonstiges": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Bildschirmarbeit, Lärm, Atemschutz, Feuchtarbeit, Biostoffe, Gefahrstoffe, Hitze, Sonstiges]
+    - { key: anlass_text, label: Anlass genauer, typ: text, maxLen: 120, hilfe: "Wie auf der Bescheinigung, z. B. „Tätigkeiten mit Atemschutzgeräten, Gruppe 2“", beschriftungen: { en: { label: "Reason in detail", hilfe: "As on the certificate" } } }
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Pflichtvorsorge": "Mandatory", "Angebotsvorsorge": "Offered", "Wunschvorsorge": "On request" } } }
+      typ: auswahl
+      optionen: [Pflichtvorsorge, Angebotsvorsorge, Wunschvorsorge]
+    - key: naechste_vorsorge
+      label: Nächste Vorsorge
+      beschriftungen: { en: { label: "Next check", hilfe: "Leave empty if no further check is needed. The included automation reminds you 6 weeks before." } }
+      typ: datum
+      hilfe: Leer lassen, wenn keine weitere Vorsorge nötig ist. Die mitgelieferte Automatisierung erinnert 6 Wochen vorher.
+      frist: { vorlauf: 6, einheit: wochen }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, arbeitsverhaeltnis, datum, arzt, anlass, anlass_text, art, naechste_vorsorge], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [person_verweis, anlass, datum, naechste_vorsorge]
+
 - schluessel: vorsorge
   name: Vorsorge
+  mehrzahl: Vorsorgeverträge
   beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester und Rürup. Bausparverträge sind Konten (Paket Finanzen).
-  beschriftungen: { en: { name: "Pension", beschreibung: "State, company and private pensions, Riester and Rürup. Building savings contracts are accounts (Finances package)." } }
+  beschriftungen: { en: { name: "Pension", mehrzahl: "Pension plans", beschreibung: "State, company and private pensions, Riester and Rürup. Building savings contracts are accounts (Finances package)." } }
   titelVorlage: "{art} – {person_verweis} – {anbieter}"
   felder:
     - key: art
@@ -58,8 +96,9 @@
 
 - schluessel: ausweis
   name: Ausweis & Urkunde
+  mehrzahl: "Ausweise & Urkunden"
   beschreibung: Personalausweis, Reisepass, Führerschein, Geburts- und Heiratsurkunde, Zeugnisse.
-  beschriftungen: { en: { name: "ID & certificate", beschreibung: "ID card, passport, driving licence, birth and marriage certificate, school reports." } }
+  beschriftungen: { en: { name: "ID & certificate", mehrzahl: "IDs & certificates", beschreibung: "ID card, passport, driving licence, birth and marriage certificate, school reports." } }
   titelVorlage: "{art} – {person_verweis}"
   felder:
     - key: art
@@ -87,8 +126,9 @@
 
 - schluessel: gesundheit
   name: Gesundheit
+  mehrzahl: Gesundheitsmappen
   beschreibung: Arztbriefe, Befunde, Impfungen, Rezepte und Rechnungen.
-  beschriftungen: { en: { name: "Health", beschreibung: "Doctor’s letters, findings, vaccinations, prescriptions and invoices." } }
+  beschriftungen: { en: { name: "Health", mehrzahl: "Health records", beschreibung: "Doctor’s letters, findings, vaccinations, prescriptions and invoices." } }
   titelVorlage: "{art} – {person_verweis} – {praxis}"
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
@@ -111,8 +151,9 @@
 
 - schluessel: anschaffung
   name: Anschaffung
+  mehrzahl: Anschaffungen
   beschreibung: Gekaufte Geräte und Möbel – mit Kassenbon, Garantie und Seriennummer.
-  beschriftungen: { en: { name: "Purchase", beschreibung: "Appliances and furniture you bought – with receipt, warranty and serial number." } }
+  beschriftungen: { en: { name: "Purchase", mehrzahl: "Purchases", beschreibung: "Appliances and furniture you bought – with receipt, warranty and serial number." } }
   titelVorlage: "{gegenstand}"
   felder:
     - { key: gegenstand, label: Gegenstand, typ: text, pflicht: true, maxLen: 120, beschriftungen: { en: { label: "Item" } }  }
@@ -143,8 +184,9 @@
 
 - schluessel: bildung
   name: Bildung
+  mehrzahl: Bildungswege
   beschreibung: Schule, Ausbildung, Studium und Kurse – mit Zeugnissen und Bescheinigungen.
-  beschriftungen: { en: { name: "Education", beschreibung: "School, apprenticeship, university and courses – with certificates and confirmations." } }
+  beschriftungen: { en: { name: "Education", mehrzahl: "Education records", beschreibung: "School, apprenticeship, university and courses – with certificates and confirmations." } }
   titelVorlage: "{art} – {person_verweis} – {einrichtung}"
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }

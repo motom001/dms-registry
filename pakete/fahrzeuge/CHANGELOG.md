@@ -1,5 +1,10 @@
 # Änderungen
 
+## 2.2.1
+
+- **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Fahrzeuge“ statt „12 × Fahrzeug“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.
+- **Treffendere Symbole** der Ansichten aus den 259 Symbolen von Ablago 0.304 (dms-registry #230): „HU fällig“ mit Kalender und Uhr wie alle Fristen. Ältere Ablago-Versionen zeigen ein neues Symbol einfach nicht.
+
 ## 2.2.0
 
 - Ansichten: *Fahrzeuge* mit Symbol, darunter nur noch *HU fällig*. *Alle Fahrzeuge* (doppelt) und *Rechnungen zu Fahrzeugen* (stehen am Fahrzeug unter *Rechnungen*) entfallen. Ein Update nimmt keine Ansichten weg: In bestehenden Ablagen bleiben weggefallene Ansichten stehen, bis du sie löschst (Thomas, 20.11.2026).
