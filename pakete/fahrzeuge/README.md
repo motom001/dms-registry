@@ -7,8 +7,13 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
 | Fahrzeug | Pkw, Motorrad, Wohnmobil, Anhänger, E-Bike | Bezeichnung, Art, Kennzeichen (eindeutig), Fahrzeug-Identnummer, Erstzulassung, Halter (Person), Verantwortlich, Versicherung, Finanzierung/Leasing | **HU fällig** (einen Monat vorher) |
+| Hauptuntersuchung (ab 2.3.0) | Prüfbericht der HU | Fahrzeug, geprüft am, Prüfstelle, Bericht-Nr., Kilometerstand, Ergebnis, Mängel, nächste HU | **Nachprüfung bis** (nur bei erheblichen oder gefährlichen Mängeln, eine Woche vorher) |
 
 **Register:** Das **Fahrzeug** zeigt unter *Rechnungen* alle Rechnungen aus dem Paket Rechnungen und Bestellungen, bei denen *Betrifft* dieses Fahrzeug ist – Werkstatt, Reifen, Zubehör; dazu *Dokumente*, *Verknüpfungen* und *Historie*.
+
+**An- und Abmeldung** (ab 2.3.0) stehen als Felder am Fahrzeug: *Status* (zugelassen, vorübergehend abgemeldet, außer Betrieb), *Zugelassen seit*, *Abgemeldet am*, *Saisonkennzeichen* und *Zulassungsstelle*. Zulassungsbescheinigung Teil I/II und Abmeldebescheinigung legst du als Dokumente am Fahrzeug ab. Der Kaufvertrag beim Verkauf ist ein Vertrag (Paket Verträge); ein Tipp erinnert an die Kfz-Versicherung. Fahrzeuge außer Betrieb fallen aus den Ansichten.
+
+**Hauptuntersuchungen** stehen am Fahrzeug unter *Verknüpfungen*. Die nächste HU trägst du vorerst auch am Fahrzeug unter *HU fällig* ein; eine Automatisierung übernimmt das, sobald Ablago ein Feld in einer verknüpften Mappe setzen kann.
 
 **Verweise:**
 
@@ -22,15 +27,15 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 - **Pkw-Kaufvertrag** mit der Vorlage *Kaufvertrag Gebrauchtwagen*: Am Vertrag wählst du unter *Betrifft* das Fahrzeug, der Verkäufer ist der *Anbieter*, der Käufer der *Kunde*, der Preis der *Betrag* – die Vorlage setzt Kennzeichen, Fahrzeug-Identnummer, Erstzulassung, HU und Preis ein. Ein Muster ohne Gewähr, keine Rechtsberatung.
 - **Leasing** mit fester Laufzeit (Vorschlag 36 Monate), das von selbst endet.
 
-**Ansichten:** *Fahrzeuge* und darunter *HU fällig* – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist.
+**Ansichten:** *Fahrzeuge* und darunter *HU fällig* – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist – sowie *Hauptuntersuchungen*. Fahrzeuge außer Betrieb zeigen *Fahrzeuge* und *HU fällig* nicht.
 
 **Gleichbedeutende Wörter für die Suche:** *Kfz, Auto, PKW, Fahrzeug* · *HU, Hauptuntersuchung, TÜV* · *Fahrzeugbrief, Zulassungsbescheinigung Teil II* · *Fahrzeugschein, Zulassungsbescheinigung Teil I* · *Werkstattrechnung, Reparaturrechnung*. Sie stehen in Ablago unter Werkbank → Suche.
 
-**Beispiele (optional):** das Familienauto der Familie Muster mit seiner Kfz-Versicherung (ein Vertrag) und zwei Werkstattrechnungen (Rechnungen, die das Auto betreffen). Halter, Werkstatt und Ablageort „Safe“ setzt du selbst.
+**Beispiele (optional):** das Familienauto der Familie Muster mit seiner Kfz-Versicherung (ein Vertrag) und zwei Werkstattrechnungen (Rechnungen, die das Auto betreffen) sowie eine Hauptuntersuchung mit geringen Mängeln. Halter, Werkstatt und Ablageort „Safe“ setzt du selbst.
 
 ## Voraussetzungen
 
-- Ablago ab Version 0.248 (für das Paket Rechnungen und Bestellungen; Vertragsarten als Vorgaben ab 0.236)
+- Ablago ab Version 0.293.2 (Tipp mit Texten je Sprache; Rechnungen und Bestellungen ab 0.248, Vertragsarten als Vorgaben ab 0.236)
 - Pakete **Basis** ab 1.7.0, **Verträge** ab 1.1.0 und **Rechnungen und Bestellungen** ab 1.0.0 – werden bei der Installation aus dem Katalog mitinstalliert
 
 ## Rechte und Netz

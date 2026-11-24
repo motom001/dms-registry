@@ -32,6 +32,18 @@
       typ: datum
       hilfe: Nächste Hauptuntersuchung (Plakette, Monat genügt – dann den Monatsersten). Die mitgelieferte Automatisierung erinnert einen Monat vorher den Verantwortlichen.
       frist: { vorlauf: 1, einheit: monate }
+    # Ab 2.3.0 (dms-registry #227): An- und Abmeldung als Felder, kein eigener Typ. Papiere sind Dokumente am Fahrzeug.
+    - key: status
+      label: Status
+      beschriftungen: { en: { label: "Status", hilfe: "Vehicles taken out of service drop out of the views.", optionen: { "zugelassen": "registered", "vorübergehend abgemeldet": "temporarily deregistered", "außer Betrieb": "out of service (sold, scrapped)" } } }
+      typ: auswahl
+      standard: zugelassen
+      optionen: [zugelassen, vorübergehend abgemeldet, außer Betrieb]
+      hilfe: Fahrzeuge außer Betrieb (verkauft, verschrottet) fallen aus den Ansichten.
+    - { key: zugelassen_seit, label: Zugelassen seit, typ: datum, max: heute, hilfe: "Auf euch – nicht die Erstzulassung", beschriftungen: { en: { label: "Registered since", hilfe: "To you – not the first registration" } } }
+    - { key: abgemeldet_am, label: Abgemeldet am, typ: datum, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: status, op: einerVon, wert: { art: fest, wert: [vorübergehend abgemeldet, außer Betrieb] } } }] }, beschriftungen: { en: { label: "Deregistered on" } } }
+    - { key: saisonkennzeichen, label: Saisonkennzeichen, typ: text, maxLen: 10, hilfe: "Monate wie auf dem Kennzeichen, z. B. „04–10“; leer = ganzjährig", beschriftungen: { en: { label: "Seasonal plate", hilfe: "Months as on the plate, e.g. “04–10”; empty = all year" } } }
+    - { key: zulassungsstelle, label: Zulassungsstelle, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Registration office" } } }
     # Ab 1.4.0 (Ablago 0.177, #113): an wen die HU-Erinnerung geht – ein Benutzer, anders als der Halter.
     - { key: verantwortlich, label: Verantwortlich, typ: referenz, ziel: "dms:benutzer", hilfe: "Wer sich um HU und Termine kümmert – bekommt die Erinnerung. Leer: wer das Fahrzeug angelegt hat.", beschriftungen: { en: { label: "Responsible", hilfe: "Who takes care of the inspection and appointments – gets the reminder. Empty: whoever created the vehicle." } }  }
     # Ab 2.0.0 Verträge aus dem Paket Verträge (bis 1.x Versicherung bzw. Vertrag aus Haushalt; beim Umzug zeigen die
@@ -40,7 +52,7 @@
     - { key: finanzierung, label: Finanzierung/Leasing, typ: referenz, ziel: "vertraege:vertrag", verweisart: bezug, hilfe: Kredit- oder Leasingvertrag – ein Vertrag aus dem Paket Verträge, beschriftungen: { en: { label: "Financing/leasing", hilfe: "Loan or leasing contract – a contract from the Contracts package" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Fahrzeugbrief (Zulassungsbescheinigung Teil II) liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the vehicle title (registration certificate part II) is kept" } }  }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, kennzeichen, fin, erstzulassung, halter_verweis, hu_faellig, verantwortlich, versicherung, finanzierung, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, kennzeichen, fin, erstzulassung, halter_verweis, status, zugelassen_seit, abgemeldet_am, saisonkennzeichen, zulassungsstelle, hu_faellig, verantwortlich, versicherung, finanzierung, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     # Ab 2.0.0: alle Rechnungen mit „Betrifft“ = dieses Fahrzeug (Werkstatt, Reifen, Zubehör …).
     - key: werkstattrechnungen
       name: Rechnungen
@@ -51,3 +63,38 @@
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [bezeichnung, art, kennzeichen, hu_faellig]
+
+# Ab 2.3.0 (dms-registry #227): der Prüfbericht der Hauptuntersuchung. Am Fahrzeug unter „Verknüpfungen“ (kein eigenes
+# Register). „HU fällig“ am Fahrzeug zieht eine Automatisierung nach, sobald Ablago das kann (dms #1557) – bis dahin von Hand.
+- schluessel: hauptuntersuchung
+  name: Hauptuntersuchung
+  mehrzahl: Hauptuntersuchungen
+  beschreibung: Prüfbericht der HU – Ergebnis, Mängel, Nachprüfung und nächste HU.
+  beschriftungen: { en: { name: "Main inspection", mehrzahl: "Main inspections", beschreibung: "Inspection report of the German main inspection (HU) – result, defects, re-inspection and next inspection." } }
+  titelVorlage: "HU {geprueft_am} – {fahrzeug}"
+  felder:
+    - { key: fahrzeug, label: Fahrzeug, typ: referenz, ziel: fahrzeug, pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Vehicle" } } }
+    - { key: geprueft_am, label: Geprüft am, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Inspected on" } } }
+    - { key: pruefstelle, label: Prüfstelle, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: "TÜV, DEKRA, GTÜ, KÜS oder die Werkstatt", beschriftungen: { en: { label: "Testing body", hilfe: "TÜV, DEKRA, GTÜ, KÜS or the garage" } } }
+    - { key: pruefbericht_nr, label: Prüfbericht-Nr., typ: text, maxLen: 40, erkennung: { art: nummer }, beschriftungen: { en: { label: "Report no." } } }
+    - { key: kilometerstand, label: Kilometerstand, typ: zahl, min: 0, beschriftungen: { en: { label: "Mileage" } } }
+    - key: ergebnis
+      label: Ergebnis
+      beschriftungen: { en: { label: "Result", optionen: { "ohne Mängel": "no defects", "geringe Mängel": "minor defects", "erhebliche Mängel": "major defects", "gefährliche Mängel": "dangerous defects", "verkehrsunsicher": "unroadworthy" } } }
+      typ: auswahl
+      optionen: [ohne Mängel, geringe Mängel, erhebliche Mängel, gefährliche Mängel, verkehrsunsicher]
+    - key: nachpruefung_bis
+      label: Nachprüfung bis
+      beschriftungen: { en: { label: "Re-inspection by", hilfe: "With major or dangerous defects within one month. The included automation reminds you a week before." } }
+      typ: datum
+      hilfe: Bei erheblichen oder gefährlichen Mängeln innerhalb eines Monats. Die mitgelieferte Automatisierung erinnert eine Woche vorher.
+      frist: { vorlauf: 7, einheit: tage }
+      anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: ergebnis, op: einerVon, wert: { art: fest, wert: [erhebliche Mängel, gefährliche Mängel] } } }] }
+    - { key: maengel, label: Mängel, typ: langtext, hilfe: Wie im Prüfbericht, beschriftungen: { en: { label: "Defects", hilfe: "As in the report" } } }
+    - { key: naechste_hu, label: Nächste HU, typ: datum, hilfe: "Von der Plakette – der Monat genügt, dann den Monatsersten. Trag es auch am Fahrzeug unter „HU fällig“ ein.", beschriftungen: { en: { label: "Next inspection", hilfe: "From the sticker – the month is enough, then use the first. Enter it on the vehicle under “MOT due” too." } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, geprueft_am, pruefstelle, pruefbericht_nr, kilometerstand, ergebnis, nachpruefung_bis, maengel, naechste_hu], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [fahrzeug, geprueft_am, ergebnis, naechste_hu]

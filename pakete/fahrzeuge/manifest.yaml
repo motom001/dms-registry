@@ -3,7 +3,7 @@ schema: 1
 id: fahrzeuge
 name: Fahrzeuge
 herausgeber: app.ablago
-version: 2.2.1
+version: 2.3.0
 beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.
 autor:
   name: Thomas Meissner
@@ -17,18 +17,21 @@ lizenz: Apache-2.0
 # 0.177.0: mitgelieferte Automatisierungen (inhalt.automatisierungen, Ablago #712) – das Datumsfeld erinnert nicht mehr selbst
 # 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
 # 0.236.0: Vorgaben (Vertragsarten für das Paket Verträge, DMS #1038); Verträge 1.1.0 braucht 0.243.0; 0.248.0: Rechnungen und Bestellungen (dms-registry #208)
-dms: ">=0.248.0"
+# 0.293.2: Tipp mit Texten in texte/<sprache>/entdecken.json (Ablago #1307, Registry #227)
+dms: ">=0.293.2"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
     - Lege je Fahrzeug eine Mappe an und übernimm „HU fällig“ von der Plakette.
     - Leg die Kfz-Versicherung als Vertrag mit der Vertragsart Versicherung an und wähle sie am Fahrzeug aus.
     - Rechnungen von Werkstatt und Reifenhändler legst du als Rechnung ab und wählst unter „Betrifft“ das Fahrzeug – am Fahrzeug stehen sie unter „Rechnungen“.
+    - Leg den Prüfbericht der HU als Hauptuntersuchung ab und trag die nächste HU auch am Fahrzeug ein.
     - Schalte unter Automatisierungen „HU wird bald fällig“ ein, wenn du einen Monat vorher erinnert werden willst.
   en:
     - Create a folder for each vehicle and copy “MOT due” from the sticker.
     - Create the car insurance as a contract of the type insurance and select it on the vehicle.
     - File garage and tyre invoices as an invoice and choose the vehicle under “Concerns” – the vehicle lists them under “Invoices”.
+    - File the MOT report as a main inspection and enter the next date on the vehicle too.
     - Turn on the MOT reminder under automations to get a reminder one month before.
 abhaengigkeiten:
   # Ab 2.0.0 (dms-registry #163): Versicherung und Finanzierung aus Verträge, Rechnungen aus Rechnungen; Haushalt nicht mehr.
@@ -42,3 +45,4 @@ inhalt:
   beispiele: inhalt/beispiele.yaml
   wortlisten: inhalt/wortlisten.yaml
   automatisierungen: inhalt/automatisierungen.yaml
+  tipps: inhalt/tipps.yaml

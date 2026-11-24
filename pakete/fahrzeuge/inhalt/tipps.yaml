@@ -1,0 +1,6 @@
+# Tipps (Ablago ab 0.285.0, dms-registry #132); Texte unter tipp.<schluessel> in texte/<sprache>/entdecken.json.
+# Ab 2.3.0 (#227): beim Abmelden oder Verkaufen an die Versicherung denken.
+- schluessel: abmelden
+  bereich: mappen
+  typ: fahrzeug
+  ziel: mappe.feld:status
