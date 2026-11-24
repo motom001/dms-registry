@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.3.0
+
+- **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Rechnung und Bestellung (Nummer, Datum, Betrag), Lieferschein (Nummer). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.
+
 ## 1.2.2
 
 - **Betrifft** einer Rechnung kann auch ein **Behandlungsfall** aus dem Paket Gesundheit sein (dms-registry #226) – Arztrechnungen stehen dann im Verlauf des Behandlungsfalls. Ablago bietet den Typ an, sobald das Paket Gesundheit installiert ist.

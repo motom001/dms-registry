@@ -1,5 +1,9 @@
 # Änderungen
 
+## 5.3.0
+
+- **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Anschaffung (Kaufmonat), Arbeitsverhältnis (Beginn), Arbeitsmedizin (Datum), Vorsorge. Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.
+
 ## 5.2.0
 
 - **Beispiele:** Die Kontoauszüge von Familie Muster ohne „Zeitraum“ – das Feld gibt es ab Finanzen 3.0.0 nicht mehr (dms-registry #252).

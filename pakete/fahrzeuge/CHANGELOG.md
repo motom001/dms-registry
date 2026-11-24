@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.4.0
+
+- **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Hauptuntersuchung (Monat/Jahr, Ergebnis). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.
+
 ## 2.3.0
 
 - **Neuer Mappentyp „Hauptuntersuchung“** (dms-registry #227): der Prüfbericht mit Prüfstelle, Bericht-Nr., Kilometerstand, Ergebnis, Mängeln und nächster HU. „Nachprüfung bis“ erscheint nur bei erheblichen oder gefährlichen Mängeln; die Automatisierung „Nachprüfung der HU“ erinnert eine Woche vorher. Am Fahrzeug stehen die Hauptuntersuchungen unter „Verknüpfungen“. Dazu eine Ansicht und ein Beispiel zum Familienauto. „HU fällig“ am Fahrzeug trägst du vorerst noch selbst ein – eine Automatisierung übernimmt das, sobald Ablago es kann.
