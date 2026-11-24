@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.2
+
+- **Betrifft** einer Rechnung kann auch ein **Behandlungsfall** aus dem Paket Gesundheit sein (dms-registry #226) – Arztrechnungen stehen dann im Verlauf des Behandlungsfalls. Ablago bietet den Typ an, sobald das Paket Gesundheit installiert ist.
+
 ## 1.2.1
 
 - **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Rechnungen“ statt „12 × Rechnung“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.

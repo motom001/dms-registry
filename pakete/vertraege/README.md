@@ -40,7 +40,7 @@ Beispiele für den Status: „läuft – kündigen bis 14.02.2028, Ende dann 14.
 
 ## Ansichten
 
-*Verträge* mit Symbol, darunter *Kündigen bald*, *Gekündigt*, *Vertragsarten* und *Versicherungen* (Verträge mit ausgefüllter Versicherung) mit *Sachversicherungen* (Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz) und *Personenversicherungen* (Berufsunfähigkeit, Leben, Kranken-Zusatz, Reise, Unfall).
+*Verträge* mit Symbol, darunter *Kündigen bald*, *Gekündigt*, *Vertragsarten* und *Versicherungen* (Verträge mit ausgefüllter Versicherung) mit *Sachversicherungen* (Haftpflicht, Hausrat, Wohngebäude, Kfz, Rechtsschutz) und *Personenversicherungen* (Berufsunfähigkeit, Leben, Kranken- und Pflegeversicherung, Kranken-Zusatz, Reise, Unfall).
 
 ## Vertragsarten
 

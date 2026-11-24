@@ -4,3 +4,4 @@
 - haushalt-v3.0.0   # Konto und Steuerjahr ziehen ohne Umzug nach Finanzen (#212, Thomas 20.11.2026)
 - haushalt-v4.0.0   # Ausweis & Urkunde ziehen ohne Umzug nach „Ämter & Papiere“ (#225, Thomas 24.11.2026)
 - finanzen-v2.0.0   # Bescheid-Felder am Steuerjahr entfallen, Steuerbescheid ist ein Bescheid aus „Ämter & Papiere“ (#225, Thomas 24.11.2026)
+- haushalt-v5.0.0   # Gesundheit zieht ohne Umzug in das Paket Gesundheit (#226, Thomas 24.11.2026)

@@ -109,6 +109,7 @@ kuerzel: FR        # optional, nur mit symbol: höchstens 3 Großbuchstaben unte
 | `file-signature` | Verträge |
 | `file-text` | Dokumente, Office |
 | `files` | mehrere Dokumente, Ähnlichkeit |
+| `heart-pulse` | Gesundheit |
 | `house` | Haus, Wohnung |
 | `image` | Bilder, Bildformate |
 | `key-round` | Vermietung, Schlüssel |

@@ -3,8 +3,8 @@ schema: 1
 id: haushalt
 name: Haushalt
 herausgeber: app.ablago
-version: 4.0.0
-beschreibung: Die typischen Unterlagen eines Haushalts – Gesundheit, Arbeit, Vorsorge, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Konten und Steuerjahre kommen aus dem Paket Finanzen, Verträge und Versicherungen aus Verträge, Rechnungen aus Rechnungen und Bestellungen.
+version: 5.0.0
+beschreibung: Die typischen Unterlagen eines Haushalts – Arbeit, Vorsorge, Anschaffungen und mehr – mit Fristen, Ansichten und Beispielen. Konten und Steuerjahre kommen aus dem Paket Finanzen, Verträge und Versicherungen aus Verträge, Rechnungen aus Rechnungen und Bestellungen.
 autor:
   name: Thomas Meissner
   github: motom001
@@ -21,15 +21,15 @@ dms: ">=0.293.2"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
-    - Lege deine Bank, Versicherer und Ärzte einmal als Organisation an – du wählst sie danach überall aus.
-    - Leg Arztbriefe, Arbeitsverhältnisse und Anschaffungen als Mappe an; Konten im Paket Finanzen, Verträge und Versicherungen als Vertrag, Ausweise im Paket „Ämter & Papiere“.
+    - Lege deine Bank, Versicherer und Arbeitgeber einmal als Organisation an – du wählst sie danach überall aus.
+    - Leg Arbeitsverhältnisse, Vorsorge und Anschaffungen als Mappe an; Konten im Paket Finanzen, Verträge und Versicherungen als Vertrag, Ausweise im Paket „Ämter & Papiere“.
     - Trag bei der Anschaffung „Garantie bis“ ein – die mitgelieferte Automatisierung erinnert rechtzeitig, wenn du sie einschaltest.
-    - Ordne Anschaffungen, Arztkosten und Fortbildungen einem Steuerjahr zu – im Steuerjahr (Paket Finanzen) stehen sie dann unter „Belege“.
+    - Ordne Anschaffungen und Fortbildungen einem Steuerjahr zu – im Steuerjahr (Paket Finanzen) stehen sie dann unter „Belege“.
   en:
-    - Create your bank, insurers and doctors once as an organisation – then you can choose them everywhere.
-    - Create medical letters, jobs and purchases as folders; accounts in the Finances package, contracts and insurance policies as a contract, IDs in the “Authorities & papers” package.
+    - Create your bank, insurers and employers once as an organisation – then you can choose them everywhere.
+    - Create jobs, pensions and purchases as folders; accounts in the Finances package, contracts and insurance policies as a contract, IDs in the “Authorities & papers” package.
     - Enter “Warranty until” for purchases – the included automation reminds you in time once you turn it on.
-    - Assign purchases, medical costs and training to a tax year – the tax year (Finances package) then lists them under “Receipts”.
+    - Assign purchases and training to a tax year – the tax year (Finances package) then lists them under “Receipts”.
 abhaengigkeiten:
   # Ab 2.0.0 (dms-registry #163): Vertrag und Versicherung aus Verträge, Rechnungen und Kassenbons aus Rechnungen.
   basis: ">=1.10.0"

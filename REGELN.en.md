@@ -108,6 +108,7 @@ kuerzel: FR        # optional, only with symbol: at most 3 capital letters at th
 | `file-signature` | contracts |
 | `file-text` | documents, office |
 | `files` | several documents, similarity |
+| `heart-pulse` | Health |
 | `house` | house, flat |
 | `image` | images, image formats |
 | `key-round` | renting, keys |

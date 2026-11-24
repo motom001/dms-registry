@@ -24,8 +24,6 @@
   werte: { person_verweis: { beispiel: "basis:tom" }, arbeitsverhaeltnis: { beispiel: tom_arbeit }, datum: "2025-11-12", anlass: Lärm, art: Pflichtvorsorge, naechste_vorsorge: "2028-11-12" }
 - typ: vorsorge
   werte: { art: gesetzliche Rente, person_verweis: { beispiel: "basis:lena" }, vertragsnummer: "12 150378 M 007" }  # Beispielnummer mit ungültiger Prüfziffer
-- typ: gesundheit
-  werte: { praxis: { beispiel: "basis:praxis" }, person_verweis: { beispiel: "basis:jonas" }, art: Impfung, datum: "2026-02-10" }
 - typ: anschaffung
   werte: { gegenstand: Waschmaschine, kaufdatum: "2025-01-18", preis: 549, seriennummer: WM-4711-0815, garantie_bis: "2027-01-18" }
 - typ: bildung

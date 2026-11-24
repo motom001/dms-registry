@@ -1,3 +1,4 @@
+# Ab 5.0.0 (#226): „Gesundheit“ ist in das Paket Gesundheit gezogen – ohne Umzug.
 # Ab 4.0.0 (#225): „Ausweis & Urkunde“ ist in das Paket „Ämter & Papiere“ gezogen (Ausweis, Urkunde) – ohne Umzug.
 # Mappentypen des Pakets Haushalt. Schema: schema/inhalt.schema.json
 # Ablago legt sie als haushalt:<schluessel> an; angezeigt wird der Name.
@@ -37,8 +38,8 @@
 - schluessel: arbeitsmedizin
   name: Arbeitsmedizinische Vorsorge
   mehrzahl: Arbeitsmedizinische Vorsorgen
-  beschreibung: Vorsorgebescheinigung nach der ArbMedVV – Datum, Anlass, Art und nächster Termin. Eine Mappe je Anlass; Befunde gehören zu Gesundheit.
-  beschriftungen: { en: { name: "Occupational health check", mehrzahl: "Occupational health checks", beschreibung: "Certificate of an occupational health check (German ArbMedVV) – date, reason, type and next appointment. One folder per reason; findings belong under Health." } }
+  beschreibung: Vorsorgebescheinigung nach der ArbMedVV – Datum, Anlass, Art und nächster Termin. Eine Mappe je Anlass; Befunde gehören ins Paket Gesundheit.
+  beschriftungen: { en: { name: "Occupational health check", mehrzahl: "Occupational health checks", beschreibung: "Certificate of an occupational health check (German ArbMedVV) – date, reason, type and next appointment. One folder per reason; findings belong in the Health package." } }
   titelVorlage: "{anlass} – {person_verweis}"
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } } }
@@ -94,31 +95,6 @@
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
   trefferliste: [art, person_verweis, anbieter, vertragsnummer]
-
-- schluessel: gesundheit
-  name: Gesundheit
-  mehrzahl: Gesundheitsmappen
-  beschreibung: Arztbriefe, Befunde, Impfungen, Rezepte und Rechnungen.
-  beschriftungen: { en: { name: "Health", mehrzahl: "Health records", beschreibung: "Doctor’s letters, findings, vaccinations, prescriptions and invoices." } }
-  titelVorlage: "{art} – {person_verweis} – {praxis}"
-  felder:
-    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
-    - key: art
-      label: Art
-      beschriftungen: { en: { label: "Type", optionen: { "Arztbrief": "Doctor’s letter", "Befund": "Findings", "Impfung": "Vaccination", "Rezept": "Prescription", "Rechnung": "Invoice", "Sonstiges": "Other" } } }
-      typ: auswahl
-      pflicht: true
-      optionen: [Arztbrief, Befund, Impfung, Rezept, Rechnung, Sonstiges]
-    - { key: datum, label: Datum, typ: datum, beschriftungen: { en: { label: "Date" } }  }
-    - { key: praxis, label: Praxis, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: Arztpraxis, Krankenhaus oder Apotheke, beschriftungen: { en: { label: "Practice", hilfe: "Doctor’s practice" } }  }
-    - { key: betrag, label: Betrag, typ: betrag, min: 0, waehrung: EUR, hilfe: Bei Rechnungen, beschriftungen: { en: { label: "Amount", hilfe: "For invoices" } }  }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: Wenn du die Kosten in der Steuererklärung angibst, beschriftungen: { en: { label: "Tax year", hilfe: "If you claim the costs in your tax return" } }  }
-  register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, datum, praxis, betrag, steuerjahr], beschriftungen: { en: { name: "General" } }  }
-    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
-    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
-    - { key: protokoll, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }
-  trefferliste: [person_verweis, art, datum, praxis]
 
 - schluessel: anschaffung
   name: Anschaffung

@@ -1,0 +1,20 @@
+# Mitgelieferte Automatisierungen (Ablago #712). Nach der Installation aus – beim Installieren fragt Ablago,
+# welche gleich eingeschaltet werden.
+- schluessel: verordnung
+  name: Verordnung läuft ab
+  beschreibung: 7 Tage bevor eine Verordnung (z. B. Physiotherapie) abläuft.
+  wenn: { art: datum, typ: therapie, feld: verordnung_bis, vorlauf: 7, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Verordnung gültig bis {datum}: {titel}" }
+- schluessel: naechster_termin
+  name: Nächster Termin laut Pass
+  beschreibung: 14 Tage vor dem nächsten Termin, etwa der nächsten U-Untersuchung.
+  wenn: { art: datum, typ: gesundheitspass, feld: naechster_termin, vorlauf: 14, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Nächster Termin am {datum}: {titel}" }
+- schluessel: auffrischung
+  name: Impfung auffrischen
+  beschreibung: 30 Tage vor der nächsten Auffrischung.
+  wenn: { art: datum, typ: impfung, feld: naechste_auffrischung, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Auffrischung am {datum}: {titel}" }

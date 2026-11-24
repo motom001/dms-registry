@@ -1,0 +1,35 @@
+# Paket Gesundheit (dms-registry #226). Schema: schema/manifest.schema.json
+schema: 1
+id: gesundheit
+name: Gesundheit
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: 'Gesundheitsunterlagen mit ihrem Verlauf: Behandlungsfälle mit Arztbriefen, Befunden, Therapien und Krankschreibungen, dazu Medikamentenplan, Impfpass, U-Heft und Impfungen.'
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: heart-pulse
+# 0.230.0: mehrere Ziele und zielOptional (#1036); 0.228.0: Anzeige-Bedingungen; 0.248.0 wie Rechnungen und Bestellungen
+dms: ">=0.248.0"
+# „So nutzt du es“ (dms-registry #164)
+kurzanleitung:
+  de:
+    - Leg für eine Erkrankung oder einen Anlass einen Behandlungsfall an – etwa „Bandscheibenvorfall L5“.
+    - Arztbriefe, Befunde, Therapien und Krankschreibungen zeigen auf den Behandlungsfall; dort stehen sie unter „Verlauf“.
+    - Hake wichtige Befunde an – sie stehen dann unter „Wichtige Befunde“, praktisch für den nächsten Arzttermin.
+    - Impfpass, U-Heft und Impfungen erinnern an den nächsten Termin, wenn du die Automatisierungen einschaltest.
+  en:
+    - Create a medical case for an illness or reason for treatment – e.g. “Slipped disc L5”.
+    - Doctor’s letters, findings, treatments and sick notes point to the medical case; it lists them under “History of treatment”.
+    - Tick important findings – they then show up under “Important findings”, handy for the next appointment.
+    - Vaccination card, check-up booklet and vaccinations remind you of the next date once you turn on the automations.
+abhaengigkeiten:
+  basis: ">=1.10.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  beispiele: inhalt/beispiele.yaml
+  wortlisten: inhalt/wortlisten.yaml
+  automatisierungen: inhalt/automatisierungen.yaml

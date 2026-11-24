@@ -1,0 +1,203 @@
+# Mappentypen des Pakets Gesundheit (dms-registry #226). Schema: schema/inhalt.schema.json
+# Im Mittelpunkt steht der Behandlungsfall: Arztbrief & Befund, Therapie, Arbeitsunfähigkeit und Rechnung (Paket Rechnungen,
+# Betrifft = Behandlungsfall) zeigen auf ihn und stehen dort unter „Verlauf“ (das Register Verknüpfungen, passend benannt).
+# Keine weiteren Register (Thomas, 23.11.2026). Ab 1.0.0 statt „Gesundheit“ aus Haushalt – ohne Umzug.
+# Kranken- und Pflegeversicherung sind Verträge (Paket Verträge), Arztrechnungen Rechnungen.
+
+- schluessel: behandlungsfall
+  name: Behandlungsfall
+  mehrzahl: Behandlungsfälle
+  beschreibung: Eine Erkrankung oder ein Anlass – vom Verdacht bis zum Abschluss, mit allem, was dazu gehört.
+  beschriftungen: { en: { name: "Medical case", mehrzahl: "Medical cases", beschreibung: "An illness or reason for treatment – from first suspicion to closure, with everything that belongs to it." } }
+  titelVorlage: "{bezeichnung} – {person_verweis}"
+  felder:
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
+    - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: "z. B. „Bandscheibenvorfall L5“ oder „Vorsorge Zahnarzt“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Slipped disc L5” or “Dental check-up”" } } }
+    - { key: icd, label: ICD-Code, typ: text, maxLen: 10, hilfe: Steht oft auf Überweisung oder AU-Bescheinigung, z. B. M51.2, beschriftungen: { en: { label: "ICD code", hilfe: "Often on the referral or sick note, e.g. M51.2" } } }
+    - key: fachgebiet
+      label: Fachgebiet
+      beschriftungen: { en: { label: "Speciality", optionen: { "Allgemeinmedizin": "General practice", "Innere Medizin": "Internal medicine", "Kinder- und Jugendmedizin": "Paediatrics", "Frauenheilkunde": "Gynaecology", "Orthopädie": "Orthopaedics", "HNO": "ENT", "Augenheilkunde": "Ophthalmology", "Hautarzt": "Dermatology", "Neurologie": "Neurology", "Psychiatrie und Psychotherapie": "Psychiatry and psychotherapy", "Zahnmedizin": "Dentistry", "Sonstiges": "Other" } } }
+      typ: auswahl
+      optionen: [Allgemeinmedizin, Innere Medizin, Kinder- und Jugendmedizin, Frauenheilkunde, Orthopädie, HNO, Augenheilkunde, Hautarzt, Neurologie, Psychiatrie und Psychotherapie, Zahnmedizin, Sonstiges]
+    - { key: praxis, label: Behandelnde Praxis, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, beschriftungen: { en: { label: "Treating practice" } } }
+    - { key: festgestellt_am, label: Festgestellt am, typ: datum, max: heute, beschriftungen: { en: { label: "Diagnosed on" } } }
+    - key: status
+      label: Status
+      beschriftungen: { en: { label: "Status", optionen: { "in Abklärung": "being investigated", "in Behandlung": "in treatment", "chronisch": "chronic", "abgeschlossen": "closed" } } }
+      typ: auswahl
+      standard: in Abklärung
+      optionen: [in Abklärung, in Behandlung, chronisch, abgeschlossen]
+    - { key: abgeschlossen_am, label: Abgeschlossen am, typ: datum, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: status, op: einerVon, wert: { art: fest, wert: [abgeschlossen] } } }] }, beschriftungen: { en: { label: "Closed on" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, bezeichnung, icd, fachgebiet, praxis, festgestellt_am, status, abgeschlossen_am], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verlauf, art: verknuepfungen, beschriftungen: { en: { name: "History of treatment" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [bezeichnung, person_verweis, fachgebiet, status]
+
+- schluessel: befund
+  name: Arztbrief & Befund
+  mehrzahl: Arztbriefe & Befunde
+  beschreibung: Arztberichte, wichtige Befunde, Labor, Röntgen/MRT, OP-Berichte und Entlassungsbriefe.
+  beschriftungen: { en: { name: "Doctor’s letter & findings", mehrzahl: "Doctor’s letters & findings", beschreibung: "Doctor’s reports, important findings, lab results, X-ray/MRI, surgery reports and discharge letters." } }
+  titelVorlage: "{art} – {person_verweis} – {datum}"
+  felder:
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Arztbrief": "Doctor’s letter", "Befund": "Findings", "Labor": "Lab results", "Röntgen/MRT/CT": "X-ray/MRI/CT", "OP-Bericht": "Surgery report", "Entlassungsbrief": "Discharge letter", "Sonstiges": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Arztbrief, Befund, Labor, Röntgen/MRT/CT, OP-Bericht, Entlassungsbrief, Sonstiges]
+    - { key: datum, label: Datum, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Date" } } }
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
+    - { key: praxis, label: Praxis/Klinik, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, beschriftungen: { en: { label: "Practice/hospital" } } }
+    - { key: behandlungsfall, label: Behandlungsfall, typ: referenz, ziel: behandlungsfall, verweisart: bezug, beschriftungen: { en: { label: "Medical case" } } }
+    - { key: wichtig, label: Wichtig, typ: janein, standard: false, hilfe: Erscheint unter „Wichtige Befunde“ – etwa für den nächsten Arzttermin, beschriftungen: { en: { label: "Important", hilfe: "Shows up under “Important findings” – e.g. for the next appointment" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, datum, person_verweis, praxis, behandlungsfall, wichtig], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, person_verweis, datum, praxis, wichtig]
+
+- schluessel: therapie
+  name: Therapie
+  mehrzahl: Therapien
+  beschreibung: Medikament, Physiotherapie, Operation, Reha, Psychotherapie oder Hilfsmittel – mit Verordnung.
+  beschriftungen: { en: { name: "Treatment", mehrzahl: "Treatments", beschreibung: "Medication, physiotherapy, surgery, rehab, psychotherapy or medical aid – with prescription." } }
+  titelVorlage: "{art} – {bezeichnung}"
+  felder:
+    - { key: behandlungsfall, label: Behandlungsfall, typ: referenz, ziel: behandlungsfall, verweisart: bezug, beschriftungen: { en: { label: "Medical case" } } }
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Medikament": "Medication", "Physiotherapie": "Physiotherapy", "Operation": "Surgery", "Reha": "Rehab", "Psychotherapie": "Psychotherapy", "Hilfsmittel": "Medical aid", "Sonstiges": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Medikament, Physiotherapie, Operation, Reha, Psychotherapie, Hilfsmittel, Sonstiges]
+    - { key: bezeichnung, label: Bezeichnung, typ: text, maxLen: 120, hilfe: "z. B. „Krankengymnastik 6 ×“ oder der Name des Medikaments", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Physio 6 ×” or the name of the medicine" } } }
+    - { key: verordnet_von, label: Verordnet von, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, beschriftungen: { en: { label: "Prescribed by" } } }
+    - { key: beginn, label: Von, typ: datum, beschriftungen: { en: { label: "From" } } }
+    - { key: ende, label: Bis, typ: datum, beschriftungen: { en: { label: "Until" } } }
+    - { key: einheiten, label: Einheiten, typ: zahl, min: 0, hilfe: z. B. Anzahl der Behandlungen, beschriftungen: { en: { label: "Units", hilfe: "e.g. number of sessions" } } }
+    - key: verordnung_bis
+      label: Verordnung gültig bis
+      beschriftungen: { en: { label: "Prescription valid until", hilfe: "The included automation reminds you 7 days before." } }
+      typ: datum
+      hilfe: Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
+      frist: { vorlauf: 7, einheit: tage }
+    - key: status
+      label: Status
+      beschriftungen: { en: { label: "Status", optionen: { "geplant": "planned", "läuft": "ongoing", "abgeschlossen": "completed", "abgebrochen": "stopped" } } }
+      typ: auswahl
+      standard: geplant
+      optionen: [geplant, läuft, abgeschlossen, abgebrochen]
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [behandlungsfall, art, bezeichnung, verordnet_von, beginn, ende, einheiten, verordnung_bis, status], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, bezeichnung, behandlungsfall, beginn, status]
+
+- schluessel: arbeitsunfaehigkeit
+  name: Arbeitsunfähigkeit
+  mehrzahl: Arbeitsunfähigkeiten
+  beschreibung: Die AU-Bescheinigung – seit der eAU die Ausfertigung für dich.
+  beschriftungen: { en: { name: "Sick note", mehrzahl: "Sick notes", beschreibung: "The certificate of incapacity for work – since the electronic version, the copy for you." } }
+  titelVorlage: "AU {beginn} – {person_verweis}"
+  felder:
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
+    - { key: beginn, label: Von, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "From" } } }
+    - { key: ende, label: Bis, typ: datum, beschriftungen: { en: { label: "Until" } } }
+    - key: bescheinigung
+      label: Bescheinigung
+      beschriftungen: { en: { label: "Certificate", optionen: { "Erstbescheinigung": "first certificate", "Folgebescheinigung": "follow-up certificate" } } }
+      typ: auswahl
+      optionen: [Erstbescheinigung, Folgebescheinigung]
+    - { key: arbeitsunfall, label: Arbeitsunfall, typ: janein, standard: false, beschriftungen: { en: { label: "Accident at work" } } }
+    - { key: arzt, label: Ärztin/Arzt, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, beschriftungen: { en: { label: "Doctor" } } }
+    - { key: behandlungsfall, label: Behandlungsfall, typ: referenz, ziel: behandlungsfall, verweisart: bezug, beschriftungen: { en: { label: "Medical case" } } }
+    - { key: arbeitsverhaeltnis, label: Arbeitsverhältnis, typ: referenz, zielOptional: ["haushalt:arbeitsverhaeltnis"], verweisart: bezug, hilfe: Wenn das Paket Haushalt installiert ist, beschriftungen: { en: { label: "Employment", hilfe: "If the Household package is installed" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, beginn, ende, bescheinigung, arbeitsunfall, arzt, behandlungsfall, arbeitsverhaeltnis], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [person_verweis, beginn, ende, bescheinigung]
+
+- schluessel: medikamentenplan
+  name: Medikamentenplan
+  mehrzahl: Medikamentenpläne
+  beschreibung: Der Medikamentenplan einer Person. Ein neuer Plan zeigt unter „Ersetzt“ auf den vorigen – so ist klar, welcher gilt.
+  beschriftungen: { en: { name: "Medication plan", mehrzahl: "Medication plans", beschreibung: "A person’s medication plan. A new plan points to the previous one under “Replaces” – so it’s clear which one applies." } }
+  titelVorlage: "Medikamentenplan {person_verweis} – {stand_vom}"
+  felder:
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
+    - { key: stand_vom, label: Stand vom, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "As of" } } }
+    - { key: ausgestellt_von, label: Ausgestellt von, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, beschriftungen: { en: { label: "Issued by" } } }
+    - { key: ersetzt, label: Ersetzt, typ: referenz, ziel: medikamentenplan, verweisart: bezug, hilfe: Der vorige Plan – er gilt dann nicht mehr, beschriftungen: { en: { label: "Replaces", hilfe: "The previous plan – it no longer applies" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, stand_vom, ausgestellt_von, ersetzt], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [person_verweis, stand_vom, ausgestellt_von]
+
+- schluessel: gesundheitspass
+  name: Gesundheitspass
+  mehrzahl: Gesundheitspässe
+  beschreibung: Impfpass, U-Heft, Mutterpass, Allergie-, Röntgen-, Implantat- oder Brillenpass, Blutspende-, Organspende- und Notfallausweis, Zahn-Bonusheft.
+  beschriftungen: { en: { name: "Health card", mehrzahl: "Health cards", beschreibung: "Vaccination card, child check-up booklet, maternity record, allergy, X-ray, implant or glasses pass, blood or organ donor card, emergency card, dental bonus booklet." } }
+  titelVorlage: "{art} – {person_verweis}"
+  felder:
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
+    - key: art
+      label: Art
+      beschriftungen: { en: { label: "Type", optionen: { "Impfpass": "Vaccination card", "U-Heft": "Child check-up booklet", "Mutterpass": "Maternity record", "Allergiepass": "Allergy pass", "Röntgenpass": "X-ray pass", "Implantatpass": "Implant pass", "Brillenpass": "Glasses pass", "Blutspendeausweis": "Blood donor card", "Organspendeausweis": "Organ donor card", "Notfallausweis": "Emergency card", "Zahn-Bonusheft": "Dental bonus booklet", "Sonstiges": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Impfpass, U-Heft, Mutterpass, Allergiepass, Röntgenpass, Implantatpass, Brillenpass, Blutspendeausweis, Organspendeausweis, Notfallausweis, Zahn-Bonusheft, Sonstiges]
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, beschriftungen: { en: { label: "Issued on" } } }
+    - { key: letzter_eintrag_am, label: Letzter Eintrag am, typ: datum, max: heute, beschriftungen: { en: { label: "Last entry on" } } }
+    - key: naechster_termin
+      label: Nächster Termin
+      beschriftungen: { en: { label: "Next appointment", hilfe: "e.g. the next check-up in the booklet. The included automation reminds you 14 days before." } }
+      typ: datum
+      hilfe: z. B. die nächste U-Untersuchung. Die mitgelieferte Automatisierung erinnert 14 Tage vorher.
+      frist: { vorlauf: 14, einheit: tage }
+    - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo das Heft liegt – beim Arzttermin brauchst du es, beschriftungen: { en: { label: "Where the original is", hilfe: "Where the booklet is – you need it at the appointment" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, ausgestellt_am, letzter_eintrag_am, naechster_termin, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, person_verweis, naechster_termin, verbleib_original]
+
+- schluessel: impfung
+  name: Impfung
+  mehrzahl: Impfungen
+  beschreibung: Eine einzelne Impfung – mit Impfstoff und nächster Auffrischung.
+  beschriftungen: { en: { name: "Vaccination", mehrzahl: "Vaccinations", beschreibung: "A single vaccination – with vaccine and next booster." } }
+  titelVorlage: "{gegen} – {person_verweis} – {datum}"
+  felder:
+    - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
+    - key: gegen
+      label: Gegen
+      beschriftungen: { en: { label: "Against", optionen: { "Tetanus": "Tetanus", "Diphtherie": "Diphtheria", "Keuchhusten": "Whooping cough", "Polio": "Polio", "Masern": "Measles", "Mumps": "Mumps", "Röteln": "Rubella", "Windpocken": "Chickenpox", "Hepatitis A": "Hepatitis A", "Hepatitis B": "Hepatitis B", "FSME": "TBE", "Grippe": "Flu", "COVID-19": "COVID-19", "Pneumokokken": "Pneumococcus", "HPV": "HPV", "Gürtelrose": "Shingles", "Sonstige": "Other" } } }
+      typ: auswahl
+      pflicht: true
+      optionen: [Tetanus, Diphtherie, Keuchhusten, Polio, Masern, Mumps, Röteln, Windpocken, Hepatitis A, Hepatitis B, FSME, Grippe, COVID-19, Pneumokokken, HPV, Gürtelrose, Sonstige]
+    - { key: datum, label: Datum, typ: datum, max: heute, beschriftungen: { en: { label: "Date" } } }
+    - { key: impfstoff, label: Impfstoff, typ: text, maxLen: 80, hilfe: Wie im Impfpass, beschriftungen: { en: { label: "Vaccine", hilfe: "As in the vaccination card" } } }
+    - key: naechste_auffrischung
+      label: Nächste Auffrischung
+      beschriftungen: { en: { label: "Next booster", hilfe: "The included automation reminds you 30 days before." } }
+      typ: datum
+      hilfe: Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
+      frist: { vorlauf: 30, einheit: tage }
+    - { key: gesundheitspass, label: Eingetragen in, typ: referenz, ziel: gesundheitspass, verweisart: bezug, hilfe: Der Impfpass, beschriftungen: { en: { label: "Recorded in", hilfe: "The vaccination card" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, gegen, datum, impfstoff, naechste_auffrischung, gesundheitspass], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [gegen, person_verweis, datum, naechste_auffrischung]

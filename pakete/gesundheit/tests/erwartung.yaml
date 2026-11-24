@@ -1,0 +1,6 @@
+# Was nach der Installation in Ablago vorhanden sein muss (pruefen.py vergleicht das mit inhalt/).
+mappentypen: [behandlungsfall, befund, therapie, arbeitsunfaehigkeit, medikamentenplan, gesundheitspass, impfung]
+sichten: [gesundheit, behandlungsfaelle, befunde, wichtige_befunde, therapien, arbeitsunfaehigkeiten, medikamentenplaene, gesundheitspaesse, impfungen]
+beispiele: 6
+wortlisten: 4
+automatisierungen: 3
