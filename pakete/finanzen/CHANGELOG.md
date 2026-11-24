@@ -3,6 +3,7 @@
 ## 2.2.0
 
 - **Neuer Typ Steuernachweis** (dms-registry #250): Jahresbescheinigungen für die Steuer, die nicht von der Bank kommen – Lohnsteuerbescheinigung, Beitragsbescheinigung, Altersvorsorge, Spendenquittung, haushaltsnahe Dienstleistungen, Kinderbetreuung. Mit Steuerjahr (Pflicht, steht dann unter „Belege“), Person, „Ausgestellt von“, „Betrifft“ (Arbeitsverhältnis, Vertrag, Vorsorge, Wohnung) und Betrag – bei der Lohnsteuerbescheinigung „Bruttoarbeitslohn“. Neue Ansicht *Steuernachweise*.
+- **Art am Kontoauszug ist kein Pflichtfeld mehr** (Vorgabe bleibt „Kontoauszug“): Mit 2.1.0 ließen sich Pakete, deren Beispiele einen Kontoauszug ohne Art mitbringen (Haushalt 5.0.0), nicht mehr installieren.
 - **Suchwörter:** Entgeltaufstellung/Gebührenübersicht, Jahressteuerbescheinigung/Steuerbescheinigung, Spendenquittung/Zuwendungsbestätigung, Beitragsbescheinigung/Beitragsnachweis.
 
 ## 2.1.0

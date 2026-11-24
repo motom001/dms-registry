@@ -61,7 +61,6 @@
     - key: art
       label: Art
       typ: auswahl
-      pflicht: true
       standard: Kontoauszug
       optionen: [Kontoauszug, Entgeltaufstellung, Jahressteuerbescheinigung, Zinsbescheinigung, Saldenbestätigung]
       hilfe: Entgeltaufstellung = Übersicht der Kontogebühren eines Jahres
