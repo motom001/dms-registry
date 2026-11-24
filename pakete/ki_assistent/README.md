@@ -27,7 +27,7 @@ Den Knopf **Aus Dokument ausfüllen** gibt es in jeder Mappe. Normalerweise fül
 4. Das Paket **prüft die Antwort**: Felder, die es nicht gibt, und Werte, die nicht passen (kein Datum, nicht in der Auswahl, keine Zahl …), fallen weg. Ablago prüft danach noch einmal jeden Wert.
    Ab 1.3.0 nennt der Dienst je Feld die **Fundstelle** – den wörtlichen Ausschnitt aus dem Text. Ablago sucht ihn im Dokument und zeichnet dort einen farbigen Rahmen; steht er nicht im Dokument, kommt der Wert ohne Rahmen. Die Feldbeschreibung hat dafür je Feld eine kurze Formaterklärung („Datum als JJJJ-MM-TT.“) vor Hilfetext und Erkennungshinweis.
 5. Die Werte erscheinen nur als **Vorschlag** in der Mappe; gespeichert wird erst, wenn du speicherst.
-6. **Antwortet der Dienst nicht** (nicht erreichbar, nach der Zeitgrenze, höchstens 60 Sekunden) oder **unbrauchbar**, übernimmt die eingebaute Erkennung – du siehst einen Hinweis. Antwortet er, aber ohne einen passenden Wert oder gar nicht mit JSON, heißt der Hinweis „KI-Assistent hat nichts Brauchbares geliefert“ (die genaue Ursache steht im Protokoll des Pakets).
+6. **Antwortet der Dienst nicht** (nicht erreichbar oder nach der Zeitgrenze von 10–55 Sekunden) oder **unbrauchbar**, übernimmt die eingebaute Erkennung – du siehst einen Hinweis. Antwortet er, aber ohne einen passenden Wert oder gar nicht mit JSON, heißt der Hinweis „KI-Assistent hat nichts Brauchbares geliefert“ (die genaue Ursache steht im Protokoll des Pakets).
 
 **Einrichten:** *Werkbank → Pakete → KI-Assistent → Einstellungen* → Abschnitt **Aus Dokument ausfüllen** → *Als Standard für alle Mappentypen nutzen*, oder in der *Erkennung* eines einzelnen Mappentyps. Weil das Paket den Text an die Dienst-Adresse schickt, fragt Ablago **„Text der Dokumente an einen Dienst schicken?“** – erst mit *Bestätigen und wählen* gilt die Wahl. In den Einstellungen des Pakets kannst du das ausschalten (**Für „Aus Dokument ausfüllen“ nutzen**) und die **Zeitgrenze** einstellen (Standard 50 Sekunden).
 
@@ -122,7 +122,7 @@ Ohne eigenen KI-Rechner geht es auch mit **Claude** von Anthropic. Dann verlasse
    - **Kontextlänge (Tokens)**, Standard 8 192 – so groß wie beim Dienst, nie größer (siehe *Kontextlänge* oben).
    - Abschnitt **Was die KI lesen darf** (ab 1.4.0 an dieser Stelle): welche Mappentypen der Dienst bekommt. Neue Mappentypen sind gesperrt, bis du sie zulässt; die Auswahl gilt für alle KI-Pakete.
    - Abschnitt **Frag deine Ablage**: Höchstmenge je Frage (Standard 8 Ausschnitte, zusammen 6 000 Zeichen).
-   - Abschnitt **Aus Dokument ausfüllen**: als Standard für alle Mappentypen, an/aus, **Zeitgrenze** (Standard 50 Sekunden) und **Eigene Hinweise an den Dienst** (höchstens 1 000 Zeichen).
+   - Abschnitt **Aus Dokument ausfüllen**: als Standard für alle Mappentypen, an/aus, **Zeitgrenze** (10–55 Sekunden, Standard 50) und **Eigene Hinweise an den Dienst** (höchstens 1 000 Zeichen).
    - Abschnitt **Wohin gehört das?** (ab 1.3.0): an/aus und **Eigene Hinweise an den Dienst**.
 3. **Speichern** – Ablago fragt „Daten an diese Adresse schicken?“. Mit **Adresse bestätigen und speichern** gilt die Adresse; erst dann darf das Paket dorthin.
 4. **Verbindung testen**: Das Paket fragt den Dienst nach seinen Modellen und stellt eine kurze Probefrage. Die Meldung sagt, ob der Dienst erreichbar ist, ob das Modell da ist (sonst: welche es gibt) und wie lange eine Antwort dauerte.

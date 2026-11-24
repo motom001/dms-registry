@@ -4,7 +4,7 @@
 schema: 1
 id: ki_assistent
 name: KI-Assistent
-version: 1.5.0
+version: 1.5.1
 beschreibung: Beantwortet Fragen an deine Ablage, füllt Felder aus Dokumenten aus und schlägt vor, wohin neue Post gehört. Dafür brauchst du einen KI-Dienst, den du selbst wählst, z. B. Ollama auf deinem Heimserver – das Paket stellt nur die Verbindung her.
 autor:
   name: Thomas Meissner
@@ -99,12 +99,12 @@ code:
           standard: true
           hilfe: Aus heißt, das Paket lehnt jede Anfrage ab und Ablago nimmt die eingebaute Erkennung – auch wenn es oben als Standard oder in der Erkennung eines Mappentyps gewählt ist.
         - schluessel: erkennen_sekunden
-          name: Zeitgrenze (Sekunden)
+          name: Zeitgrenze (10–55 Sekunden)
           typ: zahl
           min: 10
           max: 55
           standard: 50
-          hilfe: So lange wartet das Paket auf die Antwort des Dienstes. Ablago wartet höchstens 60 Sekunden und nimmt danach die eingebaute Erkennung. Für „Wohin gehört das?“ gilt dieselbe Zeit, höchstens 40 Sekunden.
+          hilfe: So lange wartet das Paket auf den Dienst, danach nimmt Ablago die eingebaute Erkennung. Gilt auch für „Wohin gehört das?“ – dort wartet Ablago von sich aus etwas kürzer.
         - schluessel: hinweis_erkennen
           name: Eigene Hinweise an den Dienst
           typ: mehrzeilig
