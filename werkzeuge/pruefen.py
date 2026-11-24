@@ -1576,6 +1576,21 @@ def entdecken_hinweise(rundgaenge, tipps, texte: dict[str, dict[str, str]]) -> l
 SPRACHKENNUNG = re.compile(r'^[a-z]{2,3}(-[A-Z]{2})?$')
 
 
+# Symbole für Ansichten (dms #428, #1519; Registry #230): Kopie der Namen aus Ablagos shared/src/ansichtsymbole.ts.
+# Ablago zeigt einen unbekannten Namen ohne Symbol – ein Tippfehler fiele sonst nicht auf.
+ANSICHTSYMBOLE_DATEI = WURZEL / 'werkzeuge' / 'ansichtsymbole.txt'
+
+
+def ansichtsymbole() -> set[str]:
+    return {z.strip() for z in ANSICHTSYMBOLE_DATEI.read_text(encoding='utf-8').splitlines() if z.strip() and not z.startswith('#')}
+
+
+def pruefe_sichtsymbole(sichten: list) -> list[str]:
+    erlaubt = ansichtsymbole()
+    return [f'sichten/{v.get("schluessel")}: Symbol „{v["symbol"]}“ gibt es in Ablago nicht (Liste: werkzeuge/ansichtsymbole.txt)'
+            for v in sichten if isinstance(v, dict) and isinstance(v.get('symbol'), str) and v['symbol'] not in erlaubt]
+
+
 def pruefe_beschriftungen(typen: list, sichten: list) -> list[str]:
     """Schlüssel unter optionen gibt es im Feld (fester Wert); optionen nur bei Auswahlfeldern; Deutsch nur für optionen."""
     fehler: list[str] = []
@@ -2499,6 +2514,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
 
     fehler += pruefe_erkennung(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
     fehler += pruefe_beschriftungen(geladen.get('mappentypen', []) or [], geladen.get('sichten', []) or [])
+    fehler += pruefe_sichtsymbole(geladen.get('sichten', []) or [])
     fehler += pruefe_aus_text(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
     fehler += pruefe_verweise(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
     fehler += pruefe_formate(geladen.get('mappentypen', []) or [], geladen.get('beispiele', []) or [], str(m.get('dms', '')))
