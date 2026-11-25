@@ -1,5 +1,9 @@
 # Änderungen
 
+## 3.2.0
+
+- **Steuerjahr aus dem Datum** (dms-registry #259, #261): Am Kontoauszug schlägt Ablago das Steuerjahr aus „Bis“ vor, am Steuernachweis aus dem neuen Zeitraum „Zeitraum von/bis“ (z. B. Dauer des Dienstverhältnisses auf der Lohnsteuerbescheinigung). Gibt es das Steuerjahr noch nicht, bietet Ablago an, es anzulegen. Braucht Ablago ab 0.321.0.
+
 ## 3.1.0
 
 - **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Konto, Freistellungsauftrag, Kontoauszug (Zeitraum „01/2026–03/2026“). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.

@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.10.0
+
+- **Zeitraum am Vertrag** (dms-registry #261): Steht „vom … bis …“ im Vertrag, landen die Daten in „Beginn“ und „Vertragsende“. Braucht Ablago ab 0.321.0.
+
 ## 1.9.0
 
 - **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Vertrag: Vertragsart – Bezeichnung – Vertragspartner. Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.

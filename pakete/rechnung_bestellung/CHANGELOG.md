@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.4.0
+
+- **Steuerjahr aus „Bezahlt am“** (dms-registry #261): Für die Steuer zählt der Zahlungstag; Ablago schlägt das Steuerjahr daraus vor. „Bezahlt am“ wird aus dem Dokument gelesen. **Titel ohne Aussteller** (#258): „Rechnung: 03.04.2026 – 214,00 €“ statt „: 03.04.2026 …“, ebenso Bestellung und Lieferschein. Braucht Ablago ab 0.321.0.
+
 ## 1.3.0
 
 - **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Rechnung und Bestellung (Nummer, Datum, Betrag), Lieferschein (Nummer). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.

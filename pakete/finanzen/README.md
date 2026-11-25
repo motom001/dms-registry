@@ -10,7 +10,7 @@ Das Paket **Finanzen** bringt Konten, Kontoauszüge, Freistellungsaufträge und 
 | Kontoauszug | Auszug oder Jahresbeleg zu einem Konto | Konto, Art, Auszugsnummer, von, bis, Steuerjahr | – |
 | Freistellungsauftrag | steuerfreie Kapitalerträge je Bank und Person | Bank, Betrag, Jahr, Person | – |
 | Steuerjahr | die Steuern eines Jahres | Jahr (eindeutig), abgegeben am, Steuerberater | – |
-| Steuernachweis | Jahresbescheinigung für die Steuer, die nicht von der Bank kommt | Art, Steuerjahr (Pflicht), Person, ausgestellt von, betrifft, Betrag bzw. Bruttoarbeitslohn, ausgestellt am | – |
+| Steuernachweis | Jahresbescheinigung für die Steuer, die nicht von der Bank kommt | Art, Steuerjahr (Pflicht, Vorschlag aus „Zeitraum bis“), Person, ausgestellt von, betrifft, Zeitraum von/bis, Betrag bzw. Bruttoarbeitslohn, ausgestellt am | – |
 
 **Konto:** Der Titel lautet „{Bank} von {Inhaber} ({Art})“, z. B. „Sparkasse Musterstadt von Lena Muster, Tom Muster (Girokonto)“. Bei PayPal und ähnlichen Diensten ist der Dienst die Bank, als Art wählst du das Konto oder die Karte dahinter. Unter *Kontoauszüge* stehen die Auszüge des Kontos, unter **Was läuft über dieses Konto?** alles, was darauf zeigt: Verträge mit *Abbuchung von Konto* (Paket Verträge), Rechnungen mit *Konto* (Paket Rechnungen und Bestellungen), Mietverträge mit *Kautionskonto* und die Auszüge. Das hilft beim Kontowechsel.
 

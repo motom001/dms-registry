@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.0
+
+- **Zeitraum am Bescheid** (dms-registry #261): Steht „gilt vom … bis …“ im Bescheid, landen die Daten in „Gilt ab“ und „Gilt bis“. Braucht Ablago ab 0.321.0.
+
 ## 1.1.0
 
 - **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Antrag (mit Behörde statt „an“), Bescheid, Widerspruch. Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.

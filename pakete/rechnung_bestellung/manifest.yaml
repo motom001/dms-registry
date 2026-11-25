@@ -6,7 +6,7 @@ schema: 1
 id: rechnung_bestellung
 name: Rechnungen und Bestellungen
 herausgeber: app.ablago
-version: 1.3.0
+version: 1.4.0
 beschreibung: Rechnungen, Quittungen, Gutschriften und Bestellungen – eingehend und ausgehend, mit Lieferscheinen und Positionen. Das Paket zeigt, was offen, bezahlt oder überfällig ist, teilt die Umsatzsteuer nach Sätzen auf und meldet, wenn die Summen nicht zum Betrag passen.
 autor:
   name: Thomas Meissner
@@ -16,7 +16,7 @@ kategorien: [vorlagen]
 symbol: receipt-text
 # 0.248.0 wie Fahrzeuge, Haushalt und Vermietung; darin enthalten Aktionen im Menü „Mappe“ (0.245.0, #1039), Bedingungen auf zielOptional-Ziele (0.245.3, #1122), eigene Organisation (0.238.0),
 # Vorgaben und Vorbelegen (0.234.0/0.236.0), gehört immer zu (0.235.0), Tabelle (0.232.0), berechnete Felder (0.231.0)
-dms: ">=0.248.0"
+dms: ">=0.321.0"
 kurzanleitung:
   de:
     - Lege eine Rechnung an oder übernimm sie aus der Post – von wem, an wen, wie viel, wann fällig.

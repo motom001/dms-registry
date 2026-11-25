@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.3.0
+
+- **Zeitraum und Steuerjahr** an der Nebenkostenabrechnung (dms-registry #261): „Zeitraum von/bis“ werden aus dem Dokument gelesen („vom … bis …“), das Steuerjahr kommt als Vorschlag aus „Zeitraum bis“. Braucht Ablago ab 0.321.0.
+
 ## 2.2.1
 
 - **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Wohnungen“ statt „12 × Wohnung“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.

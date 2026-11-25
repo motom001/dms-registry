@@ -8,7 +8,7 @@
   mehrzahl: Rechnungen
   beschreibung: Rechnung, Quittung, Kassenbon, Gutschrift oder Erstattung – eingehend oder ausgehend. Eine Gutschrift trägst du mit Minus ein.
   beschriftungen: { en: { name: "Invoice", mehrzahl: "Invoices", beschreibung: "Invoice, receipt, till receipt, credit note or refund – incoming or outgoing. Enter a credit note with a minus sign." } }
-  titelVorlage: "{von|kurz:25} {rechnungsnummer}: {datum} – {betrag}"
+  titelVorlage: "{von|kurz:25|sonst:Rechnung} {rechnungsnummer}: {datum} – {betrag}"
   felder:
     # Oben, immer sichtbar (#208): je Reihe Rechnungssteller · Rechnungsempfänger · Status, Betrag · Rechnungsnummer ·
     # Rechnungsdatum, Fällig am · Bezahlt am · Bezahlt per.
@@ -20,7 +20,7 @@
     - { key: rechnungsnummer, label: Rechnungsnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Invoice number" } } }
     - { key: datum, label: Rechnungsdatum, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Invoice date" } } }
     - { key: faellig_am, label: Fällig am, typ: datum, beschriftungen: { en: { label: "Due on" } } }
-    - { key: bezahlt_am, label: Bezahlt am, typ: datum, beschriftungen: { en: { label: "Paid on" } } }
+    - { key: bezahlt_am, label: Bezahlt am, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Paid on" } } }
     - key: zahlweise
       label: Bezahlt per
       beschriftungen: { en: { label: "Paid by", optionen: { "Überweisung": "bank transfer", "Lastschrift": "direct debit", "Karte": "card", "bar": "cash", "PayPal und Co.": "PayPal etc.", "Rechnung": "on account" } } }
@@ -41,7 +41,7 @@
       hilfe: Wofür die Rechnung ist – Fahrzeug, Wohnung, Anschaffung, Behandlungsfall oder Vertrag
     # Vertrag oder Bestellung, mehrfach und gemischt – z. B. ein Vertrag, den eine Bestellung erweitert (#208, #211).
     - { key: gehoert_zu, label: Gehört zu Vertrag / Bestellung, typ: referenz, ziel: ["vertraege:vertrag", bestellung], mehrfach: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to contract / order" } } }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: Wenn du die Kosten absetzen willst, beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs" } } }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", ausDatum: { datumFeld: bezahlt_am, zielFeld: jahr }, verweisart: bezug, hilfe: Wenn du die Kosten absetzen willst, beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs" } } }
     # Fahrzeug – wenn „betrifft“ ein Fahrzeug ist
     - { key: kilometerstand, label: Kilometerstand, typ: zahl, beschriftungen: { en: { label: "Mileage" } } }
     - { key: arbeiten, label: Arbeiten, typ: langtext, hilfe: z. B. Inspektion, Bremsen vorne, beschriftungen: { en: { label: "Work done", hilfe: "e.g. service, front brakes" } } }
@@ -147,7 +147,7 @@
   beschreibung: Ein Einkauf von der Bestellung bis zur Lieferung – online oder im Betrieb. Bestätigungen hängen als Dokumente daran, Rechnung und Lieferschein zeigen darauf.
   beschriftungen: { en: { name: "Order", mehrzahl: "Orders", beschreibung: "A purchase from order to delivery – online or for the business. Confirmations are attached as documents; invoice and delivery note point to it." } }
   # dms-registry #211: kein Vertrag (der ist für laufende Verträge mit Laufzeit und Kündigung), sondern ein einmaliger Vorgang.
-  titelVorlage: "{von|kurz:25} {bestellnummer}: {datum} – {betrag}"
+  titelVorlage: "{von|kurz:25|sonst:Bestellung} {bestellnummer}: {datum} – {betrag}"
   felder:
     - { key: von, label: Händler oder Lieferant, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, erkennung: { art: verweis }, beschriftungen: { en: { label: "Shop or supplier" } } }
     - { key: bestellnummer, label: Bestellnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, hilfe: Steht meist auf Bestätigung, Lieferschein und Rechnung, beschriftungen: { en: { label: "Order number", hilfe: "Usually on the confirmation, delivery note and invoice" } } }
@@ -182,7 +182,7 @@
   mehrzahl: Lieferscheine
   beschreibung: Lieferschein zu einer Bestellung – was geliefert wurde, und ob es vollständig war.
   beschriftungen: { en: { name: "Delivery note", mehrzahl: "Delivery notes", beschreibung: "Delivery note for an order – what was delivered and whether it was complete." } }
-  titelVorlage: "{von|kurz:25} {lieferscheinnummer}: {datum}"
+  titelVorlage: "{von|kurz:25|sonst:Lieferschein} {lieferscheinnummer}: {datum}"
   felder:
     - { key: von, label: Lieferant, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, erkennung: { art: verweis }, beschriftungen: { en: { label: "Supplier" } } }
     - { key: an, label: Empfänger, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, hilfe: Leer heißt wir, beschriftungen: { en: { label: "Recipient", hilfe: "Empty means us" } } }

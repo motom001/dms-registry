@@ -3,7 +3,7 @@ schema: 1
 id: vermietung
 name: Vermietung
 herausgeber: app.ablago
-version: 2.2.1
+version: 2.3.0
 beschreibung: Mietobjekte, Wohnungen und Nebenkostenabrechnungen – für Vermieter mit wenigen Wohnungen. Mietverträge und Ausgaben kommen aus den Paketen Verträge sowie Rechnungen und Bestellungen, mit Fristen für Abrechnung, Mieterhöhung und Kündigung.
 autor:
   name: Thomas Meissner
@@ -17,7 +17,7 @@ lizenz: Apache-2.0
 # 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
 # 0.243.0: Verträge 1.1.0 und Rechnungen 1.1.0 (Umbau, DMS #1041) – Mietvertrag und Ausgabe ziehen dorthin (dms-registry #163);
 # 0.248.0: Rechnungen und Bestellungen (dms-registry #208)
-dms: ">=0.248.0"
+dms: ">=0.321.0"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:
