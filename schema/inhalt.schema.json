@@ -84,7 +84,16 @@
           "type": "object", "additionalProperties": false,
           "properties": {
             "art": { "enum": ["name", "vorname", "nachname", "funktion", "nummer", "iban", "ustid", "email", "internet", "telefon", "mobil", "fax", "strasse", "hausnummer", "plz", "ort", "datum", "betrag", "verweis", "auswahl"] },
-            "hinweis": { "type": "string", "maxLength": 300 }
+            "hinweis": { "type": "string", "maxLength": 300 },
+            "endeVon": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "description": "Nur am Datumsfeld für das Ende eines Zeitraums (DMS #1646, ab 0.321.0): Kennung des Datumsfelds für den Beginn. Steht im Dokument „vom … bis …“, bekommt der Beginn das erste Datum und dieses Feld das zweite. Fehlt = aus Kennung und Bezeichnung (beginn/ende, von/bis …)." }
+          }
+        },
+        "ausDatum": {
+          "description": "Nur an Verweisfeldern (DMS #1648, ab 0.321.0): Mappe des Zieltyps aus einem Datum dieser Mappe vorschlagen, z. B. Steuerjahr aus „Bis“. datumFeld: Datumsfeld dieses Typs; zielFeld: Feld des Zieltyps mit dem Jahr (Text oder Zahl) oder ein Datumsfeld (gleiches Jahr).",
+          "type": "object", "additionalProperties": false, "required": ["datumFeld", "zielFeld"],
+          "properties": {
+            "datumFeld": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+            "zielFeld": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
           }
         },
         "negativ": { "type": "boolean", "description": "Nur bei typ betrag (DMS #1035): auch negative Beträge (Gutschrift, Erstattung)" },

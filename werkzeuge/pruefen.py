@@ -455,6 +455,52 @@ def pruefe_erkennung(typen: list, dms_bereich: str) -> list[str]:
     return fehler
 
 
+
+# Zeitraum und Ableiten aus einem Datum (DMS #1646/#1648, ab 0.321.0): erkennung.endeVon am Datumsfeld für das Ende
+# nennt das Datumsfeld für den Beginn; ausDatum am Verweisfeld nennt ein Datumsfeld dieses Typs und das Jahr-/Datumsfeld
+# des Zieltyps (bei eigenen Typen geprüft).
+DMS_ZEITRAUM_AB = (0, 321, 0)
+
+
+def pruefe_zeitraum(typen: list, dms_bereich: str) -> list[str]:
+    """erkennung.endeVon und ausDatum: auf Datumsfelder dieses Typs, Ziel passend; dms: ">=0.321.0"."""
+    fehler: list[str] = []
+    benutzt = False
+    eigene = {t.get('schluessel'): t for t in typen if isinstance(t, dict)}
+    for t in eigene.values():
+        felder = {f.get('key'): f for f in t.get('felder') or [] if isinstance(f, dict)}
+        for f in felder.values():
+            wo = f'mappentypen/{t.get("schluessel")}/{f.get("key")}'
+            ende = (f.get('erkennung') or {}).get('endeVon') if isinstance(f.get('erkennung'), dict) else None
+            if ende is not None:
+                benutzt = True
+                if f.get('typ') != 'datum':
+                    fehler.append(f'{wo}: erkennung.endeVon gibt es nur an Datumsfeldern (dem Ende des Zeitraums)')
+                elif ende == f.get('key') or (felder.get(ende) or {}).get('typ') != 'datum':
+                    fehler.append(f'{wo}: erkennung.endeVon „{ende}“ muss ein anderes Datumsfeld dieses Mappentyps nennen (den Beginn)')
+            if 'ausDatum' in f:
+                benutzt = True
+                a = f['ausDatum'] if isinstance(f['ausDatum'], dict) else {}
+                if f.get('typ') != 'referenz':
+                    fehler.append(f'{wo}: ausDatum gibt es nur an Verweisfeldern')
+                    continue
+                if (felder.get(a.get('datumFeld')) or {}).get('typ') != 'datum':
+                    fehler.append(f'{wo}: ausDatum.datumFeld „{a.get("datumFeld")}“ ist kein Datumsfeld dieses Mappentyps')
+                ziele = f.get('ziel') or f.get('zielOptional') or []
+                ziele = [ziele] if isinstance(ziele, str) else ziele
+                for z in ziele:
+                    zt = eigene.get(z)
+                    if zt is None:
+                        continue
+                    zf = {g.get('key'): g for g in zt.get('felder') or [] if isinstance(g, dict)}.get(a.get('zielFeld'))
+                    if zf is None or zf.get('typ') not in ('text', 'zahl', 'datum'):
+                        fehler.append(f'{wo}: ausDatum.zielFeld „{a.get("zielFeld")}“ ist im Zieltyp „{z}“ kein Text-, Zahl- oder Datumsfeld')
+    if benutzt:
+        ab = dms_untergrenze(dms_bereich)
+        if ab is None or ab < DMS_ZEITRAUM_AB:
+            fehler.append('mappentypen: erkennung.endeVon und ausDatum kennt das DMS erst ab 0.321.0 – bitte dms: ">=0.321.0" angeben')
+    return fehler
+
 # Text → Verweis (DMS #534, ab 0.120.0): Ein Verweisfeld nennt mit aus_text das bisherige Textfeld. Das DMS legt den
 # Verweis beim Update zusätzlich an; der Administrator wandelt die Angaben danach mit Vorschau um.
 DMS_AUS_TEXT_AB = (0, 120, 0)
@@ -2521,6 +2567,7 @@ def pruefe(ordner: Path, basis: str | None) -> list[str]:
                 fehler.append(f'mappentypen/{s}: Trefferliste nennt unbekanntes Feld „{k}“')
 
     fehler += pruefe_erkennung(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
+    fehler += pruefe_zeitraum(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))
     fehler += pruefe_beschriftungen(geladen.get('mappentypen', []) or [], geladen.get('sichten', []) or [])
     fehler += pruefe_sichtsymbole(geladen.get('sichten', []) or [])
     fehler += pruefe_aus_text(geladen.get('mappentypen', []) or [], str(m.get('dms', '')))

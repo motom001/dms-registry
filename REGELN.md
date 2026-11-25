@@ -441,6 +441,13 @@ Ablago erkennt Post und füllt Mappen aus Dokumenten (DMS #336, #391) – ohne K
 
 `werkzeuge/pruefen.py` prüft Feldart, Art und Ablago-Version.
 
+### Zeiträume und Ableiten aus einem Datum { #zeitraum }
+
+Ab Ablago 0.321.0 (DMS #1646, #1648):
+
+- **`erkennung.endeVon`** am Datumsfeld für das **Ende** eines Zeitraums nennt das Feld für den Beginn. Steht im Dokument „vom 01.07.2026 bis 31.07.2026“, bekommt der Beginn das erste Datum und dieses Feld das zweite. Nur nötig, wenn die Kennungen das Paar nicht verraten (Ablago erkennt `beginn`/`ende`, `von`/`bis` und ähnliche selbst), z. B. `gilt_bis: { erkennung: { endeVon: gilt_ab } }`.
+- **`ausDatum: { datumFeld, zielFeld }`** an einem Verweisfeld schlägt die Mappe des Zieltyps aus einem Datum vor, z. B. das Steuerjahr aus „Bis“: `steuerjahr: { ziel: steuerjahr, ausDatum: { datumFeld: ende, zielFeld: jahr } }`. `zielFeld` ist ein Text-, Zahl- oder Datumsfeld des Zieltyps. Gibt es keine passende Mappe, bietet Ablago an, sie anzulegen – nichts geschieht ohne Klick.
+
 ### Woran man den Mappentyp erkennt { #erkennbar-an }
 
 Beim Übernehmen eines Dokuments schlägt Ablago den Mappentyp vor (DMS #939). Dafür bekommt die Klassifizierung je Typ Name, Beschreibung und **„Woran man ihn erkennt“** – im Paket `erkennbarAn` am Mappentyp, Übersetzung unter `beschriftungen.<sprache>.erkennbarAn` (DMS #937, ab 0.218.0):

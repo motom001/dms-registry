@@ -1217,6 +1217,35 @@ class ErkennbarAn(unittest.TestCase):
             jsonschema.validate({**basis, 'erkennbarAn': 'x' * 301}, typ)
 
 
+
+class Zeitraum(unittest.TestCase):
+    """erkennung.endeVon und ausDatum (Registry #260, DMS #1646/#1648)."""
+
+    TYPEN = [
+        {'schluessel': 'steuerjahr', 'felder': [{'key': 'jahr', 'typ': 'text'}]},
+        {'schluessel': 'beleg', 'felder': [
+            {'key': 'von', 'typ': 'datum'},
+            {'key': 'bis', 'typ': 'datum', 'erkennung': {'endeVon': 'von'}},
+            {'key': 'steuerjahr', 'typ': 'referenz', 'ziel': 'steuerjahr', 'ausDatum': {'datumFeld': 'bis', 'zielFeld': 'jahr'}},
+        ]},
+    ]
+
+    def test_gueltig(self):
+        self.assertEqual(pruefen.pruefe_zeitraum(self.TYPEN, '>=0.321.0'), [])
+
+    def test_version(self):
+        self.assertTrue(any('0.321.0' in f for f in pruefen.pruefe_zeitraum(self.TYPEN, '>=0.300.0')))
+
+    def test_falsche_felder(self):
+        import copy
+        typen = copy.deepcopy(self.TYPEN)
+        felder = typen[1]['felder']
+        felder[1]['erkennung']['endeVon'] = 'steuerjahr'
+        felder[2]['ausDatum'] = {'datumFeld': 'steuerjahr', 'zielFeld': 'fehlt'}
+        fehler = pruefen.pruefe_zeitraum(typen, '>=0.321.0')
+        self.assertEqual(len(fehler), 3, fehler)
+
+
 if __name__ == '__main__':
     unittest.main()
 

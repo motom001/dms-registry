@@ -418,6 +418,13 @@ Ablago recognises incoming post and fills Mappen from documents (DMS #336, #391)
 `werkzeuge/pruefen.py` checks field type, `art` and Ablago version.
 
 
+### Periods and deriving from a date { #zeitraum }
+
+From Ablago 0.321.0 (DMS #1646, #1648):
+
+- **`erkennung.endeVon`** on the date field for the **end** of a period names the field for the start. If the document says “from 01.07.2026 to 31.07.2026”, the start gets the first date and this field the second. Only needed when the keys do not reveal the pair (Ablago recognises `beginn`/`ende`, `von`/`bis` and similar itself).
+- **`ausDatum: { datumFeld, zielFeld }`** on a reference field suggests the folder of the target type from a date, e.g. the tax year from “To”. `zielFeld` is a text, number or date field of the target type. If there is no matching folder, Ablago offers to create it – nothing happens without a click.
+
 ### How the folder type is recognised { #erkennbar-an }
 
 When a document is taken over, Ablago suggests the folder type (DMS #939). For this, classification gets each type's name, description and **“How to recognise it”** – in the package `erkennbarAn` on the folder type, translation under `beschriftungen.<language>.erkennbarAn` (DMS #937, from 0.218.0).
