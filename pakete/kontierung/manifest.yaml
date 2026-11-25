@@ -6,7 +6,7 @@ schema: 1
 id: kontierung
 name: Kontierung
 herausgeber: app.ablago
-version: 1.1.1
+version: 1.2.0
 beschreibung: Kostenstellen, Kostenträger, Sachkonten und Steuerschlüssel für den Betrieb – damit Rechnungen gleich richtig zugeordnet sind und die Buchhaltung weiß, wohin sie gehören.
 autor:
   name: Thomas Meissner

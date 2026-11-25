@@ -3,7 +3,7 @@ schema: 1
 id: aemter
 name: Ämter & Papiere
 herausgeber: app.ablago
-version: 1.2.0
+version: 1.3.0
 beschreibung: 'Post vom Amt und die eigenen amtlichen Papiere: Anträge, Bescheide mit Einspruchsfrist und Widersprüche, dazu Ausweise, Urkunden und Bescheinigungen wie die Steuer-ID.'
 autor:
   name: Thomas Meissner

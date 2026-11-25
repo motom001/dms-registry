@@ -9,6 +9,7 @@
   beschreibung: Eine Abteilung oder ein Bereich im Betrieb – verschachtelt, z. B. Vertrieb › Innendienst
   beschriftungen: { en: { name: "Organisational unit", mehrzahl: "Organisational units", beschreibung: "A department or area of the business – nested, e.g. Sales › Inside sales" } }
   titelVorlage: "{name}"
+  ausPost: false
   felder:
     - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Vertrieb, Buchhaltung, Werkstatt, beschriftungen: { en: { label: "Name", hilfe: "e.g. Sales, Accounting, Workshop" } } }
     - { key: kuerzel, label: Kürzel, typ: text, maxLen: 20, wiederfinden: true, beschriftungen: { en: { label: "Short code" } } }
@@ -28,6 +29,7 @@
   beschreibung: Wo Kosten entstehen, z. B. 4100 Fuhrpark – mit verantwortlicher Person und übergeordneter Kostenstelle
   beschriftungen: { en: { name: "Cost centre", mehrzahl: "Cost centres", beschreibung: "Where costs arise, e.g. 4100 Fleet – with the person responsible and a parent cost centre" } }
   titelVorlage: "{nummer} {name}"
+  ausPost: false
   felder:
     - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, hilfe: z. B. 4100, beschriftungen: { en: { label: "Number", hilfe: "e.g. 4100" } } }
     - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Fuhrpark, beschriftungen: { en: { label: "Name", hilfe: "e.g. Fleet" } } }
@@ -50,6 +52,7 @@
   beschreibung: Wofür Kosten entstehen – ein Produkt, Projekt oder Auftrag
   beschriftungen: { en: { name: "Cost unit", mehrzahl: "Cost units", beschreibung: "What costs are for – a product, project or job" } }
   titelVorlage: "{nummer} {name}"
+  ausPost: false
   felder:
     - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Number" } } }
     - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, beschriftungen: { en: { label: "Name" } } }
@@ -72,6 +75,7 @@
   beschreibung: Ein Konto aus dem Kontenrahmen der Buchhaltung, z. B. 4930 Bürobedarf – nur zur Auswahl, Ablago bucht nicht
   beschriftungen: { en: { name: "General ledger account", mehrzahl: "General ledger accounts", beschreibung: "An account from the chart of accounts, e.g. 4930 Office supplies – for selection only, Ablago does not post entries" } }
   titelVorlage: "{nummer} {bezeichnung}"
+  ausPost: false
   felder:
     - { key: nummer, label: Nummer, typ: text, pflicht: true, maxLen: 20, wiederfinden: true, hilfe: z. B. 4930, beschriftungen: { en: { label: "Number", hilfe: "e.g. 4930" } } }
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Bürobedarf, beschriftungen: { en: { label: "Name", hilfe: "e.g. Office supplies" } } }
@@ -94,6 +98,7 @@
   beschreibung: Ein Umsatzsteuersatz mit Bezeichnung und Kennzeichen für die Buchhaltung, gültig ab einem Datum
   beschriftungen: { en: { name: "Tax code", mehrzahl: "Tax codes", beschreibung: "A VAT rate with a name and a code for the accountants, valid from a date" } }
   titelVorlage: "{bezeichnung}"
+  ausPost: false
   felder:
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: z. B. Umsatzsteuer 19 %, beschriftungen: { en: { label: "Name", hilfe: "e.g. VAT 19 %" } } }
     # Gleiche Feldart wie der Umsatzsteuersatz an Rechnung und Position – dort übernimmt Ablago den Satz beim Auswählen.

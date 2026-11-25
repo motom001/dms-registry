@@ -1,5 +1,9 @@
 # Änderungen
 
+## 5.5.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt. Das Arbeitsverhältnis liest Beginn, Ende und Tätigkeit.
+
 ## 5.4.0
 
 - **Steuerjahr aus dem Datum** (dms-registry #261): Anschaffung aus dem Kaufdatum, Bildung aus „Bis“; beide Daten werden aus dem Dokument gelesen. Braucht Ablago ab 0.321.0.

@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.11.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt.
+
 ## 1.10.0
 
 - **Zeitraum am Vertrag** (dms-registry #261): Steht „vom … bis …“ im Vertrag, landen die Daten in „Beginn“ und „Vertragsende“. Braucht Ablago ab 0.321.0.

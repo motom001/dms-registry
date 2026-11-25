@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.11.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt. Der Ablageort kommt nicht mehr als Vorschlag für neue Post.
+
 ## 1.10.0
 
 - **Familie Muster jetzt in Basis** (dms-registry #225): Lena, Tom und Jonas sind Beispiel-Personen von Basis (bisher Haushalt). So können alle Pakete ihre Beispiele auf sie beziehen, etwa „Ämter & Papiere“.

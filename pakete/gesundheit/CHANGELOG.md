@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt. Therapie, Impfung und Gesundheitspass lesen Art und Daten aus dem Dokument.
+
 ## 1.1.0
 
 - **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Therapie (mit Beginn). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.

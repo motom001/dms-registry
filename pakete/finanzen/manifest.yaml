@@ -6,7 +6,7 @@ schema: 1
 id: finanzen
 name: Finanzen
 herausgeber: app.ablago
-version: 3.2.0
+version: 3.3.0
 beschreibung: Konten, Kontoauszüge samt Jahresbelegen der Bank (Entgeltaufstellung, Steuerbescheinigung), Freistellungsaufträge, Steuerjahre und Steuernachweise (Lohnsteuerbescheinigung, Beitragsbescheinigung, Spendenquittung …) an einem Ort – privat wie im Betrieb. Ablago legt die Unterlagen ab, es bucht nicht.
 autor:
   name: Thomas Meissner

@@ -3,8 +3,9 @@
   name: Organisation
   mehrzahl: Organisationen
   beschreibung: Firma, Behörde, Arztpraxis, Versicherung, Bank, Verein oder andere Stelle, mit der du zu tun hast – auch deine eigene Firma. AGB und Preislisten legst du unter Dokumente mit ihrem Stand im Namen ab, z. B. „AGB Stand 2026-01“.
-  beschriftungen: { en: { name: "Organisation", mehrzahl: "Organisations", beschreibung: "Company, authority, doctor’s practice, insurer, bank, club or any other body you deal with – your own company too. Keep terms and conditions and price lists under Documents with their date in the name, e.g. “Terms as of 2026-01”." } }
+  beschriftungen: { en: { erkennbarAn: "Letter or paper mainly about a company, authority or practice: letterhead, address, commercial register, VAT ID, bank details – e.g. master data sheet.", name: "Organisation", mehrzahl: "Organisations", beschreibung: "Company, authority, doctor’s practice, insurer, bank, club or any other body you deal with – your own company too. Keep terms and conditions and price lists under Documents with their date in the name, e.g. “Terms as of 2026-01”." } }
   titelVorlage: "{name}"
+  erkennbarAn: "Brief oder Unterlage, die vor allem eine Firma, Behörde oder Praxis vorstellt: Briefkopf, Anschrift, Handelsregister, USt-IdNr., Bankverbindung – z. B. Stammdatenblatt."
   felder:
     # Stammdaten
     - key: name
@@ -203,8 +204,9 @@
   name: Niederlassung
   mehrzahl: Niederlassungen
   beschreibung: Filiale, Zweigstelle, Praxis oder Außenstelle einer Organisation – mit eigener Anschrift und eigenem Telefon.
-  beschriftungen: { en: { name: "Branch", mehrzahl: "Branches", beschreibung: "Branch, office, practice or outpost of an organisation – with its own address and phone." } }
+  beschriftungen: { en: { erkennbarAn: "Paper about a branch or office: own address, opening hours, branch phone, “Filiale”, “Niederlassung”.", name: "Branch", mehrzahl: "Branches", beschreibung: "Branch, office, practice or outpost of an organisation – with its own address and phone." } }
   titelVorlage: "{organisation} – {name}"
+  erkennbarAn: "Unterlage zu einer Filiale oder Zweigstelle: eigene Anschrift, Öffnungszeiten, Telefon der Filiale, „Filiale“, „Niederlassung“."
   felder:
     - key: organisation
       label: Organisation
@@ -279,8 +281,9 @@
   name: Person
   mehrzahl: Personen
   beschreibung: Ein Mensch, mit dem du zu tun hast – Ansprechpartner, Ärztin, Vermieter, Verwandte. Eine Person ist kein Benutzer des DMS und kann sich nicht anmelden.
-  beschriftungen: { en: { name: "Person", mehrzahl: "People", beschreibung: "Someone you deal with – a contact, a doctor, a landlord, relatives. A person isn’t a user of Ablago and can’t sign in." } }
+  beschriftungen: { en: { erkennbarAn: "Business card, contact details or power of attorney of a person: name, address, phone, email, date of birth.", name: "Person", mehrzahl: "People", beschreibung: "Someone you deal with – a contact, a doctor, a landlord, relatives. A person isn’t a user of Ablago and can’t sign in." } }
   titelVorlage: "{titel} {vorname} {nachname}"
+  erkennbarAn: "Visitenkarte, Kontaktdaten oder Vollmacht einer Person: Name, Anschrift, Telefon, E-Mail, Geburtsdatum."
   felder:
     - { key: anrede, label: Anrede, typ: auswahl, optionen: [Frau, Herr, divers/keine], beschriftungen: { en: { label: "Title", optionen: { "Frau": "Ms", "Herr": "Mr", "divers/keine": "diverse/none" } } }  }
     - { key: titel, label: Titel, typ: text, maxLen: 40, hilfe: z. B. Dr., beschriftungen: { en: { label: "Academic title", hilfe: "e.g. Dr" } }  }
@@ -346,6 +349,7 @@
   beschreibung: Wo Originale liegen – verschachtelt, z. B. zu Hause › Arbeitszimmer Schrank › roter Ordner
   beschriftungen: { en: { name: "Storage location", mehrzahl: "Storage locations", beschreibung: "Where originals are kept – nested, e.g. at home › study cupboard › red binder" } }
   titelVorlage: "{liegt_in} › {name}"
+  ausPost: false
   felder:
     - { key: name, label: Name, typ: text, pflicht: true, maxLen: 120, hilfe: "z. B. roter Ordner, Safe im Flur, beim Notar, vernichtet", beschriftungen: { en: { label: "Name", hilfe: "e.g. red binder, safe in the hallway, at the notary's, destroyed" } }  }
     - { key: liegt_in, label: Liegt in, typ: referenz, ziel: ablageort, verweisart: zugehoerigkeit, hilfe: "Der Ort, in dem dieser Ort liegt – z. B. der Schrank, in dem der Ordner steht. Leer lassen für ganz oben.", beschriftungen: { en: { label: "Located in", hilfe: "The location this location is in – e.g. the cupboard the binder stands in. Leave empty for the very top." } }  }

@@ -1,5 +1,9 @@
 # Änderungen
 
+## 3.3.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt. Der Freistellungsauftrag liest den Betrag.
+
 ## 3.2.0
 
 - **Steuerjahr aus dem Datum** (dms-registry #259, #261): Am Kontoauszug schlägt Ablago das Steuerjahr aus „Bis“ vor, am Steuernachweis aus dem neuen Zeitraum „Zeitraum von/bis“ (z. B. Dauer des Dienstverhältnisses auf der Lohnsteuerbescheinigung). Gibt es das Steuerjahr noch nicht, bietet Ablago an, es anzulegen. Braucht Ablago ab 0.321.0.

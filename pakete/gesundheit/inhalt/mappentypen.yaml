@@ -8,8 +8,9 @@
   name: Behandlungsfall
   mehrzahl: Behandlungsfälle
   beschreibung: Eine Erkrankung oder ein Anlass – vom Verdacht bis zum Abschluss, mit allem, was dazu gehört.
-  beschriftungen: { en: { name: "Medical case", mehrzahl: "Medical cases", beschreibung: "An illness or reason for treatment – from first suspicion to closure, with everything that belongs to it." } }
+  beschriftungen: { en: { erkennbarAn: "Referral, diagnosis or treatment plan for an illness: practice, diagnosis with ICD code, “Verdacht auf”, start of treatment.", name: "Medical case", mehrzahl: "Medical cases", beschreibung: "An illness or reason for treatment – from first suspicion to closure, with everything that belongs to it." } }
   titelVorlage: "{bezeichnung} – {person_verweis}"
+  erkennbarAn: "Überweisung, Diagnose oder Behandlungsplan zu einer Erkrankung: Praxis, Diagnose mit ICD-Code, „Verdacht auf“, Behandlungsbeginn."
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: "z. B. „Bandscheibenvorfall L5“ oder „Vorsorge Zahnarzt“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Slipped disc L5” or “Dental check-up”" } } }
@@ -39,8 +40,9 @@
   name: Arztbrief & Befund
   mehrzahl: Arztbriefe & Befunde
   beschreibung: Arztberichte, wichtige Befunde, Labor, Röntgen/MRT, OP-Berichte und Entlassungsbriefe.
-  beschriftungen: { en: { name: "Doctor’s letter & findings", mehrzahl: "Doctor’s letters & findings", beschreibung: "Doctor’s reports, important findings, lab results, X-ray/MRI, surgery reports and discharge letters." } }
+  beschriftungen: { en: { erkennbarAn: "Doctor's letter or findings: “Sehr geehrte Frau Kollegin”, diagnosis, findings, lab, X-ray, MRI, surgery report, discharge letter, practice or clinic letterhead.", name: "Doctor’s letter & findings", mehrzahl: "Doctor’s letters & findings", beschreibung: "Doctor’s reports, important findings, lab results, X-ray/MRI, surgery reports and discharge letters." } }
   titelVorlage: "{art} – {person_verweis} – {datum}"
+  erkennbarAn: "Arztbrief oder Befund: „Sehr geehrte Frau Kollegin“, Diagnose, Befund, Labor, Röntgen, MRT, OP-Bericht, Entlassungsbrief, Praxis- oder Klinikkopf."
   felder:
     - key: art
       label: Art
@@ -64,25 +66,28 @@
   name: Therapie
   mehrzahl: Therapien
   beschreibung: Medikament, Physiotherapie, Operation, Reha, Psychotherapie oder Hilfsmittel – mit Verordnung.
-  beschriftungen: { en: { name: "Treatment", mehrzahl: "Treatments", beschreibung: "Medication, physiotherapy, surgery, rehab, psychotherapy or medical aid – with prescription." } }
+  beschriftungen: { en: { erkennbarAn: "Prescription or approval: physiotherapy, rehab, aids, medication; number of sessions, “Verordnung”, approval by the health insurer.", name: "Treatment", mehrzahl: "Treatments", beschreibung: "Medication, physiotherapy, surgery, rehab, psychotherapy or medical aid – with prescription." } }
   titelVorlage: "{art} – {bezeichnung} – {beginn|datum:MM/JJJJ}"
+  erkennbarAn: "Verordnung oder Rezept: Heilmittel, Physiotherapie, Reha, Hilfsmittel, Medikament; Anzahl der Einheiten, „Verordnung“, Bewilligung der Krankenkasse."
   felder:
     - { key: behandlungsfall, label: Behandlungsfall, typ: referenz, ziel: behandlungsfall, verweisart: bezug, beschriftungen: { en: { label: "Medical case" } } }
     - key: art
       label: Art
       beschriftungen: { en: { label: "Type", optionen: { "Medikament": "Medication", "Physiotherapie": "Physiotherapy", "Operation": "Surgery", "Reha": "Rehab", "Psychotherapie": "Psychotherapy", "Hilfsmittel": "Medical aid", "Sonstiges": "Other" } } }
       typ: auswahl
+      erkennung: {}
       pflicht: true
       optionen: [Medikament, Physiotherapie, Operation, Reha, Psychotherapie, Hilfsmittel, Sonstiges]
     - { key: bezeichnung, label: Bezeichnung, typ: text, maxLen: 120, hilfe: "z. B. „Krankengymnastik 6 ×“ oder der Name des Medikaments", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Physio 6 ×” or the name of the medicine" } } }
     - { key: verordnet_von, label: Verordnet von, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, beschriftungen: { en: { label: "Prescribed by" } } }
-    - { key: beginn, label: Von, typ: datum, beschriftungen: { en: { label: "From" } } }
-    - { key: ende, label: Bis, typ: datum, beschriftungen: { en: { label: "Until" } } }
+    - { key: beginn, label: Von, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "From" } } }
+    - { key: ende, label: Bis, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Until" } } }
     - { key: einheiten, label: Einheiten, typ: zahl, min: 0, hilfe: z. B. Anzahl der Behandlungen, beschriftungen: { en: { label: "Units", hilfe: "e.g. number of sessions" } } }
     - key: verordnung_bis
       label: Verordnung gültig bis
       beschriftungen: { en: { label: "Prescription valid until", hilfe: "The included automation reminds you 7 days before." } }
       typ: datum
+      erkennung: { art: datum }
       hilfe: Die mitgelieferte Automatisierung erinnert 7 Tage vorher.
       frist: { vorlauf: 7, einheit: tage }
     - key: status
@@ -102,8 +107,9 @@
   name: Arbeitsunfähigkeit
   mehrzahl: Arbeitsunfähigkeiten
   beschreibung: Die AU-Bescheinigung – seit der eAU die Ausfertigung für dich.
-  beschriftungen: { en: { name: "Sick note", mehrzahl: "Sick notes", beschreibung: "The certificate of incapacity for work – since the electronic version, the copy for you." } }
+  beschriftungen: { en: { erkennbarAn: "Certificate of incapacity for work (AU): “arbeitsunfähig seit”, “voraussichtlich bis”, first or follow-up certificate, practice.", name: "Sick note", mehrzahl: "Sick notes", beschreibung: "The certificate of incapacity for work – since the electronic version, the copy for you." } }
   titelVorlage: "AU {beginn} – {person_verweis}"
+  erkennbarAn: "Arbeitsunfähigkeitsbescheinigung (AU, „gelber Schein“): „arbeitsunfähig seit“, „voraussichtlich bis“, Erst- oder Folgebescheinigung, Praxis."
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
     - { key: beginn, label: Von, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "From" } } }
@@ -128,8 +134,9 @@
   name: Medikamentenplan
   mehrzahl: Medikamentenpläne
   beschreibung: Der Medikamentenplan einer Person. Ein neuer Plan zeigt unter „Ersetzt“ auf den vorigen – so ist klar, welcher gilt.
-  beschriftungen: { en: { name: "Medication plan", mehrzahl: "Medication plans", beschreibung: "A person’s medication plan. A new plan points to the previous one under “Replaces” – so it’s clear which one applies." } }
+  beschriftungen: { en: { erkennbarAn: "Standard medication plan: table with substance, brand name, strength, morning–noon–evening–night, notes, barcode top right.", name: "Medication plan", mehrzahl: "Medication plans", beschreibung: "A person’s medication plan. A new plan points to the previous one under “Replaces” – so it’s clear which one applies." } }
   titelVorlage: "Medikamentenplan {person_verweis} – {stand_vom}"
+  erkennbarAn: "Bundeseinheitlicher Medikationsplan: Tabelle mit Wirkstoff, Handelsname, Stärke, morgens–mittags–abends–nachts, Hinweise, Barcode oben rechts."
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
     - { key: stand_vom, label: Stand vom, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "As of" } } }
@@ -146,14 +153,16 @@
   name: Gesundheitspass
   mehrzahl: Gesundheitspässe
   beschreibung: Impfpass, U-Heft, Mutterpass, Allergie-, Röntgen-, Implantat- oder Brillenpass, Blutspende-, Organspende- und Notfallausweis, Zahn-Bonusheft.
-  beschriftungen: { en: { name: "Health card", mehrzahl: "Health cards", beschreibung: "Vaccination card, child check-up booklet, maternity record, allergy, X-ray, implant or glasses pass, blood or organ donor card, emergency card, dental bonus booklet." } }
+  beschriftungen: { en: { erkennbarAn: "Pages from vaccination record, child check-up booklet, maternity record, allergy, X-ray, implant or organ donor card: name, dated entries with stamps.", name: "Health card", mehrzahl: "Health cards", beschreibung: "Vaccination card, child check-up booklet, maternity record, allergy, X-ray, implant or glasses pass, blood or organ donor card, emergency card, dental bonus booklet." } }
   titelVorlage: "{art} – {person_verweis}"
+  erkennbarAn: "Seiten aus Impfpass, U-Heft, Mutterpass, Allergie-, Röntgen-, Implantat- oder Organspendeausweis: Name, Einträge mit Datum und Stempel."
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
     - key: art
       label: Art
       beschriftungen: { en: { label: "Type", optionen: { "Impfpass": "Vaccination card", "U-Heft": "Child check-up booklet", "Mutterpass": "Maternity record", "Allergiepass": "Allergy pass", "Röntgenpass": "X-ray pass", "Implantatpass": "Implant pass", "Brillenpass": "Glasses pass", "Blutspendeausweis": "Blood donor card", "Organspendeausweis": "Organ donor card", "Notfallausweis": "Emergency card", "Zahn-Bonusheft": "Dental bonus booklet", "Sonstiges": "Other" } } }
       typ: auswahl
+      erkennung: {}
       pflicht: true
       optionen: [Impfpass, U-Heft, Mutterpass, Allergiepass, Röntgenpass, Implantatpass, Brillenpass, Blutspendeausweis, Organspendeausweis, Notfallausweis, Zahn-Bonusheft, Sonstiges]
     - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, beschriftungen: { en: { label: "Issued on" } } }
@@ -176,8 +185,9 @@
   name: Impfung
   mehrzahl: Impfungen
   beschreibung: Eine einzelne Impfung – mit Impfstoff und nächster Auffrischung.
-  beschriftungen: { en: { name: "Vaccination", mehrzahl: "Vaccinations", beschreibung: "A single vaccination – with vaccine and next booster." } }
+  beschriftungen: { en: { erkennbarAn: "Vaccination certificate or entry: vaccine, batch number, date, “Auffrischung”, practice stamp.", name: "Vaccination", mehrzahl: "Vaccinations", beschreibung: "A single vaccination – with vaccine and next booster." } }
   titelVorlage: "{gegen} – {person_verweis} – {datum}"
+  erkennbarAn: "Impfbescheinigung oder Eintrag einer Impfung: Impfstoff, Chargennummer, Datum, „Auffrischung“, Praxisstempel."
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
     - key: gegen
@@ -186,8 +196,8 @@
       typ: auswahl
       pflicht: true
       optionen: [Tetanus, Diphtherie, Keuchhusten, Polio, Masern, Mumps, Röteln, Windpocken, Hepatitis A, Hepatitis B, FSME, Grippe, COVID-19, Pneumokokken, HPV, Gürtelrose, Sonstige]
-    - { key: datum, label: Datum, typ: datum, max: heute, beschriftungen: { en: { label: "Date" } } }
-    - { key: impfstoff, label: Impfstoff, typ: text, maxLen: 80, hilfe: Wie im Impfpass, beschriftungen: { en: { label: "Vaccine", hilfe: "As in the vaccination card" } } }
+    - { key: datum, label: Datum, typ: datum, erkennung: { art: datum }, max: heute, beschriftungen: { en: { label: "Date" } } }
+    - { key: impfstoff, label: Impfstoff, typ: text, erkennung: {}, maxLen: 80, hilfe: Wie im Impfpass, beschriftungen: { en: { label: "Vaccine", hilfe: "As in the vaccination card" } } }
     - key: naechste_auffrischung
       label: Nächste Auffrischung
       beschriftungen: { en: { label: "Next booster", hilfe: "The included automation reminds you 30 days before." } }

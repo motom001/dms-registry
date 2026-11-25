@@ -187,6 +187,7 @@
         "mehrzahl": { "$ref": "#/$defs/mehrzahl" },
         "beschriftungen": { "$ref": "#/$defs/beschriftungen_typ" },
         "gehoertZu": { "$ref": "#/$defs/schluessel", "description": "DMS #1031: Mappen dieses Typs gehören immer zu einer anderen Mappe – Kennung des Verweisfelds (Pflicht), nicht in Ansichten und Suche" },
+        "ausPost": { "type": "boolean", "description": "„Kann aus Post angelegt werden“ (DMS #937, ab 0.218.0): false für Stammdaten, zu denen keine Post kommt (z. B. Ablageort, Kostenstelle) – dann bietet die Erkennung den Typ nicht an. Fehlt = an bei Typen mit Dokumentenregister." },
         "erkennbarAn": { "$ref": "#/$defs/erkennbar_an", "description": "„Woran man ihn erkennt“ (DMS #937, ab Ablago 0.218.0): kurzer Text für die Klassifizierung von Dokumenten, höchstens 300 Zeichen; die Klassifizierung nutzt davon die ersten 200. Ein Update setzt ihn nur, wenn er in Ablago noch leer ist (Registry #252)." },
         "inSuche": { "type": "boolean", "description": "DMS #1220 (ab Ablago 0.276.0, ältere ignorieren es): false = Mappen dieses Typs nicht in der allgemeinen Suche (Suchfeld oben, Frag deine Ablage) – für reine Auswahllisten; fehlt = ja" }
       }

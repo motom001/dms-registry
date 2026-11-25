@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.0
+
+- **Nicht aus Post** (dms-registry #254): Organisationseinheit, Kostenstelle, Kostenträger, Sachkonto und Steuerschlüssel sind Stammdaten – die Erkennung bietet sie für neue Post nicht mehr an.
+
 ## 1.1.1
 
 - **Mehrzahl** für die Mappentypen (dms-registry #223): Listen zeigen jetzt z. B. „12 Kostenstellen“ statt „12 × Kostenstelle“ (ab Ablago 0.302.0, ältere ignorieren es). Ein Update setzt die Mehrzahl nur, wo du noch keine eingetragen hast.
