@@ -30,9 +30,9 @@ Das Paket schreibt **PDF/A-2b** – „b“ heißt: Das Aussehen ist gesichert. 
 
 Was Ablago selbst erledigt: Verschlüsselte PDFs bekommen keine Archivfassung (der Grund steht am Dokument). Ein PDF, das schon gültiges PDF/A ist, gilt selbst als Archivfassung. Bei **digital signierten** PDFs entsteht die Archivfassung trotzdem – sie trägt die Signatur nicht, und Ablago zeigt den Hinweis, die Signatur am Original zu prüfen. Bei **E-Rechnungen** (ZUGFeRD, Factur-X) bleibt die XML im Original; Herunterladen gibt dort das Original zuerst.
 
-Kann das Paket keine Archivfassung bauen, steht der Grund am Dokument und in **Werkbank → Texterkennung → Archivfassung (PDF/A)**, z. B.:
+Kann das Paket keine Archivfassung bauen, steht der Grund am Dokument und in **Werkbank → Pakete → Archivfassung (PDF/A)**, z. B.:
 
-- „Wortpositionen fehlen – Texterkennung aktualisieren (Paket Texterkennung ab 2.2.0) und den Volltext neu erzeugen“: Ein Scan wurde von einer älteren Texterkennung gelesen. Das Paket legt den Text dann **nicht ungefähr** ab, sondern wartet, bis die Wortpositionen da sind (Texterkennung aktualisieren, dann **Werkbank → Wartungsoperationen → Volltext neu erzeugen**).
+- „Wortpositionen fehlen – Texterkennung aktualisieren (Paket Texterkennung ab 2.2.0) und den Volltext neu erzeugen“: Ein Scan wurde von einer älteren Texterkennung gelesen. Das Paket legt den Text dann **nicht ungefähr** ab, sondern wartet, bis die Wortpositionen da sind (Texterkennung aktualisieren, dann **Werkbank → Pakete → Text aus PDF und Texterkennung → Wartungsoperationen → Volltext neu erzeugen**).
 - „Das Dokument ist zu lang für einen Durchgang“, „größer als 100 MB“.
 
 ## Rechte und Netzwerkzugriff

@@ -3,7 +3,7 @@
 schema: 1
 id: bildformate
 name: Bildformate
-version: 1.0.3
+version: 1.0.4
 beschreibung: Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.
 autor:
   name: Thomas Meissner

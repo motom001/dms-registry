@@ -6,7 +6,7 @@ id: texterkennung.spa
 ersetzt: texterkennung_spa
 herausgeber: app.ablago
 name: Texterkennung – Zusatzsprache Spanisch
-version: 1.1.0
+version: 1.1.1
 beschreibung: Zusatzsprache Spanisch für das Grundpaket Texterkennung – damit auch spanische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
 autor:
   name: Thomas Meissner

@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.11.1
+
+- Wege in der Werkbank aktualisiert: *Werkbank → Pakete → Text aus PDF und Texterkennung* bzw. *→ Archivfassung (PDF/A)* (dms-registry #262).
+
 ## 1.11.0
 
 - **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt. Der Ablageort kommt nicht mehr als Vorschlag für neue Post.

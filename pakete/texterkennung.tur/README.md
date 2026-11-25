@@ -11,7 +11,7 @@ Bei der Installation zeigt Ablago:
 - **kein Zugriff auf Netzwerk und Internet**
 - keine Rechte an Mappen und Dokumenten, keine Ereignisse
 
-Das Paket Texterkennung liest die Sprachdaten, weil dieses Paket von ihm abhängt (Ablago ab 0.133.0: ein Paket liest die Daten der Pakete, die von ihm abhängen, als `texterkennung.tur/tur.traineddata`). Wird das Zusatzpaket installiert oder entfernt, lädt der Paket-Läufer die Texterkennung neu – du musst nichts weiter tun. Dokumente, die schon ohne Türkisch erkannt wurden, erkennt **Werkbank → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente** neu.
+Das Paket Texterkennung liest die Sprachdaten, weil dieses Paket von ihm abhängt (Ablago ab 0.133.0: ein Paket liest die Daten der Pakete, die von ihm abhängen, als `texterkennung.tur/tur.traineddata`). Wird das Zusatzpaket installiert oder entfernt, lädt der Paket-Läufer die Texterkennung neu – du musst nichts weiter tun. Dokumente, die schon ohne Türkisch erkannt wurden, erkennt **Werkbank → Pakete → Text aus PDF und Texterkennung → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente** neu.
 
 ## Voraussetzungen
 

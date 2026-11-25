@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.1
+
+- Wege in der Werkbank aktualisiert: *Werkbank → Pakete → Text aus PDF und Texterkennung* bzw. *→ Archivfassung (PDF/A)* (dms-registry #262).
+
 ## 1.1.0
 
 - **Neue Id `texterkennung.ukr`** (bisher `texterkennung_ukr`, dms-registry #173, motom001/dms#1084): Der Punkt heißt „ergänzt die Texterkennung“. Ablago ab 0.229.0 nimmt das als gewöhnliches Update – die Vorschau sagt „Das Paket heißt jetzt …“, danach steht dieselbe Installation unter der neuen Id da. Braucht **Ablago 0.229.0** und **Texterkennung 2.5.0** (liest die Sprachdaten unter beiden Namen). Ältere Ablago-Versionen behalten 1.0.3 unter der alten Id.

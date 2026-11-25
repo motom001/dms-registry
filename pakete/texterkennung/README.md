@@ -9,7 +9,7 @@ Seit Ablago 0.133 liest Ablago selbst nur noch die **Textebene** von PDFs (poppl
 1. Ein Dokument kommt in Ablago. Ablago liest bei PDFs die Textebene und meldet dem Paket das Ereignis **Volltext fertig** – auch, wenn es keinen Text gefunden hat.
 2. **Ohne Text** (Scan, Foto) erkennt das Paket das Dokument immer. Bis es fertig ist, steht am Dokument „wartet auf Texterkennung (Paket Texterkennung)“, bei langen Dokumenten mit Fortschritt („Seite 20 von 64“).
 3. **Mit Text aus dem PDF** bleibt dieser Text stehen – außer „Vorhandenen Volltext verwerfen und neu erkennen“ ist an. Stecken in einem PDF neben Textseiten auch gescannte Seiten, erkennt das Paket nur diese und setzt ihren Text an ihrer Stelle zwischen die Textseiten.
-4. **Werkbank → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente** erkennt immer neu, auch wenn der Haken aus ist – etwa nach einem neuen Sprach-Zusatzpaket.
+4. **Werkbank → Pakete → Text aus PDF und Texterkennung → Wartungsoperationen → Volltext neu erzeugen → Für alle Dokumente** erkennt immer neu, auch wenn der Haken aus ist – etwa nach einem neuen Sprach-Zusatzpaket.
 
 Je Seite erkennt das Paket die **Lage** (quer, auf dem Kopf) und die **Schrift** und richtet die Seite vor dem Lesen auf. Bei **Sprache: Automatisch** erkennt es die **Sprache jeder Seite** (seit 2.1.0): Es liest die Seite zuerst in der Sprache der Seite davor (am Anfang Deutsch), erkennt die Sprache des Texts und liest die Seite in der erkannten Sprache ein zweites Mal, wenn es eine andere ist und ihre Sprachdaten da sind – das sicherere Ergebnis gilt. Stehen auf einer Seite zwei Sprachen, liest es sie zusätzlich mit beiden zugleich; ist das deutlich sicherer (mindestens 2 Prozentpunkte), gilt diese Lesung als **Mischseite**.
 

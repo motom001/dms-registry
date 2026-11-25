@@ -31,7 +31,7 @@ Das Paket **Vermietung** ist für Vermieter mit wenigen Wohnungen – das vermie
 
 **Ansichten:** *Vermietung* mit allem und darunter *Mietobjekte*, *Wohnungen*, *Mietverträge*, *Nebenkostenabrechnungen*, *Ausgaben* sowie *Abrechnung offen*, *Mieterhöhung möglich* und *Vertrag endet bald*.
 
-**Gleichbedeutende Wörter für die Suche:** *Nebenkosten, Betriebskosten* · *Nebenkostenabrechnung, Betriebskostenabrechnung* · *Kaltmiete, Nettokaltmiete, Grundmiete* · *Kaution, Mietkaution, Mietsicherheit* · *Mieter, Mietpartei*. Sie stehen in Ablago unter Werkbank → Suche.
+**Gleichbedeutende Wörter für die Suche:** *Nebenkosten, Betriebskosten* · *Nebenkostenabrechnung, Betriebskostenabrechnung* · *Kaltmiete, Nettokaltmiete, Grundmiete* · *Kaution, Mietkaution, Mietsicherheit* · *Mieter, Mietpartei*. Sie stehen in Ablago unter Werkbank → Pakete → Text aus PDF und Texterkennung.
 
 **Beispiele (optional):** das Zweifamilienhaus Gartenstraße 8 von Herrn Özdemir mit zwei Wohnungen, zwei Mietverträgen (einer ist gekündigt), der noch offenen Nebenkostenabrechnung 2025 und drei Rechnungen. Mieter, Verträge, Rechnungen und Abrechnung hängen schon zusammen; die Bank des Kautionskontos zeigt auf das Beispiel aus Basis, wenn du es mitinstallierst.
 

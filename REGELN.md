@@ -171,6 +171,8 @@ kurzanleitung:
 
 Ablago zeigt in Werkbank → Pakete zuerst **„Für dich empfohlen“** (motom001/dms#1048). Die Liste steht in `werkzeuge/empfohlen.yaml` und landet als `empfohlen` oben in `katalog.json` (#198), in derselben Reihenfolge wie „Für den Anfang“ auf der Katalog-Webseite. Es gibt **eine** Liste für alle.
 
+**Keine festen Ziele im Internet in der Empfehlung:** Bei der Einrichtung übernimmt Ablago empfohlene Pakete ohne Haken. Deshalb steht in `empfohlen.yaml` kein Paket mit `code.netz`; Pakete, die nur mit einer Dienst-Adresse hinausgehen, die man selbst einträgt (z. B. Sicherungsziel WebDAV), sind erlaubt. Ein Test prüft das (Registry #262).
+
 Passt ein Paket nur zu einer bestimmten Nutzung, sagt es das selbst:
 
 ```yaml

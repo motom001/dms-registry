@@ -36,7 +36,7 @@ Berücksichtigt wird höchstens der erste Megabyte Volltext eines Dokuments.
 
 Ab 1.1.0 (Ablago 0.226.0) gibt das Paket auf der Seite *Dokument übernehmen* einen ersten Hinweis, **wo vergleichbare Post liegt** – lokal, schnell und gelernt aus deiner eigenen Ablage:
 
-1. Ablago fragt das Paket nach dem Vektor des neuen Dokuments (wie bei der Suche) und sucht die **ähnlichsten schon abgelegten Mappen** (je Mappe das beste Dokument, höchstens 10, ab der Schwelle des Modells) – **nur Mappen, die du lesen darfst und die das Paket lesen darf**, und nur aus Mappentypen, die man aus Post anlegen kann, in denen du anlegen darfst und die für KI-Dienste zugelassen sind.
+1. Ablago fragt das Paket nach dem Vektor des neuen Dokuments (wie bei der Suche) und sucht die **ähnlichsten schon abgelegten Mappen** (je Mappe das beste Dokument, höchstens 10, ab der Schwelle des Modells) – **nur Mappen, die du lesen darfst und die das Paket lesen darf**, und nur aus Mappentypen, die man aus Post anlegen kann, in denen du anlegen darfst. Das Paket arbeitet nur hier, ohne Netz – die Ausnahmen für Dienste im Netz unter „Was Ablago darf“ gelten für es nicht.
 2. Davon bekommt das Paket **nur den Mappentyp und das Maß der Ähnlichkeit** – keine Titel, keine Inhalte, keine Ids.
 3. Das Paket zählt: „8 von 10 ähnlichen Mappen liegen in Rechnung“ – daraus werden bis zu drei Mappentypen mit Sicherheit (der Anteil, bei weniger als fünf Treffern gedämpft).
 4. Ablago verbindet das mit seinen übrigen Hinweisen (Überschrift im Text, wiedergefundene Mappen, ein KI-Dienst) zu **einem** Vorschlag.

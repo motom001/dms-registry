@@ -3,7 +3,7 @@
 schema: 1
 id: pdfa
 name: PDF/A
-version: 1.3.2
+version: 1.3.3
 beschreibung: Legt zu jedem Dokument eine Archivfassung als PDF/A ab – durchsuchbar und auch in vielen Jahren noch lesbar, für E-Mails genauso. Für Scans und Fotos braucht es das Paket „Texterkennung“. Das Original bleibt unverändert.
 autor:
   name: Thomas Meissner

@@ -2,7 +2,7 @@
 schema: 1
 id: texterkennung
 name: Texterkennung (Deutsch und Englisch)
-version: 2.5.3
+version: 2.5.4
 beschreibung: Macht gescannte PDFs und Fotos durchsuchbar, auf Deutsch und Englisch. Weitere Sprachen gibt es als Zusatzsprachen, z. B. Französisch, Spanisch oder Türkisch. Es richtet schiefe Seiten auf und arbeitet ohne Internet.
 autor:
   name: Thomas Meissner
@@ -12,11 +12,11 @@ kurzanleitung:
   de:
     - Lade gescannte PDFs oder Fotos wie gewohnt hoch – der Text wird erkannt und ist danach in der Suche zu finden.
     - Für weitere Sprachen installierst du Zusatzsprachen, z. B. Französisch oder Türkisch.
-    - Vorhandene Scans erkennt Werkbank → Wartungsoperationen → Volltext neu erzeugen noch einmal, etwa nach einer neuen Zusatzsprache.
+    - Vorhandene Scans erkennt Werkbank → Pakete → Text aus PDF und Texterkennung → Wartungsoperationen → Volltext neu erzeugen noch einmal, etwa nach einer neuen Zusatzsprache.
   en:
     - Upload scanned PDFs or photos as usual – the text is recognised and can then be found by search.
     - For more languages, install additional languages, e.g. French or Turkish.
-    - Workbench → Maintenance operations → Recreate full text recognises existing scans again, e.g. after a new language.
+    - Workbench → Packages → Text from PDF and text recognition → Maintenance operations → Recreate full text recognises existing scans again, e.g. after a new language.
 # Herausgeber (dms-registry #173, Ablago 0.229.0): ältere Ablago-Versionen übergehen das Feld.
 herausgeber: app.ablago
 kategorien: [volltext, suche]
