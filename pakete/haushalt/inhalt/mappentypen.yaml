@@ -105,7 +105,7 @@
   felder:
     - { key: gegenstand, label: Gegenstand, typ: text, pflicht: true, maxLen: 120, beschriftungen: { en: { label: "Item" } }  }
     - { key: haendler, label: Händler, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Retailer" } }  }
-    - { key: kaufdatum, label: Kaufdatum, typ: datum, beschriftungen: { en: { label: "Purchase date" } }  }
+    - { key: kaufdatum, label: Kaufdatum, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Purchase date" } }  }
     - { key: preis, label: Preis, typ: betrag, min: 0, waehrung: EUR, beschriftungen: { en: { label: "Price" } }  }
     - { key: seriennummer, label: Seriennummer, typ: text, maxLen: 80, beschriftungen: { en: { label: "Serial number" } }  }
     - key: garantie_bis
@@ -114,7 +114,7 @@
       typ: datum
       hilfe: Gewährleistung oder Herstellergarantie. Die mitgelieferte Automatisierung erinnert 30 Tage vorher.
       frist: { vorlauf: 30, einheit: tage }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel", beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct the purchase, e.g. work equipment" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", ausDatum: { datumFeld: kaufdatum, zielFeld: jahr }, verweisart: bezug, hilfe: "Wenn du die Anschaffung absetzt, z. B. Arbeitsmittel", beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct the purchase, e.g. work equipment" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Kassenbon liegt – ohne ihn keine Garantie, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the receipt is – no warranty without it" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [gegenstand, haendler, kaufdatum, preis, seriennummer, garantie_bis, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }
@@ -144,10 +144,10 @@
       pflicht: true
       optionen: [Schule, Ausbildung, Studium, Kurs, Sonstige]
     - { key: einrichtung, label: Einrichtung, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Institution" } }  }
-    - { key: von, label: Von, typ: datum, beschriftungen: { en: { label: "From" } }  }
-    - { key: bis, label: Bis, typ: datum, beschriftungen: { en: { label: "Until" } }  }
+    - { key: von, label: Von, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "From" } }  }
+    - { key: bis, label: Bis, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Until" } }  }
     - { key: abschluss, label: Abschluss, typ: text, maxLen: 120, hilfe: "z. B. „Abitur“ oder „Bachelor of Arts“", beschriftungen: { en: { label: "Qualification", hilfe: "e.g. “Abitur” or “Bachelor of Arts”" } }  }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung, beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct costs" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", ausDatum: { datumFeld: bis, zielFeld: jahr }, verweisart: bezug, hilfe: Wenn du Kosten absetzt, z. B. Fortbildung, beschriftungen: { en: { label: "Tax year", hilfe: "If you deduct costs" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo Zeugnisse und Urkunden auf Papier liegen, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where paper certificates are kept" } }  }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [person_verweis, art, einrichtung, von, bis, abschluss, steuerjahr, verbleib_original], beschriftungen: { en: { name: "General" } }  }

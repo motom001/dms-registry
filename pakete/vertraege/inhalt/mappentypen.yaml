@@ -145,6 +145,7 @@
       label: Vertragsende
       beschriftungen: { en: { label: "End of contract", hilfe: "Only for fixed-term contracts with a set end date" } }
       typ: datum
+      erkennung: { art: datum, endeVon: beginn }
       hilfe: Nur bei befristeten Verträgen mit festem Ende
       anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: verlaengerung, op: einerVon, wert: { art: fest, wert: [endet] } } }] }
     - key: kuendigungsfrist

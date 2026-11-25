@@ -6,7 +6,7 @@ schema: 1
 id: finanzen
 name: Finanzen
 herausgeber: app.ablago
-version: 3.1.0
+version: 3.2.0
 beschreibung: Konten, Kontoauszüge samt Jahresbelegen der Bank (Entgeltaufstellung, Steuerbescheinigung), Freistellungsaufträge, Steuerjahre und Steuernachweise (Lohnsteuerbescheinigung, Beitragsbescheinigung, Spendenquittung …) an einem Ort – privat wie im Betrieb. Ablago legt die Unterlagen ab, es bucht nicht.
 autor:
   name: Thomas Meissner
@@ -27,7 +27,7 @@ kurzanleitung:
     - With “used for business”, the tax year also has VAT, trade tax and the annual accounts.
 # 0.285.0: Rundgänge und Tipps (dms-registry #132); darin enthalten Anzeige-Bedingungen mit Merkmal (beruflich) und frist.
 # 0.293.2: Texte der Rundgänge und Tipps in texte/<sprache>/entdecken.json (Ablago #1307)
-dms: ">=0.293.2"
+dms: ">=0.321.0"
 abhaengigkeiten:
   basis: ">=1.7.0"
 inhalt:

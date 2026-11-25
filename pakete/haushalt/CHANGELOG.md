@@ -1,5 +1,9 @@
 # Änderungen
 
+## 5.4.0
+
+- **Steuerjahr aus dem Datum** (dms-registry #261): Anschaffung aus dem Kaufdatum, Bildung aus „Bis“; beide Daten werden aus dem Dokument gelesen. Braucht Ablago ab 0.321.0.
+
 ## 5.3.0
 
 - **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Anschaffung (Kaufmonat), Arbeitsverhältnis (Beginn), Arbeitsmedizin (Datum), Vorsorge. Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.

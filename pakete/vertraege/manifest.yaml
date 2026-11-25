@@ -4,7 +4,7 @@ schema: 1
 id: vertraege
 name: Verträge
 herausgeber: app.ablago
-version: 1.9.0
+version: 1.10.0
 beschreibung: Ein Mappentyp für alle Verträge, zu Hause und im Betrieb. Du trägst ein, was es ist, bei wem und wie lange es läuft – das Paket rechnet aus, bis wann du kündigen musst, und erinnert rechtzeitig.
 autor:
   name: Thomas Meissner
@@ -17,7 +17,7 @@ symbol: file-signature
 # ausführen“ (0.233.0, #1082), Vorbelegen (0.234.0, #1037) und Vorgaben (0.236.0, #1038)
 # 0.245.0: Aktionen im Menü „Mappe“ (DMS #1039); 0.245.3: Bedingungen auf zielOptional-Ziele (DMS #1122) –
 # 0.245.1/0.245.2 lehnten Pakete mit Bedingungen ab; 0.248.0 wie die Pakete, die von Verträge abhängen
-dms: ">=0.248.0"
+dms: ">=0.321.0"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:

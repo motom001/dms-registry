@@ -100,8 +100,8 @@
   felder:
     - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Rental property" } }  }
     - { key: jahr, label: Abrechnungsjahr, typ: text, pflicht: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025", beschriftungen: { en: { label: "Statement year", hilfe: "Four digits, e.g. 2025" } }  }
-    - { key: von, label: Zeitraum von, typ: datum, beschriftungen: { en: { label: "Period from" } }  }
-    - { key: bis, label: Zeitraum bis, typ: datum, beschriftungen: { en: { label: "Period until" } }  }
+    - { key: von, label: Zeitraum von, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Period from" } }  }
+    - { key: bis, label: Zeitraum bis, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Period until" } }  }
     - key: versenden_bis
       label: Versenden bis
       beschriftungen: { en: { label: "Send by", hilfe: "End of the statement period plus twelve months – after that, back claims are usually excluded. The included automation reminds you 60 days before." } }
@@ -112,7 +112,7 @@
     - { key: kosten, label: Umlagefähige Kosten gesamt, typ: betrag, waehrung: EUR, beschriftungen: { en: { label: "Total rechargeable costs" } }  }
     - { key: ergebnis, label: Nachzahlungen/Guthaben gesamt, typ: betrag, waehrung: EUR, hilfe: Summe über alle Mieter – Nachzahlungen positiv, Guthaben negativ. Die Abrechnung je Wohnung liegt als Dokument dabei., beschriftungen: { en: { label: "Total back payments/credits", hilfe: "Sum over all tenants – back payments positive" } }  }
     # Ab 2.0.0 ohne Abhängigkeit von Haushalt: das Steuerjahr, wenn Haushalt installiert ist (zielOptional, DMS #1036).
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, zielOptional: ["finanzen:steuerjahr"], verweisart: bezug, hilfe: Für die Anlage V, beschriftungen: { en: { label: "Tax year", hilfe: "For the rental income form (Anlage V)" } }  }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, zielOptional: ["finanzen:steuerjahr"], ausDatum: { datumFeld: bis, zielFeld: jahr }, verweisart: bezug, hilfe: Für die Anlage V, beschriftungen: { en: { label: "Tax year", hilfe: "For the rental income form (Anlage V)" } }  }
     # Ab 2.0.0: die Rechnungen, die in diese Abrechnung eingeflossen sind (Paket Rechnungen).
     - { key: rechnungen, label: Rechnungen, typ: referenz, ziel: "rechnung_bestellung:rechnung", mehrfach: true, verweisart: bezug, hilfe: Die umgelegten Rechnungen dieses Jahres – Grundsteuer, Versicherung, Müll …, beschriftungen: { en: { label: "Invoices", hilfe: "The recharged invoices of this year – property tax, insurance, waste …" } }  }
   register:
