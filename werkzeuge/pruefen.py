@@ -135,7 +135,9 @@ DMS_ABLAUFVORLAGEN_AB = (0, 256, 0)
 VORLAGEN_KARTEN = {'aufgabe'}
 VORLAGEN_EMPFAENGER = {'frage', 'selbst', 'ersteller', 'feld'}
 KERN_VORLAGEN = {'aufgabe_vergeben', 'erinnern'}
-DANN_KARTEN = {'aufgabe', 'feld', 'stopp', 'zusammenfassung', 'favoriten', 'anmeldeschutz', 'paket'}
+DANN_KARTEN = {'aufgabe', 'feld', 'feld_verknuepft', 'stopp', 'zusammenfassung', 'favoriten', 'anmeldeschutz', 'paket'}
+# „Feld in verknüpfter Mappe setzen“ (DMS #1557)
+DMS_FELD_VERKNUEPFT_AB = (0, 323, 0)
 # Post von Ablago in mitgelieferten Automatisierungen (DMS #1001, Registry #153): wenn.typ dms:post und wenn.angelegt
 # („Mappe gespeichert“ auch beim Anlegen), ab DMS 0.257.0 (DMS shared/src/automatisierung.ts DMS_POST_AUTOMATISIERUNG_AB).
 DMS_POST_AUTOMATISIERUNG_AB = (0, 257, 0)
@@ -954,6 +956,20 @@ def pruefe_automatisierungen(liste: list, typen: dict, paket_id: str, abh: set, 
                 for key in (k.get('werte') or {}):
                     if pruefbar and key not in feldnamen:
                         fehler.append(f'{kw}: Feld „{key}“ gibt es an „{typ}“ nicht')
+            if k['art'] == 'feld_verknuepft':
+                # „Feld in verknüpfter Mappe setzen“ (DMS #1557): ueber ist ein Verweisfeld des auslösenden Typs; die
+                # Zielfelder prüft pakete-pruefen (auch Feldart), hier nur das Grobe.
+                ab = dms_untergrenze(str(dms_bereich or ''))
+                if ab is None or ab < DMS_FELD_VERKNUEPFT_AB:
+                    fehler.append(f'{kw}: „Feld in verknüpfter Mappe setzen“ kennt Ablago erst ab 0.323.0 – bitte dms: ">=0.323.0"')
+                if not typ:
+                    fehler.append(f'{kw}: „Feld in verknüpfter Mappe setzen“ braucht eine Wenn-Karte mit Mappentyp')
+                elif pruefbar and k.get('ueber') not in feldnamen:
+                    fehler.append(f'{kw}: ueber – Feld „{k.get("ueber")}“ gibt es an „{typ}“ nicht')
+                if not k.get('werte'):
+                    fehler.append(f'{kw}: werte fehlen')
+                if k.get('nur_wenn', 'immer') not in ('immer', 'leer', 'spaeter', 'frueher'):
+                    fehler.append(f'{kw}: nur_wenn muss immer, leer, spaeter oder frueher sein')
             if k['art'] == 'aufgabe':
                 if not str(k.get('text') or '').strip():
                     fehler.append(f'{kw}: Text fehlt')

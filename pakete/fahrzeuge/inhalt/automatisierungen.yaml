@@ -6,10 +6,18 @@
   wenn: { art: datum, typ: fahrzeug, feld: hu_faellig, vorlauf: 1, einheit: monate, uhrzeit: "07:00" }
   dann:
     - { art: aufgabe, als: aufgabe, empfaenger: [{ art: feld, feld: verantwortlich, sonst: ersteller }], text: "Für das Fahrzeug {kennzeichen} ({bezeichnung}) wird bald die HU fällig: {datum}." }
-# Ab 2.3.0 (#227). „Nächste HU ans Fahrzeug übernehmen“ folgt, sobald Ablago ein Feld in einer verknüpften Mappe setzen kann (dms #1557).
+# Ab 2.3.0 (#227).
 - schluessel: nachpruefung
   name: Nachprüfung der HU
   beschreibung: Eine Woche vor dem Termin für die Nachprüfung nach erheblichen oder gefährlichen Mängeln.
   wenn: { art: datum, typ: hauptuntersuchung, feld: nachpruefung_bis, vorlauf: 7, einheit: tage, uhrzeit: "07:00" }
   dann:
     - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Nachprüfung der HU bis {datum}: {titel}" }
+# Ab 2.6.0 (#227, dms #1557): „Nächste HU“ aus dem Prüfbericht als „HU fällig“ ans Fahrzeug – nur, wenn das Datum später ist.
+- schluessel: hu_ans_fahrzeug
+  name: Nächste HU ans Fahrzeug übernehmen
+  beschreibung: Aus dem Prüfbericht kommt „Nächste HU“ als „HU fällig“ ans Fahrzeug – nur, wenn das Datum später ist als das eingetragene.
+  eingeschaltet: true
+  wenn: { art: mappe.geaendert, typ: hauptuntersuchung, felder: [naechste_hu], angelegt: true }
+  dann:
+    - { art: feld_verknuepft, ueber: fahrzeug, werte: { hu_faellig: "{naechste_hu}" }, nur_wenn: spaeter }

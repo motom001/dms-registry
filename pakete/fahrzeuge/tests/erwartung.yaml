@@ -3,5 +3,5 @@ mappentypen: [fahrzeug, hauptuntersuchung]
 sichten: [fahrzeuge, hu_faellig, hauptuntersuchungen]
 beispiele: 5
 wortlisten: 5
-automatisierungen: 2
+automatisierungen: 3
 vorgaben: 2

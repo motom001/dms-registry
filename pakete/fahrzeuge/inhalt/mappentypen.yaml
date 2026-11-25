@@ -93,7 +93,7 @@
       frist: { vorlauf: 7, einheit: tage }
       anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: ergebnis, op: einerVon, wert: { art: fest, wert: [erhebliche Mängel, gefährliche Mängel] } } }] }
     - { key: maengel, label: Mängel, typ: langtext, hilfe: Wie im Prüfbericht, beschriftungen: { en: { label: "Defects", hilfe: "As in the report" } } }
-    - { key: naechste_hu, label: Nächste HU, typ: datum, hilfe: "Von der Plakette – der Monat genügt, dann den Monatsersten. Trag es auch am Fahrzeug unter „HU fällig“ ein.", beschriftungen: { en: { label: "Next inspection", hilfe: "From the sticker – the month is enough, then use the first. Enter it on the vehicle under “MOT due” too." } } }
+    - { key: naechste_hu, label: Nächste HU, typ: datum, hilfe: "Von der Plakette – der Monat genügt, dann den Monatsersten. Die Automatisierung „Nächste HU ans Fahrzeug übernehmen“ trägt es am Fahrzeug unter „HU fällig“ ein.", beschriftungen: { en: { label: "Next inspection", hilfe: "From the sticker – the month is enough, then use the first. The automation “Copy next inspection to the vehicle” enters it on the vehicle under “MOT due”." } } }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, geprueft_am, pruefstelle, pruefbericht_nr, kilometerstand, ergebnis, nachpruefung_bis, maengel, naechste_hu], beschriftungen: { en: { name: "General" } } }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
