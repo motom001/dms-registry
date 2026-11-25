@@ -29,7 +29,7 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 
 **Ansichten:** *Fahrzeuge* und darunter *HU fällig* – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist – sowie *Hauptuntersuchungen*. Fahrzeuge außer Betrieb zeigen *Fahrzeuge* und *HU fällig* nicht.
 
-**Gleichbedeutende Wörter für die Suche:** *Kfz, Auto, PKW, Fahrzeug* · *HU, Hauptuntersuchung, TÜV* · *Fahrzeugbrief, Zulassungsbescheinigung Teil II* · *Fahrzeugschein, Zulassungsbescheinigung Teil I* · *Werkstattrechnung, Reparaturrechnung*. Sie stehen in Ablago unter Werkbank → Suche.
+**Gleichbedeutende Wörter für die Suche:** *Kfz, Auto, PKW, Fahrzeug* · *HU, Hauptuntersuchung, TÜV* · *Fahrzeugbrief, Zulassungsbescheinigung Teil II* · *Fahrzeugschein, Zulassungsbescheinigung Teil I* · *Werkstattrechnung, Reparaturrechnung*. Sie stehen in Ablago unter Werkbank → Pakete → Text aus PDF und Texterkennung.
 
 **Beispiele (optional):** das Familienauto der Familie Muster mit seiner Kfz-Versicherung (ein Vertrag) und zwei Werkstattrechnungen (Rechnungen, die das Auto betreffen) sowie eine Hauptuntersuchung mit geringen Mängeln. Halter, Werkstatt und Ablageort „Safe“ setzt du selbst.
 

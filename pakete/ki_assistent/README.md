@@ -35,7 +35,7 @@ Den Knopf **Aus Dokument ausfüllen** gibt es in jeder Mappe. Normalerweise fül
 
 Ab 1.3.0 (Ablago 0.226.0) hilft der Dienst auf der Seite **Dokument übernehmen** bei **Wohin gehört das?**, wenn das Paket als Standard für *Aus Dokument ausfüllen* gewählt ist (siehe oben):
 
-1. **Ablago** gibt dem Paket den **Anfang des Dokuments** (höchstens 6 000 Zeichen) und die **Mappentypen zur Wahl** mit Name, Kurzbeschreibung und „Woran man ihn erkennt“ – nur Typen, die man aus Post anlegen kann, in denen die Person anlegen darf und die für KI-Dienste zugelassen sind. **Keine Mappen.** Liegt das Dokument in einem Mappentyp, der nicht zugelassen ist, fragt Ablago den Dienst gar nicht.
+1. **Ablago** gibt dem Paket den **Anfang des Dokuments** (höchstens 6 000 Zeichen) und die **Mappentypen zur Wahl** mit Name, Kurzbeschreibung und „Woran man ihn erkennt“ – nur Typen, die man aus Post anlegen kann, in denen die Person anlegen darf und die unter **Was Ablago darf** für Dienste im Netz nicht ausgenommen sind. **Keine Mappen.** Liegt das Dokument in einem ausgenommenen Bereich, fragt Ablago den Dienst gar nicht.
 2. Das Paket nummeriert die Typen (1, 2, 3 …) und schickt dem Dienst Hinweis, Text (abgegrenzt als Daten) und die Liste getrennt davon. Die Antwort ist nach JSON Schema fest: höchstens drei Kennungen aus der Liste mit Sicherheit (0–1), kurzer Begründung und einem wörtlichen Zitat.
 3. Das Paket übersetzt die Kennungen zurück und verwirft alles andere; **Ablago prüft noch einmal** – auch, dass das Zitat im Dokument steht – und verbindet das Ergebnis mit eigenen Hinweisen (Überschrift im Text, wiedergefundene Mappen, ähnliche Dokumente) zu **einem** Vorschlag.
 4. Antwortet der Dienst nicht (höchstens 40 Sekunden) oder unbrauchbar, schlägt Ablago den Typ ohne ihn vor. Ausschalten lässt es sich in den Einstellungen (**Für „Wohin gehört das?“ nutzen**).
@@ -127,6 +127,9 @@ Ohne eigenen KI-Rechner geht es auch mit **Claude** von Anthropic. Dann verlasse
 3. **Speichern** – Ablago fragt „Daten an diese Adresse schicken?“. Mit **Adresse bestätigen und speichern** gilt die Adresse; erst dann darf das Paket dorthin.
 4. **Verbindung testen**: Das Paket fragt den Dienst nach seinen Modellen und stellt eine kurze Probefrage. Die Meldung sagt, ob der Dienst erreichbar ist, ob das Modell da ist (sonst: welche es gibt) und wie lange eine Antwort dauerte.
 
+
+
+**Was der Anbieter mit den Daten tut:** Bei einem eigenen Dienst (Ollama & Co.) bleibt alles bei dir. Bei Claude gehen die Ausschnitte an Anthropic; was Anthropic damit tut – wie lange Anfragen gespeichert werden und ob sie zum Training dienen – regeln die [Bedingungen von Anthropic](https://www.anthropic.com/legal). Lies sie vor dem Einrichten, und nimm Bereiche, die das Haus nicht verlassen sollen, unter **Was Ablago darf** aus.
 
 ## Welches Modell?
 

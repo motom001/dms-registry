@@ -17,7 +17,7 @@ Es läuft im **Paket-Läufer** von Ablago: abgeschottet, ohne Netz, mit Grenzen 
    | BMP | **PNG** | verlustfrei |
 
 3. Ablago macht aus der Fassung das Vorschaubild und den Volltext. Am Dokument steht dann z. B. „Texterkennung durch Paket Texterkennung 2.0.0“ und „aus der umgewandelten Fassung (Bildformate 1.0.0)“ mit **Fassung ansehen**; das Vorschaubild hat den Hinweis „Vorschau aus der umgewandelten Fassung eines Pakets“; in der Historie der Mappe „umgewandelte Fassung erstellt – TIFF → PDF (Bildformate 1.0.0)“.
-4. **Vorhandene Dateien:** Beim Installieren gibt Ablago alle vorhandenen TIFF-, WebP-, GIF- und BMP-Dateien an das Paket. Später holt **Werkbank → Wartungsoperationen → Vorschaubilder nachholen** fehlende Fassungen nach (etwa nach einer Wiederherstellung – Fassungen gehen nicht in die Sicherung).
+4. **Vorhandene Dateien:** Beim Installieren gibt Ablago alle vorhandenen TIFF-, WebP-, GIF- und BMP-Dateien an das Paket. Später holt **Werkbank → Pakete → Text aus PDF und Texterkennung → Wartungsoperationen → Vorschaubilder nachholen** fehlende Fassungen nach (etwa nach einer Wiederherstellung – Fassungen gehen nicht in die Sicherung).
 
 Kann das Paket eine Datei nicht lesen (beschädigt, unbekannte Variante), steht der Grund am Dokument („Umwandlung durch Paket Bildformate: TIFF lässt sich nicht lesen: …“).
 

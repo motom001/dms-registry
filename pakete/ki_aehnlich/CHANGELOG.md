@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.1.3
+
+- README: Das Paket arbeitet nur hier – die Ausnahmen für Dienste im Netz gelten für es nicht (dms-registry #262).
+
 ## 1.1.2
 
 - Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).

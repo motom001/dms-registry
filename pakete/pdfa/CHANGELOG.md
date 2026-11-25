@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.3.3
+
+- Wege in der Werkbank aktualisiert: *Werkbank → Pakete → Text aus PDF und Texterkennung* bzw. *→ Archivfassung (PDF/A)* (dms-registry #262).
+
 ## 1.3.2
 
 - Kurzbeschreibung in Alltagssprache, ohne Fachwörter (dms-registry #80).

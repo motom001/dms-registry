@@ -4,7 +4,7 @@
 schema: 1
 id: ki_assistent
 name: KI-Assistent
-version: 1.5.1
+version: 1.5.2
 beschreibung: Beantwortet Fragen an deine Ablage, füllt Felder aus Dokumenten aus und schlägt vor, wohin neue Post gehört. Dafür brauchst du einen KI-Dienst, den du selbst wählst, z. B. Ollama auf deinem Heimserver – das Paket stellt nur die Verbindung her.
 autor:
   name: Thomas Meissner
@@ -111,7 +111,7 @@ code:
           laenge_max: 1000
           hilfe: Zusätzliche Hinweise für das Ausfüllen, z. B. „Beträge immer brutto angeben.“ Sie kommen zum Hinweis von Ablago dazu; das Antwortformat bleibt fest, und der Text des Dokuments gilt weiter nur als Daten. Höchstens 1 000 Zeichen.
     - abschnitt: Wohin gehört das?
-      hilfe: Auf der Seite „Dokument übernehmen“ schlägt der KI-Dienst vor, zu welchem Mappentyp neue Post gehört – nur, wenn das Paket oben unter „Aus Dokument ausfüllen“ als Standard für alle Mappentypen gewählt ist. Der Dienst bekommt den Anfang des Dokuments und Name, Kurzbeschreibung und „Woran man ihn erkennt“ der Mappentypen, die für KI-Dienste zugelassen sind – keine Mappen. Antwortet er nicht oder unbrauchbar, schlägt Ablago den Typ ohne ihn vor.
+      hilfe: Auf der Seite „Dokument übernehmen“ schlägt der KI-Dienst vor, zu welchem Mappentyp neue Post gehört – nur, wenn das Paket oben unter „Aus Dokument ausfüllen“ als Standard für alle Mappentypen gewählt ist. Der Dienst bekommt den Anfang des Dokuments und Name, Kurzbeschreibung und „Woran man ihn erkennt“ der Mappentypen, die unter „Was Ablago darf“ für Dienste im Netz nicht ausgenommen sind – keine Mappen. Antwortet er nicht oder unbrauchbar, schlägt Ablago den Typ ohne ihn vor.
       felder:
         - schluessel: klassifizieren
           name: Für „Wohin gehört das?“ nutzen

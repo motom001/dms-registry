@@ -6,7 +6,7 @@ id: texterkennung.ukr
 ersetzt: texterkennung_ukr
 herausgeber: app.ablago
 name: Texterkennung – Zusatzsprache Ukrainisch
-version: 1.1.0
+version: 1.1.1
 beschreibung: Zusatzsprache Ukrainisch für das Grundpaket Texterkennung – damit auch ukrainische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
 autor:
   name: Thomas Meissner

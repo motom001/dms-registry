@@ -52,6 +52,23 @@ class Stufe(unittest.TestCase):
         self.assertEqual(sorted(k for k, m in manifeste.items() if katalog.paket_stufe(m) == 'netz'), ['ki_assistent', 'sicherung_webdav'])
 
 
+
+class EmpfohlenOhneFestesNetz(unittest.TestCase):
+    """In werkzeuge/empfohlen.yaml kein Paket mit fest eingebautem Ziel im Internet (code.netz) – Ablago übernimmt
+    Empfehlungen bei der Einrichtung ohne Haken; „von sich aus keine Verbindung“ soll wahr bleiben (Sicherheit,
+    Prüfung Handbuch 13.4 M, Registry #262). Pakete, die nur mit einer selbst eingetragenen Dienst-Adresse
+    hinausgehen, sind erlaubt."""
+
+    def test_empfohlen(self):
+        liste = yaml.safe_load((katalog.WURZEL / 'werkzeuge' / 'empfohlen.yaml').read_text(encoding='utf-8')) or []
+        mit_netz = []
+        for pid in liste:
+            m = katalog.WURZEL / 'pakete' / str(pid) / 'manifest.yaml'
+            if m.exists() and ((yaml.safe_load(m.read_text(encoding='utf-8')) or {}).get('code') or {}).get('netz'):
+                mit_netz.append(pid)
+        self.assertEqual(mit_netz, [])
+
+
 if __name__ == '__main__':
     unittest.main()
 

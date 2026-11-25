@@ -6,7 +6,7 @@ id: texterkennung.por
 ersetzt: texterkennung_por
 herausgeber: app.ablago
 name: Texterkennung – Zusatzsprache Portugiesisch
-version: 1.1.0
+version: 1.1.1
 beschreibung: Zusatzsprache Portugiesisch für das Grundpaket Texterkennung – damit auch portugiesische Briefe und Scans durchsuchbar werden. Enthält nur die Sprachdaten (tessdata_fast), ohne eigene Rechte, ohne Netz.
 autor:
   name: Thomas Meissner

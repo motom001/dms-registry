@@ -169,6 +169,8 @@ kurzanleitung:
 
 Under Workbench → Packages, Ablago first shows **“Recommended for you”** (motom001/dms#1048). The list is in `werkzeuge/empfohlen.yaml` and ends up as `empfohlen` at the top of `katalog.json` (#198), in the same order as “To get started” on the catalogue website. There is **one** list for everyone.
 
+**No fixed internet targets in the recommendation:** During setup Ablago takes recommended packages without a tick. So `empfohlen.yaml` contains no package with `code.netz`; packages that only go out to a service address you enter yourself (e.g. WebDAV backup target) are allowed. A test checks this (Registry #262).
+
 If a package only suits a particular use, it says so itself:
 
 ```yaml

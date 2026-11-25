@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.5.2
+
+- Wortlaut „Dienste im Netz“ statt „für KI-Dienste zugelassen“; README sagt, was der Anbieter mit den Daten tut, mit Link zu den Bedingungen von Anthropic (dms-registry #262).
+
 ## 1.5.1
 
 - **Zeitgrenze verständlich** (dms-registry #241): Am Feld steht der erlaubte Bereich „10–55 Sekunden“, die Hilfe nennt keine weiteren Zahlen mehr. Vorgabe (50), Prüfung und Text passen zusammen.
