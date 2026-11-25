@@ -319,8 +319,9 @@
           "items": {
             "type": "object", "required": ["art"], "additionalProperties": false,
             "properties": {
-              "art": { "enum": ["aufgabe", "feld", "stopp", "zusammenfassung", "favoriten", "anmeldeschutz", "paket"], "description": "paket: „Paket nach Zeitplan ausführen“ (DMS #1082, ab 0.233.0) – nur mit wenn: zeitplan, ruft nur das eigene Paket auf" }, "aufgabe": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$", "description": "Nur bei art paket: Kennung, die das Paket im Ereignis zeitplan.ausgefuehrt bekommt (z. B. taeglich, monatlich)" }, "was": { "enum": ["sammel", "konto"] }, "als": { "enum": ["aufgabe", "benachrichtigung"] },
+              "art": { "enum": ["aufgabe", "feld", "feld_verknuepft", "stopp", "zusammenfassung", "favoriten", "anmeldeschutz", "paket"], "description": "feld_verknuepft: „Feld in verknüpfter Mappe setzen“ (DMS #1557, ab 0.323.0) – ueber ist das Verweisfeld, werte Felder des Zieltyps, nur_wenn immer/leer/spaeter/frueher. paket: „Paket nach Zeitplan ausführen“ (DMS #1082, ab 0.233.0) – nur mit wenn: zeitplan, ruft nur das eigene Paket auf" }, "aufgabe": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,39}$", "description": "Nur bei art paket: Kennung, die das Paket im Ereignis zeitplan.ausgefuehrt bekommt (z. B. taeglich, monatlich)" }, "was": { "enum": ["sammel", "konto"] }, "als": { "enum": ["aufgabe", "benachrichtigung"] },
               "text": { "type": "string", "maxLength": 2000 }, "faellig": { "type": ["integer", "null"] }, "werte": { "type": "object" },
+              "ueber": { "type": "string" }, "nur_wenn": { "enum": ["immer", "leer", "spaeter", "frueher"] },
               "vorgabe": { "type": "boolean", "description": "favoriten (DMS #1001): false = neue Benutzer zunächst ohne Benachrichtigung" },
               "empfaenger": { "type": "array", "items": { "type": "object", "required": ["art"], "additionalProperties": false,
                 "properties": { "art": { "type": "string" }, "feld": { "type": "string" }, "sonst": { "enum": ["ersteller"] } } } }

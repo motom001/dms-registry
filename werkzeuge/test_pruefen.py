@@ -1266,6 +1266,27 @@ class ErkennbarAnOffiziell(unittest.TestCase):
         self.assertEqual(zu_lang, [], 'länger als 200 Zeichen (die Klassifizierung nutzt nur 200)')
 
 
+
+class FeldVerknuepft(unittest.TestCase):
+    """Dann-Karte „Feld in verknüpfter Mappe setzen“ (DMS #1557, Registry #227)."""
+
+    TYPEN = {'hu': [{'key': 'fahrzeug', 'typ': 'referenz'}, {'key': 'naechste', 'typ': 'datum'}]}
+    AUTO = [{'schluessel': 'a', 'name': 'A', 'wenn': {'art': 'mappe.geaendert', 'typ': 'hu', 'felder': ['naechste']},
+             'dann': [{'art': 'feld_verknuepft', 'ueber': 'fahrzeug', 'werte': {'faellig': '{naechste}'}, 'nur_wenn': 'spaeter'}]}]
+
+    def test_gueltig(self):
+        f = pruefen.pruefe_automatisierungen(self.AUTO, self.TYPEN, 'p', set(), '>=0.323.0')
+        self.assertFalse([x for x in f if 'dann' in x], f)
+
+    def test_fehler(self):
+        import copy
+        a = copy.deepcopy(self.AUTO)
+        a[0]['dann'][0].update(ueber='fehlt', nur_wenn='bald')
+        f = ' '.join(pruefen.pruefe_automatisierungen(a, self.TYPEN, 'p', set(), '>=0.300.0'))
+        for teil in ('0.323.0', 'ueber', 'nur_wenn'):
+            self.assertIn(teil, f)
+
+
 if __name__ == '__main__':
     unittest.main()
 
