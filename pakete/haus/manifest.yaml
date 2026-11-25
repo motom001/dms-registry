@@ -3,7 +3,7 @@ schema: 1
 id: haus
 name: Haus
 herausgeber: app.ablago
-version: 1.7.0
+version: 1.8.0
 beschreibung: Immobilie, Wartungen und Zählerstände – damit Heizung, Schornstein und Rauchmelder rechtzeitig gewartet werden und der Verbrauch im Blick bleibt.
 autor:
   name: Thomas Meissner

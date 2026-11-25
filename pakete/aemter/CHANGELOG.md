@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.3.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt. Widerspruch und Ausweis lesen Art, Nummer und Daten aus dem Dokument.
+
 ## 1.2.0
 
 - **Zeitraum am Bescheid** (dms-registry #261): Steht „gilt vom … bis …“ im Bescheid, landen die Daten in „Gilt ab“ und „Gilt bis“. Braucht Ablago ab 0.321.0.

@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.4.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt.
+
 ## 2.3.0
 
 - **Zeitraum und Steuerjahr** an der Nebenkostenabrechnung (dms-registry #261): „Zeitraum von/bis“ werden aus dem Dokument gelesen („vom … bis …“), das Steuerjahr kommt als Vorschlag aus „Zeitraum bis“. Braucht Ablago ab 0.321.0.

@@ -18,14 +18,15 @@
   name: Arbeitsverhältnis
   mehrzahl: Arbeitsverhältnisse
   beschreibung: Anstellung, Minijob oder Ausbildung – mit Arbeitsvertrag, Gehaltsabrechnungen und Zeugnis.
-  beschriftungen: { en: { name: "Employment", mehrzahl: "Jobs", beschreibung: "Job, mini-job or apprenticeship – with employment contract, payslips and reference." } }
+  beschriftungen: { en: { erkennbarAn: "Employment contract, payslip, reference or notice: employer, personnel number, gross/net, start date, “Entgeltabrechnung”.", name: "Employment", mehrzahl: "Jobs", beschreibung: "Job, mini-job or apprenticeship – with employment contract, payslips and reference." } }
   titelVorlage: "{person_verweis} – {arbeitgeber|kurz:25} – {beginn|jahr}"
+  erkennbarAn: "Arbeitsvertrag, Gehaltsabrechnung, Zeugnis oder Kündigung: Arbeitgeber, Personalnummer, Brutto/Netto, Eintrittsdatum, „Entgeltabrechnung“."
   felder:
     - { key: arbeitgeber, label: Arbeitgeber, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Employer" } }  }
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
-    - { key: taetigkeit, label: Tätigkeit, typ: text, maxLen: 120, beschriftungen: { en: { label: "Job title" } }  }
-    - { key: beginn, label: Beginn, typ: datum, beschriftungen: { en: { label: "Start" } }  }
-    - { key: ende, label: Ende, typ: datum, beschriftungen: { en: { label: "End" } }  }
+    - { key: taetigkeit, label: Tätigkeit, typ: text, erkennung: {}, maxLen: 120, beschriftungen: { en: { label: "Job title" } }  }
+    - { key: beginn, label: Beginn, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Start" } }  }
+    - { key: ende, label: Ende, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "End" } }  }
     - { key: steuerjahr, label: Steuerjahre, typ: referenz, ziel: "finanzen:steuerjahr", mehrfach: true, verweisart: bezug, hilfe: In welchen Steuerjahren es zählt; dort erscheint es unter „Belege“, beschriftungen: { en: { label: "Tax years", hilfe: "Which tax years it counts for; it appears there under “Receipts”" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Arbeitsvertrag auf Papier liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the paper employment contract is kept" } }  }
   register:
@@ -39,8 +40,9 @@
   name: Arbeitsmedizinische Vorsorge
   mehrzahl: Arbeitsmedizinische Vorsorgen
   beschreibung: Vorsorgebescheinigung nach der ArbMedVV – Datum, Anlass, Art und nächster Termin. Eine Mappe je Anlass; Befunde gehören ins Paket Gesundheit.
-  beschriftungen: { en: { name: "Occupational health check", mehrzahl: "Occupational health checks", beschreibung: "Certificate of an occupational health check (German ArbMedVV) – date, reason, type and next appointment. One folder per reason; findings belong in the Health package." } }
+  beschriftungen: { en: { erkennbarAn: "Occupational health certificate under ArbMedVV: “arbeitsmedizinische Vorsorge”, occasion (e.g. screen work), date, next appointment, company doctor.", name: "Occupational health check", mehrzahl: "Occupational health checks", beschreibung: "Certificate of an occupational health check (German ArbMedVV) – date, reason, type and next appointment. One folder per reason; findings belong in the Health package." } }
   titelVorlage: "{anlass} – {person_verweis} – {datum}"
+  erkennbarAn: "Vorsorgebescheinigung nach ArbMedVV: „arbeitsmedizinische Vorsorge“, Anlass (z. B. Bildschirmarbeit, G 37), Datum, nächster Termin, Betriebsarzt."
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } } }
     - { key: arbeitsverhaeltnis, label: Arbeitsverhältnis, typ: referenz, ziel: arbeitsverhaeltnis, verweisart: bezug, hilfe: Die Vorsorge erscheint dort unter „Verknüpfungen“, beschriftungen: { en: { label: "Employment", hilfe: "The check then shows up there under “Links”" } } }
@@ -75,8 +77,9 @@
   name: Vorsorge
   mehrzahl: Vorsorgeverträge
   beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester und Rürup. Bausparverträge sind Konten (Paket Finanzen).
-  beschriftungen: { en: { name: "Pension", mehrzahl: "Pension plans", beschreibung: "State, company and private pensions, Riester and Rürup. Building savings contracts are accounts (Finances package)." } }
+  beschriftungen: { en: { erkennbarAn: "Pension information, annual statement, contract for Riester, Rürup, company or private pension: policy number, guaranteed value, contributions.", name: "Pension", mehrzahl: "Pension plans", beschreibung: "State, company and private pensions, Riester and Rürup. Building savings contracts are accounts (Finances package)." } }
   titelVorlage: "{art} – {person_verweis} – {anbieter|kurz:25}"
+  erkennbarAn: "Renteninformation, Standmitteilung, Vertrag zu Riester, Rürup, Betriebsrente oder privater Rentenversicherung: Vertragsnummer, Garantiewert, Beiträge."
   felder:
     - key: art
       label: Art
@@ -100,8 +103,9 @@
   name: Anschaffung
   mehrzahl: Anschaffungen
   beschreibung: Gekaufte Geräte und Möbel – mit Kassenbon, Garantie und Seriennummer.
-  beschriftungen: { en: { name: "Purchase", mehrzahl: "Purchases", beschreibung: "Appliances and furniture you bought – with receipt, warranty and serial number." } }
+  beschriftungen: { en: { erkennbarAn: "Receipt, proof of purchase, warranty or delivery note for a device or furniture: item, serial number, purchase date, warranty until, retailer.", name: "Purchase", mehrzahl: "Purchases", beschreibung: "Appliances and furniture you bought – with receipt, warranty and serial number." } }
   titelVorlage: "{gegenstand} – {kaufdatum|datum:MM/JJJJ}"
+  erkennbarAn: "Kassenbon, Kaufbeleg, Garantie- oder Lieferschein eines Geräts oder Möbels: Artikel, Seriennummer, Kaufdatum, Garantie bis, Händler."
   felder:
     - { key: gegenstand, label: Gegenstand, typ: text, pflicht: true, maxLen: 120, beschriftungen: { en: { label: "Item" } }  }
     - { key: haendler, label: Händler, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Retailer" } }  }
@@ -133,8 +137,9 @@
   name: Bildung
   mehrzahl: Bildungswege
   beschreibung: Schule, Ausbildung, Studium und Kurse – mit Zeugnissen und Bescheinigungen.
-  beschriftungen: { en: { name: "Education", mehrzahl: "Education records", beschreibung: "School, apprenticeship, university and courses – with certificates and confirmations." } }
+  beschriftungen: { en: { erkennbarAn: "Report, diploma, certificate of attendance or enrolment: school, university, course, grades, “Zeugnis”, period from–to.", name: "Education", mehrzahl: "Education records", beschreibung: "School, apprenticeship, university and courses – with certificates and confirmations." } }
   titelVorlage: "{art} – {person_verweis} – {einrichtung}"
+  erkennbarAn: "Zeugnis, Abschluss, Teilnahme- oder Immatrikulationsbescheinigung: Schule, Hochschule, Kurs, Noten, „Zeugnis“, Zeitraum von–bis."
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
     - key: art

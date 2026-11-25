@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.5.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt.
+
 ## 1.4.0
 
 - **Steuerjahr aus „Bezahlt am“** (dms-registry #261): Für die Steuer zählt der Zahlungstag; Ablago schlägt das Steuerjahr daraus vor. „Bezahlt am“ wird aus dem Dokument gelesen. **Titel ohne Aussteller** (#258): „Rechnung: 03.04.2026 – 214,00 €“ statt „: 03.04.2026 …“, ebenso Bestellung und Lieferschein. Braucht Ablago ab 0.321.0.

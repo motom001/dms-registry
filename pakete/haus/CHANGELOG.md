@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.8.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt. Zählerstand (Zählernummer, Stand, Ablesedatum) und Wartung lesen ihre Angaben aus dem Dokument.
+
 ## 1.7.0
 
 - **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Zählerstand (mit Ablesedatum). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.

@@ -3,7 +3,7 @@ schema: 1
 id: gesundheit
 name: Gesundheit
 herausgeber: app.ablago
-version: 1.1.0
+version: 1.2.0
 beschreibung: 'Gesundheitsunterlagen mit ihrem Verlauf: Behandlungsfälle mit Arztbriefen, Befunden, Therapien und Krankschreibungen, dazu Medikamentenplan, Impfpass, U-Heft und Impfungen.'
 autor:
   name: Thomas Meissner

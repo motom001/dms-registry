@@ -7,8 +7,9 @@
   name: Antrag
   mehrzahl: Anträge
   beschreibung: Was du bei einem Amt beantragt hast – Kindergeld, Elterngeld, Wohngeld, Pflegegrad, BAföG und mehr.
-  beschriftungen: { en: { name: "Application", mehrzahl: "Applications", beschreibung: "What you applied for at an authority – child benefit, parental allowance, housing benefit, care level, student aid and more." } }
+  beschriftungen: { en: { erkennbarAn: "Application form or confirmation of receipt from an authority: child benefit, parental allowance, housing benefit, BAföG, care level; “Antrag auf …”, file number.", name: "Application", mehrzahl: "Applications", beschreibung: "What you applied for at an authority – child benefit, parental allowance, housing benefit, care level, student aid and more." } }
   titelVorlage: "{art} – {behoerde|kurz:25} – {gestellt_am}"
+  erkennbarAn: "Antrag oder Antragsformular an ein Amt: Kindergeld, Elterngeld, Wohngeld, BAföG, Pflegegrad; Felder zum Ausfüllen, „Antrag auf …“, Eingangsbestätigung mit Aktenzeichen."
   felder:
     - { key: behoerde, label: Behörde, typ: referenz, ziel: "basis:organisation", pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Authority" } } }
     - key: art
@@ -43,8 +44,9 @@
   name: Bescheid
   mehrzahl: Bescheide
   beschreibung: Post vom Amt mit Rechtsbehelfsbelehrung – Steuer, Grundsteuer, Kfz-Steuer, Rente, Pflege, Beiträge, Gebühren und mehr.
-  beschriftungen: { en: { name: "Notice", mehrzahl: "Notices", beschreibung: "Official notice from an authority – tax, property tax, vehicle tax, pension, care, contributions, fees and more." } }
+  beschriftungen: { en: { erkennbarAn: "Official notice from an authority: “Bescheid über …”, file number, instructions on legal remedies, objection deadline; e.g. tax, property tax, pension or contribution notice.", name: "Notice", mehrzahl: "Notices", beschreibung: "Official notice from an authority – tax, property tax, vehicle tax, pension, care, contributions, fees and more." } }
   titelVorlage: "{art} – {von|kurz:25} – {bescheid_vom}"
+  erkennbarAn: "Bescheid einer Behörde: „Bescheid über …“, Aktenzeichen, Rechtsbehelfsbelehrung, Einspruchsfrist; z. B. Steuer-, Grundsteuer-, Kfz-Steuer-, Renten- oder Beitragsbescheid."
   felder:
     - key: art
       label: Art
@@ -103,17 +105,19 @@
   name: Widerspruch
   mehrzahl: Widersprüche
   beschreibung: Einspruch beim Finanzamt oder Widerspruch gegen einen Bescheid – mit Frist für die Begründung und Ergebnis.
-  beschriftungen: { en: { name: "Objection", mehrzahl: "Objections", beschreibung: "Objection to the tax office or appeal against a notice – with deadline for the reasons and the result." } }
+  beschriftungen: { en: { erkennbarAn: "Own objection or appeal against an official notice: “Hiermit lege ich Einspruch ein”, file number and date of the notice, reasons; also the authority's reply.", name: "Objection", mehrzahl: "Objections", beschreibung: "Objection to the tax office or appeal against a notice – with deadline for the reasons and the result." } }
   titelVorlage: "{art} {eingelegt_am} – {bescheid|kurz:40}"
+  erkennbarAn: "Eigener Widerspruch oder Einspruch gegen einen Bescheid: „Hiermit lege ich Einspruch ein“, Aktenzeichen und Datum des Bescheids, Begründung; auch die Antwort des Amts darauf."
   felder:
     - key: art
       label: Art
       beschriftungen: { en: { label: "Type", optionen: { "Einspruch beim Finanzamt": "Objection (tax office)", "Widerspruch": "Appeal" } } }
       typ: auswahl
+      erkennung: {}
       pflicht: true
       optionen: [Einspruch beim Finanzamt, Widerspruch]
     - { key: bescheid, label: Gegen Bescheid, typ: referenz, ziel: bescheid, pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Against notice" } } }
-    - { key: eingelegt_am, label: Eingelegt am, typ: datum, max: heute, beschriftungen: { en: { label: "Filed on" } } }
+    - { key: eingelegt_am, label: Eingelegt am, typ: datum, erkennung: { art: datum }, max: heute, beschriftungen: { en: { label: "Filed on" } } }
     - key: begruendung_bis
       label: Begründung nachreichen bis
       beschriftungen: { en: { label: "Send reasons by", hilfe: "If you filed without reasons. The included automation reminds you 7 days before." } }
@@ -142,23 +146,26 @@
   name: Ausweis
   mehrzahl: Ausweise
   beschreibung: Ausweise, die ablaufen – Personalausweis, Reisepass, Führerschein und mehr.
-  beschriftungen: { en: { name: "ID document", mehrzahl: "ID documents", beschreibung: "IDs that expire – identity card, passport, driving licence and more." } }
+  beschriftungen: { en: { erkennbarAn: "Copy of or papers about ID card, passport, driving licence or residence permit: document number, issuing authority, “gültig bis”; also renewal application.", name: "ID document", mehrzahl: "ID documents", beschreibung: "IDs that expire – identity card, passport, driving licence and more." } }
   titelVorlage: "{art} – {person_verweis}"
+  erkennbarAn: "Kopie oder Unterlagen zu Personalausweis, Reisepass, Führerschein oder Aufenthaltstitel: Ausweisnummer, ausstellende Behörde, „gültig bis“; auch Antrag auf Verlängerung."
   felder:
     - key: art
       label: Art
       beschriftungen: { en: { label: "Type", optionen: { "Personalausweis": "ID card", "Reisepass": "Passport", "Kinderreisepass": "Child passport", "Führerschein": "Driving licence", "Sozialversicherungsausweis": "Social security card", "Schwerbehindertenausweis": "Disability card", "Sonstige": "Other" } } }
       typ: auswahl
+      erkennung: {}
       pflicht: true
       optionen: [Personalausweis, Reisepass, Kinderreisepass, Führerschein, Sozialversicherungsausweis, Schwerbehindertenausweis, Sonstige]
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, beschriftungen: { en: { label: "Person" } } }
-    - { key: nummer, label: Nummer, typ: text, maxLen: 60, beschriftungen: { en: { label: "Number" } } }
+    - { key: nummer, label: Nummer, typ: text, erkennung: { art: nummer }, maxLen: 60, beschriftungen: { en: { label: "Number" } } }
     - { key: behoerde, label: Ausstellende Behörde, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Issuing authority" } } }
-    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, beschriftungen: { en: { label: "Issued on" } } }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, erkennung: { art: datum }, max: heute, beschriftungen: { en: { label: "Issued on" } } }
     - key: ende
       label: Gültig bis
       beschriftungen: { en: { label: "Valid until", hilfe: "The included automation reminds you 90 days before – enough time for an appointment at the citizens’ office." } }
       typ: datum
+      erkennung: { art: datum }
       hilfe: Die mitgelieferte Automatisierung erinnert 90 Tage vorher – Zeit genug für einen Termin beim Bürgeramt.
       frist: { vorlauf: 90, einheit: tage }
     - { key: klassen, label: Führerscheinklassen, typ: text, maxLen: 60, hilfe: "z. B. B, BE, A2", anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: art, op: einerVon, wert: { art: fest, wert: [Führerschein] } } }] }, beschriftungen: { en: { label: "Licence categories", hilfe: "e.g. B, BE, A2" } } }
@@ -174,8 +181,9 @@
   name: Urkunde
   mehrzahl: Urkunden
   beschreibung: Urkunden, die für immer gelten – Geburt, Heirat, Scheidung, Taufe, Namensänderung und mehr.
-  beschriftungen: { en: { name: "Certificate", mehrzahl: "Certificates", beschreibung: "Certificates that are valid for ever – birth, marriage, divorce, baptism, change of name and more." } }
+  beschriftungen: { en: { erkennbarAn: "Certificate from the registry office or church: birth, marriage, death or baptism certificate, change of name; “Urkunde”, register number, seal.", name: "Certificate", mehrzahl: "Certificates", beschreibung: "Certificates that are valid for ever – birth, marriage, divorce, baptism, change of name and more." } }
   titelVorlage: "{art} – {personen}"
+  erkennbarAn: "Urkunde vom Standesamt oder der Kirche: Geburts-, Heirats-, Sterbe- oder Taufurkunde, Namensänderung; „Urkunde“, Registernummer, Siegel."
   felder:
     - key: art
       label: Art
@@ -201,8 +209,9 @@
   name: Bescheinigung
   mehrzahl: Bescheinigungen
   beschreibung: Amtliche Nummern und Bescheinigungen – Steuer-ID, Meldebescheinigung, Rentenversicherungsnummer und mehr.
-  beschriftungen: { en: { name: "Official record", mehrzahl: "Official records", beschreibung: "Official numbers and certificates – tax ID, certificate of registration, pension insurance number and more." } }
+  beschriftungen: { en: { erkennbarAn: "Official certificate with a number: notice of tax ID, registration certificate, social insurance card, pension insurance number.", name: "Official record", mehrzahl: "Official records", beschreibung: "Official numbers and certificates – tax ID, certificate of registration, pension insurance number and more." } }
   titelVorlage: "{art} – {person_verweis}"
+  erkennbarAn: "Amtliche Bescheinigung mit einer Nummer: Mitteilung der Steuer-ID, Meldebescheinigung, Sozialversicherungsausweis, Rentenversicherungsnummer."
   felder:
     - key: art
       label: Art

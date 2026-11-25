@@ -1246,6 +1246,26 @@ class Zeitraum(unittest.TestCase):
         self.assertEqual(len(fehler), 3, fehler)
 
 
+
+class ErkennbarAnOffiziell(unittest.TestCase):
+    """Jeder Mappentyp der offiziellen Pakete, der aus Post kommen kann, sagt, woran man ihn erkennt (Registry #254)."""
+
+    def test_alle_typen(self):
+        fehlt, zu_lang = [], []
+        for datei in sorted((WURZEL / 'pakete').glob('*/inhalt/mappentypen.yaml')):
+            for t in yaml.safe_load(datei.read_text(encoding='utf-8')) or []:
+                if t.get('inSuche') is False or t.get('ausPost') is False or t.get('gehoertZu'):
+                    continue
+                name = f'{datei.parent.parent.name}:{t["schluessel"]}'
+                texte = [t.get('erkennbarAn'), ((t.get('beschriftungen') or {}).get('en') or {}).get('erkennbarAn')]
+                if not all(texte):
+                    fehlt.append(name)
+                elif any(len(x) > 200 for x in texte):
+                    zu_lang.append(name)
+        self.assertEqual(fehlt, [], 'ohne erkennbarAn (de/en)')
+        self.assertEqual(zu_lang, [], 'länger als 200 Zeichen (die Klassifizierung nutzt nur 200)')
+
+
 if __name__ == '__main__':
     unittest.main()
 

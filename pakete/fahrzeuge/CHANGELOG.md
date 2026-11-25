@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.5.0
+
+- **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt.
+
 ## 2.4.0
 
 - **Sprechendere Titel** (dms-registry #256, Thomas 24.11.2026): Hauptuntersuchung (Monat/Jahr, Ergebnis). Lange Namen werden auf 25 Zeichen gekürzt. Gilt für neue Installationen – Ablago übernimmt eine geänderte Titel-Vorlage beim Update nicht.
