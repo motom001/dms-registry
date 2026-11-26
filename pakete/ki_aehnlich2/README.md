@@ -1,21 +1,21 @@
 # KI lokal – Ähnlichkeit Stufe 2
 
-Das Paket **KI lokal – Ähnlichkeit Stufe 2** kann dasselbe wie [KI lokal – Ähnlichkeit](../ki_aehnlich/README.md): **ähnliche Dokumente** finden, **mit eigenen Worten** suchen und bei neuer Post vorschlagen, **wohin sie gehört**. Es rechnet aber mit einem **genaueren Modell** (dem Transformer multilingual-e5-small statt eines statischen Modells). Bei der Suche findet es das richtige Dokument deutlich öfter, und es ordnet neue Post besser zu. Dafür braucht es mehr Rechenzeit. Auch dieses Paket rechnet im **Paket-Läufer** von Ablago, **ohne Netz** und ohne zusätzlichen Dienst. Deine Daten verlassen Ablago nicht.
+Das Paket **KI lokal – Ähnlichkeit Stufe 2** kann dasselbe wie [KI lokal – Ähnlichkeit](../ki_aehnlich/README.md): **ähnliche Dokumente** finden, **mit eigenen Worten** suchen und bei neuer Post vorschlagen, **wohin sie gehört**. Es rechnet aber mit einem **genaueren Modell** (dem Transformer multilingual-e5-small statt eines statischen Modells). Vor allem die Suche „mit eigenen Worten“ findet das richtige Dokument öfter. Bei „Wohin gehört das?“ ist es kaum besser. Dafür braucht es deutlich mehr Rechenzeit. Auch dieses Paket rechnet im **Paket-Läufer** von Ablago, **ohne Netz** und ohne zusätzlichen Dienst. Deine Daten verlassen Ablago nicht.
 
 **Nimm entweder dieses Paket oder KI lokal – Ähnlichkeit, nicht beide.** Solange Ablago noch keine Wahl dafür hat (motom001/dms#1707), nimmt es bei zwei installierten Paketen das erste nach Id, also KI lokal – Ähnlichkeit.
 
 | | KI lokal – Ähnlichkeit | **Stufe 2** |
 | --- | --- | --- |
-| Suche: richtiges Dokument unter den ersten 5 | 62 % | **93 %** |
-| „Wohin gehört das?“: richtiger Mappentyp vorn | 59 % | **72 %** |
-| dazu 200 Kontoauszüge: richtig / Kontoauszug fälschlich vorn | 51 % / 80 | **68 % / 16** |
-| Rechenzeit je Dokument (PC, im Modul, mit Laden des Modells) | unter 0,1 s | 0,2–0,8 s |
+| Suche: richtiges Dokument unter den ersten 5 (echte Volltexte) | 64 % | **70–76 %** |
+| „Wohin gehört das?“: richtiger Mappentyp vorn (Prüfstand, Lernlauf) | 61,6 % | 63,2 % |
+| dazu 200 Kontoauszüge: Kontoauszug fälschlich vorn (echte Volltexte) | 46 | **14–23** |
+| Rechenzeit je Dokument (PC, im Modul, mit Laden des Modells) | unter 0,1 s | 0,3–0,8 s |
 | Suchbegriff | unter 0,1 s | ≈ 0,1 s |
 | Größe | 28 MB | 84 MB |
 
-Gemessen am privaten Satz „Lebensläufe“ (526 Dokumente aus elf Haushalten, siehe [Messung](#messung)).
+Gemessen am privaten Satz „Lebensläufe“ (siehe [Messung](#messung)).
 
-**Wann Stufe 2?** Wenn Ablago auf einem PC, einem NAS mit x86-Prozessor oder einem Raspberry Pi 5 läuft und dir die Suche „mit eigenen Worten“ wichtig ist. Beim Installieren rechnet Ablago den Bestand einmal durch. Auf einem Raspberry Pi kann das bei einigen tausend Dokumenten Stunden dauern, die Werkbank zeigt den Fortschritt. Neue Post braucht danach je Dokument etwa eine Sekunde, im Hintergrund.
+**Wann Stufe 2?** Wenn Ablago auf einem PC, einem NAS mit x86-Prozessor oder einem Raspberry Pi 5 läuft und dir die Suche „mit eigenen Worten“ wichtig ist. Für „Wohin gehört das?“ allein lohnt sie sich nicht. Beim Installieren rechnet Ablago den Bestand einmal durch. Auf einem Raspberry Pi kann das bei einigen tausend Dokumenten Stunden dauern, die Werkbank zeigt den Fortschritt. Neue Post braucht danach je Dokument etwa eine Sekunde, im Hintergrund.
 
 In Ablago siehst du danach dasselbe wie bei KI lokal – Ähnlichkeit:
 
@@ -64,6 +64,17 @@ Weil nur der Anfang zählt, entscheidet bei langen Dokumenten die erste Seite. F
 | multilingual-e5-small, 512 Wortteile | 113 MB | 67 % | 91 % | 256 Wortteile sind gleich gut und halb so teuer |
 
 ## Messung
+
+**Wichtig:** Am reinen Inhalt der Dokumente (ohne Briefkopf und Anschrift) war e5 viel besser: „Wohin gehört das?“ 72 statt 59 %, Suche 93 statt 62 %. An den **echten Volltexten** schrumpft der Abstand. Briefkopf, Anschrift und Fußzeile füllen einen großen Teil der ersten 256 Wortteile, und die eigene Anschrift steht auf fast jedem Brief. 512 Wortteile oder mehrere Abschnitte gemittelt helfen nicht (gemessen).
+
+| | Stufe 1 | Stufe 2 |
+| --- | ---: | ---: |
+| Prüfstand, Lernlauf, Ablago 0.330.1, 541 Dokumente: Mappentyp Platz 1 | 61,6 % | 63,2 % |
+| dabei Ähnlichkeit richtig vorn (von rund 470 Vorschlägen) | 65,6 % | 64,2 % |
+| offline, echte Volltexte (424 Dokumente): „Wohin gehört das?“ richtig vorn | 64,0 % | 64,6 % |
+| offline, echte Volltexte: mit 200 Kontoauszügen fälschlich vorn | 46 | 14 |
+| offline, echte Volltexte: Suche Top 5 | 64,2 % | 75,9 % |
+| offline, nur Inhalt (526 Dokumente): „Wohin gehört das?“ / Suche Top 5 | 59,1 % / 62,2 % | 71,6 % / 92,8 % |
 
 Am privaten Satz „Lebensläufe“ (motom001/demo_lebenslaeufe), offline mit den Werkzeugen aus `../ki_aehnlich/tests/modellvergleich/`:
 - **„Wohin gehört das?“** wie im Lernlauf des Prüfstands: Die Dokumente kommen der Reihe nach, jedes sieht die Mappen davor.
