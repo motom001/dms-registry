@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.1
+
+- **Modellvergleich** (dms-registry #242): Messtabelle im README unter „Das Modell“: das heutige Modell mit 256, 512 und 1024 Dimensionen, potion-multilingual-128M und multilingual-e5-small am Satz „Lebensläufe“. Das Modell bleibt; Messwerkzeug in `tests/modellvergleich/`.
+
 ## 1.2.0
 
 - **Wohin gehört das? – Nähe statt Menge** (dms-registry #265): Das Paket schlägt den Mappentyp vor, dem das Dokument am **ähnlichsten** ist, nicht mehr den, von dem es die meisten ähnlichen Mappen gibt. Je Typ zählen die drei nächsten Mappen (die zweite halb, die dritte ein Viertel); eine sehr nahe Mappe schlägt viele mittelmäßige. So gewinnt ein großer Typ wie Kontoauszug nicht mehr gegen die eine fast gleiche Mappe eines seltenen Typs.

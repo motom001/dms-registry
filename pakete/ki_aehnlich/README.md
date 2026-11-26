@@ -59,6 +59,18 @@ Im Paket stecken die ersten **256 von 1024 Dimensionen**, auf 8 Bit gerundet: 28
 | potion-multilingual-128M (statisch) | MIT | ≈ 128 MB | 500 000 Wortteile – zu groß |
 | **static-similarity-mrl-multilingual-v1** | **Apache-2.0** | **28 MB** (256 Dim.) | gewählt |
 
+**Gemessen (dms-registry #242, 26.11.2026):** am privaten Satz „Lebensläufe“ (526 Dokumente aus elf Haushalten, Mappen und Typen bekannt), offline mit `tests/modellvergleich/`. „Wohin gehört das?“ wie im Lernlauf des Prüfstands: Dokumente der Reihe nach, jedes sieht die Mappen davor; gerechnet mit diesem Paket (1.2.0), die Ähnlichkeiten der anderen Modelle auf die Verteilung des heutigen Modells umgerechnet, damit dieselben Schwellen gelten. Suche: der Titel des Dokuments als Suchbegriff, Treffer unter den ersten 5.
+
+| Modell | Größe im Paket | nächstes Dokument, richtiger Typ | „Wohin gehört das?“ richtig vorn | dazu 200 Kontoauszüge: richtig / Kontoauszug fälschlich vorn | Suche unter den ersten 5 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| **static-similarity-mrl, 256 Dim. (im Paket)** | **28 MB** | **64,4 %** | **59,1 %** | **50,8 % / 80** | **62,2 %** |
+| static-similarity-mrl, 512 Dim. | ≈ 55 MB | 64,2 % | 59,3 % | 52,0 % / 71 | 66,2 % |
+| static-similarity-mrl, 1024 Dim. | ≈ 110 MB | 65,1 % | 59,0 % | 51,6 % / 65 | 68,4 % |
+| potion-multilingual-128M | ≈ 130 MB | 66,7 % | 59,9 % | 52,9 % / 62 | 72,6 % |
+| multilingual-e5-small (Transformer) | ≈ 118 MB | 70,9 % | 67,2 % | 62,3 % / 25 | 91,4 % |
+
+Die statischen Modelle liegen bei „Wohin gehört das?“ innerhalb eines Prozentpunkts; mehr Dimensionen oder potion helfen vor allem der Suche, kosten aber das Vier- bis Fünffache an Platz und passen nicht unter 32 MB je Paket. Deutlich besser ist nur der Transformer multilingual-e5-small (+8 Punkte bei „Wohin gehört das?“, +29 bei der Suche) – er braucht aber eine eigene Rechenmaschine im Paket, ein Vielfaches an Rechenzeit (am Rechner ≈ 80 ms je Dokument statt unter 1 ms, auf einem Raspberry Pi in WebAssembly eher Sekunden) und mehr Platz, als ein Paket heute darf. Deshalb bleibt es bei static-similarity-mrl mit 256 Dimensionen; ein genaueres Modell wäre ein eigenes, wählbares Paket (#243).
+
 **Grenzen:** Ein statisches Modell achtet nicht auf die Reihenfolge der Wörter und erreicht nicht ganz die Qualität eines Transformers wie multilingual-e5-small. Die Modellkarte nennt es ausdrücklich für Ähnlichkeit, nicht für Suche über lange Dokumente. Für „ähnliche Dokumente“ und „mit eigenen Worten suchen“ im Haushalt reicht das; für Fragen an die Ablage kommt Stufe 2 (Adapter zu einem lokalen KI-Dienst, #45).
 
 ## Messung
@@ -87,6 +99,7 @@ Auf einem **Intel N100** erwarten wir ähnliche Werte, also deutlich unter einer
 | [`code/bauen.sh`](code/bauen.sh) | Bau: Modul mit wasi-sdk; Modell von Hugging Face auf einem festen Commit, große Datei gegen die SHA-256 aus ihrem Git-LFS-Zeiger geprüft (feste Prüfsummen lassen sich zusätzlich eintragen) |
 | [`code/json.h`](code/json.h) | kleiner JSON-Leser (wie bei Trennblatt) |
 | [`code/lizenzen/`](code/lizenzen/) | Herkunft und Lizenzen von Modell, Vokabular und Zeichentabellen |
+| [`tests/modellvergleich/`](tests/modellvergleich/) | Modellvergleich #242 am privaten Satz „Lebensläufe“ (offline, nicht in der CI) |
 | [`tests/`](tests/) | `pruefen.sh` ohne Netz (kleines Testmodell, Laufzeit mit Zufallsmodell), `ci.sh` mit dem echten Modell |
 
 ```sh
