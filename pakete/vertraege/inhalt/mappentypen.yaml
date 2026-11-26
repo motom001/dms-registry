@@ -55,9 +55,9 @@
   name: Vertrag
   mehrzahl: Verträge
   beschreibung: Jeder Vertrag mit Laufzeit oder Kündigungsfrist – Strom, Gas, Internet, Handy, Streaming, Zeitschrift, Mitgliedschaft, Miete, Versicherung, im Betrieb auch Leasing, Wartung oder Rahmenvertrag.
-  beschriftungen: { en: { erkennbarAn: "Contract, confirmation, price change or cancellation: contract number, term, notice period, tariff, monthly fee; electricity, insurance, mobile, subscription.", name: "Contract", mehrzahl: "Contracts", beschreibung: "Any contract with a term or notice period – electricity, gas, internet, mobile, streaming, magazine, membership, rent, insurance, and in a business also leasing, maintenance or framework contracts." } }
+  beschriftungen: { en: { erkennbarAn: "Contract with contract number, price, tariff and cancellation", name: "Contract", mehrzahl: "Contracts", beschreibung: "Any contract with a term or notice period – electricity, gas, internet, mobile, streaming, magazine, membership, rent, insurance, and in a business also leasing, maintenance or framework contracts." } }
   titelVorlage: "{art} – {bezeichnung} – {von|kurz:25}"
-  erkennbarAn: "Vertrag, Vertragsbestätigung, Preisänderung oder Kündigung: Vertragsnummer, Laufzeit, Kündigungsfrist, Tarif, monatlicher Beitrag; Strom, Versicherung, Handy, Abo."
+  erkennbarAn: "Vertrag mit Vertragsnummer, Preis, Tarif und Kündigung"
   felder:
     # Oben – das Wichtigste auf einen Blick
     - key: bezeichnung

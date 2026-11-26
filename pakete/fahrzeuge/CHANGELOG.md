@@ -1,5 +1,10 @@
 # Änderungen
 
+## 2.8.0
+
+- **„Woran man ihn erkennt“ kürzer** (dms-registry #267): je Mappentyp vier bis sechs Wörter, die fast jedes Dokument dieses Typs enthält, statt langer Listen. Lange Listen sprachen bei Ablago oft gegen den richtigen Typ, weil jedes Dokument nur wenige ihrer Wörter enthält. Ein Update übernimmt den Text, solange ihr ihn nicht selbst geändert habt.
+- **Aus dem Dokument gefüllt:** Ergebnis der Hauptuntersuchung – steht der Wert wörtlich im Dokument, schlägt Ablago ihn vor.
+
 ## 2.7.0
 
 - **Erkennungswörter** für die Vertragsarten Pkw-Kaufvertrag und Leasing (dms-registry #271). Braucht Verträge ab 1.12.0.

@@ -455,13 +455,14 @@ Ab Ablago 0.321.0 (DMS #1646, #1648):
 Beim Übernehmen eines Dokuments schlägt Ablago den Mappentyp vor (DMS #939). Dafür bekommt die Klassifizierung je Typ Name, Beschreibung und **„Woran man ihn erkennt“** – im Paket `erkennbarAn` am Mappentyp, Übersetzung unter `beschriftungen.<sprache>.erkennbarAn` (DMS #937, ab 0.218.0):
 
 ```yaml
-erkennbarAn: "Kontoauszug oder Jahresbeleg einer Bank: Kontostand, Buchungen, Zeitraum „vom … bis …“, IBAN oder Kontonummer; …"
-beschriftungen: { en: { erkennbarAn: "Bank statement or annual document from a bank: balance, transactions, …" } }
+erkennbarAn: "Kontoauszug mit Kontostand, Buchungen, Saldo und Wertstellung"
+beschriftungen: { en: { erkennbarAn: "Bank statement with balance, transactions and value date" } }
 ```
 
-- Nenne, was **auf dem Papier** steht: typische Überschriften, Begriffe, Nummern, Absender – nicht, wofür der Typ gedacht ist (das sagt die Beschreibung).
-- Höchstens 300 Zeichen (sonst kürzt Ablago); die Klassifizierung nutzt davon die **ersten 200**, das Wichtigste gehört also nach vorn.
-- Ein Update setzt den Text nur, wenn er in Ablago noch leer ist – was die Verwaltung eingetragen hat, bleibt.
+- Nenne, was **auf dem Papier** steht: typische Überschriften und Begriffe – nicht, wofür der Typ gedacht ist (das sagt die Beschreibung).
+- **Kurz halten: vier bis sechs Wörter, die fast jedes Dokument dieses Typs enthält** (dms-registry #267). Ablago zählt die Wörter ab vier Buchstaben ohne Füllwörter und sucht sie als Wortteil im Dokument („Buchung“ trifft auch „Buchungstag“). Ab zwei Treffern und 40 % der Wörter spricht das für den Typ; unter 30 % (ab drei Wörtern) spricht es **gegen** ihn. Eine lange Liste mit allen Varianten schadet also: Jedes Dokument enthält nur wenige davon. Lieber den gemeinsamen Wortteil nehmen („Vertrag“ statt „Mietvertrag, Handyvertrag, Stromvertrag“).
+- Höchstens 300 Zeichen (sonst kürzt Ablago); die Klassifizierung mit einem KI-Paket nutzt davon die **ersten 200**.
+- Ein Update übernimmt einen geänderten Text, solange die Verwaltung ihn in Ablago nicht selbst geändert hat (DMS #1658).
 
 ## Text in Verweis umwandeln
 

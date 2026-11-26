@@ -1,5 +1,10 @@
 # Änderungen
 
+## 3.4.0
+
+- **„Woran man ihn erkennt“ kürzer** (dms-registry #267): je Mappentyp vier bis sechs Wörter, die fast jedes Dokument dieses Typs enthält, statt langer Listen. Lange Listen sprachen bei Ablago oft gegen den richtigen Typ, weil jedes Dokument nur wenige ihrer Wörter enthält. Ein Update übernimmt den Text, solange ihr ihn nicht selbst geändert habt.
+- **Aus dem Dokument gefüllt:** Art bei Steuernachweis und Konto – steht der Wert wörtlich im Dokument, schlägt Ablago ihn vor.
+
 ## 3.3.0
 
 - **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt. Der Freistellungsauftrag liest den Betrag.

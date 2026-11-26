@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.13.0
+
+- **„Woran man ihn erkennt“ kürzer** (dms-registry #267): je Mappentyp vier bis sechs Wörter, die fast jedes Dokument dieses Typs enthält, statt langer Listen. Lange Listen sprachen bei Ablago oft gegen den richtigen Typ, weil jedes Dokument nur wenige ihrer Wörter enthält. Ein Update übernimmt den Text, solange ihr ihn nicht selbst geändert habt.
+
 ## 1.12.0
 
 - **Vertragsart nie aus Post** (dms-registry #270): Ablago schlägt die Vertragsart bei neuer Post nicht mehr als Mappentyp vor – eine Vertragsart entsteht nie aus einem Dokument.
