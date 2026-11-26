@@ -38,7 +38,7 @@ Ab 1.1.0 (Ablago 0.226.0) gibt das Paket auf der Seite *Dokument übernehmen* ei
 
 1. Ablago fragt das Paket nach dem Vektor des neuen Dokuments (wie bei der Suche) und sucht die **ähnlichsten schon abgelegten Mappen** (je Mappe das beste Dokument, höchstens 10, ab der Schwelle des Modells) – **nur Mappen, die du lesen darfst und die das Paket lesen darf**, und nur aus Mappentypen, die man aus Post anlegen kann, in denen du anlegen darfst. Das Paket arbeitet nur hier, ohne Netz – die Ausnahmen für Dienste im Netz unter „Was Ablago darf“ gelten für es nicht.
 2. Davon bekommt das Paket **nur den Mappentyp und das Maß der Ähnlichkeit** – keine Titel, keine Inhalte, keine Ids.
-3. Das Paket zählt: „8 von 10 ähnlichen Mappen liegen in Rechnung“ – daraus werden bis zu drei Mappentypen mit Sicherheit (der Anteil, bei weniger als fünf Treffern gedämpft).
+3. Das Paket ordnet nach **Nähe, nicht nach Menge** (ab 1.2.0): Je Typ zählen die drei nächsten Mappen, die nächste voll, jede weitere halb so viel; eine sehr nahe Mappe wiegt mehr als viele mittelmäßige. Typen mit sehr vielen Mappen gleicht es über deren Zahl aus (ab Ablago 0.328.0). Daraus werden bis zu drei Mappentypen. Die Sicherheit hängt davon ab, wie nah die nächste Mappe ist und wie weit der Typ vor den anderen liegt. Die Begründung sagt es in Worten: „Sehr ähnlich zu einer Mappe in Wartung“.
 4. Ablago verbindet das mit seinen übrigen Hinweisen (Überschrift im Text, wiedergefundene Mappen, ein KI-Dienst) zu **einem** Vorschlag.
 
 Gibt es noch keine ähnlichen Mappen – etwa in einer leeren Ablage –, schlägt das Paket **nichts** vor statt zu raten. Dafür lädt es das Modell nicht und braucht weder Netz noch Sprachmodell.
