@@ -1267,6 +1267,19 @@ class ErkennbarAnOffiziell(unittest.TestCase):
 
 
 
+class AuswahllisteNieAusPost(unittest.TestCase):
+    """Eine Auswahlliste (inSuche: false) mit Dokumentenregister kommt nie aus Post (Registry #270)."""
+
+    def test_alle_typen(self):
+        offen = []
+        for datei in sorted((WURZEL / 'pakete').glob('*/inhalt/mappentypen.yaml')):
+            for t in yaml.safe_load(datei.read_text(encoding='utf-8')) or []:
+                dokumente = any(r.get('art') == 'dokumente' for r in t.get('register') or [])
+                if t.get('inSuche') is False and dokumente and t.get('ausPost') is not False:
+                    offen.append(f'{datei.parent.parent.name}:{t["schluessel"]}')
+        self.assertEqual(offen, [], 'Auswahlliste ohne ausPost: false')
+
+
 class FeldVerknuepft(unittest.TestCase):
     """Dann-Karte „Feld in verknüpfter Mappe setzen“ (DMS #1557, Registry #227)."""
 

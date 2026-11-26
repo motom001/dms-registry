@@ -8,12 +8,17 @@
   mehrzahl: Vertragsarten
   # Reine Auswahlliste: Vertragsarten sollen nicht als Treffer in der Suche oben erscheinen (dms-registry #197, DMS #1220).
   inSuche: false
+  # Nie aus Post anlegen (dms-registry #270): eine Vertragsart entsteht nie aus einem Dokument.
+  ausPost: false
   beschreibung: Art eines Vertrags mit typischer Laufzeit und Kündigungsfrist und den passenden Vorlagen – z. B. Mobilfunk, Miete oder Versicherung. Das Paket bringt die üblichen mit; eigene kannst du ergänzen.
   beschriftungen: { en: { name: "Contract type", mehrzahl: "Contract types", beschreibung: "Type of contract with its typical term, notice period and matching templates – e.g. mobile, rent or insurance. The package brings the usual ones; you can add your own." } }
   titelVorlage: "{name}"
   felder:
     - { key: name, label: Name, typ: text, pflicht: true, eindeutig: true, maxLen: 80, beschriftungen: { en: { label: "Name" } } }
     - { key: beschreibung, label: Beschreibung, typ: langtext, beschriftungen: { en: { label: "Description" } } }
+    # Wörter, an denen man ein Dokument dieser Art erkennt (dms-registry #271). Die Erkennung wertet sie aus, sobald der
+    # Kern die Erkennungsart dafür hat (DMS #1689); dann bekommt auch das Feld „Vertragsart“ am Vertrag „Aus Dokument füllen“.
+    - { key: erkennungswoerter, label: Erkennungswörter, typ: text, maxLen: 300, hilfe: "Ganze Wörter, mit Komma getrennt, an denen man ein Dokument dieser Art erkennt – z. B. Versicherungsschein, Police. Ablago nutzt sie künftig, um Verträge dieser Art zu erkennen.", beschriftungen: { en: { label: "Recognition words", hilfe: "Whole words, separated by commas, that identify a document of this type – e.g. insurance policy, policyholder. Ablago will use them to recognise contracts of this type." } } }
     - key: nutzung
       label: Für
       beschriftungen: { en: { label: "For", optionen: { "privat": "private", "beruflich": "business", "beides": "both" } } }
@@ -38,7 +43,7 @@
       name: Allgemein
       beschriftungen: { en: { name: "General" } }
       art: felder
-      felder: [name, beschreibung, nutzung, mindestlaufzeit, verlaengerung, verlaengerung_um, kuendigungsfrist, kuendigung_zum]
+      felder: [name, beschreibung, erkennungswoerter, nutzung, mindestlaufzeit, verlaengerung, verlaengerung_um, kuendigungsfrist, kuendigung_zum]
       abschnitte:
         - { vor: mindestlaufzeit, titel: Übliche Fristen – ohne Gewähr, beschriftungen: { en: { titel: "Usual periods – without guarantee" } } }
     - { key: vorlagen, name: Vorlagen, art: dokumente, beschriftungen: { en: { name: "Templates" } } }

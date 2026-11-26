@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.12.0
+
+- **Vertragsart nie aus Post** (dms-registry #270): Ablago schlägt die Vertragsart bei neuer Post nicht mehr als Mappentyp vor – eine Vertragsart entsteht nie aus einem Dokument.
+- **Erkennungswörter je Vertragsart** (dms-registry #271): Neues Feld mit Wörtern, an denen man ein Dokument dieser Art erkennt (z. B. Versicherungsschein, Police). Die mitgelieferten Vertragsarten bringen sie auf Deutsch und Englisch mit; ein Update trägt sie ein, solange ihr die Vertragsart nicht geändert habt. Ablago nutzt sie, sobald die Erkennung sie auswertet (dms #1689).
+
 ## 1.11.0
 
 - **„Woran man ihn erkennt“** für jeden Mappentyp, Deutsch und Englisch (dms-registry #254): Was auf dem Papier steht – Überschriften, Begriffe, Nummern. Hilft Ablago beim Vorschlag „Wohin gehört das?“. Ein Update setzt den Text, solange ihr ihn nicht selbst geändert habt.
