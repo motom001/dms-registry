@@ -2,7 +2,7 @@
 
 Das Paket **KI lokal – Ähnlichkeit Stufe 2** kann dasselbe wie [KI lokal – Ähnlichkeit](../ki_aehnlich/README.md): **ähnliche Dokumente** finden, **mit eigenen Worten** suchen und bei neuer Post vorschlagen, **wohin sie gehört**. Es rechnet aber mit einem **genaueren Modell** (dem Transformer multilingual-e5-small statt eines statischen Modells). Vor allem die Suche „mit eigenen Worten“ findet das richtige Dokument öfter. Bei „Wohin gehört das?“ ist es kaum besser. Dafür braucht es deutlich mehr Rechenzeit. Auch dieses Paket rechnet im **Paket-Läufer** von Ablago, **ohne Netz** und ohne zusätzlichen Dienst. Deine Daten verlassen Ablago nicht.
 
-**Nimm entweder dieses Paket oder KI lokal – Ähnlichkeit, nicht beide.** Solange Ablago noch keine Wahl dafür hat (motom001/dms#1707), nimmt es bei zwei installierten Paketen das erste nach Id, also KI lokal – Ähnlichkeit.
+**Neben KI lokal – Ähnlichkeit:** Die Vektoren liefert immer nur eines der beiden Pakete. Ohne Wahl ist es KI lokal – Ähnlichkeit (das erste nach Id). Unter **Werkbank → Pakete → KI lokal – Ähnlichkeit Stufe 2** wählst du im Abschnitt **Ähnlichkeit** „Vektoren von diesem Paket“. Ablago nennt vorher die ungefähre Dauer, rechnet den Bestand im Hintergrund nach und sucht so lange mit den alten Vektoren weiter. Danach entfernt es die alten Vektoren. Stufe 1 kannst du anschließend entfernen.
 
 | | KI lokal – Ähnlichkeit | **Stufe 2** |
 | --- | --- | --- |
@@ -42,7 +42,7 @@ Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:
 ## So arbeitet es
 
 1. Steht der Volltext eines Dokuments fest, holt das Paket ihn und zerlegt den Anfang in höchstens 256 Wortteile, das entspricht etwa einer Seite. Mit dem Vorsatz „passage: “ rechnet es ihn durch das Modell (12 Schichten) und bildet den Mittelwert. Den Vektor legt es in Ablago ab.
-2. Einen Suchbegriff rechnet es mit dem Vorsatz „query: “. Ab Ablago mit motom001/dms#1706 sagt Ablago, ob ein Suchbegriff oder ein Dokument kommt. Bei älteren Versionen gilt ein Text bis 200 Zeichen als Suchbegriff.
+2. Einen Suchbegriff rechnet es mit dem Vorsatz „query: “. Ablago sagt dem Paket, ob ein Suchbegriff oder ein Dokument kommt (seit 0.332.0). Ohne diese Angabe gilt ein Text bis 200 Zeichen als Suchbegriff.
 3. **Wohin gehört das?** arbeitet wie in KI lokal – Ähnlichkeit 1.2.0 nach **Nähe statt Menge**. Die Schwellen sind an dieses Modell angepasst: ähnlich ab 0,85, sehr ähnlich ab 0,965. Ein Kosinus von 0,85 bei diesem Modell entspricht etwa 0,45 beim statischen Modell.
 
 Weil nur der Anfang zählt, entscheidet bei langen Dokumenten die erste Seite. Für Ähnlichkeit und Mappentyp reicht das; einen Satz auf Seite 7 findet die Volltextsuche.
@@ -93,8 +93,7 @@ Auf einem Raspberry Pi 5 oder einem Intel N100 rechnet es voraussichtlich 2- bis
 
 ## Voraussetzungen
 
-- Ablago ab **0.226.0** (Paket-Läufer mit `dms:vektoren`), für „Wohin gehört das?“ ab **0.329.0** (dms #1688). Mit motom001/dms#1706 unterscheidet das Paket Suchbegriff und Dokument sicher.
-- Nur **eines** der Pakete KI lokal – Ähnlichkeit und KI lokal – Ähnlichkeit Stufe 2, bis Ablago die Wahl kennt (motom001/dms#1707).
+- Ablago ab **0.334.0**: Art des Textes (Suchbegriff oder Dokument, DMS #1706) und die Wahl „Vektoren von“ (DMS #1707).
 
 ## Für Entwickler
 
