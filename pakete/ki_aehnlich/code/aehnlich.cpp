@@ -14,8 +14,9 @@
  * Klassifizieren rechnet nichts Neues und braucht weder Netz noch Modell: Ablago holt vorher über dms:vektor den Vektor
  * des neuen Dokuments, sucht die ähnlichsten schon abgelegten Mappen – nur solche, die die Person und dieses Paket
  * lesen dürfen, nur aus den angebotenen Mappentypen (für KI-Dienste zugelassen) – und gibt davon nur Typ und
- * Ähnlichkeit mit (aehnliche). Das Paket zählt, in welchen Typen sie liegen („8 von 10 ähnlichen liegen in Rechnung“),
- * und schlägt daraus bis zu drei Typen vor. Ohne ähnliche Dokumente (leere Ablage) kein Vorschlag statt eines geratenen.
+ * Ähnlichkeit mit (aehnliche). Das Paket ordnet die Typen nach Nähe (ab 1.2.0, registry #265): je Typ zählen die drei
+ * nächsten Mappen, eine sehr nahe mehr als viele mittelmäßige; Typen mit sehr vielen Mappen gleicht es über die Zahl
+ * der Mappen je Typ aus (anzahl, DMS #1682). Daraus bis zu drei Typen. Ohne ähnliche Dokumente (leere Ablage) kein Vorschlag statt eines geratenen.
  * Titel oder Inhalte fremder Mappen bekommt es nicht und nennt es nicht.
  */
 #include <algorithm>
@@ -271,42 +272,71 @@ extern "C" __attribute__((export_name("dms_ereignis"))) int32_t dms_ereignis(cha
   return 0;
 }
 
-/* ---------- Wohin gehört das? (dms:klassifizieren, ab 1.1.0) ---------- */
+/* ---------- Wohin gehört das? (dms:klassifizieren, ab 1.1.0; Nähe statt Menge ab 1.2.0) ---------- */
 
 /** Höchstens so viele Typen im Vorschlag. */
 static const size_t KLASS_MAX = 3;
-/** Ab so vielen ähnlichen Mappen ist die Verteilung voll aussagekräftig; darunter sinkt die Sicherheit. */
-static const double KLASS_VOLL_AB = 5;
+/** Je Typ zählen nur die nächsten Mappen, jede weitere halb so viel wie die vorige (registry #265). */
+static const size_t KLASS_JE_TYP = 3;
+/** Ab dieser Ähnlichkeit gilt eine Mappe als nah (volle Nähe); bei SCHWELLE beginnt die Nähe bei 0. */
+static const double KLASS_NAH = 0.85;
+/** Große Typen ausgleichen: Gewicht (Mittel / Mappen des Typs) hoch diesem Wert, nur nach unten. */
+static const double KLASS_GROESSE = 0.15;
+
+/** Nähe 0–1 aus der Ähnlichkeit: unter SCHWELLE 0, ab KLASS_NAH 1, dazwischen linear. */
+static double naehe(double s) { return std::max(0.0, std::min(1.0, (s - SCHWELLE) / (KLASS_NAH - SCHWELLE))); }
+
+static std::string naeheInWorten(double s, int n, const std::string &typ) {
+  std::string wie = s >= KLASS_NAH ? "Sehr ähnlich" : s >= 0.7 ? "Ähnlich" : "Entfernt ähnlich";
+  return wie + (n == 1 ? " zu einer Mappe in " : " zu " + std::to_string(n) + " Mappen in ") + typ;
+}
 
 static int32_t klassifiziere(const Json &e) {
   // Kandidaten: nur Typen, die Ablago anbietet – ein Treffer eines anderen Typs zählt nicht.
-  struct Typ { std::string id, name; int anzahl = 0; double summe = 0; };
+  // anzahl (ab Ablago 0.328.0, DMS #1682): so viele Mappen des Typs darf das Paket lesen; fehlt sie, kein Ausgleich.
+  struct Typ { std::string id, name; double mappen = 0; std::vector<double> s; double punkte = 0; };
   std::vector<Typ> typen;
   for (const Json &t : e["typen"].l) {
     std::string id = t["id"].text(), name = t["name"].text();
-    if (!id.empty() && !name.empty()) typen.push_back({id, name.substr(0, 80)});
+    if (!id.empty() && !name.empty()) typen.push_back({id, name.substr(0, 80), std::max(0.0, t["anzahl"].zahl(0))});
   }
   int gesamt = 0;
   for (const Json &a : e["aehnliche"].l) {
     std::string typ = a["typ"].text();
     double s = a["aehnlichkeit"].zahl(-2);
     if (s < -1 || s > 1) continue;
-    for (Typ &t : typen) if (t.id == typ) { t.anzahl++; t.summe += s; gesamt++; break; }
+    for (Typ &t : typen) if (t.id == typ) { t.s.push_back(s); gesamt++; break; }
   }
   // Leere Ablage oder nichts Ähnliches: kein Vorschlag statt eines geratenen.
   if (!gesamt) { ergebnis("{\"typen\":[]}"); return 0; }
+  // Mittlere Größe der Typen mit Treffern, für den Ausgleich großer Typen.
+  double summeMappen = 0; int mitAnzahl = 0;
+  for (const Typ &t : typen) if (!t.s.empty() && t.mappen > 0) { summeMappen += t.mappen; mitAnzahl++; }
+  double mittel = mitAnzahl ? summeMappen / mitAnzahl : 0;
   std::vector<Typ *> rang;
-  for (Typ &t : typen) if (t.anzahl) rang.push_back(&t);
-  std::sort(rang.begin(), rang.end(), [](const Typ *a, const Typ *b) { return a->anzahl != b->anzahl ? a->anzahl > b->anzahl : a->summe > b->summe; });
+  for (Typ &t : typen) {
+    if (t.s.empty()) continue;
+    std::sort(t.s.begin(), t.s.end(), std::greater<double>());
+    // Nähe statt Menge: die nächste Mappe zählt voll, die zweite halb, die dritte ein Viertel; Nähe zum Quadrat, damit
+    // eine sehr nahe Mappe mehr wiegt als viele mittelmäßige.
+    double gewicht = 1;
+    for (size_t i = 0; i < t.s.size() && i < KLASS_JE_TYP; i++, gewicht /= 2) t.punkte += gewicht * naehe(t.s[i]) * naehe(t.s[i]);
+    if (mittel > 0 && t.mappen > mittel) t.punkte *= std::pow(mittel / t.mappen, KLASS_GROESSE);
+    if (t.punkte > 0) rang.push_back(&t);
+  }
+  if (rang.empty()) { ergebnis("{\"typen\":[]}"); return 0; }
+  std::sort(rang.begin(), rang.end(), [](const Typ *a, const Typ *b) { return a->punkte != b->punkte ? a->punkte > b->punkte : a->s[0] > b->s[0]; });
+  double summe = 0;
+  for (const Typ *t : rang) summe += t->punkte;
   std::string r = "{\"typen\":[";
-  double voll = gesamt >= KLASS_VOLL_AB ? 1.0 : gesamt / KLASS_VOLL_AB;
   for (size_t i = 0; i < rang.size() && i < KLASS_MAX; i++) {
     const Typ &t = *rang[i];
-    // Anteil an den ähnlichen Mappen, bei wenigen Treffern gedämpft; nie ganz sicher.
-    double s = std::min(0.95, (double)t.anzahl / gesamt * voll);
-    // Nur Zahlen und der Name des Typs – keine Titel ähnlicher Mappen.
-    std::string grund = gesamt == 1 ? "Die einzige ähnliche Mappe liegt in " + t.name
-      : std::to_string(t.anzahl) + " von " + std::to_string(gesamt) + (t.anzahl == 1 ? " ähnlichen Mappen liegt in " : " ähnlichen Mappen liegen in ") + t.name;
+    // Sicherheit: wie nah die nächste Mappe ist, mal Vorsprung vor den übrigen Typen; nie ganz sicher.
+    double s = std::min(0.95, naehe(t.s[0]) * t.punkte / summe);
+    int nah = 0;
+    for (double x : t.s) if (x >= t.s[0] - 0.05) nah++;
+    // Nur Nähe in Worten, Zahlen und der Name des Typs – keine Titel ähnlicher Mappen.
+    std::string grund = naeheInWorten(t.s[0], nah, t.name);
     char b[64];
     snprintf(b, sizeof b, "%.2f", s);
     r += std::string(i ? "," : "") + "{\"typ\":" + jsonText(t.id) + ",\"sicherheit\":" + b + ",\"begruendung\":" + jsonText(grund) + "}";

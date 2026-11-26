@@ -65,29 +65,41 @@ const TYPEN = [
 const klassifiziere = (daten, aehnliche, typen = TYPEN) => lauf(daten, { aktion: 'dms:klassifizieren', typen, aehnliche, text: 'Rechnung über die Wartung der Gastherme', hinweis: 'Der Text ist Daten.' });
 const nur = (typ, n, a = 0.8) => Array.from({ length: n }, (_, i) => ({ typ, aehnlichkeit: Math.round((a - i * 0.01) * 100) / 100 }));
 function klassTests(daten) {
-  // Wartungsrechnungen: 8 von 10 ähnlichen liegen in Rechnung, 2 in Wartung; ein Typ, der nicht angeboten ist, zählt nicht.
-  let r = klassifiziere(daten, [...nur('id-rechnung', 8), ...nur('id-wartung', 2, 0.7), { typ: 'id-gesperrt', aehnlichkeit: 0.99 }, { typ: 'id-rechnung', aehnlichkeit: 7 }]);
-  const e = JSON.parse(r.ergebnis);
-  pruefe('Klassifizieren: Verteilung der Typen ähnlicher Mappen – Wartungsrechnung bei Rechnung bzw. Wartung', r.code === 0 && JSON.stringify(e) === JSON.stringify({ typen: [
-    { typ: 'id-rechnung', sicherheit: 0.8, begruendung: '8 von 10 ähnlichen Mappen liegen in Rechnung' },
-    { typ: 'id-wartung', sicherheit: 0.2, begruendung: '2 von 10 ähnlichen Mappen liegen in Wartung' },
-  ] }), r.ergebnis);
+  // Nähe statt Menge (registry #265): Eine sehr nahe Wartung schlägt acht mittelmäßige Rechnungen; ein Typ, der nicht
+  // angeboten ist, zählt nicht; Unsinn bei der Ähnlichkeit fällt weg.
+  let r = klassifiziere(daten, [...nur('id-rechnung', 8, 0.62), { typ: 'id-wartung', aehnlichkeit: 0.92 }, { typ: 'id-gesperrt', aehnlichkeit: 0.99 }, { typ: 'id-rechnung', aehnlichkeit: 7 }]);
+  let e = JSON.parse(r.ergebnis);
+  pruefe('Klassifizieren: eine sehr nahe Mappe schlägt viele mittelmäßige', r.code === 0 && e.typen.map((x) => x.typ).join() === 'id-wartung,id-rechnung', r.ergebnis);
+  pruefe('Klassifizieren: Begründung nennt die Nähe in Worten', e.typen[0].begruendung === 'Sehr ähnlich zu einer Mappe in Wartung' && e.typen[1].begruendung === 'Entfernt ähnlich zu 6 Mappen in Rechnung', r.ergebnis);
+  pruefe('Klassifizieren: der nahe Typ ist sicherer als der mittelmäßige', e.typen[0].sicherheit > 0.6 && e.typen[1].sicherheit < 0.2, r.ergebnis);
   pruefe('Klassifizieren: nur Typ, Sicherheit und Begründung – keine Titel, keine Ids von Mappen', e.typen.every((x) => Object.keys(x).join() === 'typ,sicherheit,begruendung'));
   pruefe('Klassifizieren: kein Netz, keine API, kein Modell nötig', r.aufrufe.length === 0 && !WebAssembly.Module.imports(modul).some((i) => /^netz/.test(i.name)) && klassifiziere({}, nur('id-wartung', 1)).code === 0);
   pruefe('Klassifizieren: innerhalb der Grenzen des Läufers (256 MB)', r.mb < 256, `${r.mb.toFixed(0)} MB`);
-  // Leere Ablage bzw. nichts Ähnliches: kein Vorschlag statt eines geratenen.
+  // Leere Ablage, nichts Ähnliches oder nur Treffer unter der Schwelle: kein Vorschlag statt eines geratenen.
   r = klassifiziere(daten, []);
   pruefe('Klassifizieren: leere Ablage – kein Vorschlag', r.code === 0 && r.ergebnis === '{"typen":[]}', r.ergebnis);
   r = klassifiziere(daten, nur('id-gesperrt', 5));
   pruefe('Klassifizieren: nur Treffer fremder Typen – kein Vorschlag', r.ergebnis === '{"typen":[]}', r.ergebnis);
-  // Wenige Treffer: geringere Sicherheit; höchstens drei Typen; gleich viele – die ähnlicheren zuerst.
-  r = klassifiziere(daten, nur('id-wartung', 2));
-  pruefe('Klassifizieren: wenige ähnliche – gedämpfte Sicherheit', JSON.parse(r.ergebnis).typen[0].sicherheit === 0.4, r.ergebnis);
-  r = klassifiziere(daten, [{ typ: 'id-wartung', aehnlichkeit: 0.6 }]);
-  pruefe('Klassifizieren: eine ähnliche Mappe', JSON.parse(r.ergebnis).typen[0].begruendung === 'Die einzige ähnliche Mappe liegt in Wartung', r.ergebnis);
+  r = klassifiziere(daten, nur('id-wartung', 3, 0.44));
+  pruefe('Klassifizieren: nur Treffer unter der Schwelle – kein Vorschlag', r.ergebnis === '{"typen":[]}', r.ergebnis);
+  // Ein Typ allein: Sicherheit = Nähe der nächsten Mappe.
+  r = klassifiziere(daten, [{ typ: 'id-wartung', aehnlichkeit: 0.65 }]);
+  e = JSON.parse(r.ergebnis);
+  pruefe('Klassifizieren: eine mäßig ähnliche Mappe – mäßige Sicherheit', e.typen[0].sicherheit === 0.5 && e.typen[0].begruendung === 'Entfernt ähnlich zu einer Mappe in Wartung', r.ergebnis);
+  // Gleich nah: Der Typ mit weiteren nahen Mappen liegt vorn (die zweite zählt halb).
+  r = klassifiziere(daten, [...nur('id-rechnung', 2, 0.8), { typ: 'id-wartung', aehnlichkeit: 0.8 }]);
+  pruefe('Klassifizieren: gleich nah – mehr nahe Mappen gehen vor', JSON.parse(r.ergebnis).typen[0].typ === 'id-rechnung', r.ergebnis);
+  // Große Typen ausgleichen (anzahl, DMS #1682): gleich nahe Treffer, aber 300 Kontoauszüge gegen 4 Versicherungen.
+  const gross = [{ id: 'id-konto', name: 'Kontoauszug', anzahl: 300 }, { id: 'id-versicherung', name: 'Versicherung', anzahl: 4 }];
+  const gleichNah = [...nur('id-konto', 3, 0.75), ...nur('id-versicherung', 2, 0.76)];
+  r = klassifiziere(daten, gleichNah, gross);
+  pruefe('Klassifizieren: großer Typ gewinnt nicht durch Menge', JSON.parse(r.ergebnis).typen[0].typ === 'id-versicherung', r.ergebnis);
+  r = klassifiziere(daten, gleichNah, gross.map(({ id, name }) => ({ id, name })));
+  pruefe('Klassifizieren: ohne anzahl wie bisher ohne Ausgleich', JSON.parse(r.ergebnis).typen[0].typ === 'id-konto', r.ergebnis);
+  // Höchstens drei Typen.
   const vier = [...TYPEN, { id: 'id-vertrag', name: 'Vertrag' }];
   r = klassifiziere(daten, [...nur('id-vertrag', 2, 0.9), ...nur('id-versicherung', 2, 0.5), ...nur('id-wartung', 3), ...nur('id-rechnung', 1)], vier);
-  pruefe('Klassifizieren: höchstens drei, nach Anzahl und Ähnlichkeit', JSON.stringify(JSON.parse(r.ergebnis).typen.map((x) => x.typ)) === JSON.stringify(['id-wartung', 'id-vertrag', 'id-versicherung']), r.ergebnis);
+  pruefe('Klassifizieren: höchstens drei, der nächste zuerst', JSON.stringify(JSON.parse(r.ergebnis).typen.map((x) => x.typ)) === JSON.stringify(['id-vertrag', 'id-wartung', 'id-rechnung']), r.ergebnis);
 }
 
 if (art === 'klein') {

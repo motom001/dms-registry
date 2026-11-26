@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.2.0
+
+- **Wohin gehört das? – Nähe statt Menge** (dms-registry #265): Das Paket schlägt den Mappentyp vor, dem das Dokument am **ähnlichsten** ist, nicht mehr den, von dem es die meisten ähnlichen Mappen gibt. Je Typ zählen die drei nächsten Mappen (die zweite halb, die dritte ein Viertel); eine sehr nahe Mappe schlägt viele mittelmäßige. So gewinnt ein großer Typ wie Kontoauszug nicht mehr gegen die eine fast gleiche Mappe eines seltenen Typs.
+- **Große Typen ausgleichen:** Ab Ablago 0.328.0 bekommt das Paket die Zahl der Mappen je Typ (DMS #1682) und dämpft Typen mit weit mehr Mappen als üblich. Mit älterem Ablago wie bisher ohne Ausgleich.
+- **Sicherheit und Begründung:** Die Sicherheit kommt aus der Nähe der nächsten Mappe und dem Vorsprung vor den übrigen Typen statt aus dem Anteil („6 von 10“). Die Begründung nennt die Nähe in Worten („Sehr ähnlich zu einer Mappe in Wartung“), weiter ohne Titel fremder Mappen.
+- Gemessen am Satz „Lebensläufe“ (501 Dokumente der Reihe nach, offline mit `tests/satz_vergleich.mjs`): richtiger Typ vorn 45,3 % → 60,0 %.
+
 ## 1.1.3
 
 - README: Das Paket arbeitet nur hier – die Ausnahmen für Dienste im Netz gelten für es nicht (dms-registry #262).
