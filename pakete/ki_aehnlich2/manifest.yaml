@@ -1,0 +1,37 @@
+schema: 1
+id: ki_aehnlich2
+name: KI lokal – Ähnlichkeit Stufe 2
+version: 1.0.0
+beschreibung: Wie KI lokal – Ähnlichkeit, aber mit einem genaueren Modell – findet bei der Suche deutlich öfter das richtige Dokument und ordnet neue Post besser zu. Braucht mehr Rechenzeit; ohne Internet und ohne zusätzlichen Dienst.
+autor:
+  name: Thomas Meissner
+  github: motom001
+herausgeber: app.ablago
+lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Nimm entweder dieses Paket oder KI lokal – Ähnlichkeit, nicht beide.
+    - Warte, bis Ablago den Bestand berechnet hat – den Fortschritt zeigt Werkbank → Pakete → KI lokal – Ähnlichkeit Stufe 2. Auf einem Raspberry Pi kann das bei vielen Dokumenten Stunden dauern.
+    - An jeder Mappe mit Dokumenten findest du jetzt „Ähnliche Dokumente“ aus anderen Mappen.
+    - Suche auf der Startseite mit „auch in Dokumenten“ – darunter stehen „Ähnliche Treffer“, auch ohne genau dieselben Wörter.
+    - Beim Übernehmen neuer Post schlägt „Wohin gehört das?“ passende Mappen vor.
+  en:
+    - Use either this package or KI lokal – Ähnlichkeit, not both.
+    - Wait until Ablago has processed your documents – Workbench → Packages → KI lokal – Ähnlichkeit Stufe 2 shows the progress. On a Raspberry Pi this can take hours for many documents.
+    - Every folder with documents now shows “Similar documents” from other folders.
+    - Search on the start page including documents – below you see “Similar results”, even without the exact words.
+    - When filing new post, “Where does this belong?” suggests matching folders.
+dms: ">=0.226.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: [volltext.fertig]
+  rechte:
+    lesen: ["*"]                       # Dokumente liegen in Mappen beliebiger Typen
+    dokumente: lesen                   # nur den Volltext lesen – nichts ändern
+    schnittstellen: ["dms:vektoren", "dms:klassifizieren"]
+  netz: []
+  # Speicher und Zeit: Die Standardgrenzen des Läufers (256 MB, 120 s je Aufruf) reichen – das Modul belegt
+  # höchstens etwa 90 MB (Modell 84 MB); ein Dokument braucht in WebAssembly mit SIMD rund 0,2–0,5 s, ein Suchbegriff
+  # rund 0,1 s (amd64, mit Laden des Modells). Deshalb verlangt das Paket keine höheren Grenzen.

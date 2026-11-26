@@ -47,16 +47,16 @@ Gibt es noch keine ähnlichen Mappen – etwa in einer leeren Ablage –, schlä
 
 [static-similarity-mrl-multilingual-v1](https://huggingface.co/sentence-transformers/static-similarity-mrl-multilingual-v1) von sentence-transformers, **Apache-2.0**, ohne Nutzungsbeschränkungen. Es ist ein *statisches* Embedding-Modell: je Wortteil ein fester Vektor, der Text ist ihr Mittelwert. Zur Laufzeit rechnet kein neuronales Netz – deshalb ist es in WebAssembly ohne Threads und ohne Grafikkarte schnell genug. Es kennt 50 Sprachen, darunter Deutsch und Englisch, und ist auf Ähnlichkeit von Texten trainiert (Matryoshka: die ersten Dimensionen allein taugen schon).
 
-Im Paket stecken die ersten **256 von 1024 Dimensionen**, auf 8 Bit gerundet: 28 MB statt 433 MB. Das passt unter die Grenze von 32 MB je Paket.
+Im Paket stecken die ersten **256 von 1024 Dimensionen**, auf 8 Bit gerundet: 28 MB statt 433 MB. Das hält Laden und Rechnen klein, auch auf einem Raspberry Pi.
 
 **Warum nicht ein anderes Modell?**
 
 | Modell | Lizenz | Größe (8 Bit) | warum nicht |
 | --- | --- | --- | --- |
-| multilingual-e5-small (Transformer) | MIT | ≈ 118 MB | zu groß für 32 MB; ein Transformer in WebAssembly ohne Threads rechnet je Dokument Sekunden |
-| paraphrase-multilingual-MiniLM-L12-v2 | Apache-2.0 | ≈ 118 MB | wie oben |
+| multilingual-e5-small (Transformer) | MIT | ≈ 113 MB (gekürzt 84 MB) | deutlich genauer, aber 5- bis 10-mal so viel Rechenzeit – als eigenes Paket **[KI lokal – Ähnlichkeit Stufe 2](../ki_aehnlich2/README.md)** |
+| paraphrase-multilingual-MiniLM-L12-v2 | Apache-2.0 | ≈ 118 MB | Transformer wie e5-small, nicht besser |
 | all-MiniLM-L6-v2, gte-small | Apache-2.0 / MIT | 23–34 MB | nur Englisch |
-| potion-multilingual-128M (statisch) | MIT | ≈ 128 MB | 500 000 Wortteile – zu groß |
+| potion-multilingual-128M (statisch) | MIT | ≈ 128 MB | kaum genauer (siehe Messung unten), 500 000 Wortteile |
 | **static-similarity-mrl-multilingual-v1** | **Apache-2.0** | **28 MB** (256 Dim.) | gewählt |
 
 **Gemessen (dms-registry #242, 26.11.2026):** am privaten Satz „Lebensläufe“ (526 Dokumente aus elf Haushalten, Mappen und Typen bekannt), offline mit `tests/modellvergleich/`. „Wohin gehört das?“ wie im Lernlauf des Prüfstands: Dokumente der Reihe nach, jedes sieht die Mappen davor; gerechnet mit diesem Paket (1.2.0), die Ähnlichkeiten der anderen Modelle auf die Verteilung des heutigen Modells umgerechnet, damit dieselben Schwellen gelten. Suche: der Titel des Dokuments als Suchbegriff, Treffer unter den ersten 5.
@@ -69,7 +69,7 @@ Im Paket stecken die ersten **256 von 1024 Dimensionen**, auf 8 Bit gerundet: 28
 | potion-multilingual-128M | ≈ 130 MB | 66,7 % | 59,9 % | 52,9 % / 62 | 72,6 % |
 | multilingual-e5-small (Transformer) | ≈ 118 MB | 70,9 % | 67,2 % | 62,3 % / 25 | 91,4 % |
 
-Die statischen Modelle liegen bei „Wohin gehört das?“ innerhalb eines Prozentpunkts; mehr Dimensionen oder potion helfen vor allem der Suche, kosten aber das Vier- bis Fünffache an Platz und passen nicht unter 32 MB je Paket. Deutlich besser ist nur der Transformer multilingual-e5-small (+8 Punkte bei „Wohin gehört das?“, +29 bei der Suche) – er braucht aber eine eigene Rechenmaschine im Paket, ein Vielfaches an Rechenzeit (am Rechner ≈ 80 ms je Dokument statt unter 1 ms, auf einem Raspberry Pi in WebAssembly eher Sekunden) und mehr Platz, als ein Paket heute darf. Deshalb bleibt es bei static-similarity-mrl mit 256 Dimensionen; ein genaueres Modell wäre ein eigenes, wählbares Paket (#243).
+Die statischen Modelle liegen bei „Wohin gehört das?“ innerhalb eines Prozentpunkts; mehr Dimensionen oder potion helfen vor allem der Suche, kosten aber das Vier- bis Fünffache an Platz. Deutlich besser ist nur der Transformer multilingual-e5-small (+8 Punkte bei „Wohin gehört das?“, +29 bei der Suche), dafür mit einem Vielfachen an Rechenzeit. Deshalb bleibt dieses Paket bei static-similarity-mrl mit 256 Dimensionen – schnell auch auf schwachen Geräten –, und e5-small gibt es als eigenes Paket **[KI lokal – Ähnlichkeit Stufe 2](../ki_aehnlich2/README.md)** (#243). Nimm nur eines von beiden.
 
 **Grenzen:** Ein statisches Modell achtet nicht auf die Reihenfolge der Wörter und erreicht nicht ganz die Qualität eines Transformers wie multilingual-e5-small. Die Modellkarte nennt es ausdrücklich für Ähnlichkeit, nicht für Suche über lange Dokumente. Für „ähnliche Dokumente“ und „mit eigenen Worten suchen“ im Haushalt reicht das; für Fragen an die Ablage kommt Stufe 2 (Adapter zu einem lokalen KI-Dienst, #45).
 

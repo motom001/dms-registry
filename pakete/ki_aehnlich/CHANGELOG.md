@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.2.2
+
+- README: Die Grenze je Paket liegt bei 128 MB, nicht 32 MB. Hinweis auf das genauere Paket **KI lokal – Ähnlichkeit Stufe 2** (#243); nimm nur eines von beiden.
+
 ## 1.2.1
 
 - **Modellvergleich** (dms-registry #242): Messtabelle im README unter „Das Modell“: das heutige Modell mit 256, 512 und 1024 Dimensionen, potion-multilingual-128M und multilingual-e5-small am Satz „Lebensläufe“. Das Modell bleibt; Messwerkzeug in `tests/modellvergleich/`.
