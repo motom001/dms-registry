@@ -34,6 +34,7 @@ pakete:
   texterkennung.ukr: [sprachen, volltext]
   texterkennung.ara: [sprachen, volltext]
   ki_aehnlich: [ki, suche]
+  ki_aehnlich2: [ki, suche]
   ki_assistent: [ki, suche]
   trennblatt: [post]
   sicherung_webdav: [sicherung]
@@ -47,6 +48,7 @@ symbole:
   haus: house
   haushalt: wallet
   ki_aehnlich: files
+  ki_aehnlich2: files
   ki_assistent: message-circle-question-mark
   office_email: file-text
   sicherung_webdav: cloud-upload

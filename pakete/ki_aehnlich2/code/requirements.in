@@ -1,0 +1,5 @@
+# Nur für den Bau (umwandeln.py), nicht in Ablago. Neu erzeugen:
+#   pip-compile --generate-hashes --strip-extras -o requirements.txt requirements.in
+numpy
+safetensors
+tokenizers
