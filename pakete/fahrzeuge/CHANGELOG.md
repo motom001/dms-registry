@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.7.0
+
+- **Erkennungswörter** für die Vertragsarten Pkw-Kaufvertrag und Leasing (dms-registry #271). Braucht Verträge ab 1.12.0.
+
 ## 2.6.0
 
 - **Nächste HU ans Fahrzeug** (dms-registry #227): Neue Automatisierung „Nächste HU ans Fahrzeug übernehmen“ – trägt „Nächste HU“ aus dem Prüfbericht als „HU fällig“ am Fahrzeug ein, nur wenn das Datum später ist. Beim Installieren vorausgewählt. Braucht Ablago ab 0.323.0 (dms #1557).

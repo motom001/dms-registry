@@ -2,11 +2,11 @@
 # geändert hast. Wählst du sie am Vertrag, schlägt Ablago die Fristen vor; die Vorlage findest du an der Vertragsart.
 - kennung: pkw_kaufvertrag
   typ: "vertraege:vertragsart"
-  werte: { name: Pkw-Kaufvertrag, nutzung: beides, beschreibung: "Kauf oder Verkauf eines gebrauchten Autos. Unter „Betrifft“ wählst du das Fahrzeug, Verkäufer ist der Anbieter, Käufer der Kunde – dann füllt die Vorlage die Fahrzeugdaten aus.", verlaengerung: endet }
-  beschriftungen: { en: { name: Car purchase contract, beschreibung: "Buying or selling a used car. Choose the vehicle under “Concerns”, the seller is the provider, the buyer the customer – then the template fills in the vehicle details." } }
+  werte: { erkennungswoerter: "Kaufvertrag, Gebrauchtwagen, Zulassungsbescheinigung, Fahrzeugbrief, Fahrgestellnummer, Kilometerstand", name: Pkw-Kaufvertrag, nutzung: beides, beschreibung: "Kauf oder Verkauf eines gebrauchten Autos. Unter „Betrifft“ wählst du das Fahrzeug, Verkäufer ist der Anbieter, Käufer der Kunde – dann füllt die Vorlage die Fahrzeugdaten aus.", verlaengerung: endet }
+  beschriftungen: { en: { erkennungswoerter: "car purchase, used car, vehicle registration, VIN, mileage", name: Car purchase contract, beschreibung: "Buying or selling a used car. Choose the vehicle under “Concerns”, the seller is the provider, the buyer the customer – then the template fills in the vehicle details." } }
   vorlagen:
     - { datei: vorlagen/pkw-kaufvertrag.md, titel: Kaufvertrag Gebrauchtwagen }
 - kennung: leasing
   typ: "vertraege:vertragsart"
-  werte: { name: Leasing, nutzung: beides, beschreibung: "Fahrzeug- oder Geräteleasing mit fester Laufzeit – endet zum Vertragsende, eine ordentliche Kündigung gibt es meist nicht.", mindestlaufzeit: { anzahl: 36, einheit: monate }, verlaengerung: endet }
-  beschriftungen: { en: { name: Leasing, beschreibung: "Vehicle or equipment leasing with a fixed term – ends at the end of the contract, there is usually no ordinary notice." } }
+  werte: { erkennungswoerter: "Leasingvertrag, Leasingrate, Leasingnehmer, Leasinggeber, Restwert, Sonderzahlung", name: Leasing, nutzung: beides, beschreibung: "Fahrzeug- oder Geräteleasing mit fester Laufzeit – endet zum Vertragsende, eine ordentliche Kündigung gibt es meist nicht.", mindestlaufzeit: { anzahl: 36, einheit: monate }, verlaengerung: endet }
+  beschriftungen: { en: { erkennungswoerter: "lease agreement, leasing, lease payment, lessee, residual value", name: Leasing, beschreibung: "Vehicle or equipment leasing with a fixed term – ends at the end of the contract, there is usually no ordinary notice." } }

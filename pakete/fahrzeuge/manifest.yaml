@@ -3,7 +3,7 @@ schema: 1
 id: fahrzeuge
 name: Fahrzeuge
 herausgeber: app.ablago
-version: 2.6.0
+version: 2.7.0
 beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.
 autor:
   name: Thomas Meissner
@@ -36,7 +36,7 @@ kurzanleitung:
 abhaengigkeiten:
   # Ab 2.0.0 (dms-registry #163): Versicherung und Finanzierung aus Verträge, Rechnungen aus Rechnungen; Haushalt nicht mehr.
   basis: ">=1.7.0"
-  vertraege: ">=1.1.0"
+  vertraege: ">=1.12.0"
   rechnung_bestellung: ">=1.0.0"
 inhalt:
   mappentypen: inhalt/mappentypen.yaml
