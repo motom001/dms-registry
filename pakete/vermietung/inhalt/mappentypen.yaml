@@ -10,9 +10,9 @@
   name: Mietobjekt
   mehrzahl: Mietobjekte
   beschreibung: Ein vermietetes Haus oder eine vermietete Eigentumswohnung – mit allen Wohnungen, Abrechnungen und Ausgaben.
-  beschriftungen: { en: { erkennbarAn: "Paper about a rented-out building: land register, declaration of division, service charge statement, budget plan, building insurance; property address.", name: "Rental property", mehrzahl: "Rental properties", beschreibung: "A house or owned flat you let – with all units, statements and expenses." } }
+  beschriftungen: { en: { erkennbarAn: "Service charge, declaration of division, budget plan, owners' meeting", name: "Rental property", mehrzahl: "Rental properties", beschreibung: "A house or owned flat you let – with all units, statements and expenses." } }
   titelVorlage: "{bezeichnung}"
-  erkennbarAn: "Unterlage zu einem vermieteten Haus: Grundbuch, Teilungserklärung, Hausgeldabrechnung, Wirtschaftsplan, Gebäudeversicherung; Anschrift des Objekts."
+  erkennbarAn: "Hausgeld, Teilungserklärung, Wirtschaftsplan, Eigentümerversammlung"
   felder:
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Mehrfamilienhaus Lindenstraße 4“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Apartment building Lindenstraße 4”" } }  }
     - key: art
@@ -59,9 +59,9 @@
   name: Wohnung
   mehrzahl: Wohnungen
   beschreibung: Eine vermietbare Einheit in einem Mietobjekt – Wohnung, Gewerbeeinheit, Garage oder Stellplatz.
-  beschriftungen: { en: { erkennbarAn: "Tenancy agreement, handover report, rent increase or notice for a flat: tenant, flat number, base rent, advance payments, deposit.", name: "Unit", mehrzahl: "Units", beschreibung: "A lettable unit in a rental property – flat, commercial unit, garage or parking space." } }
+  beschriftungen: { en: { erkennbarAn: "Tenancy agreement: tenant, flat, basic rent, deposit", name: "Unit", mehrzahl: "Units", beschreibung: "A lettable unit in a rental property – flat, commercial unit, garage or parking space." } }
   titelVorlage: "{mietobjekt} – {bezeichnung}"
-  erkennbarAn: "Mietvertrag, Übergabeprotokoll, Mieterhöhung oder Kündigung zu einer Wohnung: Mieter, Wohnungsnummer, Kaltmiete, Nebenkostenvorauszahlung, Kaution."
+  erkennbarAn: "Mietvertrag: Mieter, Wohnung, Kaltmiete, Kaution"
   felder:
     - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Rental property" } }  }
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 60, hilfe: "z. B. „EG links“ oder „Whg. 3“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Ground floor left” or “Flat 3”" } }  }
@@ -97,9 +97,9 @@
   name: Nebenkostenabrechnung
   mehrzahl: Nebenkostenabrechnungen
   beschreibung: Die Betriebskostenabrechnung eines Jahres für ein Mietobjekt – mit Frist für den Versand an die Mieter.
-  beschriftungen: { en: { erkennbarAn: "Service charge statement: billing period from … to …, allocation key, advance payments, additional payment or credit per unit.", name: "Service charge statement", mehrzahl: "Service charge statements", beschreibung: "One year’s operating cost statement for a rental property – with the deadline for sending it to the tenants." } }
+  beschriftungen: { en: { erkennbarAn: "Operating or service costs: billing period, advance payment, allocation", name: "Service charge statement", mehrzahl: "Service charge statements", beschreibung: "One year’s operating cost statement for a rental property – with the deadline for sending it to the tenants." } }
   titelVorlage: "Nebenkosten {jahr} – {mietobjekt}"
-  erkennbarAn: "Betriebs- oder Nebenkostenabrechnung: Abrechnungszeitraum vom … bis …, Umlageschlüssel, Vorauszahlungen, Nachzahlung oder Guthaben je Einheit."
+  erkennbarAn: "Betriebskosten oder Nebenkosten: Abrechnungszeitraum, Vorauszahlung, Verteilung"
   felder:
     - { key: mietobjekt, label: Mietobjekt, typ: referenz, ziel: mietobjekt, verweisart: zugehoerigkeit, pflicht: true, beschriftungen: { en: { label: "Rental property" } }  }
     - { key: jahr, label: Abrechnungsjahr, typ: text, pflicht: true, muster: "[0-9]{4}", maxLen: 4, hilfe: "Vierstellig, z. B. 2025", beschriftungen: { en: { label: "Statement year", hilfe: "Four digits, e.g. 2025" } }  }

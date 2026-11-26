@@ -431,9 +431,10 @@ From Ablago 0.321.0 (DMS #1646, #1648):
 
 When a document is taken over, Ablago suggests the folder type (DMS #939). For this, classification gets each type's name, description and **“How to recognise it”** – in the package `erkennbarAn` on the folder type, translation under `beschriftungen.<language>.erkennbarAn` (DMS #937, from 0.218.0).
 
-- Name what is **on the paper**: typical headings, terms, numbers, senders – not what the type is for (that is the description).
-- At most 300 characters (Ablago cuts longer text); classification uses the **first 200**, so put the most important part first.
-- An update sets the text only while it is still empty in Ablago – whatever the administrators entered stays.
+- Name what is **on the paper**: typical headings and terms – not what the type is for (that is the description).
+- **Keep it short: four to six words that almost every document of this type contains** (dms-registry #267). Ablago counts the words of four letters or more, without filler words, and looks for them as part of a word in the document ("Buchung" also matches "Buchungstag"). Two hits and 40 % of the words count in favour of the type; below 30 % (with three words or more) they count **against** it. A long list of every variant therefore hurts: each document contains only a few of them. Prefer the common part of the word ("Vertrag" rather than "Mietvertrag, Handyvertrag, Stromvertrag").
+- At most 300 characters (Ablago cuts longer text); classification with an AI package uses the **first 200**.
+- An update takes over a changed text as long as the administrators have not changed it themselves in Ablago (DMS #1658).
 
 ## Turning text into a reference
 

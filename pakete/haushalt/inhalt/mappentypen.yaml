@@ -18,9 +18,9 @@
   name: Arbeitsverhältnis
   mehrzahl: Arbeitsverhältnisse
   beschreibung: Anstellung, Minijob oder Ausbildung – mit Arbeitsvertrag, Gehaltsabrechnungen und Zeugnis.
-  beschriftungen: { en: { erkennbarAn: "Employment contract, payslip, reference or notice: employer, personnel number, gross/net, start date, “Entgeltabrechnung”.", name: "Employment", mehrzahl: "Jobs", beschreibung: "Job, mini-job or apprenticeship – with employment contract, payslips and reference." } }
+  beschriftungen: { en: { erkennbarAn: "Employer and employee: salary, pay, personnel number", name: "Employment", mehrzahl: "Jobs", beschreibung: "Job, mini-job or apprenticeship – with employment contract, payslips and reference." } }
   titelVorlage: "{person_verweis} – {arbeitgeber|kurz:25} – {beginn|jahr}"
-  erkennbarAn: "Arbeitsvertrag, Gehaltsabrechnung, Zeugnis oder Kündigung: Arbeitgeber, Personalnummer, Brutto/Netto, Eintrittsdatum, „Entgeltabrechnung“."
+  erkennbarAn: "Arbeitgeber und Arbeitnehmer: Gehalt, Entgelt, Personalnummer"
   felder:
     - { key: arbeitgeber, label: Arbeitgeber, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Employer" } }  }
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
@@ -40,15 +40,16 @@
   name: Arbeitsmedizinische Vorsorge
   mehrzahl: Arbeitsmedizinische Vorsorgen
   beschreibung: Vorsorgebescheinigung nach der ArbMedVV – Datum, Anlass, Art und nächster Termin. Eine Mappe je Anlass; Befunde gehören ins Paket Gesundheit.
-  beschriftungen: { en: { erkennbarAn: "Occupational health certificate under ArbMedVV: “arbeitsmedizinische Vorsorge”, occasion (e.g. screen work), date, next appointment, company doctor.", name: "Occupational health check", mehrzahl: "Occupational health checks", beschreibung: "Certificate of an occupational health check (German ArbMedVV) – date, reason, type and next appointment. One folder per reason; findings belong in the Health package." } }
+  beschriftungen: { en: { erkennbarAn: "Occupational health check with the company doctor, reason", name: "Occupational health check", mehrzahl: "Occupational health checks", beschreibung: "Certificate of an occupational health check (German ArbMedVV) – date, reason, type and next appointment. One folder per reason; findings belong in the Health package." } }
   titelVorlage: "{anlass} – {person_verweis} – {datum}"
-  erkennbarAn: "Vorsorgebescheinigung nach ArbMedVV: „arbeitsmedizinische Vorsorge“, Anlass (z. B. Bildschirmarbeit, G 37), Datum, nächster Termin, Betriebsarzt."
+  erkennbarAn: "Arbeitsmedizinische Vorsorge beim Betriebsarzt, Anlass"
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } } }
     - { key: arbeitsverhaeltnis, label: Arbeitsverhältnis, typ: referenz, ziel: arbeitsverhaeltnis, verweisart: bezug, hilfe: Die Vorsorge erscheint dort unter „Verknüpfungen“, beschriftungen: { en: { label: "Employment", hilfe: "The check then shows up there under “Links”" } } }
     - { key: datum, label: Datum der Vorsorge, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Date of the check" } } }
     - { key: arzt, label: Ärztin/Arzt, typ: referenz, ziel: ["basis:organisation", "basis:person"], verweisart: bezug, hilfe: Betriebsarzt oder arbeitsmedizinischer Dienst, beschriftungen: { en: { label: "Doctor", hilfe: "Company doctor or occupational health service" } } }
     - key: anlass
+      erkennung: { art: auswahl }
       label: Anlass
       beschriftungen: { en: { label: "Reason", optionen: { "Bildschirmarbeit": "Screen work", "Lärm": "Noise", "Atemschutz": "Respiratory protection", "Feuchtarbeit": "Wet work", "Biostoffe": "Biological agents", "Gefahrstoffe": "Hazardous substances", "Hitze": "Heat", "Sonstiges": "Other" } } }
       typ: auswahl
@@ -56,6 +57,7 @@
       optionen: [Bildschirmarbeit, Lärm, Atemschutz, Feuchtarbeit, Biostoffe, Gefahrstoffe, Hitze, Sonstiges]
     - { key: anlass_text, label: Anlass genauer, typ: text, maxLen: 120, hilfe: "Wie auf der Bescheinigung, z. B. „Tätigkeiten mit Atemschutzgeräten, Gruppe 2“", beschriftungen: { en: { label: "Reason in detail", hilfe: "As on the certificate" } } }
     - key: art
+      erkennung: { art: auswahl }
       label: Art
       beschriftungen: { en: { label: "Type", optionen: { "Pflichtvorsorge": "Mandatory", "Angebotsvorsorge": "Offered", "Wunschvorsorge": "On request" } } }
       typ: auswahl
@@ -77,9 +79,9 @@
   name: Vorsorge
   mehrzahl: Vorsorgeverträge
   beschreibung: Gesetzliche, betriebliche und private Altersvorsorge, Riester und Rürup. Bausparverträge sind Konten (Paket Finanzen).
-  beschriftungen: { en: { erkennbarAn: "Pension information, annual statement, contract for Riester, Rürup, company or private pension: policy number, guaranteed value, contributions.", name: "Pension", mehrzahl: "Pension plans", beschreibung: "State, company and private pensions, Riester and Rürup. Building savings contracts are accounts (Finances package)." } }
+  beschriftungen: { en: { erkennbarAn: "Pension, retirement provision or pension insurance: insurance number, contribution", name: "Pension", mehrzahl: "Pension plans", beschreibung: "State, company and private pensions, Riester and Rürup. Building savings contracts are accounts (Finances package)." } }
   titelVorlage: "{art} – {person_verweis} – {anbieter|kurz:25}"
-  erkennbarAn: "Renteninformation, Standmitteilung, Vertrag zu Riester, Rürup, Betriebsrente oder privater Rentenversicherung: Vertragsnummer, Garantiewert, Beiträge."
+  erkennbarAn: "Rente, Altersvorsorge oder Rentenversicherung: Versicherungsnummer, Beitrag"
   felder:
     - key: art
       label: Art
@@ -103,9 +105,9 @@
   name: Anschaffung
   mehrzahl: Anschaffungen
   beschreibung: Gekaufte Geräte und Möbel – mit Kassenbon, Garantie und Seriennummer.
-  beschriftungen: { en: { erkennbarAn: "Receipt, proof of purchase, warranty or delivery note for a device or furniture: item, serial number, purchase date, warranty until, retailer.", name: "Purchase", mehrzahl: "Purchases", beschreibung: "Appliances and furniture you bought – with receipt, warranty and serial number." } }
+  beschriftungen: { en: { erkennbarAn: "Device with purchase date, warranty, repair or serial number", name: "Purchase", mehrzahl: "Purchases", beschreibung: "Appliances and furniture you bought – with receipt, warranty and serial number." } }
   titelVorlage: "{gegenstand} – {kaufdatum|datum:MM/JJJJ}"
-  erkennbarAn: "Kassenbon, Kaufbeleg, Garantie- oder Lieferschein eines Geräts oder Möbels: Artikel, Seriennummer, Kaufdatum, Garantie bis, Händler."
+  erkennbarAn: "Gerät mit Kaufdatum, Garantie, Reparatur oder Seriennummer"
   felder:
     - { key: gegenstand, label: Gegenstand, typ: text, pflicht: true, maxLen: 120, beschriftungen: { en: { label: "Item" } }  }
     - { key: haendler, label: Händler, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Retailer" } }  }
@@ -137,9 +139,9 @@
   name: Bildung
   mehrzahl: Bildungswege
   beschreibung: Schule, Ausbildung, Studium und Kurse – mit Zeugnissen und Bescheinigungen.
-  beschriftungen: { en: { erkennbarAn: "Report, diploma, certificate of attendance or enrolment: school, university, course, grades, “Zeugnis”, period from–to.", name: "Education", mehrzahl: "Education records", beschreibung: "School, apprenticeship, university and courses – with certificates and confirmations." } }
+  beschriftungen: { en: { erkennbarAn: "Report with school year and class, qualification or participation", name: "Education", mehrzahl: "Education records", beschreibung: "School, apprenticeship, university and courses – with certificates and confirmations." } }
   titelVorlage: "{art} – {person_verweis} – {einrichtung}"
-  erkennbarAn: "Zeugnis, Abschluss, Teilnahme- oder Immatrikulationsbescheinigung: Schule, Hochschule, Kurs, Noten, „Zeugnis“, Zeitraum von–bis."
+  erkennbarAn: "Zeugnis mit Schuljahr und Klasse, Abschluss oder Teilnahme"
   felder:
     - { key: person_verweis, label: Person, typ: referenz, ziel: "basis:person", verweisart: bezug, aus_text: person, beschriftungen: { en: { label: "Person" } }  }
     - key: art

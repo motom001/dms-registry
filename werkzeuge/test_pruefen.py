@@ -3,6 +3,7 @@
     python3 -m unittest werkzeuge/test_pruefen.py
 """
 import json
+import re
 import shutil, sys, tempfile, unittest
 from pathlib import Path
 
@@ -1264,6 +1265,21 @@ class ErkennbarAnOffiziell(unittest.TestCase):
                     zu_lang.append(name)
         self.assertEqual(fehlt, [], 'ohne erkennbarAn (de/en)')
         self.assertEqual(zu_lang, [], 'länger als 200 Zeichen (die Klassifizierung nutzt nur 200)')
+
+    # Wie Ablago die Wörter zählt (shared/src/klassifizierung.ts, erkennbarImText): ab 4 Buchstaben, ohne Füllwörter.
+    FUELL = set('oder und auch eine einer eines einem einen der die das den dem des mit ohne von vom bis für fuer auf aus als zum '
+                'zur bei nach über ueber unter steht stehen enthält enthaelt meist immer oben unten oft'.split())
+
+    def test_kurz(self):
+        """Höchstens acht gezählte Wörter: Unter 30 % Treffern spricht der Text gegen den Typ (Registry #267)."""
+        lang = []
+        for datei in sorted((WURZEL / 'pakete').glob('*/inhalt/mappentypen.yaml')):
+            for t in yaml.safe_load(datei.read_text(encoding='utf-8')) or []:
+                woerter = {w for w in re.split(r'[^\w]+', (t.get('erkennbarAn') or '').lower())
+                           if len(w) >= 4 and w not in self.FUELL and not w.isdigit()}
+                if len(woerter) > 8:
+                    lang.append(f'{datei.parent.parent.name}:{t["schluessel"]} ({len(woerter)})')
+        self.assertEqual(lang, [], 'erkennbarAn mit mehr als acht Wörtern')
 
 
 

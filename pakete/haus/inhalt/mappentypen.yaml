@@ -6,9 +6,9 @@
   name: Immobilie
   mehrzahl: Immobilien
   beschreibung: Haus, Wohnung, Ferienwohnung, Garage oder Grundstück – gekauft oder gemietet.
-  beschriftungen: { en: { erkennbarAn: "Land register extract, purchase contract, listing or property tax paper for a house or plot: parcel, land district, living space, address.", name: "Property", mehrzahl: "Properties", beschreibung: "House, flat, holiday flat, garage or plot – owned or rented." } }
+  beschriftungen: { en: { erkennbarAn: "Building or property: land register, year of construction, living space", name: "Property", mehrzahl: "Properties", beschreibung: "House, flat, holiday flat, garage or plot – owned or rented." } }
   titelVorlage: "{bezeichnung}"
-  erkennbarAn: "Grundbuchauszug, Kaufvertrag, Exposé oder Grundsteuer-Unterlage zu einem Haus oder Grundstück: Flurstück, Gemarkung, Wohnfläche, Anschrift."
+  erkennbarAn: "Gebäude oder Grundstück: Grundbuch, Baujahr, Wohnfläche"
   felder:
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, eindeutig: true, maxLen: 120, hilfe: "z. B. „Einfamilienhaus Musterweg 1“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Detached house Musterweg 1”" } }  }
     - key: art
@@ -52,9 +52,9 @@
   name: Wartung
   mehrzahl: Wartungen
   beschreibung: Regelmäßige Wartung oder Prüfung – Heizung, Schornstein, Rauchmelder, Photovoltaik und mehr.
-  beschriftungen: { en: { erkennbarAn: "Maintenance or inspection report: heating, chimney sweep, smoke detectors, solar, lift; “Wartung durchgeführt am”, next date, specialist company.", name: "Maintenance", mehrzahl: "Maintenance tasks", beschreibung: "Regular maintenance or inspection – heating, chimney, smoke alarms, solar panels and more." } }
+  beschriftungen: { en: { erkennbarAn: "Maintenance, servicing or inspection of a system with findings", name: "Maintenance", mehrzahl: "Maintenance tasks", beschreibung: "Regular maintenance or inspection – heating, chimney, smoke alarms, solar panels and more." } }
   titelVorlage: "{gegenstand} – {immobilie}"
-  erkennbarAn: "Wartungs- oder Prüfprotokoll: Heizung, Schornsteinfeger, Rauchmelder, Photovoltaik, Aufzug; „Wartung durchgeführt am“, nächster Termin, Fachbetrieb."
+  erkennbarAn: "Wartung, Instandhaltung oder Prüfung einer Anlage mit Befund"
   felder:
     - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Property" } }  }
     - key: gegenstand
@@ -86,9 +86,9 @@
   name: Zählerstand
   mehrzahl: Zählerstände
   beschreibung: Eine Ablesung eines Strom-, Gas-, Wasser- oder Wärmezählers.
-  beschriftungen: { en: { erkennbarAn: "Meter reading card, photo or notice: meter number, reading in kWh or m³, reading date, electricity, gas, water, heat.", name: "Meter reading", mehrzahl: "Meter readings", beschreibung: "One reading of an electricity, gas, water or heat meter." } }
+  beschriftungen: { en: { erkennbarAn: "Meter reading with meter number and reading date", name: "Meter reading", mehrzahl: "Meter readings", beschreibung: "One reading of an electricity, gas, water or heat meter." } }
   titelVorlage: "{zaehlerart} {abgelesen_am}: {stand} {einheit}"
-  erkennbarAn: "Ablesekarte, Foto oder Mitteilung eines Zählerstands: Zählernummer, Stand in kWh oder m³, Ablesedatum, Strom, Gas, Wasser, Wärme."
+  erkennbarAn: "Zählerstand mit Zählernummer und Ablesung"
   felder:
     - { key: immobilie, label: Immobilie, typ: referenz, ziel: immobilie, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Property" } }  }
     - key: zaehlerart
@@ -101,7 +101,7 @@
     - { key: zaehlernummer, label: Zählernummer, typ: text, erkennung: { art: nummer }, maxLen: 40, beschriftungen: { en: { label: "Meter number" } }  }
     - { key: abgelesen_am, label: Abgelesen am, typ: datum, erkennung: { art: datum }, pflicht: true, max: heute, beschriftungen: { en: { label: "Read on" } }  }
     - { key: stand, label: Stand, typ: zahl, erkennung: {}, pflicht: true, min: 0, nachkomma: 3, beschriftungen: { en: { label: "Reading" } }  }
-    - { key: einheit, label: Einheit, typ: auswahl, optionen: [kWh, m³, MWh], beschriftungen: { en: { label: "Unit", optionen: { "kWh": "kWh", "m³": "m³", "MWh": "MWh" } } }  }
+    - { key: einheit, label: Einheit, typ: auswahl, optionen: [kWh, m³, MWh], beschriftungen: { en: { label: "Unit", optionen: { "kWh": "kWh", "m³": "m³", "MWh": "MWh" } } } , erkennung: { art: auswahl } }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [immobilie, zaehlerart, zaehlernummer, abgelesen_am, stand, einheit], beschriftungen: { en: { name: "General" } }  }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
