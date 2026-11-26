@@ -2,7 +2,7 @@
 
 ## 1.2.2
 
-- README: Die Grenze je Paket liegt bei 128 MB, nicht 32 MB. Hinweis auf das genauere Paket **KI lokal – Ähnlichkeit Stufe 2** (#243); nimm nur eines von beiden.
+- README: Die Grenze je Paket liegt bei 128 MB, nicht 32 MB. Hinweis auf das genauere Paket **KI lokal – Ähnlichkeit Stufe 2** (#243); welches die Vektoren liefert, wählst du in der Werkbank.
 
 ## 1.2.1
 

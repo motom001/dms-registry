@@ -10,18 +10,18 @@ herausgeber: app.ablago
 lizenz: Apache-2.0
 kurzanleitung:
   de:
-    - Nimm entweder dieses Paket oder KI lokal – Ähnlichkeit, nicht beide.
+    - Ist auch KI lokal – Ähnlichkeit installiert, wähle unter Werkbank → Pakete → KI lokal – Ähnlichkeit Stufe 2 im Abschnitt Ähnlichkeit „Vektoren von diesem Paket“.
     - Warte, bis Ablago den Bestand berechnet hat – den Fortschritt zeigt Werkbank → Pakete → KI lokal – Ähnlichkeit Stufe 2. Auf einem Raspberry Pi kann das bei vielen Dokumenten Stunden dauern.
     - An jeder Mappe mit Dokumenten findest du jetzt „Ähnliche Dokumente“ aus anderen Mappen.
     - Suche auf der Startseite mit „auch in Dokumenten“ – darunter stehen „Ähnliche Treffer“, auch ohne genau dieselben Wörter.
     - Beim Übernehmen neuer Post schlägt „Wohin gehört das?“ passende Mappen vor.
   en:
-    - Use either this package or KI lokal – Ähnlichkeit, not both.
+    - If KI lokal – Ähnlichkeit is installed too, choose “Vectors from this package” under Workbench → Packages → KI lokal – Ähnlichkeit Stufe 2, section Similarity.
     - Wait until Ablago has processed your documents – Workbench → Packages → KI lokal – Ähnlichkeit Stufe 2 shows the progress. On a Raspberry Pi this can take hours for many documents.
     - Every folder with documents now shows “Similar documents” from other folders.
     - Search on the start page including documents – below you see “Similar results”, even without the exact words.
     - When filing new post, “Where does this belong?” suggests matching folders.
-dms: ">=0.226.0"
+dms: ">=0.334.0"   # Art des Textes (DMS #1706, 0.332.0), Wahl „Vektoren von“ (DMS #1707, 0.334.0)
 inhalt: {}
 code:
   sprache: c
