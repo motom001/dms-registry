@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.11.1
+
+- **Hauptuntersuchung:** Der **Digitale Untersuchungsbericht** ist eine Internetseite (Link anklickbar, neue Werte geprüft), eindeutig – derselbe Link gehört nur zu einem Bericht, leer bleibt erlaubt – und hilft beim Wiederfinden der HU in Dokumenten (#299).
+
 ## 2.11.0
 
 - **Fahrzeug:** Die **Fahrzeug-Identnummer** ist eindeutig – dieselbe FIN gibt es nur an einem Fahrzeug (leer bleibt erlaubt). Das **Kennzeichen** ist es nicht mehr: Ein Wunschkennzeichen zieht beim Fahrzeugwechsel mit, das alte Fahrzeug außer Betrieb behält es in seiner Mappe.
