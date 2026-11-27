@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.10.1
+
+- **Ansichten:** „Fahrzeuge“ zeigt jetzt alle Mappen des Pakets (Fahrzeuge, Hauptuntersuchungen, Papiere, Gutachten, Rückrufe) wie bei Haus und Gesundheit. Die Fahrzeuge selbst stehen darunter in der neuen Ansicht **„Aktuelle Fahrzeuge“** (ohne die außer Betrieb).
+
 ## 2.10.0
 
 - **Hauptuntersuchung mit den Angaben des Digitalen Untersuchungsberichts** (dms-registry #278, XKfz 6.1): Art der Untersuchung (Hauptuntersuchung oder Sicherheitsprüfung), Untersuchung (Erst- oder Nachuntersuchung), Prüfplakette zugeteilt, Wiedervorführung angeordnet, nächste Sicherheitsprüfung, Kosten und der Link aus dem QR-Code. Neues Register „Fahrzeugdaten laut Bericht“ mit HSN, TSN und zulässiger Gesamtmasse.

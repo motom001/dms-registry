@@ -3,11 +3,20 @@
 # eine Ansicht. Fristen-Ansichten bleiben vorerst hier und ziehen unter „Fristen“ aus Basis, sobald Ablago das kann (dms #1517).
 # Ab 2.3.0 (#227): Fahrzeuge außer Betrieb fallen aus „Fahrzeuge“ und „HU fällig“; neu „Hauptuntersuchungen“.
 # Ab 2.2.0 ohne „Alle Fahrzeuge“ (doppelt) und „Rechnungen zu Fahrzeugen“ (stehen am Fahrzeug unter „Rechnungen“).
+# Ab 2.10.1: Wie bei Haus und Gesundheit zeigt die oberste Ansicht alle Mappen des Pakets; die Fahrzeuge selbst
+# stehen darunter in „Aktuelle Fahrzeuge“ (ohne die außer Betrieb). Schlüssel „fahrzeuge“ bleibt für die oberste.
 - schluessel: fahrzeuge
   name: Fahrzeuge
-  beschreibung: Alle Fahrzeuge
-  beschriftungen: { en: { name: "Vehicles", beschreibung: "All vehicles" } }
+  beschreibung: Alles zu den Fahrzeugen – Fahrzeuge, Hauptuntersuchungen, Papiere, Gutachten und Rückrufe
+  beschriftungen: { en: { name: "Vehicles", beschreibung: "Everything about the vehicles – vehicles, inspections, papers, reports and recalls" } }
   symbol: car
+  typen: [fahrzeug, hauptuntersuchung, zulassungsbescheinigung, fahrzeugpapiere, gutachten, rueckruf]
+- schluessel: aktuelle_fahrzeuge
+  name: Aktuelle Fahrzeuge
+  beschreibung: Zugelassene und vorübergehend abgemeldete Fahrzeuge
+  beschriftungen: { en: { name: "Current vehicles", beschreibung: "Registered and temporarily deregistered vehicles" } }
+  eltern: fahrzeuge
+  symbol: list-checks
   typen: [fahrzeug]
   bedingungen:
     - { feld: status, operator: einerVon, wert: { art: fest, wert: [zugelassen, vorübergehend abgemeldet] } }
