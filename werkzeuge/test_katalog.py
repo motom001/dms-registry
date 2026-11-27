@@ -46,10 +46,11 @@ class Stufe(unittest.TestCase):
         self.assertEqual(katalog.paket_stufe({'code': {'netz': [], **dienst}}), 'netz')
 
     def test_offizielle_pakete(self):
-        # Nur KI-Assistent und Sicherung (WebDAV) nutzen das Internet; alle anderen Helfer arbeiten nur hier.
+        # Nur KI-Assistent, Sicherung (WebDAV) und der Abruf beim KBA (fahrzeuge.kba, #278: nur nach Klick, nur zu
+        # www.kba-online.de) nutzen das Internet; alle anderen Helfer arbeiten nur hier.
         manifeste = {d.name: yaml.safe_load((d / 'manifest.yaml').read_text(encoding='utf-8'))
                      for d in (katalog.WURZEL / 'pakete').iterdir() if (d / 'manifest.yaml').exists()}
-        self.assertEqual(sorted(k for k, m in manifeste.items() if katalog.paket_stufe(m) == 'netz'), ['ki_assistent', 'sicherung_webdav'])
+        self.assertEqual(sorted(k for k, m in manifeste.items() if katalog.paket_stufe(m) == 'netz'), ['fahrzeuge.kba', 'ki_assistent', 'sicherung_webdav'])
 
 
 
