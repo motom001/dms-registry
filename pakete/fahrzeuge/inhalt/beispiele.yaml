@@ -27,3 +27,11 @@
   werte: { betrifft: [{ beispiel: familienauto }], datum: "2026-04-03", kilometerstand: 74210, arbeiten: "Reifenwechsel, Bremsbeläge vorn", betrag: { betrag: 214, waehrung: EUR }, bezahlt_am: "2026-04-03" }
 - typ: hauptuntersuchung
   werte: { fahrzeug: { beispiel: familienauto }, geprueft_am: "2025-01-14", pruefbericht_nr: "HU-2025-004711", kilometerstand: 55120, ergebnis: geringe Mängel, maengel: "Wischerblätter vorn verschlissen", naechste_hu: "2027-01-01" }
+# Ab 2.9.0 (#279): technische Daten erfunden; Zulassungsbescheinigung mit Kette, Teilegutachten mit Abnahme, ein Rückruf.
+- typ: zulassungsbescheinigung
+  schluessel: zb1_2019
+  werte: { fahrzeug: { beispiel: familienauto }, teil: Teil I, ausgestellt_am: "2019-05-17", kennzeichen: MU-ST 123, anlass: Erstzulassung, hsn: "0603", tsn: "ABC", typgenehmigung: "e1*2007/46*0001*01", hubraum: 1498, emissionsklasse: Euro 6d-TEMP, co2: 128, zul_gesamtmasse: 1830, anhaengelast_gebremst: 1500, anhaengelast_ungebremst: 650, stuetzlast: 75, reifengroessen: "205/55 R16 91V" }
+- typ: gutachten
+  werte: { fahrzeug: { beispiel: familienauto }, art: Teilegutachten, gutachtennummer: "TG-0000-01", datum: "2024-03-02", prueforganisation: Hersteller, gegenstand: Leichtmetallfelgen 7x17, eintragung_noetig: false, passt_zum_fahrzeug: nicht geprüft }
+- typ: rueckruf
+  werte: { fahrzeug: { beispiel: familienauto }, rueckrufcode: AB012C, kba_referenz: "12345R", grund: Software Motorsteuerung, durchfuehren_bis: "2027-03-31", status: angekündigt }

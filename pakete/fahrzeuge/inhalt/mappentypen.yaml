@@ -15,10 +15,10 @@
     - { key: bezeichnung, label: Bezeichnung, typ: text, pflicht: true, maxLen: 120, hilfe: "z. B. „Familienauto“ oder „VW Golf“", beschriftungen: { en: { label: "Name", hilfe: "e.g. “Family car” or “VW Golf”" } }  }
     - key: art
       label: Art
-      beschriftungen: { en: { label: "Type", optionen: { "Pkw": "Car", "Motorrad": "Motorbike", "Wohnmobil": "Motorhome", "Anhänger": "Trailer", "E-Bike": "E-bike", "Sonstige": "Other" } } }
+      beschriftungen: { en: { label: "Type", optionen: { "Pkw": "Car", "Motorrad": "Motorbike", "Wohnmobil": "Motorhome", "Anhänger": "Trailer", "Lkw": "Lorry", "Zugmaschine": "Tractor", "E-Bike": "E-bike", "Sonstige": "Other" } } }
       typ: auswahl
       pflicht: true
-      optionen: [Pkw, Motorrad, Wohnmobil, Anhänger, E-Bike, Sonstige]
+      optionen: [Pkw, Motorrad, Wohnmobil, Anhänger, Lkw, Zugmaschine, E-Bike, Sonstige]
     # Für die Erkennung (DMS 0.113): Post mit Kennzeichen oder Fahrzeug-Identnummer gehört zu diesem Fahrzeug.
     - { key: kennzeichen, label: Kennzeichen, typ: text, eindeutig: true, maxLen: 20, hilfe: "z. B. MU-ST 123", erkennung: { art: nummer, hinweis: "Leerzeichen und Bindestriche zählen nicht: MU-ST 123 = MU ST123" }, beschriftungen: { en: { label: "Registration number", hilfe: "e.g. MU-ST 123" } }  }
     - { key: fin, label: Fahrzeug-Identnummer, typ: text, maxLen: 17, muster: "[A-HJ-NPR-Z0-9]{17}", hilfe: "17 Zeichen ohne I, O und Q – steht im Fahrzeugschein unter E", erkennung: { art: nummer }, beschriftungen: { en: { label: "Vehicle identification number", hilfe: "17 characters without I, O and Q – shown in the registration certificate under E" } }  }
@@ -52,8 +52,35 @@
     - { key: versicherung, label: Versicherung, typ: referenz, ziel: "vertraege:vertrag", verweisart: bezug, hilfe: Die Kfz-Versicherung – ein Vertrag mit der Vertragsart Versicherung, beschriftungen: { en: { label: "Insurance", hilfe: "The car insurance – a contract of the type insurance" } }  }
     - { key: finanzierung, label: Finanzierung/Leasing, typ: referenz, ziel: "vertraege:vertrag", verweisart: bezug, hilfe: Kredit- oder Leasingvertrag – ein Vertrag aus dem Paket Verträge, beschriftungen: { en: { label: "Financing/leasing", hilfe: "Loan or leasing contract – a contract from the Contracts package" } }  }
     - { key: verbleib_original, label: Verbleib Originaldokumente, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo der Fahrzeugbrief (Zulassungsbescheinigung Teil II) liegt, beschriftungen: { en: { label: "Where the originals are", hilfe: "Where the vehicle title (registration certificate part II) is kept" } }  }
+    # Ab 2.9.0 (dms-registry #279): technische Daten mit Anwendungsfall – Versicherung (HSN/TSN), ABE (Typgenehmigung),
+    # Kfz-Steuer (Hubraum, Kraftstoff, Emissionsklasse, CO₂, Gesamtmasse), Anhänger (Anhänge- und Stützlast), Reifenkauf.
+    # Feldkennungen der Zulassungsbescheinigung Teil I in der Hilfe. Die Zulassungsbescheinigung füllt leere Werte nach.
+    - { key: hsn, label: Herstellerschlüssel (HSN), typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: "Feld 2.1, vier Ziffern – fragt die Versicherung", beschriftungen: { en: { label: "Manufacturer code (HSN)", hilfe: "Field 2.1, four digits – asked for by insurers" } } }
+    - { key: tsn, label: Typschlüssel (TSN), typ: text, maxLen: 3, muster: "[A-Z0-9]{3}", hilfe: "Feld 2.2, die ersten drei Zeichen – fragt die Versicherung", beschriftungen: { en: { label: "Type code (TSN)", hilfe: "Field 2.2, the first three characters – asked for by insurers" } } }
+    - { key: typgenehmigung, label: Typgenehmigung, typ: text, maxLen: 35, hilfe: "Feld K, z. B. e1*2007/46*0123*05 – steht auch in ABE und Teilegutachten", erkennung: { art: nummer }, beschriftungen: { en: { label: "Type approval", hilfe: "Field K, e.g. e1*2007/46*0123*05 – also listed in part approvals" } } }
+    - { key: hubraum, label: Hubraum (cm³), typ: zahl, min: 0, hilfe: Feld P.1 – für die Kfz-Steuer, beschriftungen: { en: { label: "Engine capacity (cm³)", hilfe: "Field P.1 – for vehicle tax" } } }
+    - key: kraftstoff
+      label: Kraftstoff
+      typ: auswahl
+      optionen: [Benzin, Diesel, Elektro, Hybrid Benzin/Elektro, Hybrid Diesel/Elektro, Autogas (LPG), Erdgas (CNG), Wasserstoff, Sonstige]
+      hilfe: Feld P.3
+      beschriftungen: { en: { label: "Fuel", hilfe: "Field P.3", optionen: { "Benzin": "Petrol", "Diesel": "Diesel", "Elektro": "Electric", "Hybrid Benzin/Elektro": "Hybrid petrol/electric", "Hybrid Diesel/Elektro": "Hybrid diesel/electric", "Autogas (LPG)": "LPG", "Erdgas (CNG)": "CNG", "Wasserstoff": "Hydrogen", "Sonstige": "Other" } } }
+    - { key: emissionsklasse, label: Emissionsklasse, typ: text, maxLen: 25, hilfe: "Feld 14, z. B. „Euro 6d“ – für Kfz-Steuer und Umweltzone", beschriftungen: { en: { label: "Emission class", hilfe: "Field 14, e.g. “Euro 6d” – for vehicle tax and low emission zones" } } }
+    - { key: co2, label: CO₂ (g/km), typ: zahl, min: 0, hilfe: Feld V.7 – zählt bei der Kfz-Steuer ab Erstzulassung Mitte 2009, beschriftungen: { en: { label: "CO₂ (g/km)", hilfe: "Field V.7 – counts for German vehicle tax from first registration mid-2009" } } }
+    - { key: zul_gesamtmasse, label: Zulässige Gesamtmasse (kg), typ: zahl, min: 0, hilfe: Feld F.1 – Kfz-Steuer bei Anhänger und Wohnmobil, Führerscheinklasse, beschriftungen: { en: { label: "Permissible total mass (kg)", hilfe: "Field F.1 – tax for trailers and motorhomes, licence category" } } }
+    - { key: anhaengelast_gebremst, label: Anhängelast gebremst (kg), typ: zahl, min: 0, hilfe: Feld O.1, beschriftungen: { en: { label: "Towing capacity braked (kg)", hilfe: "Field O.1" } } }
+    - { key: anhaengelast_ungebremst, label: Anhängelast ungebremst (kg), typ: zahl, min: 0, hilfe: Feld O.2, beschriftungen: { en: { label: "Towing capacity unbraked (kg)", hilfe: "Field O.2" } } }
+    - { key: stuetzlast, label: Stützlast (kg), typ: zahl, min: 0, hilfe: Feld 13 – auch für den Fahrradträger auf der Kupplung, beschriftungen: { en: { label: "Nose weight (kg)", hilfe: "Field 13 – also for a bike rack on the tow bar" } } }
+    - { key: reifengroessen, label: Zulässige Reifengrößen, typ: langtext, maxLen: 1000, hilfe: "Felder 15.1/15.2, beim CoC alle zulässigen – je Zeile eine Größe, z. B. „205/55 R16 91V“", beschriftungen: { en: { label: "Permitted tyre sizes", hilfe: "Fields 15.1/15.2, all permitted ones on the CoC – one size per line, e.g. “205/55 R16 91V”" } } }
+    - key: feinstaubplakette
+      label: Feinstaubplakette
+      typ: auswahl
+      optionen: [keine, rot, gelb, grün, blau]
+      hilfe: Werte nach XKfz-Codeliste „Nummer der Feinstaubplakette“
+      beschriftungen: { en: { label: "Emission sticker", hilfe: "Values from the XKfz code list", optionen: { "keine": "none", "rot": "red", "gelb": "yellow", "grün": "green", "blau": "blue" } } }
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, kennzeichen, fin, erstzulassung, halter_verweis, status, zugelassen_seit, abgemeldet_am, saisonkennzeichen, zulassungsstelle, hu_faellig, verantwortlich, versicherung, finanzierung, verbleib_original], beschriftungen: { en: { name: "General" } }  }
+    - { key: technische_daten, name: Technische Daten, art: felder, felder: [hsn, tsn, typgenehmigung, hubraum, kraftstoff, emissionsklasse, co2, zul_gesamtmasse, anhaengelast_gebremst, anhaengelast_ungebremst, stuetzlast, reifengroessen, feinstaubplakette], beschriftungen: { en: { name: "Technical data" } } }
     # Ab 2.0.0: alle Rechnungen mit „Betrifft“ = dieses Fahrzeug (Werkstatt, Reifen, Zubehör …).
     - key: werkstattrechnungen
       name: Rechnungen
@@ -101,3 +128,155 @@
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
   trefferliste: [fahrzeug, geprueft_am, ergebnis, naechste_hu]
+
+# Ab 2.9.0 (dms-registry #279): Gutachten, Abnahmen und Teile-Nachweise in einem Typ – Teilegutachten und
+# Änderungsabnahme gehören meist zusammen. Art: die 7 Werte der XKfz-Codeliste „Art des Gutachtens“
+# (urn:xoev-de:bund:kba:codeliste:artdesgutachtens), dazu Oldtimer-Gutachten, ABE und Teilegutachten.
+# „Passt zum Fahrzeug“ füllt Ablago, sobald es den Abgleich mit dem Dokument kann (motom001/dms#1717, Teil 3) – bis dahin von Hand.
+- schluessel: gutachten
+  name: Gutachten / Abnahme
+  mehrzahl: Gutachten / Abnahmen
+  beschreibung: Gutachten, Abnahme, ABE oder Teilegutachten zu einem Fahrzeug – mit Eintragung in die Papiere.
+  beschriftungen: { en: { erkennbarAn: "Expert report or approval: vehicle, approval, test", name: "Expert report / acceptance", mehrzahl: "Expert reports / acceptances", beschreibung: "Expert report, acceptance test, part approval (ABE) or part report for a vehicle – with entry into the papers." } }
+  titelVorlage: "{art|kurz:25} – {fahrzeug|kurz:25} – {gegenstand|kurz:25}"
+  erkennbarAn: "Gutachten oder Abnahme: Fahrzeug, Genehmigung, Prüfung"
+  felder:
+    - { key: fahrzeug, label: Fahrzeug, typ: referenz, ziel: fahrzeug, pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Vehicle" } } }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      erkennung: { art: auswahl }
+      optionen: [§ 21 StVZO, § 19 Abs. 2 StVZO, § 19 Abs. 3 StVZO, § 23 StVZO (Oldtimer), § 13 FZV, § 11 Abs. 5 FZV, § 13 EG-FGV, Art. 45 VO (EU) 2018/858, ABE, Teilegutachten]
+      hilfe: "§ 21 = Einzelbetriebserlaubnis (Vollgutachten), § 19 Abs. 3 = Änderungsabnahme, § 23 = Oldtimer-Gutachten für das H-Kennzeichen"
+      beschriftungen: { en: { label: "Type", hilfe: "§ 21 = individual approval (full report), § 19(3) = acceptance of a modification, § 23 = classic car report", optionen: { "§ 21 StVZO": "§ 21 StVZO", "§ 19 Abs. 2 StVZO": "§ 19(2) StVZO", "§ 19 Abs. 3 StVZO": "§ 19(3) StVZO", "§ 23 StVZO (Oldtimer)": "§ 23 StVZO (classic car)", "§ 13 FZV": "§ 13 FZV", "§ 11 Abs. 5 FZV": "§ 11(5) FZV", "§ 13 EG-FGV": "§ 13 EG-FGV", "Art. 45 VO (EU) 2018/858": "Art. 45 Reg. (EU) 2018/858", "ABE": "General type approval of a part (ABE)", "Teilegutachten": "Part report" } } }
+    - { key: gutachtennummer, label: Gutachtennummer, typ: text, maxLen: 40, erkennung: {}, beschriftungen: { en: { label: "Report number" } } }
+    - { key: datum, label: Datum, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Date" } } }
+    - key: prueforganisation
+      label: Prüforganisation
+      typ: auswahl
+      optionen: [DEKRA, FSP, GTÜ, GÜK, KÜS, TÜH, TÜV Hessen, TÜV NORD, TÜV Rheinland, TÜV SAARLAND, TÜV SÜD, TÜV Thüringen, VÜK, Hersteller, Sonstige]
+      hilfe: Nach der XKfz-Codeliste „Prüforganisation“; bei ABE und Teilegutachten oft der Hersteller
+      beschriftungen: { en: { label: "Testing organisation", hilfe: "From the XKfz code list; for part approvals often the manufacturer", optionen: { "DEKRA": "DEKRA", "FSP": "FSP", "GTÜ": "GTÜ", "GÜK": "GÜK", "KÜS": "KÜS", "TÜH": "TÜH", "TÜV Hessen": "TÜV Hessen", "TÜV NORD": "TÜV NORD", "TÜV Rheinland": "TÜV Rheinland", "TÜV SAARLAND": "TÜV SAARLAND", "TÜV SÜD": "TÜV SÜD", "TÜV Thüringen": "TÜV Thüringen", "VÜK": "VÜK", "Hersteller": "Manufacturer", "Sonstige": "Other" } } }
+    - { key: gegenstand, label: Gegenstand, typ: text, maxLen: 120, hilfe: "z. B. Felgen, Fahrwerk, Auspuff, Anhängerkupplung", beschriftungen: { en: { label: "Subject", hilfe: "e.g. wheels, suspension, exhaust, tow bar" } } }
+    - { key: eintragung_noetig, label: Eintragung in die Papiere nötig, typ: janein, standard: false, beschriftungen: { en: { label: "Entry into the papers required" } } }
+    - { key: eingetragen_am, label: Eingetragen am, typ: datum, max: heute, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: eintragung_noetig, op: ja } }] }, beschriftungen: { en: { label: "Entered on" } } }
+    - key: passt_zum_fahrzeug
+      label: Passt zum Fahrzeug
+      typ: auswahl
+      standard: nicht geprüft
+      optionen: [Nummer gefunden, nicht gefunden – selbst prüfen, nicht geprüft]
+      hilfe: Steht die Typgenehmigung oder HSN/TSN des Fahrzeugs im Dokument? „Nicht gefunden“ heißt nicht „passt nicht“ – bitte selbst prüfen.
+      beschriftungen: { en: { label: "Matches the vehicle", hilfe: "Does the document list the vehicle’s type approval or HSN/TSN? “Not found” doesn’t mean “doesn’t fit” – please check yourself.", optionen: { "Nummer gefunden": "number found", "nicht gefunden – selbst prüfen": "not found – check yourself", "nicht geprüft": "not checked" } } }
+    - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: ABE und Teilegutachten muss man oft im Fahrzeug mitführen, beschriftungen: { en: { label: "Where the original is", hilfe: "Part approvals often have to be carried in the vehicle" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, art, gutachtennummer, datum, prueforganisation, gegenstand, eintragung_noetig, eingetragen_am, passt_zum_fahrzeug, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [fahrzeug, art, gegenstand, datum]
+
+# Ab 2.9.0 (#279): jede Zulassungsbescheinigung einzeln – Teil I gibt es bei Umzug, Ummeldung oder Eintragung neu.
+# „Ersetzt“ verkettet sie. Die mitgelieferte Automatisierung füllt leere Werte am Fahrzeug nach (nur leere, nie
+# überschreiben – so schadet auch ein nachträglich eingescannter alter Schein nicht) und übernimmt die nächste HU, wenn sie später ist.
+- schluessel: zulassungsbescheinigung
+  name: Zulassungsbescheinigung
+  mehrzahl: Zulassungsbescheinigungen
+  beschreibung: Fahrzeugschein (Teil I) oder Fahrzeugbrief (Teil II) – jede Ausgabe einzeln, mit Anlass.
+  beschriftungen: { en: { erkennbarAn: "Registration certificate: registration, vehicle, holder", name: "Registration certificate", mehrzahl: "Registration certificates", beschreibung: "Registration certificate part I or part II – each issue separately, with the reason." } }
+  titelVorlage: "{teil} {ausgestellt_am|datum:MM/JJJJ} – {fahrzeug|kurz:25} – {anlass}"
+  erkennbarAn: "Zulassungsbescheinigung: Fahrzeugschein, Kennzeichen, Halter"
+  felder:
+    - { key: fahrzeug, label: Fahrzeug, typ: referenz, ziel: fahrzeug, pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Vehicle" } } }
+    - key: teil
+      label: Teil
+      typ: auswahl
+      pflicht: true
+      erkennung: { art: auswahl }
+      optionen: [Teil I, Teil II]
+      hilfe: Teil I = Fahrzeugschein, Teil II = Fahrzeugbrief
+      beschriftungen: { en: { label: "Part", hilfe: "Part I = registration document, part II = vehicle title", optionen: { "Teil I": "Part I", "Teil II": "Part II" } } }
+    - { key: nummer, label: Nummer, typ: text, maxLen: 30, erkennung: {}, hilfe: Nummer der Bescheinigung oben links, beschriftungen: { en: { label: "Number", hilfe: "Number of the certificate, top left" } } }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, erkennung: { art: datum }, hilfe: Feld I, beschriftungen: { en: { label: "Issued on", hilfe: "Field I" } } }
+    - { key: kennzeichen, label: Kennzeichen, typ: text, maxLen: 20, hilfe: Feld A – das Kennzeichen zu dieser Zeit, beschriftungen: { en: { label: "Registration number", hilfe: "Field A – the number at that time" } } }
+    - key: anlass
+      label: Anlass
+      typ: auswahl
+      optionen: [Erstzulassung, Umzug, Halterwechsel, Saisonkennzeichen, Eintragung nach § 19/§ 21, Wiederzulassung, Ersatz bei Verlust, Sonstiges]
+      beschriftungen: { en: { label: "Reason", optionen: { "Erstzulassung": "First registration", "Umzug": "Move", "Halterwechsel": "Change of keeper", "Saisonkennzeichen": "Seasonal plate", "Eintragung nach § 19/§ 21": "Entry after § 19/§ 21", "Wiederzulassung": "Re-registration", "Ersatz bei Verlust": "Replacement after loss", "Sonstiges": "Other" } } }
+    - { key: ersetzt, label: Ersetzt, typ: referenz, ziel: zulassungsbescheinigung, verweisart: bezug, auswahlFilter: [{ art: feld, feld: fahrzeug, op: zeigtAuf, wert: { art: eigenesFeld, feld: fahrzeug } }], hilfe: Die vorige Bescheinigung desselben Teils – sie gilt dann nicht mehr, beschriftungen: { en: { label: "Replaces", hilfe: "The previous certificate of the same part – it no longer applies" } } }
+    - { key: naechste_hu, label: Nächste HU, typ: datum, hilfe: Feld X (nur Teil I) – Monat genügt, dann den Monatsersten, beschriftungen: { en: { label: "Next inspection", hilfe: "Field X (part I only) – the month is enough, then use the first" } } }
+    - { key: hsn, label: Herstellerschlüssel (HSN), typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: Feld 2.1, beschriftungen: { en: { label: "Manufacturer code (HSN)", hilfe: "Field 2.1" } } }
+    - { key: tsn, label: Typschlüssel (TSN), typ: text, maxLen: 3, muster: "[A-Z0-9]{3}", hilfe: Feld 2.2, die ersten drei Zeichen, beschriftungen: { en: { label: "Type code (TSN)", hilfe: "Field 2.2, the first three characters" } } }
+    - { key: typgenehmigung, label: Typgenehmigung, typ: text, maxLen: 35, hilfe: Feld K, beschriftungen: { en: { label: "Type approval", hilfe: "Field K" } } }
+    - { key: hubraum, label: Hubraum (cm³), typ: zahl, min: 0, hilfe: Feld P.1, beschriftungen: { en: { label: "Engine capacity (cm³)", hilfe: "Field P.1" } } }
+    - { key: emissionsklasse, label: Emissionsklasse, typ: text, maxLen: 25, hilfe: Feld 14, beschriftungen: { en: { label: "Emission class", hilfe: "Field 14" } } }
+    - { key: co2, label: CO₂ (g/km), typ: zahl, min: 0, hilfe: Feld V.7, beschriftungen: { en: { label: "CO₂ (g/km)", hilfe: "Field V.7" } } }
+    - { key: zul_gesamtmasse, label: Zulässige Gesamtmasse (kg), typ: zahl, min: 0, hilfe: Feld F.1, beschriftungen: { en: { label: "Permissible total mass (kg)", hilfe: "Field F.1" } } }
+    - { key: anhaengelast_gebremst, label: Anhängelast gebremst (kg), typ: zahl, min: 0, hilfe: Feld O.1, beschriftungen: { en: { label: "Towing capacity braked (kg)", hilfe: "Field O.1" } } }
+    - { key: anhaengelast_ungebremst, label: Anhängelast ungebremst (kg), typ: zahl, min: 0, hilfe: Feld O.2, beschriftungen: { en: { label: "Towing capacity unbraked (kg)", hilfe: "Field O.2" } } }
+    - { key: stuetzlast, label: Stützlast (kg), typ: zahl, min: 0, hilfe: Feld 13, beschriftungen: { en: { label: "Nose weight (kg)", hilfe: "Field 13" } } }
+    - { key: reifengroessen, label: Reifengrößen, typ: langtext, maxLen: 1000, hilfe: Felder 15.1 und 15.2, beschriftungen: { en: { label: "Tyre sizes", hilfe: "Fields 15.1 and 15.2" } } }
+    - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the original is" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, teil, nummer, ausgestellt_am, kennzeichen, anlass, ersetzt, naechste_hu, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: technische_daten, name: Technische Daten, art: felder, felder: [hsn, tsn, typgenehmigung, hubraum, emissionsklasse, co2, zul_gesamtmasse, anhaengelast_gebremst, anhaengelast_ungebremst, stuetzlast, reifengroessen], beschriftungen: { en: { name: "Technical data" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [fahrzeug, teil, ausgestellt_am, kennzeichen, anlass]
+
+# Ab 2.9.0 (#279): weitere Papiere – CoC, Abmeldebescheinigung, alter Fahrzeugschein und -brief.
+- schluessel: fahrzeugpapiere
+  name: Fahrzeugpapiere
+  mehrzahl: Fahrzeugpapiere
+  beschreibung: CoC (Übereinstimmungsbescheinigung), Abmeldebescheinigung oder Fahrzeugschein und -brief von vor 2005.
+  beschriftungen: { en: { erkennbarAn: "Certificate of conformity or deregistration: vehicle, type", name: "Vehicle papers", mehrzahl: "Vehicle papers", beschreibung: "Certificate of conformity (CoC), deregistration certificate or old registration papers from before 2005." } }
+  titelVorlage: "{art} – {fahrzeug|kurz:25}"
+  erkennbarAn: "Übereinstimmungsbescheinigung oder Abmeldung: Fahrzeug, Typ"
+  felder:
+    - { key: fahrzeug, label: Fahrzeug, typ: referenz, ziel: fahrzeug, pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Vehicle" } } }
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      erkennung: { art: auswahl }
+      optionen: [CoC, Abmeldebescheinigung, Fahrzeugschein (bis 2005), Fahrzeugbrief (bis 2005), Sonstige]
+      beschriftungen: { en: { label: "Type", optionen: { "CoC": "Certificate of conformity (CoC)", "Abmeldebescheinigung": "Deregistration certificate", "Fahrzeugschein (bis 2005)": "Registration document (before 2005)", "Fahrzeugbrief (bis 2005)": "Vehicle title (before 2005)", "Sonstige": "Other" } } }
+    - { key: datum, label: Datum, typ: datum, max: heute, erkennung: { art: datum }, hilfe: Ausgestellt am – bei der Abmeldebescheinigung der Tag der Abmeldung, beschriftungen: { en: { label: "Date", hilfe: "Issued on – for a deregistration the day of deregistration" } } }
+    - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, beschriftungen: { en: { label: "Where the original is" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, art, datum, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [fahrzeug, art, datum]
+
+# Ab 2.9.0 (#279): Rückrufaktion – Anschreiben, Erinnerung und Bestätigung der Werkstatt in einer Mappe.
+- schluessel: rueckruf
+  name: Rückruf
+  mehrzahl: Rückrufe
+  beschreibung: Rückrufaktion des Herstellers – vom Anschreiben bis zur Bestätigung der Werkstatt.
+  beschriftungen: { en: { erkennbarAn: "Recall: vehicle, workshop, appointment", name: "Recall", mehrzahl: "Recalls", beschreibung: "Manufacturer recall – from the letter to the workshop’s confirmation." } }
+  titelVorlage: "Rückruf {rueckrufcode} – {fahrzeug|kurz:25} – {status}"
+  erkennbarAn: "Rückrufaktion: Fahrzeug, Werkstatt, Termin"
+  felder:
+    - { key: fahrzeug, label: Fahrzeug, typ: referenz, ziel: fahrzeug, pflicht: true, verweisart: bezug, beschriftungen: { en: { label: "Vehicle" } } }
+    - { key: rueckrufcode, label: Rückrufcode, typ: text, maxLen: 20, erkennung: {}, hilfe: "Code des Herstellers, meist sechs Zeichen", beschriftungen: { en: { label: "Recall code", hilfe: "Manufacturer’s code, usually six characters" } } }
+    - { key: kba_referenz, label: KBA-Referenznummer, typ: text, maxLen: 10, muster: "[0-9]{4,6}R?", hilfe: "Fünf Ziffern und „R“ – steht oft nicht im Schreiben, sondern in der Rückrufdatenbank des KBA", beschriftungen: { en: { label: "KBA reference", hilfe: "Five digits and “R” – often not in the letter but in the KBA recall database" } } }
+    - { key: grund, label: Grund, typ: text, maxLen: 200, beschriftungen: { en: { label: "Reason" } } }
+    - { key: durchfuehren_bis, label: Durchführen bis, typ: datum, frist: { vorlauf: 14, einheit: tage }, beschriftungen: { en: { label: "Carry out by" } } }
+    - key: status
+      label: Status
+      typ: auswahl
+      standard: angekündigt
+      optionen: [angekündigt, Termin vereinbart, durchgeführt]
+      beschriftungen: { en: { label: "Status", optionen: { "angekündigt": "announced", "Termin vereinbart": "appointment made", "durchgeführt": "done" } } }
+    - { key: durchgefuehrt_am, label: Durchgeführt am, typ: datum, max: heute, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: status, op: einerVon, wert: { art: fest, wert: [durchgeführt] } } }] }, beschriftungen: { en: { label: "Done on" } } }
+    - { key: werkstatt, label: Werkstatt, typ: referenz, ziel: "basis:organisation", verweisart: bezug, beschriftungen: { en: { label: "Workshop" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, rueckrufcode, kba_referenz, grund, durchfuehren_bis, status, durchgefuehrt_am, werkstatt], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [fahrzeug, rueckrufcode, status, durchfuehren_bis]

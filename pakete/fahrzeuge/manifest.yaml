@@ -3,7 +3,7 @@ schema: 1
 id: fahrzeuge
 name: Fahrzeuge
 herausgeber: app.ablago
-version: 2.8.0
+version: 2.9.0
 beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.
 autor:
   name: Thomas Meissner
@@ -25,13 +25,13 @@ kurzanleitung:
     - Lege je Fahrzeug eine Mappe an und übernimm „HU fällig“ von der Plakette.
     - Leg die Kfz-Versicherung als Vertrag mit der Vertragsart Versicherung an und wähle sie am Fahrzeug aus.
     - Rechnungen von Werkstatt und Reifenhändler legst du als Rechnung ab und wählst unter „Betrifft“ das Fahrzeug – am Fahrzeug stehen sie unter „Rechnungen“.
-    - Leg den Prüfbericht der HU als Hauptuntersuchung ab und trag die nächste HU auch am Fahrzeug ein.
+    - Leg HU-Bericht und Zulassungsbescheinigung ab – nächste HU, Kennzeichen und technische Daten kommen ans Fahrzeug, wo sie fehlen.
     - Schalte unter Automatisierungen „HU wird bald fällig“ ein, wenn du einen Monat vorher erinnert werden willst.
   en:
     - Create a folder for each vehicle and copy “MOT due” from the sticker.
     - Create the car insurance as a contract of the type insurance and select it on the vehicle.
     - File garage and tyre invoices as an invoice and choose the vehicle under “Concerns” – the vehicle lists them under “Invoices”.
-    - File the MOT report as a main inspection and enter the next date on the vehicle too.
+    - File the inspection report and registration certificate – next inspection, number and technical data go to the vehicle where missing.
     - Turn on the MOT reminder under automations to get a reminder one month before.
 abhaengigkeiten:
   # Ab 2.0.0 (dms-registry #163): Versicherung und Finanzierung aus Verträge, Rechnungen aus Rechnungen; Haushalt nicht mehr.

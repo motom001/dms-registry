@@ -22,3 +22,15 @@
     - { feld: hu_faellig, operator: kleiner, wert: { art: heute, versatz: 3, einheit: monate } }
     - { feld: status, operator: einerVon, wert: { art: fest, wert: [zugelassen, vorübergehend abgemeldet] } }
 - { schluessel: hauptuntersuchungen, name: Hauptuntersuchungen, symbol: clipboard-check, eltern: fahrzeuge, typen: [hauptuntersuchung], beschriftungen: { en: { name: "Main inspections" } } }
+# Ab 2.9.0 (#279).
+- { schluessel: zulassungsbescheinigungen, name: Zulassungsbescheinigungen, symbol: id-card, eltern: fahrzeuge, typen: [zulassungsbescheinigung], beschriftungen: { en: { name: "Registration certificates" } } }
+- { schluessel: gutachten, name: Gutachten / Abnahmen, symbol: stamp, eltern: fahrzeuge, typen: [gutachten], beschriftungen: { en: { name: "Expert reports / acceptances" } } }
+- { schluessel: fahrzeugpapiere, name: Fahrzeugpapiere, symbol: files, eltern: fahrzeuge, typen: [fahrzeugpapiere], beschriftungen: { en: { name: "Vehicle papers" } } }
+- schluessel: offene_rueckrufe
+  name: Offene Rückrufe
+  beschriftungen: { en: { name: "Open recalls" } }
+  eltern: fahrzeuge
+  symbol: wrench
+  typen: [rueckruf]
+  bedingungen:
+    - { feld: status, operator: einerVon, wert: { art: fest, wert: [angekündigt, Termin vereinbart] } }

@@ -1,7 +1,7 @@
 # Was nach der Installation im DMS vorhanden sein muss.
-mappentypen: [fahrzeug, hauptuntersuchung]
-sichten: [fahrzeuge, hu_faellig, hauptuntersuchungen]
-beispiele: 5
-wortlisten: 5
-automatisierungen: 3
+mappentypen: [fahrzeug, hauptuntersuchung, gutachten, zulassungsbescheinigung, fahrzeugpapiere, rueckruf]
+sichten: [fahrzeuge, hu_faellig, hauptuntersuchungen, zulassungsbescheinigungen, gutachten, fahrzeugpapiere, offene_rueckrufe]
+beispiele: 8
+wortlisten: 8
+automatisierungen: 6
 vorgaben: 2
