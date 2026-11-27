@@ -23,16 +23,16 @@
     - key: form
       label: Form
       typ: auswahl
-      optionen: [handschriftlich, schriftlich mit Unterschrift, notariell beurkundet]
-      beschriftungen: { en: { label: "Form", optionen: { "handschriftlich": "handwritten", "schriftlich mit Unterschrift": "written and signed", "notariell beurkundet": "notarised" } } }
+      optionen: [handschriftlich, schriftlich, öffentlich beglaubigt, notariell beurkundet]
+      beschriftungen: { en: { label: "Form", optionen: { "handschriftlich": "handwritten", "schriftlich": "written", "öffentlich beglaubigt": "officially certified", "notariell beurkundet": "notarised" } } }
     - key: hinterlegt
       label: Hinterlegt
       typ: auswahl
       optionen: [zu Hause, beim Amtsgericht, beim Notar, Sonstiges]
       beschriftungen: { en: { label: "Deposited", optionen: { "zu Hause": "at home", "beim Amtsgericht": "at the local court", "beim Notar": "with the notary", "Sonstiges": "other" } } }
-    - { key: im_register, label: Im Register, typ: janein, standard: false, hilfe: Zentrales Vorsorgeregister bzw. Zentrales Testamentsregister der Bundesnotarkammer, beschriftungen: { en: { label: "Registered", hilfe: "Central register of lasting powers of attorney or of wills" } } }
-    - { key: bestaetigt_am, label: Zuletzt bestätigt am, typ: datum, max: heute, hilfe: Eine Patientenverfügung immer wieder mit Datum und Unterschrift bestätigen, beschriftungen: { en: { label: "Last confirmed on", hilfe: "Confirm a living will now and then with date and signature" } } }
-    - { key: erneut_pruefen_am, label: Erneut prüfen am, typ: datum, hilfe: z. B. zwei Jahre nach der letzten Bestätigung, beschriftungen: { en: { label: "Review again on", hilfe: "e.g. two years after the last confirmation" } } }
+    - { key: im_register, label: Im Register, typ: janein, standard: false, hilfe: "Testament und Erbvertrag stehen im Zentralen Testamentsregister nur, wenn sie beim Amtsgericht oder Notar verwahrt sind. Ins Zentrale Vorsorgeregister kommt eine Betreuungsverfügung, eine Patientenverfügung nur zusammen mit einer Vorsorgevollmacht oder Betreuungsverfügung", beschriftungen: { en: { label: "Registered", hilfe: "Wills and contracts of inheritance are in the central register of wills only if kept by the local court or a notary. The central register of lasting powers takes care directives, and living wills only together with a lasting power of attorney or care directive" } } }
+    - { key: bestaetigt_am, label: Zuletzt bestätigt am, typ: datum, max: heute, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: art, op: einerVon, wert: { art: fest, wert: [Patientenverfügung, Betreuungsverfügung, Sorgerechtsverfügung] } } }] }, hilfe: Vor allem für die Patientenverfügung – sie immer wieder mit Datum und Unterschrift bestätigen, beschriftungen: { en: { label: "Last confirmed on", hilfe: "Mainly for a living will – confirm it now and then with date and signature" } } }
+    - { key: erneut_pruefen_am, label: Erneut prüfen am, typ: datum, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: art, op: einerVon, wert: { art: fest, wert: [Patientenverfügung, Betreuungsverfügung, Sorgerechtsverfügung] } } }] }, hilfe: Am besten zwei Jahre nach der letzten Bestätigung, beschriftungen: { en: { label: "Review again on", hilfe: "Ideally two years after the last confirmation" } } }
     - { key: aufgehoben_am, label: Aufgehoben oder ersetzt am, typ: datum, max: heute, beschriftungen: { en: { label: "Revoked or replaced on" } } }
     - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo das unterschriebene Original liegt, beschriftungen: { en: { label: "Where the original is", hilfe: "Where the signed original is kept" } } }
     - { key: kennt_ort, label: Kennt den Ort, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: Wer im Ernstfall weiß, wo die Verfügung liegt, beschriftungen: { en: { label: "Knows where it is", hilfe: "Who knows where to find it in an emergency" } } }

@@ -6,9 +6,11 @@ Das Paket **Vollmachten** hält alle Vollmachten eines Haushalts an einem Ort fe
 
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
-| Vollmacht | jede Vollmacht im Haushalt | Art, Vollmachtgeber, Bevollmächtigt (mehrere), Gegenüber (Organisation), Umfang, ausgestellt am, gültig bis, über den Tod hinaus, Form, im Vorsorgeregister, widerrufen am, Verbleib Original | **Gültig bis** (30 Tage vorher) |
+| Vollmacht | jede Vollmacht im Haushalt | Art, Vollmachtgeber, Bevollmächtigt (mehrere), Vertretung (einzeln/gemeinsam), Ersatzbevollmächtigt, Gegenüber (Organisation), **Betrifft** (Konto, Fahrzeug, Immobilie, Vertrag …), Umfang, ausgestellt am, gültig bis, über den Tod hinaus, Form, im Vorsorgeregister, widerrufen am, Verbleib Original | **Gültig bis** (30 Tage vorher) |
 
 **Arten:** Vorsorgevollmacht, Generalvollmacht, Kontovollmacht, Vollmacht gegenüber Kranken- oder Pflegekasse, Schweigepflichtentbindung, Vollmacht für Steuerberatung, Vollmacht gegenüber einer Behörde (z. B. Zulassungsstelle, Bürgeramt), Stimmrechtsvollmacht (Eigentümerversammlung), Vollmacht für Kita oder Schule (Abholen), Einverständnis für eine Reise mit Kind, Anwaltsvollmacht, Postvollmacht und Sonstige.
+
+**Betrifft:** Vollmachten liegen quer zu allen Bereichen. Zeigt eine Vollmacht auf ein Konto, ein Fahrzeug oder eine Immobilie, steht sie dort unter „Verknüpfungen“ – etwa die Kontovollmacht am Konto oder die Vollmacht für die Zulassungsstelle am Fahrzeug. Das geht mit den Paketen Finanzen, Fahrzeuge, Haus, Vermietung, Verträge, Gesundheit und Haushalt, sobald sie installiert sind.
 
 **Ansichten:** *Vollmachten* mit allen, darunter **Gültige Vollmachten** (ohne „Widerrufen am“).
 
@@ -20,7 +22,15 @@ Das Paket **Vollmachten** hält alle Vollmachten eines Haushalts an einem Ort fe
 
 ## Wer was sehen darf
 
-Vollmachten verraten viel über Familie, Gesundheit und Geld. **Nach der Installation sieht jede Person mit eigenem Zugang alle Vollmachten.** Wenn das nicht passt, leg unter **Werkbank → Benutzer** eine Rolle an (z. B. „Eltern“) und am Mappentyp **Vollmacht** eine Regel, die anderen das Lesen verbietet. Mehr im Administratorhandbuch unter „Berechtigungen“.
+Vollmachten verraten viel über Familie, Gesundheit und Geld. **Nach der Installation sieht jede Person mit eigenem Zugang alle Vollmachten** – das Paket bringt keine Regeln mit. Richte deshalb gleich Berechtigungen ein:
+
+1. Unter **Werkbank → Benutzer** eine Rolle anlegen, z. B. **Eltern**.
+2. Am Mappentyp **Vollmacht** eine Regel anlegen: wenn *Benutzer hat nicht Rolle Eltern* → **✗ C R U D P**.
+3. Im **Testlauf** mit einem anderen Benutzer prüfen, dass er keine Vollmacht lesen kann.
+
+Mehr im Administratorhandbuch unter „Berechtigungen“.
+
+**Keine Rechtsberatung:** Das Paket hilft beim Ablegen und Wiederfinden. Ob eine Vollmacht wirksam ist und für deinen Fall reicht, kann es nicht beurteilen. Dafür sind Notariat, Anwältin oder Betreuungsbehörde da.
 
 ## Voraussetzungen
 
