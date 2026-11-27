@@ -1,0 +1,40 @@
+# Mappentyp des Pakets Vollmachten (dms-registry #282). Schema: schema/inhalt.schema.json
+# Bewusst nicht in Basis: nicht jeder legt Vollmachten ab. Patientenverfügung, Betreuungsverfügung und Testament
+# stehen im Paket Verfügungen (#283); dessen Verfügung kann auf eine Vollmacht zeigen.
+
+- schluessel: vollmacht
+  name: Vollmacht
+  mehrzahl: Vollmachten
+  beschreibung: Eine Vollmacht – wer sie gegeben hat, wer bevollmächtigt ist, gegenüber wem und wie lange sie gilt.
+  beschriftungen: { en: { erkennbarAn: "Power of attorney: authorise, represent, signature", name: "Power of attorney", mehrzahl: "Powers of attorney", beschreibung: "A power of attorney – who granted it, who holds it, towards whom and for how long it applies." } }
+  titelVorlage: "{art} – {vollmachtgeber}"
+  erkennbarAn: "Vollmacht: bevollmächtige, vertreten, Unterschrift"
+  felder:
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      erkennung: { art: auswahl }
+      optionen: [Vorsorgevollmacht, Generalvollmacht, Kontovollmacht, Vollmacht Kranken- oder Pflegekasse, Schweigepflichtentbindung, Vollmacht Steuerberatung, Vollmacht Behörde, Stimmrechtsvollmacht, Vollmacht Kita oder Schule, Einverständnis Reise mit Kind, Anwaltsvollmacht, Postvollmacht, Sonstige]
+      beschriftungen: { en: { label: "Type", optionen: { "Vorsorgevollmacht": "Lasting power of attorney", "Generalvollmacht": "General power of attorney", "Kontovollmacht": "Bank account mandate", "Vollmacht Kranken- oder Pflegekasse": "Health or care insurance", "Schweigepflichtentbindung": "Release from medical confidentiality", "Vollmacht Steuerberatung": "Tax adviser", "Vollmacht Behörde": "Public authority", "Stimmrechtsvollmacht": "Proxy vote (owners’ meeting)", "Vollmacht Kita oder Schule": "Childcare or school", "Einverständnis Reise mit Kind": "Consent to travel with a child", "Anwaltsvollmacht": "Lawyer", "Postvollmacht": "Post and parcels", "Sonstige": "Other" } } }
+    - { key: vollmachtgeber, label: Vollmachtgeber, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, hilfe: Wer die Vollmacht gegeben hat, beschriftungen: { en: { label: "Granted by", hilfe: "Who granted the power of attorney" } } }
+    - { key: bevollmaechtigt, label: Bevollmächtigt, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, beschriftungen: { en: { label: "Attorney(s)" } } }
+    - { key: gegenueber, label: Gegenüber, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: "Für wen sie gilt, z. B. Bank, Pflegekasse, Schule. Leer = allgemein", beschriftungen: { en: { label: "Towards", hilfe: "Whom it applies to, e.g. bank, care insurance, school. Empty = general" } } }
+    - { key: umfang, label: Umfang, typ: langtext, maxLen: 2000, hilfe: "Wofür sie gilt, z. B. „Gesundheit und Aufenthalt“ oder „nur Konto 1234“", beschriftungen: { en: { label: "Scope", hilfe: "What it covers, e.g. “health and residence” or “account 1234 only”" } } }
+    - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Issued on" } } }
+    - { key: gueltig_bis, label: Gültig bis, typ: datum, hilfe: Leer = unbefristet, beschriftungen: { en: { label: "Valid until", hilfe: "Empty = no end date" } } }
+    - { key: ueber_tod_hinaus, label: Über den Tod hinaus, typ: janein, standard: false, beschriftungen: { en: { label: "Beyond death" } } }
+    - key: form
+      label: Form
+      typ: auswahl
+      optionen: [einfach schriftlich, öffentlich beglaubigt, notariell beurkundet]
+      beschriftungen: { en: { label: "Form", optionen: { "einfach schriftlich": "simple written form", "öffentlich beglaubigt": "officially certified", "notariell beurkundet": "notarised" } } }
+    - { key: vorsorgeregister, label: Im Vorsorgeregister, typ: janein, standard: false, hilfe: Zentrales Vorsorgeregister der Bundesnotarkammer, beschriftungen: { en: { label: "In the central register", hilfe: "Central register of lasting powers of attorney" } } }
+    - { key: widerrufen_am, label: Widerrufen am, typ: datum, max: heute, beschriftungen: { en: { label: "Revoked on" } } }
+    - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo das unterschriebene Original liegt, beschriftungen: { en: { label: "Where the original is", hilfe: "Where the signed original is kept" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, vollmachtgeber, bevollmaechtigt, gegenueber, umfang, ausgestellt_am, gueltig_bis, ueber_tod_hinaus, form, vorsorgeregister, widerrufen_am, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, vollmachtgeber, bevollmaechtigt, gegenueber, gueltig_bis]

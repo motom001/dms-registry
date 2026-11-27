@@ -1,0 +1,5 @@
+# Beispiel-Mappen der erfundenen Familie Muster (Personen und Sparkasse aus den Beispielen von Basis).
+- typ: vollmacht
+  werte: { art: Vorsorgevollmacht, vollmachtgeber: { beispiel: "basis:tom" }, bevollmaechtigt: [{ beispiel: "basis:lena" }], umfang: "Gesundheit, Aufenthalt, Vermögen und Behörden", ausgestellt_am: "2024-04-12", ueber_tod_hinaus: true, form: öffentlich beglaubigt, vorsorgeregister: true }
+- typ: vollmacht
+  werte: { art: Kontovollmacht, vollmachtgeber: { beispiel: "basis:lena" }, bevollmaechtigt: [{ beispiel: "basis:tom" }], gegenueber: { beispiel: "basis:sparkasse" }, ausgestellt_am: "2019-06-03", ueber_tod_hinaus: true, form: einfach schriftlich }

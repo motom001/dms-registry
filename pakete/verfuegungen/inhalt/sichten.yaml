@@ -1,0 +1,23 @@
+# Ansichten des Pakets Verfügungen (#283). Schema: schema/inhalt.schema.json
+- schluessel: verfuegungen
+  name: Verfügungen
+  beschreibung: Alle Verfügungen
+  beschriftungen: { en: { name: "Directives", beschreibung: "All directives" } }
+  symbol: file-signature
+  typen: [verfuegung]
+- schluessel: gesundheit_betreuung
+  name: Gesundheit und Betreuung
+  beschriftungen: { en: { name: "Health and care" } }
+  eltern: verfuegungen
+  symbol: heart-handshake
+  typen: [verfuegung]
+  bedingungen:
+    - { feld: art, operator: einerVon, wert: [Patientenverfügung, Betreuungsverfügung, Sorgerechtsverfügung] }
+- schluessel: todesfall
+  name: Für den Todesfall
+  beschriftungen: { en: { name: "In case of death" } }
+  eltern: verfuegungen
+  symbol: scroll-text
+  typen: [verfuegung]
+  bedingungen:
+    - { feld: art, operator: einerVon, wert: [Testament, Gemeinschaftliches Testament, Erbvertrag, Bestattungsverfügung] }

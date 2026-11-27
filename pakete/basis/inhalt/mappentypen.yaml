@@ -281,9 +281,9 @@
   name: Person
   mehrzahl: Personen
   beschreibung: Ein Mensch, mit dem du zu tun hast – Ansprechpartner, Ärztin, Vermieter, Verwandte. Eine Person ist kein Benutzer des DMS und kann sich nicht anmelden.
-  beschriftungen: { en: { erkennbarAn: "Business card, contact details or power of attorney", name: "Person", mehrzahl: "People", beschreibung: "Someone you deal with – a contact, a doctor, a landlord, relatives. A person isn’t a user of Ablago and can’t sign in." } }
+  beschriftungen: { en: { erkennbarAn: "Business card or contact details", name: "Person", mehrzahl: "People", beschreibung: "Someone you deal with – a contact, a doctor, a landlord, relatives. A person isn’t a user of Ablago and can’t sign in." } }
   titelVorlage: "{titel} {vorname} {nachname}"
-  erkennbarAn: "Visitenkarte, Kontaktdaten oder Vollmacht"
+  erkennbarAn: "Visitenkarte oder Kontaktdaten"
   felder:
     - { key: anrede, label: Anrede, typ: auswahl, optionen: [Frau, Herr, divers/keine], beschriftungen: { en: { label: "Title", optionen: { "Frau": "Ms", "Herr": "Mr", "divers/keine": "diverse/none" } } }  }
     - { key: titel, label: Titel, typ: text, maxLen: 40, hilfe: z. B. Dr., beschriftungen: { en: { label: "Academic title", hilfe: "e.g. Dr" } }  }

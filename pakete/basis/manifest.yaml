@@ -3,7 +3,7 @@ schema: 1
 id: basis
 name: Basis
 herausgeber: app.ablago
-version: 1.12.0
+version: 1.12.1
 beschreibung: 'Die Grundlage für die anderen Pakete: Firmen, Behörden, Ärzte und Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.'
 autor:
   name: Thomas Meissner

@@ -1,0 +1,5 @@
+# Beispiel-Mappen der erfundenen Familie Muster (Personen aus den Beispielen von Basis).
+- typ: verfuegung
+  werte: { art: Patientenverfügung, fuer: [{ beispiel: "basis:tom" }], erstellt_am: "2024-04-12", form: schriftlich mit Unterschrift, hinterlegt: zu Hause, bestaetigt_am: "2026-04-10", erneut_pruefen_am: "2028-04-10", kennt_ort: [{ beispiel: "basis:lena" }] }
+- typ: verfuegung
+  werte: { art: Gemeinschaftliches Testament, fuer: [{ beispiel: "basis:lena" }, { beispiel: "basis:tom" }], erstellt_am: "2021-11-05", form: handschriftlich, hinterlegt: beim Amtsgericht, im_register: true }

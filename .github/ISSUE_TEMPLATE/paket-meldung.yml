@@ -55,8 +55,10 @@ body:
         - Texterkennung – Zusatzsprache Türkisch (texterkennung.tur)
         - Texterkennung – Zusatzsprache Ukrainisch (texterkennung.ukr)
         - Trennblatt (trennblatt)
+        - Verfügungen (verfuegungen)
         - Vermietung (vermietung)
         - Verträge (vertraege)
+        - Vollmachten (vollmachten)
         - Ämter & Papiere (aemter)
     validations:
       required: true

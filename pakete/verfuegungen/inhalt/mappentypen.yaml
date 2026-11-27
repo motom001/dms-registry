@@ -1,0 +1,45 @@
+# Mappentyp des Pakets Verfügungen (dms-registry #283). Schema: schema/inhalt.schema.json
+# Vorsorge für Gesundheit und Betreuung sowie Verfügungen von Todes wegen. Der Erbvertrag ist zwar ein Vertrag, rechtlich
+# aber eine Verfügung von Todes wegen (§ 1941 BGB) – deshalb hier und nicht im Paket Verträge.
+# Der Organspendeausweis ist ein Gesundheitspass (Paket Gesundheit). Vollmachten: Paket Vollmachten (#282).
+
+- schluessel: verfuegung
+  name: Verfügung
+  mehrzahl: Verfügungen
+  beschreibung: Patientenverfügung, Betreuungsverfügung, Testament oder Erbvertrag – mit Form, Ort des Originals und wer davon weiß.
+  beschriftungen: { en: { erkennbarAn: "Directive or will: decide, wishes, heirs", name: "Directive", mehrzahl: "Directives", beschreibung: "Living will, care directive, will or contract of inheritance – with its form, where the original is and who knows about it." } }
+  titelVorlage: "{art} – {fuer}"
+  erkennbarAn: "Verfügung, Testament: verfüge, Wille, Erben"
+  felder:
+    - key: art
+      label: Art
+      typ: auswahl
+      pflicht: true
+      erkennung: { art: auswahl }
+      optionen: [Patientenverfügung, Betreuungsverfügung, Sorgerechtsverfügung, Bestattungsverfügung, Testament, Gemeinschaftliches Testament, Erbvertrag]
+      beschriftungen: { en: { label: "Type", optionen: { "Patientenverfügung": "Living will", "Betreuungsverfügung": "Care directive", "Sorgerechtsverfügung": "Guardianship directive for children", "Bestattungsverfügung": "Funeral wishes", "Testament": "Will", "Gemeinschaftliches Testament": "Joint will", "Erbvertrag": "Contract of inheritance" } } }
+    - { key: fuer, label: Für, typ: referenz, ziel: "basis:person", mehrfach: true, pflicht: true, verweisart: bezug, hilfe: Wer verfügt – beim gemeinschaftlichen Testament und Erbvertrag beide, beschriftungen: { en: { label: "For", hilfe: "Who made it – both people for a joint will or contract of inheritance" } } }
+    - { key: erstellt_am, label: Erstellt am, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Made on" } } }
+    - key: form
+      label: Form
+      typ: auswahl
+      optionen: [handschriftlich, schriftlich mit Unterschrift, notariell beurkundet]
+      beschriftungen: { en: { label: "Form", optionen: { "handschriftlich": "handwritten", "schriftlich mit Unterschrift": "written and signed", "notariell beurkundet": "notarised" } } }
+    - key: hinterlegt
+      label: Hinterlegt
+      typ: auswahl
+      optionen: [zu Hause, beim Amtsgericht, beim Notar, Sonstiges]
+      beschriftungen: { en: { label: "Deposited", optionen: { "zu Hause": "at home", "beim Amtsgericht": "at the local court", "beim Notar": "with the notary", "Sonstiges": "other" } } }
+    - { key: im_register, label: Im Register, typ: janein, standard: false, hilfe: Zentrales Vorsorgeregister bzw. Zentrales Testamentsregister der Bundesnotarkammer, beschriftungen: { en: { label: "Registered", hilfe: "Central register of lasting powers of attorney or of wills" } } }
+    - { key: bestaetigt_am, label: Zuletzt bestätigt am, typ: datum, max: heute, hilfe: Eine Patientenverfügung immer wieder mit Datum und Unterschrift bestätigen, beschriftungen: { en: { label: "Last confirmed on", hilfe: "Confirm a living will now and then with date and signature" } } }
+    - { key: erneut_pruefen_am, label: Erneut prüfen am, typ: datum, hilfe: z. B. zwei Jahre nach der letzten Bestätigung, beschriftungen: { en: { label: "Review again on", hilfe: "e.g. two years after the last confirmation" } } }
+    - { key: aufgehoben_am, label: Aufgehoben oder ersetzt am, typ: datum, max: heute, beschriftungen: { en: { label: "Revoked or replaced on" } } }
+    - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo das unterschriebene Original liegt, beschriftungen: { en: { label: "Where the original is", hilfe: "Where the signed original is kept" } } }
+    - { key: kennt_ort, label: Kennt den Ort, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: Wer im Ernstfall weiß, wo die Verfügung liegt, beschriftungen: { en: { label: "Knows where it is", hilfe: "Who knows where to find it in an emergency" } } }
+    - { key: vollmacht, label: Zugehörige Vollmacht, typ: referenz, zielOptional: ["vollmachten:vollmacht"], verweisart: bezug, hilfe: Mit dem Paket Vollmachten, z. B. die Vorsorgevollmacht zur Patientenverfügung, beschriftungen: { en: { label: "Related power of attorney", hilfe: "With the Powers of attorney package, e.g. the lasting power of attorney that goes with the living will" } } }
+  register:
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, fuer, erstellt_am, form, hinterlegt, im_register, bestaetigt_am, erneut_pruefen_am, aufgehoben_am, verbleib_original, kennt_ort, vollmacht], beschriftungen: { en: { name: "General" } } }
+    - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
+    - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
+    - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
+  trefferliste: [art, fuer, erstellt_am, verbleib_original]
