@@ -1,5 +1,12 @@
 # Änderungen
 
+## 2.9.0
+
+- **Neue Mappentypen** (dms-registry #279): *Gutachten / Abnahme* (Vollgutachten, Änderungsabnahme, Oldtimer-Gutachten, ABE, Teilegutachten, Art nach der amtlichen Liste), *Zulassungsbescheinigung* (Teil I und II, jede Ausgabe einzeln mit Anlass und „ersetzt“), *Fahrzeugpapiere* (CoC, Abmeldebescheinigung, alte Papiere) und *Rückruf*. Alle stehen am Fahrzeug unter „Verknüpfungen“.
+- **Technische Daten am Fahrzeug:** neues Register mit HSN/TSN, Typgenehmigung, Hubraum, Kraftstoff, Emissionsklasse, CO₂, zulässiger Gesamtmasse, Anhänge- und Stützlast, Reifengrößen und Feinstaubplakette. Art um Lkw und Zugmaschine ergänzt.
+- **Automatisierungen:** *Zulassungsbescheinigung ans Fahrzeug übernehmen* (nur leere Felder, nächste HU nur wenn später; vorausgewählt), *Abmeldung am Fahrzeug nachtragen* (vorausgewählt), *Rückruf durchführen*.
+- **Ansichten** *Zulassungsbescheinigungen*, *Gutachten / Abnahmen*, *Fahrzeugpapiere*, *Offene Rückrufe*; drei neue Gruppen gleichbedeutender Wörter; drei Beispiele mit erfundenen Nummern. README mit Quellen (XKfz 6.1).
+
 ## 2.8.0
 
 - **„Woran man ihn erkennt“ kürzer** (dms-registry #267): je Mappentyp vier bis sechs Wörter, die fast jedes Dokument dieses Typs enthält, statt langer Listen. Lange Listen sprachen bei Ablago oft gegen den richtigen Typ, weil jedes Dokument nur wenige ihrer Wörter enthält. Ein Update übernimmt den Text, solange ihr ihn nicht selbst geändert habt.

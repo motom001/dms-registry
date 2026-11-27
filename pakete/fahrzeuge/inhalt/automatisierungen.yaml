@@ -21,3 +21,30 @@
   wenn: { art: mappe.geaendert, typ: hauptuntersuchung, felder: [naechste_hu], angelegt: true }
   dann:
     - { art: feld_verknuepft, ueber: fahrzeug, werte: { hu_faellig: "{naechste_hu}" }, nur_wenn: spaeter }
+# Ab 2.9.0 (#279): Werte der Zulassungsbescheinigung ans Fahrzeug – nur in leere Felder, die nächste HU nur, wenn später.
+- schluessel: zb_ans_fahrzeug
+  name: Zulassungsbescheinigung ans Fahrzeug übernehmen
+  beschreibung: Trägt Kennzeichen und technische Daten aus der Zulassungsbescheinigung am Fahrzeug ein – nur in leere Felder, nie überschreiben. Die nächste HU nur, wenn sie später ist.
+  eingeschaltet: true
+  wenn: { art: mappe.geaendert, typ: zulassungsbescheinigung, felder: [kennzeichen, naechste_hu, hsn, tsn, typgenehmigung, hubraum, emissionsklasse, co2, zul_gesamtmasse, anhaengelast_gebremst, anhaengelast_ungebremst, stuetzlast, reifengroessen], angelegt: true }
+  dann:
+    - { art: feld_verknuepft, ueber: fahrzeug, werte: { kennzeichen: "{kennzeichen}", hsn: "{hsn}", tsn: "{tsn}", typgenehmigung: "{typgenehmigung}", hubraum: "{hubraum}", emissionsklasse: "{emissionsklasse}", co2: "{co2}", zul_gesamtmasse: "{zul_gesamtmasse}", anhaengelast_gebremst: "{anhaengelast_gebremst}", anhaengelast_ungebremst: "{anhaengelast_ungebremst}", stuetzlast: "{stuetzlast}", reifengroessen: "{reifengroessen}" }, nur_wenn: leer }
+    - { art: feld_verknuepft, ueber: fahrzeug, werte: { hu_faellig: "{naechste_hu}" }, nur_wenn: spaeter }
+- schluessel: abmeldung
+  name: Abmeldung am Fahrzeug nachtragen
+  beschreibung: Wird eine Abmeldebescheinigung abgelegt, kommt ihr Datum als „Abgemeldet am“ ans Fahrzeug, und du bekommst eine Aufgabe, den Status zu prüfen.
+  eingeschaltet: true
+  wenn: { art: mappe.geaendert, typ: fahrzeugpapiere, felder: [art, datum], angelegt: true }
+  und:
+    modus: alle
+    karten:
+      - { art: bedingung, bedingung: { art: feld, feld: art, op: einerVon, wert: { art: fest, wert: [Abmeldebescheinigung] } } }
+  dann:
+    - { art: feld_verknuepft, ueber: fahrzeug, werte: { abgemeldet_am: "{datum}" }, nur_wenn: spaeter }
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Abmeldung vom {datum} abgelegt – bitte den Status am Fahrzeug prüfen: {titel}" }
+- schluessel: rueckruf_frist
+  name: Rückruf durchführen
+  beschreibung: 14 Tage vor „Durchführen bis“ eines Rückrufs, der noch nicht durchgeführt ist.
+  wenn: { art: datum, typ: rueckruf, feld: durchfuehren_bis, vorlauf: 14, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Rückruf bis {datum} durchführen lassen: {titel}" }
