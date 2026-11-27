@@ -97,7 +97,7 @@
 - schluessel: hauptuntersuchung
   name: Hauptuntersuchung
   mehrzahl: Hauptuntersuchungen
-  beschreibung: Prüfbericht der HU – Ergebnis, Mängel, Nachprüfung und nächste HU.
+  beschreibung: Prüfbericht der HU oder Sicherheitsprüfung – Ergebnis, Mängel, Nachprüfung und nächste HU.
   beschriftungen: { en: { erkennbarAn: "Roadworthiness test report: registration number, defects, inspection sticker", name: "Main inspection", mehrzahl: "Main inspections", beschreibung: "Inspection report of the German main inspection (HU) – result, defects, re-inspection and next inspection." } }
   titelVorlage: "HU {geprueft_am|datum:MM/JJJJ} – {fahrzeug|kurz:25} – {ergebnis}"
   erkennbarAn: "Prüfbericht der Hauptuntersuchung: Kennzeichen, Mängel, Prüfplakette"
@@ -110,9 +110,9 @@
     - key: ergebnis
       erkennung: { art: auswahl }
       label: Ergebnis
-      beschriftungen: { en: { label: "Result", optionen: { "ohne Mängel": "no defects", "geringe Mängel": "minor defects", "erhebliche Mängel": "major defects", "gefährliche Mängel": "dangerous defects", "verkehrsunsicher": "unroadworthy" } } }
+      beschriftungen: { en: { label: "Result", optionen: { "ohne Mängel": "no defects", "geringe Mängel": "minor defects", "erhebliche Mängel": "major defects", "gefährliche Mängel": "dangerous defects", "verkehrsunsicher": "unroadworthy", "unmittelbare Verkehrsgefährdung": "immediate danger to traffic" } } }
       typ: auswahl
-      optionen: [ohne Mängel, geringe Mängel, erhebliche Mängel, gefährliche Mängel, verkehrsunsicher]
+      optionen: [ohne Mängel, geringe Mängel, erhebliche Mängel, gefährliche Mängel, verkehrsunsicher, unmittelbare Verkehrsgefährdung]
     - key: nachpruefung_bis
       label: Nachprüfung bis
       beschriftungen: { en: { label: "Re-inspection by", hilfe: "With major or dangerous defects within one month. The included automation reminds you a week before." } }
@@ -120,10 +120,34 @@
       hilfe: Bei erheblichen oder gefährlichen Mängeln innerhalb eines Monats. Die mitgelieferte Automatisierung erinnert eine Woche vorher.
       frist: { vorlauf: 7, einheit: tage }
       anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: ergebnis, op: einerVon, wert: { art: fest, wert: [erhebliche Mängel, gefährliche Mängel] } } }] }
-    - { key: maengel, label: Mängel, typ: langtext, hilfe: Wie im Prüfbericht, beschriftungen: { en: { label: "Defects", hilfe: "As in the report" } } }
+    - { key: maengel, label: Mängel und Hinweise, typ: langtext, hilfe: "Wie im Prüfbericht – je Mangel eine Zeile, darunter die Hinweise", beschriftungen: { en: { label: "Defects and notes", hilfe: "As in the report – one line per defect, the notes below" } } }
+    # Ab 2.10.0 (dms-registry #278): Angaben des Digitalen Untersuchungsberichts (XKfz 6.1, Type.DigitalerUntersuchungsbericht).
+    - key: art_untersuchung
+      label: Art der Untersuchung
+      typ: auswahl
+      erkennung: { art: auswahl }
+      optionen: [Hauptuntersuchung, Sicherheitsprüfung]
+      hilfe: Codeliste „Art der Untersuchung“ (HU/SP). Eine Sicherheitsprüfung brauchen nur schwere Fahrzeuge, etwa Wohnmobile über 7,5 t.
+      beschriftungen: { en: { label: "Type of inspection", hilfe: "HU = main inspection, SP = safety inspection (heavy vehicles only)", optionen: { "Hauptuntersuchung": "Main inspection (HU)", "Sicherheitsprüfung": "Safety inspection (SP)" } } }
+    - key: typ_untersuchung
+      label: Untersuchung
+      typ: auswahl
+      erkennung: { art: auswahl }
+      optionen: [Erstuntersuchung, Nachuntersuchung]
+      hilfe: Codeliste „Typ der Untersuchung“ – Nachuntersuchung nach erheblichen Mängeln
+      beschriftungen: { en: { label: "Inspection", hilfe: "Code list “type of inspection” – re-inspection after major defects", optionen: { "Erstuntersuchung": "First inspection", "Nachuntersuchung": "Re-inspection" } } }
+    - { key: pruefplakette, label: Prüfplakette zugeteilt, typ: janein, beschriftungen: { en: { label: "Inspection sticker issued" } } }
+    - { key: wiedervorfuehrung, label: Wiedervorführung angeordnet, typ: janein, beschriftungen: { en: { label: "Re-inspection ordered" } } }
+    - { key: naechste_sp, label: Nächste Sicherheitsprüfung, typ: datum, anzeigen: { bedingungen: [{ art: feld, bedingung: { feld: art_untersuchung, op: einerVon, wert: { art: fest, wert: [Sicherheitsprüfung] } } }] }, beschriftungen: { en: { label: "Next safety inspection" } } }
+    - { key: kosten, label: Kosten, typ: betrag, beschriftungen: { en: { label: "Costs" } } }
+    - { key: digitaler_bericht, label: Digitaler Untersuchungsbericht, typ: text, maxLen: 500, hilfe: "Link aus dem QR-Code auf dem Prüfbericht. Er wirkt wie ein Schlüssel zu deinem Bericht – nicht weitergeben. Mit der Ergänzung „Fahrzeuge: Abruf beim KBA“ lassen sich die Daten damit abrufen.", beschriftungen: { en: { label: "Digital inspection report", hilfe: "Link from the QR code on the report. It works like a key to your report – don’t share it. With the add-on “Vehicles: KBA lookup” the data can be fetched." } } }
+    - { key: hsn, label: Herstellerschlüssel (HSN), typ: text, maxLen: 4, muster: "[0-9]{4}", hilfe: Laut Bericht – kommt ans Fahrzeug, wenn es dort fehlt, beschriftungen: { en: { label: "Manufacturer code (HSN)", hilfe: "According to the report – copied to the vehicle if missing there" } } }
+    - { key: tsn, label: Typschlüssel (TSN), typ: text, maxLen: 3, muster: "[A-Z0-9]{3}", hilfe: Laut Bericht – kommt ans Fahrzeug, wenn es dort fehlt, beschriftungen: { en: { label: "Type code (TSN)", hilfe: "According to the report – copied to the vehicle if missing there" } } }
+    - { key: zul_gesamtmasse, label: Zulässige Gesamtmasse (kg), typ: zahl, min: 0, hilfe: Laut Bericht, beschriftungen: { en: { label: "Permissible total mass (kg)", hilfe: "According to the report" } } }
     - { key: naechste_hu, label: Nächste HU, typ: datum, hilfe: "Von der Plakette – der Monat genügt, dann den Monatsersten. Die Automatisierung „Nächste HU ans Fahrzeug übernehmen“ trägt es am Fahrzeug unter „HU fällig“ ein.", beschriftungen: { en: { label: "Next inspection", hilfe: "From the sticker – the month is enough, then use the first. The automation “Copy next inspection to the vehicle” enters it on the vehicle under “MOT due”." } } }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, geprueft_am, pruefstelle, pruefbericht_nr, kilometerstand, ergebnis, nachpruefung_bis, maengel, naechste_hu], beschriftungen: { en: { name: "General" } } }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [fahrzeug, art_untersuchung, typ_untersuchung, geprueft_am, pruefstelle, pruefbericht_nr, kilometerstand, ergebnis, pruefplakette, wiedervorfuehrung, nachpruefung_bis, maengel, naechste_hu, naechste_sp, kosten, digitaler_bericht], beschriftungen: { en: { name: "General" } } }
+    - { key: fahrzeugdaten, name: Fahrzeugdaten laut Bericht, art: felder, felder: [hsn, tsn, zul_gesamtmasse], beschriftungen: { en: { name: "Vehicle data per report" } } }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }

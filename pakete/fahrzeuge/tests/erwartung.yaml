@@ -3,5 +3,5 @@ mappentypen: [fahrzeug, hauptuntersuchung, gutachten, zulassungsbescheinigung, f
 sichten: [fahrzeuge, hu_faellig, hauptuntersuchungen, zulassungsbescheinigungen, gutachten, fahrzeugpapiere, offene_rueckrufe]
 beispiele: 8
 wortlisten: 8
-automatisierungen: 6
+automatisierungen: 7
 vorgaben: 2

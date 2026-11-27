@@ -48,3 +48,11 @@
   wenn: { art: datum, typ: rueckruf, feld: durchfuehren_bis, vorlauf: 14, einheit: tage, uhrzeit: "07:00" }
   dann:
     - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Rückruf bis {datum} durchführen lassen: {titel}" }
+# Ab 2.10.0 (#278): Fahrzeugdaten aus dem Prüfbericht (etwa nach dem Abruf beim KBA) ans Fahrzeug – nur leere Felder.
+- schluessel: hu_daten_ans_fahrzeug
+  name: Fahrzeugdaten aus dem Prüfbericht übernehmen
+  beschreibung: HSN, TSN und zulässige Gesamtmasse aus dem Prüfbericht kommen ans Fahrzeug – nur in leere Felder, nie überschreiben.
+  eingeschaltet: true
+  wenn: { art: mappe.geaendert, typ: hauptuntersuchung, felder: [hsn, tsn, zul_gesamtmasse], angelegt: true }
+  dann:
+    - { art: feld_verknuepft, ueber: fahrzeug, werte: { hsn: "{hsn}", tsn: "{tsn}", zul_gesamtmasse: "{zul_gesamtmasse}" }, nur_wenn: leer }

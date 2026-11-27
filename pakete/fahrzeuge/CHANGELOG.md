@@ -1,5 +1,12 @@
 # Änderungen
 
+## 2.10.0
+
+- **Hauptuntersuchung mit den Angaben des Digitalen Untersuchungsberichts** (dms-registry #278, XKfz 6.1): Art der Untersuchung (Hauptuntersuchung oder Sicherheitsprüfung), Untersuchung (Erst- oder Nachuntersuchung), Prüfplakette zugeteilt, Wiedervorführung angeordnet, nächste Sicherheitsprüfung, Kosten und der Link aus dem QR-Code. Neues Register „Fahrzeugdaten laut Bericht“ mit HSN, TSN und zulässiger Gesamtmasse.
+- „Mängel“ heißt jetzt „Mängel und Hinweise“. Beim Ergebnis kommt „unmittelbare Verkehrsgefährdung“ dazu.
+- **Automatisierung** *Fahrzeugdaten aus dem Prüfbericht übernehmen* (vorausgewählt): HSN, TSN und Gesamtmasse kommen ans Fahrzeug, nur in leere Felder.
+- Den Abruf beim KBA bringt die Ergänzung **Fahrzeuge: Abruf beim KBA** (`fahrzeuge.kba`).
+
 ## 2.9.0
 
 - **Neue Mappentypen** (dms-registry #279): *Gutachten / Abnahme* (Vollgutachten, Änderungsabnahme, Oldtimer-Gutachten, ABE, Teilegutachten, Art nach der amtlichen Liste), *Zulassungsbescheinigung* (Teil I und II, jede Ausgabe einzeln mit Anlass und „ersetzt“), *Fahrzeugpapiere* (CoC, Abmeldebescheinigung, alte Papiere) und *Rückruf*. Alle stehen am Fahrzeug unter „Verknüpfungen“.
