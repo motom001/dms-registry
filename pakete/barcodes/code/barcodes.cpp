@@ -1,27 +1,35 @@
-// QR-Code lesen als Paket für Ablago (dms-registry #53): Visitenkarte mit vCard → Vorschläge für „Aus Dokument
-// ausfüllen“ (Schnittstelle dms:erkennen, DMS #511).
+// Barcodes als Paket für Ablago (dms-registry #294): liest QR-Codes und Strichcodes auf Dokumenten mit zxing-cpp.
 //
-// Ablauf: Ablago ruft dms_aktion mit { aktion: "dms:erkennen", schema, text, dokumente, einstellungen } → das Paket
-// holt die Seiten der genannten Dokumente als Graustufenbild (GET /dokumente/{id}/seiten/{nr}/scan) → sucht
-// QR-Codes (quirc) → liest die erste vCard → antwortet mit { vorschlaege: { feld: { wert, sicherheit, fundstelle } } }
-// für die Felder des Schemas, deren Art (x-dms-erkennung) es kennt.
-// Ohne vCard antwortet das Paket mit einem Fehler und dem Grund (z. B. „QR-Code mit Internetadresse gefunden, keine
-// Visitenkarte“) – dann nimmt Ablago die eingebaute Erkennung aus dem Text. Andere QR-Inhalte (Internetadresse,
-// GiroCode, Text) wertet das Paket nicht aus. Fotos in der vCard übernimmt es nie.
-// Kein Netz, kein Dateisystem. Eingelesene Werte sind fremde Daten: jeder Wert ist begrenzt, Ablago prüft danach
-// jeden Wert gegen die Feldart.
+// Zwei Aktionen:
+// - dms:codes (Ablago 0.336.0, dms #1723): { aktion, datei, mime, seiten } → das Paket holt die Seitenbilder des
+//   Dokuments (GET /dokumente/{id}/seiten/{nr}/scan) und antwortet mit allen lesbaren Codes
+//   { codes: [{ art, inhalt, seite }] } – genau die Ausgabe der Leistung dokument.lesen.barcode@1. Welcher Code in
+//   welches Feld gehört, entscheidet Ablago am Feld (Erkennungsart code mit codeart und muster).
+// - dms:erkennen (DMS #511): Visitenkarte mit vCard im QR-Code → Vorschläge für „Aus Dokument ausfüllen“ (übernommen
+//   aus dem Paket QR-Code lesen). Ohne vCard antwortet das Paket mit einem Fehler und dem Grund – dann nimmt Ablago
+//   die eingebaute Erkennung aus dem Text. Fotos in der vCard übernimmt es nie.
+//
+// Namen der Arten (art, klein, ohne Satzzeichen): qr, microqr, rmqr, aztec, datamatrix, pdf417, maxicode, ean13, ean8,
+// upca, upce, code39, code93, code128, itf, codabar, databar, databarexpanded, databarlimited.
+// Kein Netz, kein Dateisystem. Gelesene Inhalte sind fremde Daten: begrenzt auf die Grenzen der Leistung (200 Codes,
+// Inhalt bis 4000 Zeichen), gültiges UTF-8; Ablago prüft die Antwort noch einmal mit dem Schema der Leistung.
+// zxing-cpp wirft intern Ausnahmen und fängt sie selbst; das Modul ist darum mit Wasm-Ausnahmen gebaut (bauen.sh).
 #include <cctype>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
+#include <chrono>
+#include <climits>
 #include <cstring>
+#include <exception>
+#include <set>
 #include <string>
+#include <tuple>
 #include <vector>
 
+#include "ReadBarcode.h"
 #include "json.h"
-extern "C" {
-#include "quirc.h"
-}
 
 #define DMS(name) __attribute__((import_module("dms"), import_name(#name)))
 extern "C" {
@@ -35,10 +43,17 @@ DMS(ergebnis) int32_t dms_ergebnis(const char *text, int32_t len);
 namespace {
 
 enum Stufe { DEBUG = 0, INFO = 1, WARNUNG = 2, FEHLER = 3 };
-const size_t WERT_MAX = 300;       // längster übernommener Wert (Zeichen in Bytes, UTF-8 nicht zerschnitten)
+const size_t WERT_MAX = 300;       // längster übernommener vCard-Wert (Bytes, UTF-8 nicht zerschnitten)
 const size_t ZEILEN_MAX = 200;     // höchstens so viele Zeilen je vCard
-const int DOKUMENTE_MAX = 3;       // höchstens so viele Dokumente je Aufruf
+const int DOKUMENTE_MAX = 3;       // dms:erkennen: höchstens so viele Dokumente je Aufruf
 const int BILD_MAX = 9000;         // Kantenlänge eines Seitenbilds (größer: verkleinern)
+const size_t CODES_MAX = 200;      // dokument.lesen.barcode@1: höchstens 200 Codes
+const size_t INHALT_MAX = 4000;    // … Inhalt höchstens 4000 Zeichen
+const int CODES_JE_SEITE = 50;     // mehr Codes sucht zxing auf einer Seite nicht
+const int CODES_SEITEN_MAX = 40;   // dms:codes: höchstens so viele Seiten je Dokument
+// dms:codes: keine neue Seite mehr nach so vielen Sekunden. Ablago wartet beim „Aus Dokument ausfüllen“ 30 s, im
+// Hintergrund 120 s; eine A4-Seite braucht 0,3 bis 3 s. Was gelesen ist, geht in die Antwort.
+const double CODES_SEKUNDEN = 22;
 
 void log(int stufe, const std::string &t) { dms_log(stufe, t.data(), (int32_t)t.size()); }
 void ergebnis(const std::string &t) { dms_ergebnis(t.data(), (int32_t)t.size()); }
@@ -196,7 +211,7 @@ std::vector<Zeile> vcard(std::string text) {
 
 bool hatTyp(const Zeile &z, const char *t) { for (const std::string &x : z.typen) if (x == t) return true; return false; }
 
-/* ---------- QR-Codes in einem Seitenbild ---------- */
+/* ---------- Seitenbild (PGM) ---------- */
 
 bool pgm(const std::string &b, int &w, int &h, size_t &start) {
   size_t p = 0;
@@ -218,47 +233,161 @@ bool pgm(const std::string &b, int &w, int &h, size_t &start) {
   return b.size() >= start + (size_t)w * (size_t)h;
 }
 
-/** Alle lesbaren QR-Codes eines Graustufenbilds (bei großen Bildern zusätzlich halb so groß). */
-std::vector<std::string> qrCodes(const unsigned char *px, int w, int h) {
-  std::vector<std::string> aus;
+/* ---------- Codes in einem Seitenbild ---------- */
+
+struct Code { std::string art; std::string inhalt; int seite; int y = 0; int x = 0; };
+
+/** Kurzer Name der Art für Ablago (dms #1723: Kleinbuchstaben und Ziffern). Leer: nicht melden. */
+std::string artName(ZXing::BarcodeFormat f) {
+  using F = ZXing::BarcodeFormat;
+  switch (f) {
+    case F::QRCode: return "qr";
+    case F::MicroQRCode: return "microqr";
+    case F::RMQRCode: return "rmqr";
+    case F::Aztec: return "aztec";
+    case F::DataMatrix: return "datamatrix";
+    case F::PDF417: return "pdf417";
+    case F::MaxiCode: return "maxicode";
+    case F::EAN13: return "ean13";
+    case F::EAN8: return "ean8";
+    case F::UPCA: return "upca";
+    case F::UPCE: return "upce";
+    case F::Code39: return "code39";
+    case F::Code93: return "code93";
+    case F::Code128: return "code128";
+    case F::ITF: return "itf";
+    case F::Codabar: return "codabar";
+    case F::DataBar: return "databar";
+    case F::DataBarExpanded: return "databarexpanded";
+    case F::DataBarLimited: return "databarlimited";
+    default: return "";
+  }
+}
+
+/** Name für Meldungen an die Person („EAN-13“, „Code 128“ …). */
+std::string artAnzeige(const std::string &art) {
+  if (art == "ean13") return "EAN-13";
+  if (art == "ean8") return "EAN-8";
+  if (art == "upca") return "UPC-A";
+  if (art == "upce") return "UPC-E";
+  if (art == "code39") return "Code 39";
+  if (art == "code93") return "Code 93";
+  if (art == "code128") return "Code 128";
+  if (art == "itf") return "ITF";
+  if (art == "datamatrix") return "Data Matrix";
+  if (art == "pdf417") return "PDF417";
+  if (art == "aztec") return "Aztec-Code";
+  if (art == "maxicode") return "MaxiCode";
+  if (art == "codabar") return "Codabar";
+  if (art.compare(0, 7, "databar") == 0) return "GS1 DataBar";
+  return art;
+}
+
+bool istQr(const std::string &art) { return art == "qr" || art == "microqr" || art == "rmqr"; }
+
+/** Anzahl Zeichen (Codepunkte) in gültigem UTF-8. */
+size_t zeichen(const std::string &s) {
+  size_t n = 0;
+  for (unsigned char c : s) if ((c & 0xc0) != 0x80) n++;
+  return n;
+}
+
+/** Alle lesbaren Codes eines Graustufenbilds (sehr große Bilder vorher verkleinert). */
+std::vector<Code> codesImBild(const unsigned char *px, int w, int h, int seite) {
+  std::vector<Code> aus;
   std::vector<unsigned char> klein;
-  for (int stufe = 0; stufe < 3 && aus.empty(); stufe++) {
-    int f = 1 << stufe;  // 1, 2, 4
-    if (stufe > 0 && (w / f < 200 || h / f < 200)) break;
-    if (w / f > BILD_MAX || h / f > BILD_MAX) continue;
-    int bw = w / f, bh = h / f;
-    const unsigned char *quelle = px;
-    if (f > 1) {
-      klein.assign((size_t)bw * bh, 0);
-      for (int y = 0; y < bh; y++) for (int x = 0; x < bw; x++) {
-        unsigned s = 0;
-        for (int dy = 0; dy < f; dy++) for (int dx = 0; dx < f; dx++) s += px[(size_t)(y * f + dy) * w + (x * f + dx)];
-        klein[(size_t)y * bw + x] = (unsigned char)(s / (unsigned)(f * f));
-      }
-      quelle = klein.data();
+  int f = 1;
+  while (w / f > BILD_MAX || h / f > BILD_MAX) f *= 2;
+  int bw = w / f, bh = h / f;
+  const unsigned char *quelle = px;
+  if (f > 1) {
+    klein.assign((size_t)bw * bh, 0);
+    for (int y = 0; y < bh; y++) for (int x = 0; x < bw; x++) {
+      unsigned s = 0;
+      for (int dy = 0; dy < f; dy++) for (int dx = 0; dx < f; dx++) s += px[(size_t)(y * f + dy) * w + (x * f + dx)];
+      klein[(size_t)y * bw + x] = (unsigned char)(s / (unsigned)(f * f));
     }
-    struct quirc *q = quirc_new();
-    if (!q) break;
-    if (quirc_resize(q, bw, bh) < 0) { quirc_destroy(q); break; }
-    uint8_t *ziel = quirc_begin(q, nullptr, nullptr);
-    memcpy(ziel, quelle, (size_t)bw * bh);
-    quirc_end(q);
-    int n = quirc_count(q);
-    for (int k = 0; k < n && k < 8; k++) {
-      struct quirc_code code;
-      struct quirc_data data;
-      quirc_extract(q, k, &code);
-      quirc_decode_error_t e = quirc_decode(&code, &data);
-      if (e == QUIRC_ERROR_DATA_ECC) { quirc_flip(&code); e = quirc_decode(&code, &data); }  // gespiegelt fotografiert
-      if (e == QUIRC_SUCCESS && data.payload_len > 0) aus.emplace_back((const char *)data.payload, (size_t)data.payload_len);
+    quelle = klein.data();
+  }
+  ZXing::ReaderOptions o;
+  // Alle Arten; „Any“ lässt die DX-Filmkante aus (nur auf Kleinbildfilm, sonst Fehltreffer).
+  o.setFormats(ZXing::BarcodeFormat::Any);
+  o.setTryHarder(true);
+  o.setTryRotate(true);
+  o.setTryInvert(false);
+  o.setTryDownscale(true);
+  o.setReturnErrors(false);
+  o.setMaxNumberOfSymbols(CODES_JE_SEITE);
+  try {
+    ZXing::ImageView bild(quelle, bw, bh, ZXing::ImageFormat::Lum);
+    for (const ZXing::Barcode &b : ZXing::ReadBarcodes(bild, o)) {
+      if (!b.isValid()) continue;
+      std::string art = artName(b.format());
+      if (art.empty()) continue;
+      // Klartext wie im Code (Zeilenumbrüche bleiben Zeilenumbrüche); nur GS1-Inhalte lesbar mit Klammern „(01)…“.
+      std::string inhalt = b.text(b.contentType() == ZXing::ContentType::GS1 ? ZXing::TextMode::HRI : ZXing::TextMode::Plain);
+      if (!gueltigesUtf8(inhalt)) inhalt = latin1(inhalt);
+      if (inhalt.empty() || zeichen(inhalt) > INHALT_MAX) continue;  // gekürzt wäre der Inhalt falsch
+      // Ecke oben links des umschließenden Rechtecks – für die Lesereihenfolge (oben nach unten, links nach rechts).
+      int y = INT32_MAX, x = INT32_MAX;
+      for (const auto &p : b.position()) { y = std::min(y, p.y); x = std::min(x, p.x); }
+      aus.push_back({art, inhalt, seite, y * f, x * f});
     }
-    quirc_destroy(q);
+    // Lesereihenfolge; Codes in fast derselben Höhe (ein Zehntel der Seite) gelten als eine Zeile.
+    int zeile = std::max(1, h / 10);
+    std::stable_sort(aus.begin(), aus.end(), [zeile](const Code &a, const Code &b) {
+      return a.y / zeile != b.y / zeile ? a.y / zeile < b.y / zeile : a.x < b.x;
+    });
+  } catch (const std::exception &e) {
+    log(WARNUNG, std::string("Seite ") + zahl(seite) + ": Codes nicht lesbar (" + e.what() + ")");
+  } catch (...) {
+    log(WARNUNG, "Seite " + zahl(seite) + ": Codes nicht lesbar");
   }
   return aus;
 }
 
-std::string artVon(const std::string &inhalt) {
-  std::string g = gross(inhalt.substr(0, 16));
+/** Einstellungen: Auflösung und Seitenzahl für Visitenkarten (Grenzen wie im Manifest). */
+struct Einstellungen { int dpi = 300; int maxSeiten = 2; };  // maxSeiten: nur Visitenkarten (dms:erkennen)
+
+Einstellungen einstellungen(const Json &e) {
+  Einstellungen s;
+  const Json &einst = e["einstellungen"];
+  s.dpi = (int)einst["dpi"].zahl(300);
+  if (s.dpi < 150 || s.dpi > 400) s.dpi = 300;
+  s.maxSeiten = (int)einst["max_seiten"].zahl(2);
+  if (s.maxSeiten < 1 || s.maxSeiten > 20) s.maxSeiten = 2;
+  return s;
+}
+
+/**
+ * Seiten eines Dokuments lesen (höchstens maxSeiten), in ihrer Reihenfolge. anzahl < 1: bei Ablago nachfragen. fertig(codes) → true beendet
+ * vorzeitig. Liefert die Zahl der gelesenen Seiten; -1, wenn keine Seite zu holen war.
+ */
+template <typename Fertig>
+int seitenLesen(const std::string &id, int anzahl, int maxSeiten, const Einstellungen &s, std::vector<Code> &codes, Fertig fertig) {
+  if (anzahl < 1) {
+    Antwort info = api("GET", "/dokumente/" + id + "/seiten");
+    anzahl = info.status == 200 ? (int)JsonLeser::lies(info.body.data(), info.body.size())["anzahl"].zahl(1) : 1;
+    if (anzahl < 1) anzahl = 1;
+  }
+  int gelesen = 0, geholt = 0;
+  for (int nr = 1; nr <= anzahl && nr <= maxSeiten; nr++) {
+    Antwort bild = api("GET", "/dokumente/" + id + "/seiten/" + zahl(nr) + "/scan?dpi=" + zahl(s.dpi));
+    if (bild.status != 200) { log(INFO, "Dokument " + id + " Seite " + zahl(nr) + ": kein Seitenbild (" + zahl(bild.status) + ")"); break; }
+    geholt++;
+    int w, h; size_t start;
+    if (!pgm(bild.body, w, h, start)) { log(WARNUNG, "Dokument " + id + " Seite " + zahl(nr) + ": Seitenbild nicht lesbar"); continue; }
+    gelesen++;
+    for (Code &c : codesImBild((const unsigned char *)bild.body.data() + start, w, h, nr)) codes.push_back(c);
+    if (fertig(codes)) break;
+  }
+  return geholt ? gelesen : -1;
+}
+
+/** Art eines QR-Inhalts für Meldungen. */
+std::string artVon(const Code &c) {
+  if (!istQr(c.art)) return artAnzeige(c.art);
+  std::string g = gross(c.inhalt.substr(0, 16));
   if (g.compare(0, 11, "BEGIN:VCARD") == 0) return "Visitenkarte";
   if (g.compare(0, 4, "BCD\n") == 0 || g.compare(0, 5, "BCD\r\n") == 0) return "GiroCode";
   if (g.compare(0, 7, "HTTP://") == 0 || g.compare(0, 8, "HTTPS://") == 0) return "Internetadresse";
@@ -376,42 +505,61 @@ std::string vorschlaege(const std::vector<Zeile> &v, const Json &schema, int &an
   return aus + "}";
 }
 
+/* ---------- Aktion dms:codes ---------- */
+
+int codesLesen(const Json &e) {
+  std::string id = e["datei"].text();
+  if (!sichereId(id)) { ergebnis("Kein gültiges Dokument mitgegeben."); return 1; }
+  Einstellungen s = einstellungen(e);
+  int anzahl = (int)e["seiten"].zahl(0);
+  std::vector<Code> roh;
+  auto start = std::chrono::steady_clock::now();
+  bool zeitUm = false;
+  int gelesen = seitenLesen(id, anzahl, CODES_SEITEN_MAX, s, roh, [&](const std::vector<Code> &) {
+    zeitUm = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() > CODES_SEKUNDEN;
+    return zeitUm;
+  });
+  if (gelesen < 0) { ergebnis("Keine Seite des Dokuments lesbar."); return 1; }
+  if (zeitUm) log(WARNUNG, "Zeit für Codes um nach " + zahl(gelesen) + " Seiten – die übrigen Seiten bleiben ungelesen");
+  // Gleiche Codes auf derselben Seite nur einmal (zxing findet manche doppelt, z. B. gedreht).
+  std::set<std::tuple<std::string, std::string, int>> schon;
+  std::string aus = "{\"codes\":[";
+  size_t n = 0;
+  for (const Code &c : roh) {
+    if (n >= CODES_MAX) break;
+    if (!schon.insert({c.art, c.inhalt, c.seite}).second) continue;
+    aus += std::string(n ? "," : "") + "{\"art\":" + jsonText(c.art) + ",\"inhalt\":" + jsonText(c.inhalt) + ",\"seite\":" + zahl(c.seite) + "}";
+    n++;
+  }
+  // Nur Anzahl und Arten ins Protokoll, nie Inhalte (ein Code kann ein Zugangsschlüssel sein).
+  std::string arten;
+  for (const auto &t : schon) if (arten.find(std::get<0>(t)) == std::string::npos) arten += (arten.empty() ? "" : ", ") + std::get<0>(t);
+  log(INFO, zahl((long)n) + (n == 1 ? " Code" : " Codes") + " auf " + zahl(gelesen) + (gelesen == 1 ? " Seite" : " Seiten") + (arten.empty() ? "" : " (" + arten + ")"));
+  ergebnis(aus + "]}");
+  return 0;
+}
+
 /* ---------- Aktion dms:erkennen ---------- */
 
 int erkenne(const Json &e) {
-  const Json &einst = e["einstellungen"];
-  int dpi = (int)einst["dpi"].zahl(300);
-  if (dpi < 150 || dpi > 400) dpi = 300;
-  int maxSeiten = (int)einst["max_seiten"].zahl(2);
-  if (maxSeiten < 1 || maxSeiten > 20) maxSeiten = 2;
-
+  Einstellungen s = einstellungen(e);
   const Json &doks = e["dokumente"];
-  if (doks.art != Json::LISTE || doks.l.empty()) { ergebnis("Kein Dokument mitgegeben – den QR-Code liest das Paket nur aus Dokumenten."); return 1; }
+  if (doks.art != Json::LISTE || doks.l.empty()) { ergebnis("Kein Dokument mitgegeben – Codes liest das Paket nur aus Dokumenten."); return 1; }
 
-  std::vector<std::string> gefunden;
+  std::vector<Code> gefunden;
   int dokumente = 0, seiten = 0;
+  auto vcardDa = [](const std::vector<Code> &cs) { for (const Code &c : cs) if (artVon(c) == "Visitenkarte") return true; return false; };
   for (const Json &d : doks.l) {
-    if (dokumente >= DOKUMENTE_MAX) break;
+    if (dokumente >= DOKUMENTE_MAX || vcardDa(gefunden)) break;
     std::string id = d.text();
     if (!sichereId(id)) continue;
     dokumente++;
-    Antwort info = api("GET", "/dokumente/" + id + "/seiten");
-    int anzahl = info.status == 200 ? (int)JsonLeser::lies(info.body.data(), info.body.size())["anzahl"].zahl(1) : 1;
-    if (anzahl < 1) anzahl = 1;
-    for (int nr = 1; nr <= anzahl && nr <= maxSeiten; nr++) {
-      Antwort bild = api("GET", "/dokumente/" + id + "/seiten/" + zahl(nr) + "/scan?dpi=" + zahl(dpi));
-      if (bild.status != 200) { log(INFO, "Dokument " + id + " Seite " + zahl(nr) + ": kein Seitenbild (" + zahl(bild.status) + ")"); break; }
-      int w, h; size_t start;
-      if (!pgm(bild.body, w, h, start)) { log(WARNUNG, "Dokument " + id + " Seite " + zahl(nr) + ": Seitenbild nicht lesbar"); continue; }
-      seiten++;
-      for (std::string &c : qrCodes((const unsigned char *)bild.body.data() + start, w, h)) gefunden.push_back(c);
-      for (const std::string &c : gefunden) if (artVon(c) == "Visitenkarte") goto fertig;
-    }
+    int n = seitenLesen(id, 0, s.maxSeiten, s, gefunden, vcardDa);
+    if (n > 0) seiten += n;
   }
-fertig:
-  for (const std::string &c : gefunden) {
+  for (const Code &c : gefunden) {
     if (artVon(c) != "Visitenkarte") continue;
-    std::vector<Zeile> v = vcard(c);
+    std::vector<Zeile> v = vcard(c.inhalt);
     if (v.empty()) continue;
     int anzahl = 0;
     std::string vs = vorschlaege(v, e["schema"], anzahl);
@@ -422,12 +570,12 @@ fertig:
   }
   if (!gefunden.empty()) {
     std::string arten;
-    for (const std::string &c : gefunden) { std::string a = artVon(c); if (arten.find(a) == std::string::npos) arten += (arten.empty() ? "" : ", ") + a; }
-    log(INFO, "QR-Code gefunden (" + arten + "), keine Visitenkarte");
-    ergebnis("QR-Code gefunden (" + arten + "), aber keine Visitenkarte – Ablago liest den Text");
+    for (const Code &c : gefunden) { std::string a = artVon(c); if (arten.find(a) == std::string::npos) arten += (arten.empty() ? "" : ", ") + a; }
+    log(INFO, "Code gefunden (" + arten + "), keine Visitenkarte");
+    ergebnis("Code gefunden (" + arten + "), aber keine Visitenkarte – Ablago liest den Text");
     return 1;
   }
-  ergebnis("Kein QR-Code gefunden (" + zahl(seiten) + (seiten == 1 ? " Seite" : " Seiten") + " geprüft) – Ablago liest den Text");
+  ergebnis("Kein Code gefunden (" + zahl(seiten) + (seiten == 1 ? " Seite" : " Seiten") + " geprüft) – Ablago liest den Text");
   return 1;
 }
 
@@ -450,6 +598,7 @@ __attribute__((export_name("dms_ereignis"))) int32_t dms_ereignis(char *, int32_
 __attribute__((export_name("dms_aktion"))) int32_t dms_aktion(char *json, int32_t len) {
   Json e = JsonLeser::lies(json, (size_t)len);
   std::string a = e["aktion"].text();
+  if (a == "dms:codes") return codesLesen(e);
   if (a == "dms:erkennen") return erkenne(e);
   log(WARNUNG, "Unbekannte Aktion");
   ergebnis("Diese Aktion kennt das Paket nicht.");

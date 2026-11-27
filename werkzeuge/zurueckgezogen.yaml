@@ -11,3 +11,10 @@
 - rechnungen-v1.2.0
 - rechnungen-v1.2.1
 - rechnungen-v1.3.0
+
+# Paket QR-Code lesen (dms-registry #294, 27.11.2026): abgelöst durch „Barcodes“ (barcodes), das alle gängigen Codes liest
+# und die vCard-Vorschläge unverändert übernimmt; ohne Umzug (Code-Paket ohne Inhalte, Einstellungen von Hand). Die
+# Releases löscht Thomas von Hand.
+- qrcode-v1.0.0
+- qrcode-v1.0.1
+- qrcode-v1.0.2

@@ -55,3 +55,4 @@ gesundheit
 vollmachten
 verfuegungen
 fahrzeuge.kba
+barcodes

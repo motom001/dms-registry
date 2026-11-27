@@ -1,5 +1,5 @@
-// Erzeugt die QR-Matrizen für die Tests (tests/qr/*.txt) – nur von Hand nötig, wenn sich die Beispiele ändern.
-// Braucht das npm-Paket „qrcode“ (z. B. aus einem Checkout von dms):  NODE_PATH=…/node_modules node tests/erzeuge.mjs
+// Erzeugt die QR-Matrizen für die Tests (tests/codes/vcard*.txt, url.txt, girocode.txt, lang.txt) – nur von Hand nötig, wenn sich die Beispiele ändern.
+// Braucht das npm-Paket „qrcode“ (z. B. aus einem Checkout von dms):  NODE_PATH=…/node_modules node tests/erzeuge_vcard.mjs
 // Je Datei: eine Zeile je Modulreihe, „1“ = dunkel, „0“ = hell; ohne Ruhezone (die setzt der Test).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const QR = createRequire(import.meta.url)('qrcode');
-const ziel = join(dirname(fileURLToPath(import.meta.url)), 'qr');
+const ziel = join(dirname(fileURLToPath(import.meta.url)), 'codes');
 mkdirSync(ziel, { recursive: true });
 
 // Nur erfundene Namen und reservierte Beispiel-Domains.
