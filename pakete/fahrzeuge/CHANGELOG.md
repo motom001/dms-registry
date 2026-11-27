@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.12.0
+
+- **Hauptuntersuchung:** Den **Digitalen Untersuchungsbericht** trägt „Aus Dokument ausfüllen“ direkt aus dem QR-Code auf dem HU-Bericht ein (Erkennungsart Code, nur QR-Codes mit einem Link zu kba-online.de/dub). Dafür braucht es das Paket **Barcodes** und Ablago 0.337.0 (#301).
+
 ## 2.11.1
 
 - **Hauptuntersuchung:** Der **Digitale Untersuchungsbericht** ist eine Internetseite (Link anklickbar, neue Werte geprüft), eindeutig – derselbe Link gehört nur zu einem Bericht, leer bleibt erlaubt – und hilft beim Wiederfinden der HU in Dokumenten (#299).

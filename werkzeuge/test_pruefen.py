@@ -626,6 +626,17 @@ class Erkennung(unittest.TestCase):
         self.assertTrue(any('erst ab 0.113.0' in f for f in self.paket({'bezeichnung': {}}, dms='>=0.79.0')))
         self.assertEqual(self.paket({}, dms='>=0.79.0'), [], 'ohne erkennung reicht die alte Version')
 
+    def test_art_code(self):
+        # Erkennungsart code (DMS #1723): nur Text und Langtext, ab 0.337.0, codeart und muster nur bei art: code.
+        dub = {'art': 'code', 'codeart': 'qr', 'muster': 'https://www\\.kba-online\\.de/dub/.+'}
+        self.assertEqual(self.paket({'bezeichnung': dub}, dms='>=0.337.0'), [])
+        self.assertTrue(any('art code kennt das DMS erst ab 0.337.0' in f for f in self.paket({'bezeichnung': dub}, dms='>=0.336.0')))
+        self.assertTrue(any('passt nicht zur Feldart „datum“' in f for f in self.paket({'datum': {'art': 'code'}}, dms='>=0.337.0')))
+        self.assertTrue(any('kein gültiger regulärer Ausdruck' in f for f in self.paket({'bezeichnung': {'art': 'code', 'muster': '(abc'}}, dms='>=0.337.0')))
+        self.assertTrue(any('nur bei art: code' in f for f in self.paket({'bezeichnung': {'art': 'nummer', 'codeart': 'qr'}}, dms='>=0.337.0')))
+        self.assertTrue(any('erkennung' in f for f in self.paket({'bezeichnung': {'art': 'code', 'codeart': 'QR-Code'}}, dms='>=0.337.0')), 'codeart klein')
+        self.assertTrue(any('erkennung' in f for f in self.paket({'bezeichnung': {'art': 'code', 'muster': 'x' * 201}}, dms='>=0.337.0')), 'Muster zu lang')
+
     def test_pakete_der_registry(self):
         for p in ('basis', 'vermietung', 'fahrzeuge', 'haushalt'):
             self.assertEqual(pruefen.pruefe(WURZEL / 'pakete' / p, None), [], p)
