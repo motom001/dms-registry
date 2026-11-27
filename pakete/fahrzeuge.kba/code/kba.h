@@ -495,6 +495,12 @@ inline Ergebnis ivi_abbilden(const Knoten &w, const Json &werte, const std::stri
       size_t e2 = t.find('*', i);
       if (e2 == std::string::npos) e2 = t.size();
       std::string s = trimmen(t.substr(i, e2 - i));
+      // „Zu 6.18.1.1. Achse1: …“ – der Verweis auf die Nummer im CoC-Muster hilft im Laden nicht.
+      if (klein(s).rfind("zu ", 0) == 0) {
+        size_t a = s.find_first_not_of("0123456789.", 3);
+        if (a != std::string::npos && a > 3) s = trimmen(s.substr(a));
+      }
+      while (s.find("  ") != std::string::npos) s.replace(s.find("  "), 2, " ");
       bool reifenartig = false;
       for (size_t k = 0; k + 4 < s.size(); k++) if (isdigit((unsigned char)s[k]) && s[k + 1] != '/' && s.find('/', k) != std::string::npos && isdigit((unsigned char)s[std::min(s.size() - 1, s.find('/', k) + 1)])) { reifenartig = klein(s).find("achse") != std::string::npos; break; }
       if (reifenartig && reifen.size() + s.size() < 900) reifen += (reifen.empty() ? "" : "\n") + s;

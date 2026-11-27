@@ -54,7 +54,8 @@ int main(int argc, char **argv) {
   PRUEFE(feld(e, "typgenehmigung") == "\"e1*168/2013*00001*01\"" && feld(e, "hubraum") == "1802", "IVI 1.x: Typgenehmigung, Hubraum");
   PRUEFE(feld(e, "kraftstoff") == "\"Benzin\"" && feld(e, "emissionsklasse") == "\"Euro 5\"" && feld(e, "co2") == "129", "IVI 1.x: Kraftstoff, Euro, CO2");
   PRUEFE(feld(e, "zul_gesamtmasse") == "560", "IVI 1.x: Gesamtmasse");
-  PRUEFE(feld(e, "reifengroessen").find("Achse 1: 120/70R19 60V") != std::string::npos && feld(e, "reifengroessen").find("Achse1: 120/70 B21") != std::string::npos, "IVI 1.x: Reifen mit Bemerkungen");
+  PRUEFE(feld(e, "reifengroessen").find("Achse 1: 120/70R19 60V") != std::string::npos && feld(e, "reifengroessen").find("\\nAchse1: 120/70 B21 M/C 68H reinf Achse2") != std::string::npos &&
+             feld(e, "reifengroessen").find("Zu 6.18") == std::string::npos, "IVI 1.x: Reifen mit Bemerkungen, ohne „Zu 6.18.1.1.“");
   e = kba::ivi_abbilden(w1, leer, "WVWZZZ00000000009");
   PRUEFE(e.felder.empty() && e.notizen.size() == 1, "IVI: andere FIN → nichts");
 
