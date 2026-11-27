@@ -2,7 +2,7 @@
 
 Viele Dokumente tragen einen **Code**: der HU-Bericht einen QR-Code mit dem Link zum Digitalen Untersuchungsbericht, Rechnungen einen GiroCode, Paketscheine und Etiketten Strichcodes, Visitenkarten eine vCard. Das Paket **Barcodes** liest diese Codes und gibt sie Ablago. Ablago merkt sich die Codes am Dokument und trägt beim **Aus Dokument ausfüllen** den passenden in Felder mit der Erkennungsart **Code** ein – zuverlässiger als der erkannte Text.
 
-Es löst das Paket **QR-Code lesen** ab (siehe [Umstieg von QR-Code lesen](#umstieg-von-qr-code-lesen)) und läuft im **Paket-Läufer** von Ablago: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit. Es braucht Ablago 0.336.0 oder neuer.
+Es löst das Paket **QR-Code lesen** ab (siehe [Umstieg von QR-Code lesen](#umstieg-von-qr-code-lesen)) und läuft im **Paket-Läufer** von Ablago: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit. Es braucht Ablago 0.337.0 oder neuer.
 
 ## So arbeitet es
 
