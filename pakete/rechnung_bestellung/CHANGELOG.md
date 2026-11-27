@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.7.0
+
+- **Bezahlt per** wird aus dem Dokument erkannt („per Lastschrift“, „bitte überweisen“).
+- **Bezahlt am** nicht mehr aus dem Dokument – auf der Rechnung steht, wann sie fällig ist, nicht wann bezahlt wurde; bisher landete dort oft ein falsches Datum.
+- **Steuerjahr** wird aus dem **Rechnungsdatum** vorgeschlagen statt aus „Bezahlt am“, das meist noch leer ist. Wird eine Rechnung erst im neuen Jahr bezahlt, zählt steuerlich meist das Jahr der Zahlung – die Hilfe am Feld sagt das.
+- Ein Update übernimmt die Änderungen, solange ihr die Felder nicht selbst geändert habt.
+
 ## 1.6.0
 
 - **„Woran man ihn erkennt“ kürzer** (dms-registry #267): je Mappentyp vier bis sechs Wörter, die fast jedes Dokument dieses Typs enthält, statt langer Listen. Lange Listen sprachen bei Ablago oft gegen den richtigen Typ, weil jedes Dokument nur wenige ihrer Wörter enthält. Ein Update übernimmt den Text, solange ihr ihn nicht selbst geändert habt.
