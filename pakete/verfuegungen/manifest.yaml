@@ -1,0 +1,32 @@
+# Paket Verfügungen (dms-registry #283). Schema: schema/manifest.schema.json
+schema: 1
+id: verfuegungen
+name: Verfügungen
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: 'Patientenverfügung, Betreuungsverfügung, Testament und Erbvertrag: was jemand verfügt hat, in welcher Form, wo das Original liegt und wer davon weiß.'
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: file-signature
+# zielOptional (#1036) ab 0.230.0
+dms: ">=0.323.0"
+kurzanleitung:
+  de:
+    - Leg für jede Verfügung eine Mappe an – Patientenverfügung, Betreuungsverfügung, Testament oder Erbvertrag.
+    - Trag ein, wo das Original liegt und wer den Ort kennt. Im Ernstfall ist das das Wichtigste.
+    - Setz bei der Patientenverfügung „Erneut prüfen am“. Mit der Automatisierung erinnert Ablago dich rechtzeitig.
+  en:
+    - Create a folder for each directive – living will, care directive, will or contract of inheritance.
+    - Note where the original is kept and who knows the place. In an emergency that matters most.
+    - Set “Review again on” for a living will. With the automation, Ablago reminds you in time.
+abhaengigkeiten:
+  basis: ">=1.12.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  beispiele: inhalt/beispiele.yaml
+  wortlisten: inhalt/wortlisten.yaml
+  automatisierungen: inhalt/automatisierungen.yaml

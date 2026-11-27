@@ -1,0 +1,7 @@
+# Mitgelieferte Automatisierungen (Ablago #712). Nach der Installation aus.
+- schluessel: vollmacht_laeuft_ab
+  name: Vollmacht läuft ab
+  beschreibung: 30 Tage bevor eine befristete Vollmacht endet.
+  wenn: { art: datum, typ: vollmacht, feld: gueltig_bis, vorlauf: 30, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Vollmacht gültig bis {datum}: {titel}" }

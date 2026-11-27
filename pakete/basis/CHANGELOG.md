@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.12.1
+
+- **Person:** „Woran man sie erkennt“ ohne „Vollmacht“ (dms-registry #282). Vollmachten haben jetzt ein eigenes Paket **Vollmachten**; ein Update übernimmt den Text, solange ihr ihn nicht selbst geändert habt.
+
 ## 1.12.0
 
 - **„Woran man ihn erkennt“ kürzer** (dms-registry #267): je Mappentyp vier bis sechs Wörter, die fast jedes Dokument dieses Typs enthält, statt langer Listen. Lange Listen sprachen bei Ablago oft gegen den richtigen Typ, weil jedes Dokument nur wenige ihrer Wörter enthält. Ein Update übernimmt den Text, solange ihr ihn nicht selbst geändert habt.

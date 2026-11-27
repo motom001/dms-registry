@@ -1,0 +1,6 @@
+# Was nach der Installation in Ablago vorhanden sein muss (pruefen.py vergleicht das mit inhalt/).
+mappentypen: [verfuegung]
+sichten: [verfuegungen, gesundheit_betreuung, todesfall]
+beispiele: 2
+wortlisten: 3
+automatisierungen: 1

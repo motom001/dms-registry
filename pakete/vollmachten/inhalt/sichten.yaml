@@ -1,0 +1,15 @@
+# Ansichten des Pakets Vollmachten (#282). Schema: schema/inhalt.schema.json
+- schluessel: vollmachten
+  name: Vollmachten
+  beschreibung: Alle Vollmachten
+  beschriftungen: { en: { name: "Powers of attorney", beschreibung: "All powers of attorney" } }
+  symbol: key-round
+  typen: [vollmacht]
+- schluessel: gueltige_vollmachten
+  name: Gültige Vollmachten
+  beschriftungen: { en: { name: "Valid powers of attorney" } }
+  eltern: vollmachten
+  symbol: shield-check
+  typen: [vollmacht]
+  bedingungen:
+    - { feld: widerrufen_am, operator: leer }

@@ -1,0 +1,6 @@
+# Was nach der Installation in Ablago vorhanden sein muss (pruefen.py vergleicht das mit inhalt/).
+mappentypen: [vollmacht]
+sichten: [vollmachten, gueltige_vollmachten]
+beispiele: 2
+wortlisten: 4
+automatisierungen: 1

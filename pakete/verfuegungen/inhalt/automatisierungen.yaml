@@ -1,0 +1,7 @@
+# Mitgelieferte Automatisierungen (Ablago #712). Nach der Installation aus.
+- schluessel: erneut_pruefen
+  name: Verfügung erneut prüfen
+  beschreibung: 14 Tage vor „Erneut prüfen am“, etwa um die Patientenverfügung neu zu bestätigen.
+  wenn: { art: datum, typ: verfuegung, feld: erneut_pruefen_am, vorlauf: 14, einheit: tage, uhrzeit: "07:00" }
+  dann:
+    - { art: aufgabe, als: aufgabe, empfaenger: [{ art: ersteller }], text: "Verfügung prüfen bis {datum}: {titel}" }

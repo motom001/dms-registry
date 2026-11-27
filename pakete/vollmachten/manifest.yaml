@@ -1,0 +1,31 @@
+# Paket Vollmachten (dms-registry #282). Schema: schema/manifest.schema.json
+schema: 1
+id: vollmachten
+name: Vollmachten
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: 'Vollmachten im Haushalt an einem Ort: wer wen bevollmächtigt hat, gegenüber wem, wie lange und wo das Original liegt – von der Vorsorgevollmacht bis zur Postvollmacht.'
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: key-round
+dms: ">=0.323.0"
+kurzanleitung:
+  de:
+    - Leg für jede Vollmacht eine Mappe an – Art, wer sie gegeben hat und wer bevollmächtigt ist.
+    - Unter „Gegenüber“ steht, für wen sie gilt, etwa die Bank oder die Pflegekasse. Leer heißt allgemein.
+    - Trag „Widerrufen am“ ein, wenn eine Vollmacht nicht mehr gilt. Sie verschwindet dann aus „Gültige Vollmachten“.
+  en:
+    - Create a folder for each power of attorney – its type, who granted it and who holds it.
+    - “Towards” shows whom it applies to, e.g. the bank or the care insurance. Empty means general.
+    - Enter “Revoked on” once a power of attorney no longer applies. It then disappears from “Valid powers of attorney”.
+abhaengigkeiten:
+  basis: ">=1.12.0"
+inhalt:
+  mappentypen: inhalt/mappentypen.yaml
+  sichten: inhalt/sichten.yaml
+  beispiele: inhalt/beispiele.yaml
+  wortlisten: inhalt/wortlisten.yaml
+  automatisierungen: inhalt/automatisierungen.yaml
