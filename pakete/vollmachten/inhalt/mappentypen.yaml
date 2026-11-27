@@ -19,7 +19,22 @@
       beschriftungen: { en: { label: "Type", optionen: { "Vorsorgevollmacht": "Lasting power of attorney", "Generalvollmacht": "General power of attorney", "Kontovollmacht": "Bank account mandate", "Vollmacht Kranken- oder Pflegekasse": "Health or care insurance", "Schweigepflichtentbindung": "Release from medical confidentiality", "Vollmacht Steuerberatung": "Tax adviser", "Vollmacht Behörde": "Public authority", "Stimmrechtsvollmacht": "Proxy vote (owners’ meeting)", "Vollmacht Kita oder Schule": "Childcare or school", "Einverständnis Reise mit Kind": "Consent to travel with a child", "Anwaltsvollmacht": "Lawyer", "Postvollmacht": "Post and parcels", "Sonstige": "Other" } } }
     - { key: vollmachtgeber, label: Vollmachtgeber, typ: referenz, ziel: "basis:person", pflicht: true, verweisart: bezug, hilfe: Wer die Vollmacht gegeben hat, beschriftungen: { en: { label: "Granted by", hilfe: "Who granted the power of attorney" } } }
     - { key: bevollmaechtigt, label: Bevollmächtigt, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, beschriftungen: { en: { label: "Attorney(s)" } } }
+    - key: vertretung
+      label: Vertretung
+      typ: auswahl
+      optionen: [einzeln, gemeinsam]
+      hilfe: Darf jede bevollmächtigte Person allein handeln oder nur alle zusammen?
+      beschriftungen: { en: { label: "Acting", hilfe: "May each attorney act alone, or only all of them together?", optionen: { "einzeln": "individually", "gemeinsam": "jointly" } } }
+    - { key: ersatzbevollmaechtigt, label: Ersatzbevollmächtigt, typ: referenz, ziel: "basis:person", mehrfach: true, verweisart: bezug, hilfe: Wer einspringt, wenn die bevollmächtigte Person ausfällt, beschriftungen: { en: { label: "Substitute attorney(s)", hilfe: "Who steps in if the attorney cannot act" } } }
     - { key: gegenueber, label: Gegenüber, typ: referenz, ziel: "basis:organisation", verweisart: bezug, hilfe: "Für wen sie gilt, z. B. Bank, Pflegekasse, Schule. Leer = allgemein", beschriftungen: { en: { label: "Towards", hilfe: "Whom it applies to, e.g. bank, care insurance, school. Empty = general" } } }
+    - key: betrifft
+      label: Betrifft
+      typ: referenz
+      zielOptional: ["finanzen:konto", "fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vertraege:vertrag", "gesundheit:behandlungsfall", "haushalt:arbeitsverhaeltnis", "haushalt:vorsorge"]
+      mehrfach: true
+      verweisart: bezug
+      hilfe: Wofür die Vollmacht gilt – Konto, Fahrzeug, Immobilie, Vertrag. Sie steht dann dort unter „Verknüpfungen“
+      beschriftungen: { en: { label: "Concerns", hilfe: "What it applies to – account, vehicle, property, contract. It then shows up there under “Links”" } }
     - { key: umfang, label: Umfang, typ: langtext, maxLen: 2000, hilfe: "Wofür sie gilt, z. B. „Gesundheit und Aufenthalt“ oder „nur Konto 1234“", beschriftungen: { en: { label: "Scope", hilfe: "What it covers, e.g. “health and residence” or “account 1234 only”" } } }
     - { key: ausgestellt_am, label: Ausgestellt am, typ: datum, max: heute, erkennung: { art: datum }, beschriftungen: { en: { label: "Issued on" } } }
     - { key: gueltig_bis, label: Gültig bis, typ: datum, hilfe: Leer = unbefristet, beschriftungen: { en: { label: "Valid until", hilfe: "Empty = no end date" } } }
@@ -27,13 +42,13 @@
     - key: form
       label: Form
       typ: auswahl
-      optionen: [einfach schriftlich, öffentlich beglaubigt, notariell beurkundet]
-      beschriftungen: { en: { label: "Form", optionen: { "einfach schriftlich": "simple written form", "öffentlich beglaubigt": "officially certified", "notariell beurkundet": "notarised" } } }
+      optionen: [handschriftlich, schriftlich, öffentlich beglaubigt, notariell beurkundet]
+      beschriftungen: { en: { label: "Form", optionen: { "handschriftlich": "handwritten", "schriftlich": "written", "öffentlich beglaubigt": "officially certified", "notariell beurkundet": "notarised" } } }
     - { key: vorsorgeregister, label: Im Vorsorgeregister, typ: janein, standard: false, hilfe: Zentrales Vorsorgeregister der Bundesnotarkammer, beschriftungen: { en: { label: "In the central register", hilfe: "Central register of lasting powers of attorney" } } }
     - { key: widerrufen_am, label: Widerrufen am, typ: datum, max: heute, beschriftungen: { en: { label: "Revoked on" } } }
     - { key: verbleib_original, label: Verbleib Original, typ: referenz, ziel: "basis:ablageort", verweisart: bezug, hilfe: Wo das unterschriebene Original liegt, beschriftungen: { en: { label: "Where the original is", hilfe: "Where the signed original is kept" } } }
   register:
-    - { key: allgemein, name: Allgemein, art: felder, felder: [art, vollmachtgeber, bevollmaechtigt, gegenueber, umfang, ausgestellt_am, gueltig_bis, ueber_tod_hinaus, form, vorsorgeregister, widerrufen_am, verbleib_original], beschriftungen: { en: { name: "General" } } }
+    - { key: allgemein, name: Allgemein, art: felder, felder: [art, vollmachtgeber, bevollmaechtigt, vertretung, ersatzbevollmaechtigt, gegenueber, betrifft, umfang, ausgestellt_am, gueltig_bis, ueber_tod_hinaus, form, vorsorgeregister, widerrufen_am, verbleib_original], beschriftungen: { en: { name: "General" } } }
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } } }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } } }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } } }
