@@ -19,7 +19,7 @@ Es ist der Nachfolger des Pakets **Rechnungen**. Einen Umzug aus dem alten Paket
 | Teil | Felder | zu sehen |
 | --- | --- | --- |
 | oben | Rechnungssteller · Rechnungsempfänger (leer = wir) · *Status*; Betrag · Rechnungsnummer · Rechnungsdatum; Fällig am · Bezahlt am · Bezahlt per | immer |
-| Einzelheiten | Betrifft (Fahrzeug, Immobilie, Mietobjekt, Wohnung, Anschaffung, Vertrag – je nachdem, welche Pakete installiert sind), **Gehört zu Vertrag / Bestellung** (mehrfach, auch gemischt), Steuerjahr | immer |
+| Einzelheiten | **Betrifft** – der Gegenstand, für den das Geld ist (Fahrzeug, Immobilie, Mietobjekt, Wohnung, Anschaffung – je nachdem, welche Pakete installiert sind), **Gehört zu** – der Vorgang, aufgrund dessen die Rechnung kam (Vertrag, Bestellung, Behandlungsfall, Therapie, Wartung, Hauptuntersuchung, Gutachten, Bildung; mehrfach, auch gemischt), Steuerjahr | immer |
 | Fahrzeug | Kilometerstand, Arbeiten | wenn die Rechnung ein Fahrzeug betrifft |
 | Vermietung | Umlagefähig, Kostenart | bei Mietobjekt oder Wohnung |
 | Beträge im Einzelnen | **Umsatzsteuer aufteilen** (Steuerzeilen mit „+ Satz“), *Netto gesamt*, *Umsatzsteuer gesamt*, Skonto, Skonto bis | nur, wenn Ablago beruflich genutzt wird; eingeklappt |

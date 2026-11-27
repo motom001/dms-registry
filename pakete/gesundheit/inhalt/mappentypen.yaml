@@ -1,6 +1,6 @@
 # Mappentypen des Pakets Gesundheit (dms-registry #226). Schema: schema/inhalt.schema.json
 # Im Mittelpunkt steht der Behandlungsfall: Arztbrief & Befund, Therapie, Arbeitsunfähigkeit und Rechnung (Paket Rechnungen,
-# Betrifft = Behandlungsfall) zeigen auf ihn und stehen dort unter „Verlauf“ (das Register Verknüpfungen, passend benannt).
+# Gehört zu = Behandlungsfall) zeigen auf ihn und stehen dort unter „Verlauf“ (das Register Verknüpfungen, passend benannt).
 # Keine weiteren Register (Thomas, 23.11.2026). Ab 1.0.0 statt „Gesundheit“ aus Haushalt – ohne Umzug.
 # Kranken- und Pflegeversicherung sind Verträge (Paket Verträge), Arztrechnungen Rechnungen.
 
