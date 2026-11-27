@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.3.1
+
+- README: Rechnungen *gehören zu* einem Behandlungsfall oder einer Therapie (Rechnungen und Bestellungen ab 1.8.0, dms-registry #296), statt ihn zu *betreffen*.
+
 ## 1.3.0
 
 - **„Woran man ihn erkennt“ kürzer** (dms-registry #267): je Mappentyp vier bis sechs Wörter, die fast jedes Dokument dieses Typs enthält, statt langer Listen. Lange Listen sprachen bei Ablago oft gegen den richtigen Typ, weil jedes Dokument nur wenige ihrer Wörter enthält. Ein Update übernimmt den Text, solange ihr ihn nicht selbst geändert habt.

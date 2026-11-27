@@ -9,7 +9,7 @@ Person ── Behandlungsfall (z. B. „Bandscheibenvorfall L5“)
             ├─ Arztbriefe & Befunde
             ├─ Therapien
             ├─ Arbeitsunfähigkeit
-            └─ Rechnungen (Paket Rechnungen und Bestellungen, Betrifft = Behandlungsfall)
+            └─ Rechnungen (Paket Rechnungen und Bestellungen, Gehört zu = Behandlungsfall oder Therapie)
 ```
 
 | Mappentyp | wofür | wichtige Felder | Frist |
@@ -50,7 +50,7 @@ Feiner geht es mit einer Regel je Person, z. B. „Mappen, deren Person Markus i
 ## Voraussetzungen
 
 - Ablago ab Version 0.248
-- Paket **Basis** ab 1.10.0 – kommt bei der Installation aus dem Katalog mit. Mit **Rechnungen und Bestellungen** ab 1.2.2 kann *Betrifft* einer Rechnung ein Behandlungsfall sein; mit **Haushalt** zeigt die Arbeitsunfähigkeit auf das Arbeitsverhältnis.
+- Paket **Basis** ab 1.10.0 – kommt bei der Installation aus dem Katalog mit. Mit **Rechnungen und Bestellungen** ab 1.8.0 kann eine Rechnung zu einem Behandlungsfall oder einer Therapie *gehören*; mit **Haushalt** zeigt die Arbeitsunfähigkeit auf das Arbeitsverhältnis.
 
 ## Rechte und Netz
 

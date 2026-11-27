@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.8.0
+
+- **„Betrifft“ und „Gehört zu“ sauber getrennt** (dms-registry #296): *Betrifft* ist der Gegenstand, für den das Geld ist – Fahrzeug, Immobilie, Mietobjekt, Wohnung, Anschaffung. *Gehört zu* ist der Vorgang, aufgrund dessen die Rechnung kam – Vertrag, Bestellung und neu Behandlungsfall, Therapie, Wartung, Hauptuntersuchung, Gutachten und Bildung (je nachdem, welche Pakete installiert sind). Eine Beitragsrechnung *gehört zu* ihrem Vertrag; bei der Kfz-Versicherung *betrifft* sie zusätzlich das Fahrzeug. Bisher konnte ein erkannter Vertrag in beiden Feldern landen.
+- Bestellung und Lieferschein: *Betrifft* ohne Vertrag (dafür gibt es „Gehört zu Vertrag“).
+- **Nach dem Update:** Rechnungen, Bestellungen und Lieferscheine, bei denen *Betrifft* noch auf einen Vertrag oder Behandlungsfall zeigt, meldet Ablago mit einer Aufgabe „Passt nicht zur Definition“. Trag den Vertrag bzw. Behandlungsfall dann unter *Gehört zu* ein und nimm ihn bei *Betrifft* heraus – mehr ist nicht zu tun.
+
 ## 1.7.0
 
 - **Bezahlt per** wird aus dem Dokument erkannt („per Lastschrift“, „bitte überweisen“).

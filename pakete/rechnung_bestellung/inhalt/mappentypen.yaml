@@ -33,18 +33,30 @@
     # #212: von welchem Konto bezahlt bzw. auf welches eingegangen – „Bezahlt per“ bleibt daneben.
     - { key: konto, label: Konto, typ: referenz, ziel: "finanzen:konto", verweisart: bezug, hilfe: Von welchem Konto bezahlt oder auf welches eingegangen, beschriftungen: { en: { label: "Account", hilfe: "Which account it was paid from or into" } } }
     # Einzelheiten
+    # Ab 1.8.0 (#296, Thomas 27.11.2026): „Betrifft“ = Gegenstand (wofür das Geld ist), „Gehört zu“ = Vorgang (aufgrund
+    # wessen die Rechnung gestellt wurde). Vertrag und Behandlungsfall stehen nur noch in „Gehört zu“ – sonst landete ein
+    # erkannter Vertrag in beiden Feldern (dms#1729). Alte Rechnungen mit Vertrag in „Betrifft“ meldet Ablago als
+    # Aufgabe „Passt nicht zur Definition“; der Vertrag wird dann nach „Gehört zu“ umgetragen.
     - key: betrifft
       label: Betrifft
-      beschriftungen: { en: { label: "Concerns", hilfe: "What the invoice is for – a vehicle, flat, purchase, medical case or contract" } }
+      beschriftungen: { en: { label: "Concerns", hilfe: "What the money is for – a vehicle, property, flat or purchase" } }
       typ: referenz
-      ziel: "vertraege:vertrag"
-      zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung", "gesundheit:behandlungsfall"]
+      zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"]
       mehrfach: true
       gleicherTyp: true
       verweisart: bezug
-      hilfe: Wofür die Rechnung ist – Fahrzeug, Wohnung, Anschaffung, Behandlungsfall oder Vertrag
-    # Vertrag oder Bestellung, mehrfach und gemischt – z. B. ein Vertrag, den eine Bestellung erweitert (#208, #211).
-    - { key: gehoert_zu, label: Gehört zu Vertrag / Bestellung, typ: referenz, ziel: ["vertraege:vertrag", bestellung], mehrfach: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to contract / order" } } }
+      hilfe: Wofür das Geld ist – Fahrzeug, Immobilie, Wohnung oder Anschaffung
+    # Vorgang: Vertrag oder Bestellung (mehrfach und gemischt, #208, #211), ab 1.8.0 auch Behandlung, Therapie, Wartung,
+    # Hauptuntersuchung, Gutachten und Bildung aus anderen Paketen.
+    - key: gehoert_zu
+      label: Gehört zu
+      typ: referenz
+      ziel: ["vertraege:vertrag", bestellung]
+      zielOptional: ["gesundheit:behandlungsfall", "gesundheit:therapie", "haus:wartung", "fahrzeuge:hauptuntersuchung", "fahrzeuge:gutachten", "haushalt:bildung"]
+      mehrfach: true
+      verweisart: zugehoerigkeit
+      hilfe: Aufgrund wessen die Rechnung gestellt wurde – Vertrag, Bestellung, Behandlung, Therapie, Wartung, Hauptuntersuchung oder Kurs
+      beschriftungen: { en: { label: "Belongs to", hilfe: "What the invoice was issued for – contract, order, treatment, therapy, maintenance, inspection or course" } }
     - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", ausDatum: { datumFeld: datum, zielFeld: jahr }, verweisart: bezug, hilfe: "Wenn du die Kosten absetzen willst. Vorschlag aus dem Rechnungsdatum – bei Zahlung erst im neuen Jahr zählt steuerlich meist das Jahr der Zahlung, dann bitte anpassen", beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs. Suggested from the invoice date – if paid only in the new year, the year of payment usually counts for tax, then please adjust" } } }
     # Fahrzeug – wenn „betrifft“ ein Fahrzeug ist
     - { key: kilometerstand, label: Kilometerstand, typ: zahl, beschriftungen: { en: { label: "Mileage" } } }
@@ -170,7 +182,7 @@
       hilfe: Bis wann du zurückschicken kannst. Die mitgelieferte Automatisierung erinnert 3 Tage vorher.
       frist: { vorlauf: 3, einheit: tage }
       beschriftungen: { en: { label: "Return by", hilfe: "Last day you can send it back. The included automation reminds you 3 days before." } }
-    - { key: betrifft, label: Betrifft, typ: referenz, ziel: "vertraege:vertrag", zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"], mehrfach: true, gleicherTyp: true, verweisart: bezug, hilfe: Wofür die Bestellung ist – z. B. eine Anschaffung, beschriftungen: { en: { label: "Concerns", hilfe: "What the order is for – e.g. a purchase" } } }
+    - { key: betrifft, label: Betrifft, typ: referenz, zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"], mehrfach: true, gleicherTyp: true, verweisart: bezug, hilfe: Wofür die Bestellung ist – z. B. eine Anschaffung, beschriftungen: { en: { label: "Concerns", hilfe: "What the order is for – e.g. a purchase" } } }
     - { key: vertrag, label: Gehört zu Vertrag, typ: referenz, ziel: "vertraege:vertrag", verweisart: zugehoerigkeit, hilfe: z. B. wenn die Bestellung einen Vertrag erweitert, beschriftungen: { en: { label: "Belongs to contract", hilfe: "e.g. if the order extends a contract" } } }
     - { key: notiz, label: Notiz, typ: langtext, maxLen: 2000, beschriftungen: { en: { label: "Note" } } }
   register:
@@ -196,7 +208,7 @@
     - { key: lieferscheinnummer, label: Lieferscheinnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Delivery note number" } } }
     - { key: bestellnummer, label: Bestellnummer, typ: text, maxLen: 60, erkennung: { art: nummer }, beschriftungen: { en: { label: "Order number" } } }
     - { key: bestellung, label: Gehört zu Bestellung, typ: referenz, ziel: bestellung, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to order" } } }
-    - { key: betrifft, label: Betrifft, typ: referenz, ziel: "vertraege:vertrag", zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"], mehrfach: true, gleicherTyp: true, verweisart: bezug, beschriftungen: { en: { label: "Concerns" } } }
+    - { key: betrifft, label: Betrifft, typ: referenz, zielOptional: ["fahrzeuge:fahrzeug", "haus:immobilie", "vermietung:mietobjekt", "vermietung:wohnung", "haushalt:anschaffung"], mehrfach: true, gleicherTyp: true, verweisart: bezug, beschriftungen: { en: { label: "Concerns" } } }
     - key: vollstaendig
       label: Vollständig erhalten
       beschriftungen: { en: { label: "Received in full", optionen: { "ja": "yes", "nein": "no", "teilweise": "partly" } } }
