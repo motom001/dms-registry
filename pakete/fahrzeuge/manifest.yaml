@@ -3,7 +3,7 @@ schema: 1
 id: fahrzeuge
 name: Fahrzeuge
 herausgeber: app.ablago
-version: 2.11.1
+version: 2.12.0
 beschreibung: Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.
 autor:
   name: Thomas Meissner
@@ -18,7 +18,8 @@ lizenz: Apache-2.0
 # 0.212.0: Ablageort aus dem Paket Basis (basis:ablageort, Ablago #883)
 # 0.236.0: Vorgaben (Vertragsarten für das Paket Verträge, DMS #1038); Verträge 1.1.0 braucht 0.243.0; 0.248.0: Rechnungen und Bestellungen (dms-registry #208)
 # 0.293.2: Tipp mit Texten in texte/<sprache>/entdecken.json (Ablago #1307, Registry #227)
-dms: ">=0.323.0"
+# 0.337.0: Erkennungsart code am Digitalen Untersuchungsbericht (dms #1723, Registry #301)
+dms: ">=0.337.0"
 # „So nutzt du es“ (dms-registry #164)
 kurzanleitung:
   de:

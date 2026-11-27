@@ -435,8 +435,11 @@ def pruefe_mappentypen(code: dict, paket_id: str, typen: set, dms_bereich: str) 
 DMS_ERKENNUNG_AB = (0, 113, 0)
 _TEXTARTEN = {'name', 'vorname', 'nachname', 'funktion', 'nummer', 'iban', 'ustid', 'email', 'internet', 'telefon', 'mobil', 'fax',
               'strasse', 'hausnummer', 'plz', 'ort'}
+# Erkennungsart code (DMS #1723, ab 0.337.0): Inhalt eines QR-Codes oder Barcodes, nur an Text und Langtext; dazu
+# codeart (Art wie im Paket Barcodes) und muster (regulärer Ausdruck auf den ganzen Inhalt, höchstens 200 Zeichen).
+DMS_CODE_ERKENNUNG_AB = (0, 337, 0)
 ERKENNUNG_ARTEN = {
-    'text': _TEXTARTEN, 'langtext': _TEXTARTEN, 'zahl': {'nummer', 'plz', 'hausnummer', 'betrag'},
+    'text': _TEXTARTEN | {'code'}, 'langtext': _TEXTARTEN | {'code'}, 'zahl': {'nummer', 'plz', 'hausnummer', 'betrag'},
     'betrag': {'betrag'}, 'datum': {'datum'}, 'auswahl': {'auswahl'}, 'referenz': {'verweis'},
 }
 
@@ -444,7 +447,7 @@ ERKENNUNG_ARTEN = {
 def pruefe_erkennung(typen: list, dms_bereich: str) -> list[str]:
     """erkennung an Feldern: nur bei geeigneten Feldarten, Art passend zur Feldart; braucht dms: ">=0.113.0"."""
     fehler: list[str] = []
-    benutzt = False
+    benutzt = code = False
     for t in typen:
         if not isinstance(t, dict):
             continue
@@ -454,6 +457,16 @@ def pruefe_erkennung(typen: list, dms_bereich: str) -> list[str]:
             wo = f'mappentypen/{t.get("schluessel")}/{f.get("key")}'
             e, typ = f['erkennung'], f.get('typ')
             benutzt = True
+            if isinstance(e, dict):
+                if e.get('art') == 'code':
+                    code = True
+                    if isinstance(e.get('muster'), str):
+                        try:
+                            re.compile(e['muster'])
+                        except re.error as x:
+                            fehler.append(f'{wo}: erkennung.muster ist kein gültiger regulärer Ausdruck ({x})')
+                elif 'codeart' in e or 'muster' in e:
+                    fehler.append(f'{wo}: erkennung.codeart und erkennung.muster gibt es nur bei art: code')
             if typ not in ERKENNUNG_ARTEN:
                 fehler.append(f'{wo}: erkennung gibt es nicht bei Feldart „{typ}“ (nur {", ".join(sorted(ERKENNUNG_ARTEN))})')
             elif isinstance(e, dict) and e.get('art') is not None and e['art'] not in ERKENNUNG_ARTEN[typ]:
@@ -462,6 +475,8 @@ def pruefe_erkennung(typen: list, dms_bereich: str) -> list[str]:
         ab = dms_untergrenze(dms_bereich)
         if ab is None or ab < DMS_ERKENNUNG_AB:
             fehler.append('mappentypen: erkennung kennt das DMS erst ab 0.113.0 – bitte dms: ">=0.113.0" angeben')
+        elif code and ab < DMS_CODE_ERKENNUNG_AB:
+            fehler.append('mappentypen: erkennung.art code kennt das DMS erst ab 0.337.0 – bitte dms: ">=0.337.0" angeben')
     return fehler
 
 

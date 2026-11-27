@@ -83,7 +83,9 @@
           "description": "Für die Erkennung nutzen (DMS ab 0.113.0, #336/#391): {} markiert das Feld; art sagt, was darin steht (fehlt: aus Feldart und Bezeichnung); hinweis ist der Erkennungshinweis.",
           "type": "object", "additionalProperties": false,
           "properties": {
-            "art": { "enum": ["name", "vorname", "nachname", "funktion", "nummer", "iban", "ustid", "email", "internet", "telefon", "mobil", "fax", "strasse", "hausnummer", "plz", "ort", "datum", "betrag", "verweis", "auswahl"] },
+            "art": { "enum": ["name", "vorname", "nachname", "funktion", "nummer", "iban", "ustid", "email", "internet", "telefon", "mobil", "fax", "strasse", "hausnummer", "plz", "ort", "datum", "betrag", "verweis", "auswahl", "code"] },
+            "codeart": { "type": "string", "pattern": "^[a-z0-9]{1,20}$", "description": "Nur bei art: code (DMS #1723, ab 0.337.0): Art des Codes, z. B. qr, ean13, code128 – Namen wie im Paket Barcodes." },
+            "muster": { "type": "string", "minLength": 1, "maxLength": 200, "description": "Nur bei art: code (DMS #1723, ab 0.337.0): regulärer Ausdruck, der auf den ganzen Inhalt des Codes passen muss; keine verschachtelten Wiederholungen." },
             "hinweis": { "type": "string", "maxLength": 300 },
             "endeVon": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "description": "Nur am Datumsfeld für das Ende eines Zeitraums (DMS #1646, ab 0.321.0): Kennung des Datumsfelds für den Beginn. Steht im Dokument „vom … bis …“, bekommt der Beginn das erste Datum und dieses Feld das zweite. Fehlt = aus Kennung und Bezeichnung (beginn/ende, von/bis …)." }
           }
