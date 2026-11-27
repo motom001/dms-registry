@@ -7,7 +7,7 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 | Mappentyp | wofür | wichtige Felder | Frist |
 | --- | --- | --- | --- |
 | Fahrzeug | Pkw, Motorrad, Wohnmobil, Anhänger, E-Bike | Bezeichnung, Art, Kennzeichen (eindeutig), Fahrzeug-Identnummer, Erstzulassung, Halter (Person), Verantwortlich, Versicherung, Finanzierung/Leasing | **HU fällig** (einen Monat vorher) |
-| Hauptuntersuchung (ab 2.3.0) | Prüfbericht der HU | Fahrzeug, geprüft am, Prüfstelle, Bericht-Nr., Kilometerstand, Ergebnis, Mängel, nächste HU | **Nachprüfung bis** (nur bei erheblichen oder gefährlichen Mängeln, eine Woche vorher) |
+| Hauptuntersuchung (ab 2.3.0) | Prüfbericht der HU oder Sicherheitsprüfung | Fahrzeug, Art und Typ der Untersuchung, geprüft am, Prüfstelle, Bericht-Nr., Kilometerstand, Ergebnis, Prüfplakette, Wiedervorführung, Mängel und Hinweise, nächste HU/SP, Kosten, Link zum Digitalen Untersuchungsbericht; Register *Fahrzeugdaten laut Bericht* (HSN, TSN, Gesamtmasse) | **Nachprüfung bis** (nur bei erheblichen oder gefährlichen Mängeln, eine Woche vorher) |
 | Gutachten / Abnahme (ab 2.9.0) | Vollgutachten, Änderungsabnahme, Oldtimer-Gutachten, ABE, Teilegutachten | Fahrzeug, Art (amtliche Liste), Gutachtennummer, Datum, Prüforganisation, Gegenstand, Eintragung nötig / eingetragen am, **Passt zum Fahrzeug** | – |
 | Zulassungsbescheinigung (ab 2.9.0) | Fahrzeugschein (Teil I) oder Fahrzeugbrief (Teil II), jede Ausgabe einzeln | Fahrzeug, Teil, Nummer, ausgestellt am, Kennzeichen, Anlass, **ersetzt**, nächste HU, technische Daten | – |
 | Fahrzeugpapiere (ab 2.9.0) | CoC, Abmeldebescheinigung, Fahrzeugschein und -brief von vor 2005 | Fahrzeug, Art, Datum, Verbleib Original | – |
@@ -20,6 +20,8 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 **Zulassungsbescheinigung → Fahrzeug** (ab 2.9.0): Die Automatisierung *Zulassungsbescheinigung ans Fahrzeug übernehmen* (beim Installieren vorausgewählt) trägt Kennzeichen und technische Daten am Fahrzeug ein – **nur in leere Felder**, sie überschreibt nie. So schadet auch ein alter Schein nicht, den du später einscannst. Die nächste HU (Feld X) kommt nur, wenn sie später ist. *Ersetzt* verkettet die Bescheinigungen eines Fahrzeugs.
 
 **An- und Abmeldung** (ab 2.3.0) stehen als Felder am Fahrzeug: *Status* (zugelassen, vorübergehend abgemeldet, außer Betrieb), *Zugelassen seit*, *Abgemeldet am*, *Saisonkennzeichen* und *Zulassungsstelle*. Ab 2.9.0 legst du die Abmeldebescheinigung als **Fahrzeugpapiere** ab; die Automatisierung *Abmeldung am Fahrzeug nachtragen* setzt *Abgemeldet am* und erinnert dich, den Status zu prüfen.
+
+**Digitaler Untersuchungsbericht** (ab 2.10.0): Den Link aus dem QR-Code trägst du an der Hauptuntersuchung ein. Er wirkt wie ein Schlüssel zu deinem Bericht – gib ihn nicht weiter. Mit der Ergänzung **Fahrzeuge: Abruf beim KBA** holt die Aktion „Daten beim KBA abrufen“ die Angaben des Berichts; HSN, TSN und Gesamtmasse kommen über die Automatisierung *Fahrzeugdaten aus dem Prüfbericht übernehmen* ans Fahrzeug, nur in leere Felder.
 
 **Gutachten / Abnahme:** *Passt zum Fahrzeug* zeigt, ob Typgenehmigung oder HSN/TSN des Fahrzeugs im Dokument stehen. Bis Ablago das selbst prüfen kann (motom001/dms#1717), wählst du es von Hand; „nicht gefunden“ heißt nur „selbst prüfen“, nie „passt nicht“. Keine Rechtsberatung. Der Kaufvertrag beim Verkauf ist ein Vertrag (Paket Verträge); ein Tipp erinnert an die Kfz-Versicherung. Fahrzeuge außer Betrieb fallen aus den Ansichten.
 

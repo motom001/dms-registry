@@ -54,3 +54,4 @@ aemter
 gesundheit
 vollmachten
 verfuegungen
+fahrzeuge.kba

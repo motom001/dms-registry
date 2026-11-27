@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- erfundener Datensatz im Format IVI 2.0 -->
+<ivi:InitialVehicleInformation xmlns:ivi="http://eu.ereg.initialvehicleinformation.v2">
+  <ivi:Header><ivi:IviReferenceId>00000000-0000-4000-8000-000000000002</ivi:IviReferenceId><ivi:IviVersionNumberXsd>2.0</ivi:IviVersionNumberXsd><ivi:IviVersionNumber>1</ivi:IviVersionNumber></ivi:Header>
+  <ivi:CocDataGroup>
+    <ivi:VehicleIdentificationNumber>WVWZZZ00000000002</ivi:VehicleIdentificationNumber>
+    <ivi:TypeApprovalNumber>e1*2018/858*00001*02</ivi:TypeApprovalNumber>
+    <ivi:ExhaustEmissionLevel>Euro 6 AP</ivi:ExhaustEmissionLevel>
+    <ivi:MassGroup><ivi:TechnicallyPermissibleMaximumLadenMass>2150</ivi:TechnicallyPermissibleMaximumLadenMass>
+      <ivi:MaximumStaticVerticalMassCouplingPointTable><ivi:MaximumStaticVerticalMassCouplingPointGroup><ivi:TechnicallyPermissibleMaximumStaticVerticalMassCouplingPoint>80</ivi:TechnicallyPermissibleMaximumStaticVerticalMassCouplingPoint></ivi:MaximumStaticVerticalMassCouplingPointGroup></ivi:MaximumStaticVerticalMassCouplingPointTable></ivi:MassGroup>
+    <ivi:TowingBrakedTypeTrailTable>
+      <ivi:TowingBrakedTypeTrailGroup><ivi:BrakedTypeTrail>BRK</ivi:BrakedTypeTrail><ivi:BodyworkTypeTable><ivi:BodyworkTypeGroup><ivi:TechnicallyPermissibleMaximumTowableMass>1800</ivi:TechnicallyPermissibleMaximumTowableMass></ivi:BodyworkTypeGroup></ivi:BodyworkTypeTable></ivi:TowingBrakedTypeTrailGroup>
+      <ivi:TowingBrakedTypeTrailGroup><ivi:BrakedTypeTrail>UNB</ivi:BrakedTypeTrail><ivi:BodyworkTypeTable><ivi:BodyworkTypeGroup><ivi:TechnicallyPermissibleMaximumTowableMass>750</ivi:TechnicallyPermissibleMaximumTowableMass></ivi:BodyworkTypeGroup></ivi:BodyworkTypeTable></ivi:TowingBrakedTypeTrailGroup>
+    </ivi:TowingBrakedTypeTrailTable>
+    <ivi:AxleTable><ivi:AxleGroup><ivi:AxleNumber>1</ivi:AxleNumber><ivi:TyreAxleTable><ivi:TyreAxleGroup><ivi:TyreNumber>1</ivi:TyreNumber><ivi:TyreSize>215/55 R17</ivi:TyreSize><ivi:LoadCapacityIndexSingleWheel>94</ivi:LoadCapacityIndexSingleWheel><ivi:SpeedCategorySymbol>W</ivi:SpeedCategorySymbol></ivi:TyreAxleGroup></ivi:TyreAxleTable></ivi:AxleGroup></ivi:AxleTable>
+    <ivi:EnergyConvertorTable><ivi:EnergyConvertorGroup><ivi:EngineCapacity>1498.00</ivi:EngineCapacity><ivi:EnergySourceTable>
+      <ivi:EnergySourceGroup><ivi:EnergySource>10</ivi:EnergySource><ivi:TestWltpCo2Group><ivi:WltpCo2Combined>132.40</ivi:WltpCo2Combined></ivi:TestWltpCo2Group></ivi:EnergySourceGroup>
+      <ivi:EnergySourceGroup><ivi:EnergySource>95</ivi:EnergySource></ivi:EnergySourceGroup>
+    </ivi:EnergySourceTable></ivi:EnergyConvertorGroup></ivi:EnergyConvertorTable>
+    <ivi:RemarkTable><ivi:RemarkGroup><ivi:RemarkSubjectDescription>RMRKS</ivi:RemarkSubjectDescription><ivi:RemarkSubjectLanguage>de</ivi:RemarkSubjectLanguage><ivi:Remark>Achse 1: 225/45 R18 95W XL &amp; Felge 8Jx18 *</ivi:Remark></ivi:RemarkGroup></ivi:RemarkTable>
+  </ivi:CocDataGroup>
+</ivi:InitialVehicleInformation>

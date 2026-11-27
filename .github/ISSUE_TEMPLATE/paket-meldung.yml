@@ -22,6 +22,7 @@ body:
         - Benachrichtigungen (benachrichtigungen)
         - Bildformate (bildformate)
         - Fahrzeuge (fahrzeuge)
+        - Fahrzeuge – Abruf beim KBA (fahrzeuge.kba)
         - Finanzen (finanzen)
         - Gesundheit (gesundheit)
         - Hallo Post (hallo_post)

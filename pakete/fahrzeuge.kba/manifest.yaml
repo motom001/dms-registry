@@ -1,0 +1,61 @@
+# Ergänzung „Fahrzeuge: Abruf beim KBA“ (dms-registry #278). Schema: schema/manifest.schema.json
+schema: 1
+id: fahrzeuge.kba
+name: Fahrzeuge – Abruf beim KBA
+herausgeber: app.ablago
+version: 1.0.0
+beschreibung: 'Holt auf Knopfdruck Daten beim Kraftfahrt-Bundesamt: den Digitalen Untersuchungsbericht zur Hauptuntersuchung (mit dem Link aus dem QR-Code) und den elektronischen CoC zur Fahrzeug-Identnummer. Nur leere Felder werden gefüllt.'
+autor:
+  name: Thomas Meissner
+  github: motom001
+lizenz: Apache-2.0
+kategorien: [vorlagen]
+symbol: car
+kuerzel: KBA
+# 0.245.0: Mappenaktionen (#1039); 0.323.0 wie Fahrzeuge
+dms: ">=0.323.0"
+kurzanleitung:
+  de:
+    - An der Hauptuntersuchung den Link aus dem QR-Code eintragen, dann im Menü „Mappe“ → „Daten beim KBA abrufen“.
+    - Am Fahrzeug mit Fahrzeug-Identnummer im Menü „Mappe“ → „Technische Daten beim KBA abrufen“.
+    - Ablago zeigt vorher, was an das KBA geht. Es füllt nur leere Felder; Abweichungen stehen in der Meldung.
+  en:
+    - Enter the link from the QR code on the inspection, then use “Folder” → “Fetch data from the KBA”.
+    - On a vehicle with an identification number, use “Folder” → “Fetch technical data from the KBA”.
+    - Ablago shows beforehand what is sent to the KBA. It only fills empty fields; differences are listed in the message.
+abhaengigkeiten:
+  fahrzeuge: ">=2.10.0"
+ergaenzt: { paket: fahrzeuge, gruppe: Weitere Funktionen }
+inhalt: {}
+mappenaktionen:
+  - schluessel: dub_abrufen
+    name: Daten beim KBA abrufen
+    beschreibung: Holt den Digitalen Untersuchungsbericht beim Kraftfahrt-Bundesamt und trägt ihn in leere Felder ein.
+    mappentypen: ["fahrzeuge:hauptuntersuchung"]
+    rechte: [aendern]
+    bedingung:
+      modus: alle
+      bedingungen: [{ art: feld, bedingung: { feld: digitaler_bericht, op: nichtLeer } }]
+      grund: Erst den Link aus dem QR-Code unter „Digitaler Untersuchungsbericht“ eintragen.
+  - schluessel: coc_abrufen
+    name: Technische Daten beim KBA abrufen
+    beschreibung: Holt den elektronischen CoC zur Fahrzeug-Identnummer und trägt die technischen Daten in leere Felder ein.
+    mappentypen: ["fahrzeuge:fahrzeug"]
+    rechte: [aendern]
+    bedingung:
+      modus: alle
+      bedingungen: [{ art: feld, bedingung: { feld: fin, op: nichtLeer } }]
+      grund: Erst die Fahrzeug-Identnummer eintragen.
+code:
+  sprache: c
+  quelle: code/
+  ereignisse: []
+  rechte:
+    # Ablago gibt der Aktion die Werte der Mappe; geschrieben wird mit dem Zugriff der Person (Ergebnis der Aktion).
+    lesen: ["fahrzeuge:hauptuntersuchung", "fahrzeuge:fahrzeug"]
+    schreiben: ["fahrzeuge:hauptuntersuchung", "fahrzeuge:fahrzeug"]
+    dokumente: keine
+  # Nur die beiden öffentlichen Seiten des KBA, nur nach dem Klick auf „Abrufen“.
+  netz:
+    - https://www.kba-online.de/dub/api
+    - https://www.kba-online.de/ivicoc_prod/public-access/webapp/api
