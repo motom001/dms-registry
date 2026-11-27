@@ -81,12 +81,8 @@
   register:
     - { key: allgemein, name: Allgemein, art: felder, felder: [bezeichnung, art, kennzeichen, fin, erstzulassung, halter_verweis, status, zugelassen_seit, abgemeldet_am, saisonkennzeichen, zulassungsstelle, hu_faellig, verantwortlich, versicherung, finanzierung, verbleib_original], beschriftungen: { en: { name: "General" } }  }
     - { key: technische_daten, name: Technische Daten, art: felder, felder: [hsn, tsn, typgenehmigung, hubraum, kraftstoff, emissionsklasse, co2, zul_gesamtmasse, anhaengelast_gebremst, anhaengelast_ungebremst, stuetzlast, reifengroessen, feinstaubplakette], beschriftungen: { en: { name: "Technical data" } } }
-    # Ab 2.0.0: alle Rechnungen mit „Betrifft“ = dieses Fahrzeug (Werkstatt, Reifen, Zubehör …).
-    - key: werkstattrechnungen
-      name: Rechnungen
-      beschriftungen: { en: { name: "Invoices" } }
-      art: verknuepfungen
-      quellen: [{ typ: "rechnung_bestellung:rechnung", feld: betrifft }]
+    # Ab 2.10.2 ohne eigenes Register „Rechnungen“ (Thomas, 27.11.2026): Rechnungen mit „Betrifft“ = dieses Fahrzeug
+    # stehen unter „Verknüpfungen“ wie alle anderen Mappen, die auf das Fahrzeug zeigen.
     - { key: dokumente, name: Dokumente, art: dokumente, beschriftungen: { en: { name: "Documents" } }  }
     - { key: verknuepfungen, name: Verknüpfungen, art: verknuepfungen, beschriftungen: { en: { name: "Links" } }  }
     - { key: historie, name: Historie, art: protokoll, beschriftungen: { en: { name: "History" } }  }

@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.10.2
+
+- **Fahrzeug:** Das Register „Rechnungen“ entfällt. Rechnungen, die das Fahrzeug betreffen, stehen unter „Verknüpfungen“ wie Hauptuntersuchungen, Papiere und Rückrufe. Bei bestehenden Installationen bleibt das Register, bis du es unter Werkbank → Mappentypen → Fahrzeug → Register entfernst.
+
 ## 2.10.1
 
 - **Ansichten:** „Fahrzeuge“ zeigt jetzt alle Mappen des Pakets (Fahrzeuge, Hauptuntersuchungen, Papiere, Gutachten, Rückrufe) wie bei Haus und Gesundheit. Die Fahrzeuge selbst stehen darunter in der neuen Ansicht **„Aktuelle Fahrzeuge“** (ohne die außer Betrieb).

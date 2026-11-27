@@ -13,7 +13,7 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 | Fahrzeugpapiere (ab 2.9.0) | CoC, Abmeldebescheinigung, Fahrzeugschein und -brief von vor 2005 | Fahrzeug, Art, Datum, Verbleib Original | – |
 | Rückruf (ab 2.9.0) | Rückrufaktion: Anschreiben, Erinnerung, Bestätigung der Werkstatt | Fahrzeug, Rückrufcode, KBA-Referenznummer, Grund, Status, durchgeführt am, Werkstatt | **Durchführen bis** (14 Tage vorher) |
 
-**Register:** Das **Fahrzeug** zeigt unter *Rechnungen* alle Rechnungen aus dem Paket Rechnungen und Bestellungen, bei denen *Betrifft* dieses Fahrzeug ist – Werkstatt, Reifen, Zubehör; dazu *Dokumente*, *Verknüpfungen* und *Historie*.
+**Register:** Das **Fahrzeug** hat *Allgemein*, *Technische Daten*, *Dokumente*, *Verknüpfungen* und *Historie*. Unter *Verknüpfungen* stehen alle Mappen, die auf das Fahrzeug zeigen – Rechnungen mit *Betrifft* = Fahrzeug (Werkstatt, Reifen, Zubehör), Hauptuntersuchungen, Papiere, Gutachten und Rückrufe.
 
 **Technische Daten** (ab 2.9.0): ein eigenes Register am Fahrzeug, nur mit Werten, die man im Alltag braucht – HSN/TSN (Versicherung), Typgenehmigung (ABE und Teilegutachten), Hubraum, Kraftstoff, Emissionsklasse, CO₂ und zulässige Gesamtmasse (Kfz-Steuer), Anhänge- und Stützlast (Anhänger, Fahrradträger), zulässige Reifengrößen (Reifenkauf) und die Feinstaubplakette. Die Hilfe nennt jeweils das Feld der Zulassungsbescheinigung Teil I. Lkw und Zugmaschine sind als Art dazugekommen.
 
