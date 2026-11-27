@@ -24,8 +24,8 @@ kurzanleitung:
     - Coming from “QR-Code lesen”, remove it and choose Barcodes wherever QR-Code lesen was selected before.
 kategorien: [post]
 symbol: scan-barcode
-# 0.336.0: Schnittstelle dms:codes und Erkennungsart code (dms #1723)
-dms: ">=0.336.0"
+# 0.337.0: Schnittstelle dms:codes und Erkennungsart code (dms #1723)
+dms: ">=0.337.0"
 inhalt: {}
 code:
   sprache: c

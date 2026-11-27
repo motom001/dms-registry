@@ -102,8 +102,8 @@ DMS_ERKENNEN_AB = (0, 125, 0)
 DMS_KLASSIFIZIEREN_AB = (0, 226, 0)
 # Schnittstelle dms:leerseiten (leere Seiten in Post markieren, DMS #997): ab der nächsten Minor nach 0.254.0.
 DMS_LEERSEITEN_AB = (0, 255, 0)
-# Schnittstelle dms:codes (QR-Codes und Strichcodes eines Dokuments, DMS #1723): ab 0.336.0.
-DMS_CODES_AB = (0, 336, 0)
+# Schnittstelle dms:codes (QR-Codes und Strichcodes eines Dokuments, DMS #1723): ab 0.337.0.
+DMS_CODES_AB = (0, 337, 0)
 # Wortlisten (inhalt.wortlisten, DMS #356): gleichbedeutende Wörter für die Suche, ab DMS 0.127.0.
 DMS_WORTLISTEN_AB = (0, 127, 0)
 # Ansichten über alle Mappentypen (typen: ["*"], DMS #725).
@@ -256,12 +256,12 @@ def pruefe_rechte(code: dict, dms_bereich: str) -> list[str]:
             fehler.append('code.rechte.schnittstellen: dms:leerseiten braucht code.rechte.lesen mit dms:post (oder „*“) und code.rechte.dokumente: lesen – markiert wird nur in Post, die das Paket lesen darf')
         if ab is None or ab < DMS_LEERSEITEN_AB:
             fehler.append('code.rechte.schnittstellen: dms:leerseiten kennt das DMS erst ab 0.255.0 – bitte dms: ">=0.255.0" angeben')
-    # dms:codes (DMS #1723): ab 0.336.0; das Paket liest die Seitenbilder selbst – braucht Lesen von Mappen und Dokumenten.
+    # dms:codes (DMS #1723): ab 0.337.0; das Paket liest die Seitenbilder selbst – braucht Lesen von Mappen und Dokumenten.
     if 'dms:codes' in (rechte.get('schnittstellen') or []):
         if rechte.get('dokumente', 'keine') == 'keine' or not (rechte.get('lesen') or []):
             fehler.append('code.rechte.schnittstellen: dms:codes braucht code.rechte.lesen und code.rechte.dokumente: lesen – das Paket liest die Seitenbilder selbst')
         if ab is None or ab < DMS_CODES_AB:
-            fehler.append('code.rechte.schnittstellen: dms:codes kennt das DMS erst ab 0.336.0 – bitte dms: ">=0.336.0" angeben')
+            fehler.append('code.rechte.schnittstellen: dms:codes kennt das DMS erst ab 0.337.0 – bitte dms: ">=0.337.0" angeben')
     # dms:texterkennung (DMS #458): ab 0.133.0; das Paket schreibt den Volltext, braucht also dokumente: schreiben.
     if 'dms:texterkennung' in (rechte.get('schnittstellen') or []):
         if rechte.get('dokumente') != 'schreiben':

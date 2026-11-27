@@ -1,7 +1,7 @@
 // Barcodes als Paket für Ablago (dms-registry #294): liest QR-Codes und Strichcodes auf Dokumenten mit zxing-cpp.
 //
 // Zwei Aktionen:
-// - dms:codes (Ablago 0.336.0, dms #1723): { aktion, datei, mime, seiten } → das Paket holt die Seitenbilder des
+// - dms:codes (Ablago 0.337.0, dms #1723): { aktion, datei, mime, seiten } → das Paket holt die Seitenbilder des
 //   Dokuments (GET /dokumente/{id}/seiten/{nr}/scan) und antwortet mit allen lesbaren Codes
 //   { codes: [{ art, inhalt, seite }] } – genau die Ausgabe der Leistung dokument.lesen.barcode@1. Welcher Code in
 //   welches Feld gehört, entscheidet Ablago am Feld (Erkennungsart code mit codeart und muster).

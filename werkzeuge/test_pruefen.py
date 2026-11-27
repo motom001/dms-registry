@@ -178,17 +178,17 @@ class Einstellungen(unittest.TestCase):
         self.assertTrue(any('dms:leerseiten braucht' in f for f in self.paket(fremd, dms='>=0.255.0')))
 
     def test_schnittstelle_codes(self):
-        # dms:codes (DMS #1723, Barcodes #294): ab DMS 0.336.0, nur mit Lesen von Mappen und Dokumenten.
+        # dms:codes (DMS #1723, Barcodes #294): ab DMS 0.337.0, nur mit Lesen von Mappen und Dokumenten.
         import copy
         c = copy.deepcopy(GUELTIG)
         c['rechte'] = {'lesen': ['*'], 'dokumente': 'lesen', 'schnittstellen': ['dms:codes']}
-        self.assertEqual(self.paket(c, dms='>=0.336.0'), [])
-        alt = self.paket(c, dms='>=0.335.0')
-        self.assertTrue(any('dms:codes kennt das DMS erst ab 0.336.0' in f for f in alt), alt)
+        self.assertEqual(self.paket(c, dms='>=0.337.0'), [])
+        alt = self.paket(c, dms='>=0.336.0')
+        self.assertTrue(any('dms:codes kennt das DMS erst ab 0.337.0' in f for f in alt), alt)
         for rechte in ({'lesen': ['*'], 'schnittstellen': ['dms:codes']}, {'dokumente': 'lesen', 'schnittstellen': ['dms:codes']}):
             ohne = copy.deepcopy(c)
             ohne['rechte'] = rechte
-            self.assertTrue(any('dms:codes braucht' in f for f in self.paket(ohne, dms='>=0.336.0')), rechte)
+            self.assertTrue(any('dms:codes braucht' in f for f in self.paket(ohne, dms='>=0.337.0')), rechte)
 
     def test_schnittstelle_antworten(self):
         # dms:antworten und Einstellung adresse (DMS #444): ab DMS 0.124.0; adresse ohne Vorgabe, nur im Abschnitt, höchstens eine.
