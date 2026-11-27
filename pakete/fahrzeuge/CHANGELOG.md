@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.10.3
+
+- Hilfe zum Feld *Digitaler Untersuchungsbericht* korrigiert: Der Link ist laut KBA zum Weitergeben gedacht (z. B. beim Verkauf), kein Geheimnis.
+
 ## 2.10.2
 
 - **Fahrzeug:** Das Register „Rechnungen“ entfällt. Rechnungen, die das Fahrzeug betreffen, stehen unter „Verknüpfungen“ wie Hauptuntersuchungen, Papiere und Rückrufe. Bei bestehenden Installationen bleibt das Register, bis du es unter Werkbank → Mappentypen → Fahrzeug → Register entfernst.

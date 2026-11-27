@@ -18,7 +18,7 @@ Die Ergänzung zum Paket **Fahrzeuge** holt auf Knopfdruck Daten beim **Kraftfah
 
 ## Datenschutz
 
-- Der Link aus dem QR-Code wirkt wie ein Schlüssel zu deinem Prüfbericht. Gib ihn nicht weiter.
+- Der Link aus dem QR-Code ist laut KBA zum Weitergeben gedacht, etwa beim Verkauf als Nachweis der letzten HU.
 - Das Paket schickt nur die genannten Angaben, nur an die beiden Adressen unten und nur nach deinem Klick. Es speichert nichts außer den Feldern der Mappe.
 
 ## Schnittstelle und Quellen
