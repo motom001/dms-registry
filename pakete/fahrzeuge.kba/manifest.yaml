@@ -3,7 +3,7 @@ schema: 1
 id: fahrzeuge.kba
 name: Fahrzeuge – Abruf beim KBA
 herausgeber: app.ablago
-version: 1.0.1
+version: 1.0.2
 beschreibung: 'Holt auf Knopfdruck Daten beim Kraftfahrt-Bundesamt: den Digitalen Untersuchungsbericht zur Hauptuntersuchung (mit dem Link aus dem QR-Code) und den elektronischen CoC zur Fahrzeug-Identnummer. Nur leere Felder werden gefüllt.'
 autor:
   name: Thomas Meissner

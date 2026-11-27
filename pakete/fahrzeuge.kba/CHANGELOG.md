@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.0.2
+
+- README: Der Link aus dem QR-Code ist zum Weitergeben gedacht, kein Geheimnis.
+
 ## 1.0.1
 
 - **Reifengrößen** aus den Bemerkungen des CoC ohne den Verweis „Zu 6.18.1.1.“ und ohne doppelte Leerzeichen – so liest man im Laden nur die Größen.
