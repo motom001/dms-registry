@@ -1,0 +1,56 @@
+# Paket Barcodes – liest QR-Codes und Strichcodes auf Dokumenten für Felder mit der Erkennungsart code (dms #1723) und
+# Visitenkarten mit vCard für „Aus Dokument ausfüllen“ (dms-registry #294; löst QR-Code lesen ab).
+# Schema: schema/manifest.schema.json
+schema: 1
+id: barcodes
+name: Barcodes
+version: 1.0.0
+beschreibung: Liest QR-Codes und Strichcodes auf deinen Dokumenten – etwa den Link zum digitalen HU-Bericht oder die Nummer auf einem Paketschein – und trägt sie in passende Felder ein. Visitenkarten mit QR-Code füllt es wie bisher aus.
+autor:
+  name: Thomas Meissner
+  github: motom001
+herausgeber: app.ablago
+lizenz: Apache-2.0
+kurzanleitung:
+  de:
+    - Nach der Installation liest Ablago die Codes jedes neuen Dokuments im Hintergrund, ältere beim „Aus Dokument ausfüllen“.
+    - Felder mit der Erkennungsart „Code“ (z. B. „Digitaler Bericht“ an der Hauptuntersuchung) bekommen den passenden Code beim „Aus Dokument ausfüllen“.
+    - Für Visitenkarten wähle das Paket in der Erkennung des Mappentyps Person oder als Standard unter Werkbank → Pakete → Barcodes.
+    - Kommst du von „QR-Code lesen“, entferne es und wähle Barcodes dort, wo vorher QR-Code lesen stand.
+  en:
+    - After installation Ablago reads the codes of every new document in the background, older ones on “Fill in from document”.
+    - Fields with the recognition type “Code” (e.g. “Digital report” on the vehicle inspection) get the matching code on “Fill in from document”.
+    - For business cards choose the package in the recognition of the folder type Person or as default under Workbench → Packages → Barcodes.
+    - Coming from “QR-Code lesen”, remove it and choose Barcodes wherever QR-Code lesen was selected before.
+kategorien: [post]
+symbol: scan-barcode
+# 0.336.0: Schnittstelle dms:codes und Erkennungsart code (dms #1723)
+dms: ">=0.336.0"
+inhalt: {}
+code:
+  sprache: c
+  quelle: code/
+  rechte:
+    lesen: ["*"]          # Dokumente liegen in Mappen beliebiger Typen (Post, Person, Fahrzeug …)
+    dokumente: lesen      # nur die Seitenbilder der Dokumente, die Ablago nennt; das Paket ändert nichts
+    # dms:codes: Codes eines Dokuments an Ablago geben (gemerkt am Dokument, für Felder mit Erkennungsart code);
+    # dms:erkennen: Vorschläge aus einer Visitenkarte für „Aus Dokument ausfüllen“ – gespeichert wird erst nach Bestätigung
+    schnittstellen: ["dms:codes", "dms:erkennen"]
+  netz: []
+  einstellungen:
+    - abschnitt: Seitenbilder
+      felder:
+        - schluessel: dpi
+          name: Auflösung (dpi)
+          typ: zahl
+          min: 150
+          max: 400
+          standard: 300
+          hilfe: Für Scans. Fotos liest das Paket in ihrer vollen Größe. Kleine Codes auf Visitenkarten und Etiketten brauchen 300 dpi.
+        - schluessel: max_seiten
+          name: Visitenkarten – höchstens so viele Seiten je Dokument
+          typ: zahl
+          min: 1
+          max: 20
+          standard: 2
+          hilfe: Eine Visitenkarte hat Vorder- und Rückseite. Für die Codes eines Dokuments liest das Paket alle Seiten (bis 40).

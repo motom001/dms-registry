@@ -18,6 +18,7 @@ body:
     attributes:
       label: Welches Paket? · Which package?
       options:
+        - Barcodes (barcodes)
         - Basis (basis)
         - Benachrichtigungen (benachrichtigungen)
         - Bildformate (bildformate)
@@ -35,7 +36,6 @@ body:
         - Leerseiten (leerseiten)
         - Office und E-Mail (office_email)
         - PDF/A (pdfa)
-        - QR-Code lesen (qrcode)
         - Rechnungen und Bestellungen (rechnung_bestellung)
         - Sicherungsziel WebDAV (sicherung_webdav)
         - 'Sprache: Französisch (Français) (sprache_fr)'
