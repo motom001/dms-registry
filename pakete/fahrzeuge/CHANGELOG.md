@@ -1,5 +1,9 @@
 # Änderungen
 
+## 2.11.0
+
+- **Fahrzeug:** Die **Fahrzeug-Identnummer** ist eindeutig – dieselbe FIN gibt es nur an einem Fahrzeug (leer bleibt erlaubt). Das **Kennzeichen** ist es nicht mehr: Ein Wunschkennzeichen zieht beim Fahrzeugwechsel mit, das alte Fahrzeug außer Betrieb behält es in seiner Mappe.
+
 ## 2.10.3
 
 - Hilfe zum Feld *Digitaler Untersuchungsbericht* korrigiert: Der Link ist laut KBA zum Weitergeben gedacht (z. B. beim Verkauf), kein Geheimnis.
