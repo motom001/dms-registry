@@ -39,7 +39,7 @@ Das Paket **Fahrzeuge** bringt den Mappentyp **Fahrzeug** und die Vertragsarten 
 - **Pkw-Kaufvertrag** mit der Vorlage *Kaufvertrag Gebrauchtwagen*: Am Vertrag wählst du unter *Betrifft* das Fahrzeug, der Verkäufer ist der *Anbieter*, der Käufer der *Kunde*, der Preis der *Betrag* – die Vorlage setzt Kennzeichen, Fahrzeug-Identnummer, Erstzulassung, HU und Preis ein. Ein Muster ohne Gewähr, keine Rechtsberatung.
 - **Leasing** mit fester Laufzeit (Vorschlag 36 Monate), das von selbst endet.
 
-**Ansichten:** *Fahrzeuge* und darunter *HU fällig* – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist – sowie *Hauptuntersuchungen*, *Zulassungsbescheinigungen*, *Gutachten / Abnahmen*, *Fahrzeugpapiere* und *Offene Rückrufe*. Fahrzeuge außer Betrieb zeigen *Fahrzeuge* und *HU fällig* nicht.
+**Ansichten:** *Fahrzeuge* mit allen Mappen des Pakets und darunter *Aktuelle Fahrzeuge* (ohne die außer Betrieb), *HU fällig* – Fahrzeuge, deren Hauptuntersuchung in den nächsten drei Monaten fällig oder schon überfällig ist – sowie *Hauptuntersuchungen*, *Zulassungsbescheinigungen*, *Gutachten / Abnahmen*, *Fahrzeugpapiere* und *Offene Rückrufe*. Fahrzeuge außer Betrieb zeigen *Aktuelle Fahrzeuge* und *HU fällig* nicht.
 
 **Gleichbedeutende Wörter für die Suche:** *Kfz, Auto, PKW, Fahrzeug* · *HU, Hauptuntersuchung, TÜV* · *Fahrzeugbrief, Zulassungsbescheinigung Teil II* · *Fahrzeugschein, Zulassungsbescheinigung Teil I* · *Werkstattrechnung, Reparaturrechnung*. Sie stehen in Ablago unter Werkbank → Pakete → Text aus PDF und Texterkennung.
 
