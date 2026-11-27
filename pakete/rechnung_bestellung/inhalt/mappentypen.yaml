@@ -21,11 +21,14 @@
     - { key: rechnungsnummer, label: Rechnungsnummer, typ: text, maxLen: 60, wiederfinden: true, erkennung: { art: nummer }, beschriftungen: { en: { label: "Invoice number" } } }
     - { key: datum, label: Rechnungsdatum, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Invoice date" } } }
     - { key: faellig_am, label: Fällig am, typ: datum, beschriftungen: { en: { label: "Due on" } } }
-    - { key: bezahlt_am, label: Bezahlt am, typ: datum, erkennung: { art: datum }, beschriftungen: { en: { label: "Paid on" } } }
+    # Ab 1.7.0 (Thomas, 27.11.2026): nicht aus dem Dokument – auf der Rechnung steht nur, wann sie fällig ist, nicht wann bezahlt wurde.
+    - { key: bezahlt_am, label: Bezahlt am, typ: datum, beschriftungen: { en: { label: "Paid on" } } }
     - key: zahlweise
       label: Bezahlt per
       beschriftungen: { en: { label: "Paid by", optionen: { "Überweisung": "bank transfer", "Lastschrift": "direct debit", "Karte": "card", "bar": "cash", "PayPal und Co.": "PayPal etc.", "Rechnung": "on account" } } }
       typ: auswahl
+      # Ab 1.7.0: aus dem Dokument – „per Lastschrift“, „Bitte überweisen Sie …“ stehen fast immer im Text.
+      erkennung: { art: auswahl }
       optionen: [Überweisung, Lastschrift, Karte, bar, PayPal und Co., Rechnung]
     # #212: von welchem Konto bezahlt bzw. auf welches eingegangen – „Bezahlt per“ bleibt daneben.
     - { key: konto, label: Konto, typ: referenz, ziel: "finanzen:konto", verweisart: bezug, hilfe: Von welchem Konto bezahlt oder auf welches eingegangen, beschriftungen: { en: { label: "Account", hilfe: "Which account it was paid from or into" } } }
@@ -42,7 +45,7 @@
       hilfe: Wofür die Rechnung ist – Fahrzeug, Wohnung, Anschaffung, Behandlungsfall oder Vertrag
     # Vertrag oder Bestellung, mehrfach und gemischt – z. B. ein Vertrag, den eine Bestellung erweitert (#208, #211).
     - { key: gehoert_zu, label: Gehört zu Vertrag / Bestellung, typ: referenz, ziel: ["vertraege:vertrag", bestellung], mehrfach: true, verweisart: zugehoerigkeit, beschriftungen: { en: { label: "Belongs to contract / order" } } }
-    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", ausDatum: { datumFeld: bezahlt_am, zielFeld: jahr }, verweisart: bezug, hilfe: Wenn du die Kosten absetzen willst, beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs" } } }
+    - { key: steuerjahr, label: Steuerjahr, typ: referenz, ziel: "finanzen:steuerjahr", ausDatum: { datumFeld: datum, zielFeld: jahr }, verweisart: bezug, hilfe: "Wenn du die Kosten absetzen willst. Vorschlag aus dem Rechnungsdatum – bei Zahlung erst im neuen Jahr zählt steuerlich meist das Jahr der Zahlung, dann bitte anpassen", beschriftungen: { en: { label: "Tax year", hilfe: "If you want to deduct the costs. Suggested from the invoice date – if paid only in the new year, the year of payment usually counts for tax, then please adjust" } } }
     # Fahrzeug – wenn „betrifft“ ein Fahrzeug ist
     - { key: kilometerstand, label: Kilometerstand, typ: zahl, beschriftungen: { en: { label: "Mileage" } } }
     - { key: arbeiten, label: Arbeiten, typ: langtext, hilfe: z. B. Inspektion, Bremsen vorne, beschriftungen: { en: { label: "Work done", hilfe: "e.g. service, front brakes" } } }
