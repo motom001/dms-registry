@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fahrzeuge – Abruf beim KBA – Ablago-Pakete</title>
+  <meta name="description" content="Holt auf Knopfdruck Daten beim Kraftfahrt-Bundesamt: den Digitalen Untersuchungsbericht zur Hauptuntersuchung (mit dem Link aus dem QR-Code) und den elektronischen CoC zur Fahrzeug-Identnummer. Nur leere Felder werden gefüllt.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../stil.css?v=4d5e321100">
+  <script src="../../dms.js?v=4d5e321100" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke"><img src="../../ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="../../sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf" data-paket="fahrzeuge.kba" data-versionen="[[&quot;1.0.2&quot;,&quot;&gt;=0.323.0&quot;],[&quot;1.0.1&quot;,&quot;&gt;=0.323.0&quot;],[&quot;1.0.0&quot;,&quot;&gt;=0.323.0&quot;]]">
+      <span class="symbol gross bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg><span class="kuerzel">KBA</span></span>
+      <div class="titel"><h1>Fahrzeuge – Abruf beim KBA</h1>
+        <button type="button" class="knopf primaer installieren" data-installieren="fahrzeuge.kba@1.0.2">In meinem Ablago installieren</button>
+        <p class="kurztext">Holt auf Knopfdruck Daten beim Kraftfahrt-Bundesamt: den Digitalen Untersuchungsbericht zur Hauptuntersuchung (mit dem Link aus dem QR-Code) und den elektronischen CoC zur Fahrzeug-Identnummer. Nur leere Felder werden gefüllt.</p>
+        <p class="leise klein">Version 1.0.2 · von <a href="../../autor/motom001/">Thomas Meissner</a> · <span title="Downloads laut GitHub, nicht Installationen – Updates und Tests zählen mit">über 100 Downloads</span></p>
+        <p class="chips"><a class="chip" href="../../?kategorie=vorlagen">Vorlagen für die Ablage</a></p></div>
+    </div>
+    <div id="dms-passt" class="dms-passt"></div>
+    <section class="anleitung"><h2>So nutzt du es</h2><ol><li>An der Hauptuntersuchung den Link aus dem QR-Code eintragen, dann im Menü „Mappe“ → „Daten beim KBA abrufen“.</li><li>Am Fahrzeug mit Fahrzeug-Identnummer im Menü „Mappe“ → „Technische Daten beim KBA abrufen“.</li><li>Ablago zeigt vorher, was an das KBA geht. Es füllt nur leere Felder; Abweichungen stehen in der Meldung.</li></ol></section>
+    <details class="bereich "><summary><h2>Was mitkommt</h2> <span class="leise kurz">legt nichts in der Ablage an · 2 Mappen-Aktionen</span></summary><div class="innen"><p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, keine Beispielmappen. Es bringt eine Funktion mit (siehe „Was das Paket darf“).</p><h3>Mappen-Aktionen</h3><p class="leise klein">Im Menü „Mappe“. Sie laufen mit den Rechten der Person, die sie anklickt; ohne passendes Recht fehlt die Aktion.</p><ul class="autos"><li><strong>Daten beim KBA abrufen</strong> <span class="leise klein">an: fahrzeuge:hauptuntersuchung</span><p>Holt den Digitalen Untersuchungsbericht beim Kraftfahrt-Bundesamt und trägt ihn in leere Felder ein.</p><p class="ablauf"><span class="leise">Darf</span> ändert Felder</p></li><li><strong>Technische Daten beim KBA abrufen</strong> <span class="leise klein">an: fahrzeuge:fahrzeug</span><p>Holt den elektronischen CoC zur Fahrzeug-Identnummer und trägt die technischen Daten in leere Felder ein.</p><p class="ablauf"><span class="leise">Darf</span> ändert Felder</p></li></ul></div></details>
+    <details class="bereich "><summary><h2>Was das Paket darf</h2> <span class="leise kurz">mit Zugriff auf Netzwerk/Internet</span></summary><div class="innen"><ul class="rechte"><li>Mappen lesen: <code>fahrzeuge:hauptuntersuchung</code>, <code>fahrzeuge:fahrzeug</code> <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Mappen anlegen und ändern: <code>fahrzeuge:hauptuntersuchung</code>, <code>fahrzeuge:fahrzeug</code> <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-anlegen-und-andern" title="Erklärung: Mappen anlegen und ändern" aria-label="Erklärung: Mappen anlegen und ändern (Administratorhandbuch)">?</a></li><li>Zugriff auf Netzwerk/Internet nur zu: <code>https://www.kba-online.de/dub/api</code>, <code>https://www.kba-online.de/ivicoc_prod/public-access/webapp/api</code> <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li></ul></div></details>
+    <details class="bereich readme"><summary><h2>Beschreibung</h2> <span class="leise kurz">ausführlich</span></summary><div class="innen"><p>Die Ergänzung zum Paket <strong>Fahrzeuge</strong> holt auf Knopfdruck Daten beim <strong>Kraftfahrt-Bundesamt (KBA)</strong> und trägt sie in leere Felder ein:</p>
+<table>
+<thead>
+<tr>
+<th>Aktion (Menü „Mappe“)</th>
+<th>an</th>
+<th>holt</th>
+<th>braucht</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Daten beim KBA abrufen</strong></td>
+<td>Hauptuntersuchung</td>
+<td>den <strong>Digitalen Untersuchungsbericht</strong>: Art und Typ der Untersuchung, Datum, Bericht-Nr., Kilometerstand, Ergebnis, Prüfplakette, Wiedervorführung, Mängel und Hinweise, nächste HU/SP, Kosten, dazu HSN, TSN und zulässige Gesamtmasse</td>
+<td>den Link aus dem QR-Code auf dem Prüfbericht (Feld <em>Digitaler Untersuchungsbericht</em>)</td>
+</tr>
+<tr>
+<td><strong>Technische Daten beim KBA abrufen</strong></td>
+<td>Fahrzeug</td>
+<td>den <strong>elektronischen CoC</strong>: Typgenehmigung, Hubraum, Kraftstoff, Emissionsklasse, CO₂, zulässige Gesamtmasse, Anhänge- und Stützlast, Reifengrößen, bei älteren Datensätzen auch HSN/TSN</td>
+<td>die Fahrzeug-Identnummer</td>
+</tr>
+</tbody>
+</table>
+<p><strong>So läuft es:</strong></p>
+<ol>
+<li>Ablago zeigt, was an das KBA geht – Such-ID, Prüfberichtsnummer und Kennnummer der Prüfstelle bzw. die Fahrzeug-Identnummer. Ohne Klick auf <strong>Abrufen</strong> geht nichts raus.</li>
+<li>Das Paket löst die Rechenaufgabe (Captcha), die die öffentlichen Seiten des KBA stellen, und fragt ab.</li>
+<li><strong>Nur leere Felder</strong> werden gefüllt. Was schon anders eingetragen ist, bleibt – die Meldung nennt die Abweichung.</li>
+<li>HSN, TSN und Gesamtmasse aus dem Prüfbericht kommen über die Automatisierung <em>Fahrzeugdaten aus dem Prüfbericht übernehmen</em> (Paket Fahrzeuge) ans Fahrzeug, ebenfalls nur in leere Felder.</li>
+</ol>
+<p><strong>Elektronische CoC</strong> gibt es vor allem für neuere Fahrzeuge – ab dem 5. Juli 2026 gebaute Fahrzeuge haben nur noch ihn. Für ältere Fahrzeuge meldet das KBA meist nichts; dann stehen die Daten in der Zulassungsbescheinigung.</p>
+<h3>Datenschutz</h3>
+<ul>
+<li>Der Link aus dem QR-Code ist laut KBA zum Weitergeben gedacht, etwa beim Verkauf als Nachweis der letzten HU.</li>
+<li>Das Paket schickt nur die genannten Angaben, nur an die beiden Adressen unten und nur nach deinem Klick. Es speichert nichts außer den Feldern der Mappe.</li>
+</ul>
+<h3>Schnittstelle und Quellen</h3>
+<p>Das KBA bietet für diese Abrufe <strong>keine offizielle Programmierschnittstelle</strong> an. Das Paket arbeitet <strong>auf Basis der von uns erkannten Schnittstelle</strong> – es macht dieselben Aufrufe wie die öffentlichen Seiten des KBA:</p>
+<ul>
+<li>Digitaler Untersuchungsbericht: <code>https://www.kba-online.de/dub/</code> (Aufrufe <code>…/dub/api/altcha</code>, <code>…/dub/api/dubAnfrage</code>)</li>
+<li>Elektronischer CoC: <code>https://www.kba-online.de/ivicoc_prod/public-access/webapp/</code> (Aufrufe <code>…/api/altcha</code>, <code>…/api/vin/data</code>)</li>
+</ul>
+<p>Ändert das KBA etwas, meldet die Aktion einen verständlichen Fehler statt falscher Werte. Bitte dann ein Issue anlegen.</p>
+<p>Die Bedeutung der Felder folgt amtlichen Beschreibungen:</p>
+<ul>
+<li><strong>Digitaler Untersuchungsbericht:</strong> XKfz 6.1, Datentyp <code>Type.DigitalerUntersuchungsbericht</code>, Codelisten „Art der Untersuchung“, „Typ der Untersuchung“, „Ergebnis der Untersuchung“ – im XRepository: https://www.xrepository.de (Kennung <code>urn:xoev-de:kba:standard:xkfz</code>)</li>
+<li><strong>Elektronischer CoC (IVI):</strong> VO (EU) 2018/858 Art. 37, Durchführungsverordnung (EU) 2024/1061; Datenformat (XSD, Messagebook) bei EUCARIS: https://ecoc.eucaris.net/documentation – das Paket liest IVI 1.x und 2.0</li>
+</ul>
+<h3>Voraussetzungen</h3>
+<ul>
+<li>Ablago ab Version 0.323</li>
+<li>Paket <strong>Fahrzeuge</strong> ab 2.10.0 – kommt bei der Installation mit</li>
+</ul>
+<h3>Rechte und Netz</h3>
+<p>Das Paket enthält Code (WebAssembly). Es liest nur die Mappe, an der du die Aktion startest, und geht nur zu den beiden Adressen oben ins Netz. Geschrieben wird mit deinem Zugriff, nur in leere Felder.</p>
+<h3>Keine Gewähr</h3>
+<p>Die Daten kommen vom KBA, so wie sie dort stehen. Das Paket ist kein Angebot des KBA.</p>
+<h3>Pflege</h3>
+<p>Fehler und Wünsche bitte als <a href="https://github.com/motom001/dms-registry/issues">Issue in dms-registry</a> mit „Fahrzeuge – Abruf beim KBA“ im Titel.</p></div></details>
+    <details class="bereich changelog"><summary><h2>Änderungen</h2> <span class="leise kurz">Version 1.0.2</span></summary><div class="innen"><h3>1.0.2</h3>
+<ul>
+<li>README: Der Link aus dem QR-Code ist zum Weitergeben gedacht, kein Geheimnis.</li>
+</ul>
+<h3>1.0.1</h3>
+<ul>
+<li><strong>Reifengrößen</strong> aus den Bemerkungen des CoC ohne den Verweis „Zu 6.18.1.1.“ und ohne doppelte Leerzeichen – so liest man im Laden nur die Größen.</li>
+</ul>
+<h3>1.0.0</h3>
+<ul>
+<li><strong>Neue Ergänzung</strong> (dms-registry #278): Aktionen „Daten beim KBA abrufen“ an der Hauptuntersuchung (Digitaler Untersuchungsbericht mit dem Link aus dem QR-Code) und „Technische Daten beim KBA abrufen“ am Fahrzeug (elektronischer CoC, IVI 1.x und 2.0). Vorher zeigt Ablago, was an das KBA geht; nur leere Felder werden gefüllt, Abweichungen stehen in der Meldung. Das Captcha der öffentlichen Seiten löst das Paket selbst.</li>
+</ul></div></details>
+    <details class="bereich klein"><summary><h2>Für Fortgeschrittene und Entwickler</h2> <span class="leise kurz">Version, Lizenz, Quellcode, Downloads</span></summary><div class="innen"><dl class="eckdaten"><dt>Version</dt><dd>1.0.2 vom 27.11.2026</dd><dt>Herausgeber</dt><dd>app.ablago <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd><dt>Lizenz</dt><dd>Apache-2.0</dd><dt>Nötige Ablago-Version</dt><dd>&gt;=0.323.0</dd><dt>Downloads</dt><dd>über 100 <span class="leise">– Downloads aller Versionen laut GitHub, nicht Installationen; Updates und Tests zählen mit</span></dd><dt>Abhängigkeiten</dt><dd><a href="../fahrzeuge/">fahrzeuge</a> &gt;=2.10.0</dd><dt>Quellcode</dt><dd><a href="https://github.com/motom001/dms-registry/tree/main/pakete/fahrzeuge.kba">auf GitHub ansehen</a></dd></dl><h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead><tbody><tr><td>1.0.2</td><td>27.11.2026</td><td>&gt;=0.323.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/fahrzeuge.kba-v1.0.2/fahrzeuge.kba-1.0.2.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge.kba@1.0.2">installieren</button></td></tr><tr><td>1.0.1</td><td>27.11.2026</td><td>&gt;=0.323.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/fahrzeuge.kba-v1.0.1/fahrzeuge.kba-1.0.1.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge.kba@1.0.1">installieren</button></td></tr><tr><td>1.0.0</td><td>27.11.2026</td><td>&gt;=0.323.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/fahrzeuge.kba-v1.0.0/fahrzeuge.kba-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="fahrzeuge.kba@1.0.0">installieren</button></td></tr></tbody></table></div><p><a href="https://github.com/motom001/dms-registry/issues/new?template=paket-meldung.yml&amp;title=%5BFahrzeuge%20%E2%80%93%20Abruf%20beim%20KBA%5D%20&amp;paket=Fahrzeuge%20%E2%80%93%20Abruf%20beim%20KBA%20%28fahrzeuge.kba%29">Fehler oder Wunsch zu diesem Paket melden</a> <span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p></div></details>
+    <section class="passt"><h2>Passt dazu</h2><h3>Braucht</h3><div class="minis"><a class="mini" href="../../paket/fahrzeuge/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span><span><strong>Fahrzeuge</strong><br><span class="leise kurzfassung">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.</span></span></a></div><h3><a class="weiter" href="../../?kategorie=vorlagen">Ähnliche Pakete <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/basis/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>Basis</strong><br><span class="leise kurzfassung">Die Grundlage für die anderen Pakete: Firmen, Behörden, Ärzte und Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.</span></span></a><a class="mini" href="../../paket/finanzen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span><span><strong>Finanzen</strong><br><span class="leise kurzfassung">Konten, Kontoauszüge samt Jahresbelegen der Bank (Entgeltaufstellung, Steuerbescheinigung), Freistellungsaufträge, Steuerjahre und Steuernachweise (Lohnsteuerbescheinigung, Beitragsbescheinigung, Spendenquittung …) an einem Ort – privat wie im Betrieb. Ablago legt die Unterlagen ab, es bucht nicht.</span></span></a><a class="mini" href="../../paket/gesundheit/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg></span><span><strong>Gesundheit</strong><br><span class="leise kurzfassung">Gesundheitsunterlagen mit ihrem Verlauf: Behandlungsfälle mit Arztbriefen, Befunden, Therapien und Krankschreibungen, dazu Medikamentenplan, Impfpass, U-Heft und Impfungen.</span></span></a></div><h3><a class="weiter" href="../../autor/motom001/">Weitere Pakete von Thomas Meissner <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/barcodes/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 7v10"/><path d="M12 7v10"/><path d="M17 7v10"/></svg></span><span><strong>Barcodes</strong><br><span class="leise kurzfassung">Liest QR-Codes und Strichcodes auf deinen Dokumenten – etwa den Link zum digitalen HU-Bericht oder die Nummer auf einem Paketschein – und trägt sie in passende Felder ein. Visitenkarten mit QR-Code füllt es wie bisher aus.</span></span></a><a class="mini" href="../../paket/benachrichtigungen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Benachrichtigungen</strong><br><span class="leise kurzfassung">Ablago erinnert dich an offene Aufgaben und meldet Post für dich, Änderungen an Favoriten, Vertretungen und gesperrte Konten – als Automatisierungen, die du anpassen kannst. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ im Menü „Mappe“.</span></span></a><a class="mini" href="../../paket/bildformate/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span><strong>Bildformate</strong><br><span class="leise kurzfassung">Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.</span></span></a></div></section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="../../katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>

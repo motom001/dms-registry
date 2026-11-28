@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Barcodes – Ablago-Pakete</title>
+  <meta name="description" content="Liest QR-Codes und Strichcodes auf deinen Dokumenten – etwa den Link zum digitalen HU-Bericht oder die Nummer auf einem Paketschein – und trägt sie in passende Felder ein. Visitenkarten mit QR-Code füllt es wie bisher aus.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../stil.css?v=4d5e321100">
+  <script src="../../dms.js?v=4d5e321100" defer></script>
+</head>
+<body>
+  <header class="kopf"><a href="../../index.html" class="marke"><img src="../../ablago-zeichen-farbig.svg" alt="" width="28" height="28">Ablago – Paketkatalog</a>
+    <nav><a href="../../sammeldatei.html">Pakete herunterladen</a><a href="https://help.ablago.app/">Handbücher</a><a href="https://github.com/motom001/dms-registry">Registry</a>
+    <button type="button" class="textknopf" data-dms-adresse>Ablago-Adresse</button></nav></header>
+  <main>
+    <p class="zurueck"><a href="../../index.html">← Alle Pakete</a></p>
+    <div class="paketkopf" data-paket="barcodes" data-versionen="[[&quot;1.0.0&quot;,&quot;&gt;=0.337.0&quot;]]">
+      <span class="symbol gross bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 7v10"/><path d="M12 7v10"/><path d="M17 7v10"/></svg></span>
+      <div class="titel"><h1>Barcodes</h1>
+        <button type="button" class="knopf primaer installieren" data-installieren="barcodes@1.0.0">In meinem Ablago installieren</button>
+        <p class="kurztext">Liest QR-Codes und Strichcodes auf deinen Dokumenten – etwa den Link zum digitalen HU-Bericht oder die Nummer auf einem Paketschein – und trägt sie in passende Felder ein. Visitenkarten mit QR-Code füllt es wie bisher aus.</p>
+        <p class="leise klein">Version 1.0.0 · von <a href="../../autor/motom001/">Thomas Meissner</a> · <span title="Downloads laut GitHub, nicht Installationen – Updates und Tests zählen mit">über 10 Downloads</span></p>
+        <p class="chips"><a class="chip" href="../../?kategorie=post">Post und Scannen</a></p></div>
+    </div>
+    <div id="dms-passt" class="dms-passt"></div>
+    <section class="anleitung"><h2>So nutzt du es</h2><ol><li>Nach der Installation liest Ablago die Codes jedes neuen Dokuments im Hintergrund, ältere beim „Aus Dokument ausfüllen“.</li><li>Felder mit der Erkennungsart „Code“ (z. B. „Digitaler Bericht“ an der Hauptuntersuchung) bekommen den passenden Code beim „Aus Dokument ausfüllen“.</li><li>Für Visitenkarten wähle das Paket in der Erkennung des Mappentyps Person oder als Standard unter Werkbank → Pakete → Barcodes.</li><li>Kommst du von „QR-Code lesen“, entferne es und wähle Barcodes dort, wo vorher QR-Code lesen stand.</li></ol></section>
+    <details class="bereich "><summary><h2>Was mitkommt</h2> <span class="leise kurz">legt nichts in der Ablage an · 2 Einstellungen</span></summary><div class="innen"><p>Dieses Paket legt <strong>nichts</strong> in deiner Ablage an – keine Mappentypen, keine Ansichten, keine Beispielmappen. Es bringt eine Funktion mit (siehe „Was das Paket darf“).</p><h3>Einstellungen</h3><p class="leise klein">In Ablago unter Werkbank → Pakete → Barcodes → Einstellungen.</p><details class="typ"><summary><strong>Seitenbilder</strong> <span class="leise klein">2 Einstellungen</span></summary><ul class="felder"><li><strong>Auflösung (dpi)</strong><span class="art">Zahl</span><span class="leise mehr">Für Scans. Fotos liest das Paket in ihrer vollen Größe. Kleine Codes auf Visitenkarten und Etiketten brauchen 300 dpi.</span></li><li><strong>Visitenkarten – höchstens so viele Seiten je Dokument</strong><span class="art">Zahl</span><span class="leise mehr">Eine Visitenkarte hat Vorder- und Rückseite. Für die Codes eines Dokuments liest das Paket alle Seiten (bis 40).</span></li></ul></details></div></details>
+    <details class="bereich "><summary><h2>Was das Paket darf</h2> <span class="leise kurz">kein Zugriff auf Netzwerk und Internet</span></summary><div class="innen"><ul class="rechte"><li>Mappen lesen: alle Mappentypen <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-mappen-lesen" title="Erklärung: Mappen lesen" aria-label="Erklärung: Mappen lesen (Administratorhandbuch)">?</a></li><li>Dokumente lesen <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-dokumente" title="Erklärung: Dokumente lesen" aria-label="Erklärung: Dokumente lesen (Administratorhandbuch)">?</a></li><li>Felder aus Dokumenten vorschlagen („Aus Dokument ausfüllen“) – nur aus dem Text, den Ablago mitgibt (dms:erkennen) <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-erkennen" title="Erklärung: Felder aus Dokumenten vorschlagen" aria-label="Erklärung: Felder aus Dokumenten vorschlagen (Administratorhandbuch)">?</a></li><li>kein Zugriff auf Netzwerk und Internet <a class="hilfe" href="https://help.ablago.app/admin/aktuell/pakete/#recht-netzwerk-und-internet" title="Erklärung: Zugriff auf Netzwerk und Internet" aria-label="Erklärung: Zugriff auf Netzwerk und Internet (Administratorhandbuch)">?</a></li></ul></div></details>
+    <details class="bereich readme"><summary><h2>Beschreibung</h2> <span class="leise kurz">ausführlich</span></summary><div class="innen"><p>Viele Dokumente tragen einen <strong>Code</strong>: der HU-Bericht einen QR-Code mit dem Link zum Digitalen Untersuchungsbericht, Rechnungen einen GiroCode, Paketscheine und Etiketten Strichcodes, Visitenkarten eine vCard. Das Paket <strong>Barcodes</strong> liest diese Codes und gibt sie Ablago. Ablago merkt sich die Codes am Dokument und trägt beim <strong>Aus Dokument ausfüllen</strong> den passenden in Felder mit der Erkennungsart <strong>Code</strong> ein – zuverlässiger als der erkannte Text.</p>
+<p>Es löst das Paket <strong>QR-Code lesen</strong> ab (siehe <a href="#umstieg-von-qr-code-lesen">Umstieg von QR-Code lesen</a>) und läuft im <strong>Paket-Läufer</strong> von Ablago: abgeschottet, ohne Netz, mit Grenzen für Speicher und Zeit. Es braucht Ablago 0.337.0 oder neuer.</p>
+<h3>So arbeitet es</h3>
+<p><strong>Codes am Dokument</strong> (Schnittstelle <code>dms:codes</code>, dms #1723):</p>
+<ol>
+<li>Kommt ein Dokument dazu (oder eine neue Fassung), fragt Ablago das Paket im Hintergrund nach den Codes – einmal je Datei. Bei älteren Dokumenten fragt Ablago beim ersten <strong>Aus Dokument ausfüllen</strong>.</li>
+<li>Das Paket holt die Seiten als Bild (Scans mit 300 dpi, Fotos in voller Größe) und liest <strong>alle Codes auf allen Seiten</strong> (bis 40 Seiten und etwa 20 Sekunden je Dokument), Seite für Seite von oben nach unten.</li>
+<li>Ablago merkt sich Art, Inhalt und Seite. Ein Feld mit der Erkennungsart <strong>Code</strong> nimmt den ersten Code, der zu ihm passt – etwa <code>codeart: qr</code> und ein Muster für den Link zum Digitalen Untersuchungsbericht am Feld <em>Digitaler Bericht</em> der Hauptuntersuchung (Paket Fahrzeuge).</li>
+</ol>
+<p><strong>Visitenkarten</strong> (Schnittstelle <code>dms:erkennen</code>, wie bisher in <em>QR-Code lesen</em>): Ist das Paket für einen Mappentyp als Erkennung gewählt, liest es beim <strong>Aus Dokument ausfüllen</strong> die erste <strong>vCard</strong> (2.1, 3.0, 4.0) und schlägt die Angaben vor. Gespeichert wird erst, wenn du bestätigst.</p>
+<table>
+<thead>
+<tr>
+<th>aus der vCard</th>
+<th>in das Feld mit der Erkennungsart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>N</code> (Nachname; Vorname), sonst <code>FN</code></td>
+<td>Vorname, Nachname</td>
+</tr>
+<tr>
+<td><code>ORG</code> (erster Teil), sonst <code>FN</code></td>
+<td>Name oder Firma (nur bei Mappentypen ohne Vor- und Nachname, z. B. Organisation)</td>
+</tr>
+<tr>
+<td><code>TITLE</code>, sonst <code>ROLE</code></td>
+<td>Funktion</td>
+</tr>
+<tr>
+<td><code>EMAIL</code></td>
+<td>E-Mail-Adresse</td>
+</tr>
+<tr>
+<td><code>TEL</code> (geschäftlich bevorzugt) / <code>TEL;TYPE=CELL</code> / <code>TEL;TYPE=FAX</code></td>
+<td>Telefon / Mobil / Fax</td>
+</tr>
+<tr>
+<td><code>URL</code></td>
+<td>Internetseite</td>
+</tr>
+<tr>
+<td><code>ADR</code> (geschäftlich bevorzugt)</td>
+<td>Straße, Hausnummer (aus der Straße getrennt, wenn es ein eigenes Feld gibt), PLZ, Ort</td>
+</tr>
+</tbody>
+</table>
+<p>Ohne Visitenkarte antwortet das Paket mit dem Grund, z. B. „Code gefunden (EAN-13), aber keine Visitenkarte“, und Ablago füllt wie gewohnt <strong>aus dem erkannten Text</strong> aus. Fotos, Notizen und Geburtstage aus der vCard übernimmt es nie.</p>
+<h3>Codearten</h3>
+<p>Der Name in der Spalte <strong>Art</strong> steht in der Antwort und am Feld (<code>codeart</code>). Ablago vergleicht ohne Groß- und Kleinschreibung und Satzzeichen (<code>EAN-13</code> = <code>ean13</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Art</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qr</code>, <code>microqr</code>, <code>rmqr</code></td>
+<td>QR-Code, Micro-QR, rechteckiger Micro-QR (rMQR)</td>
+</tr>
+<tr>
+<td><code>aztec</code></td>
+<td>Aztec-Code (z. B. Fahrkarten)</td>
+</tr>
+<tr>
+<td><code>datamatrix</code></td>
+<td>Data Matrix (z. B. Briefmarken, Paketscheine)</td>
+</tr>
+<tr>
+<td><code>pdf417</code></td>
+<td>PDF417 (z. B. Bordkarten, Ausweise)</td>
+</tr>
+<tr>
+<td><code>maxicode</code></td>
+<td>MaxiCode (Paketdienste)</td>
+</tr>
+<tr>
+<td><code>ean13</code>, <code>ean8</code>, <code>upca</code>, <code>upce</code></td>
+<td>Artikelnummern (EAN, UPC)</td>
+</tr>
+<tr>
+<td><code>code39</code>, <code>code93</code>, <code>code128</code></td>
+<td>Code 39, Code 93, Code 128 (z. B. Sendungsnummern)</td>
+</tr>
+<tr>
+<td><code>itf</code></td>
+<td>Interleaved 2 of 5</td>
+</tr>
+<tr>
+<td><code>codabar</code></td>
+<td>Codabar</td>
+</tr>
+<tr>
+<td><code>databar</code>, <code>databarexpanded</code>, <code>databarlimited</code></td>
+<td>GS1 DataBar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inhalt:</strong> wie im Code, Zeilenumbrüche bleiben erhalten (GiroCode, vCard). GS1-Codes (z. B. GS1-128) kommen lesbar mit Klammern: <code>(01)04012345678901(10)ABC</code>. Leere Codes und Inhalte über 4000 Zeichen meldet das Paket nicht – gekürzt wären sie falsch.</p>
+<h3>Rechte und Netzwerkzugriff</h3>
+<p>Bei der Installation zeigt Ablago diese Rechte und lässt sie dich bestätigen:</p>
+<ul>
+<li><strong>Mappen lesen: alle Mappentypen</strong> – Dokumente liegen in Mappen beliebiger Typen; die Mappen selbst liest das Paket nicht.</li>
+<li><strong>Dokumente lesen</strong> – nur die Seitenbilder der Dokumente, die Ablago nennt. Dokumente ändert, ersetzt oder löscht es nicht.</li>
+<li><strong>Codes lesen (dms:codes)</strong> – Ablago prüft jede Antwort mit dem Schema der Leistung <code>dokument.lesen.barcode@1</code>.</li>
+<li><strong>Felder aus Dokumenten vorschlagen (dms:erkennen)</strong> – nur für Visitenkarten.</li>
+<li><strong>Kein Netz.</strong> Alles geschieht im Paket.</li>
+<li>Es reagiert auf <strong>keine Ereignisse</strong>; Ablago ruft es auf.</li>
+</ul>
+<h3>Einstellungen</h3>
+<p>Unter <strong>Werkbank → Pakete → Barcodes → Einstellungen</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Einstellung</th>
+<th>Standard</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Auflösung (dpi)</td>
+<td>300</td>
+<td>Für Scans (150–400). Fotos liest das Paket in ihrer vollen Größe.</td>
+</tr>
+<tr>
+<td>Visitenkarten – höchstens so viele Seiten je Dokument</td>
+<td>2</td>
+<td>Vorder- und Rückseite einer Karte. Für die Codes eines Dokuments liest das Paket alle Seiten (bis 40).</td>
+</tr>
+</tbody>
+</table>
+<h3>Umstieg von QR-Code lesen</h3>
+<p><em>QR-Code lesen</em> ist aus dem Katalog genommen; installiert läuft es weiter, bekommt aber keine Updates mehr. Ein automatischer Umzug ist nicht möglich: Pakete mit Code haben keine Inhalte, die Ablago übertragen könnte, und die Wahl der Erkennung gehört zum Mappentyp.</p>
+<ol>
+<li><strong>Barcodes</strong> installieren.</li>
+<li>Überall, wo <em>QR-Code lesen</em> als Erkennung gewählt war – am Mappentyp (z. B. <em>Person</em>, <em>Organisation</em>) oder als Standard unter <strong>Werkbank → Pakete</strong> – <strong>Barcodes</strong> wählen.</li>
+<li><em>QR-Code lesen</em> entfernen. Hast du die Einstellungen geändert (Auflösung, Seiten), trage sie bei Barcodes neu ein.</li>
+</ol>
+<h3>Fremde Daten</h3>
+<p>Ein Code kann alles Mögliche enthalten, auch absichtlich Präpariertes. Darum:</p>
+<ul>
+<li>Höchstens 200 Codes je Dokument, 50 je Seite, Inhalt bis 4000 Zeichen, immer gültiges UTF-8 (sonst aus Latin-1 umgewandelt); gleiche Codes auf einer Seite nur einmal.</li>
+<li><strong>Inhalte stehen nie im Protokoll</strong> – nur Anzahl und Arten. Ein Code kann ein Zugangsschlüssel sein.</li>
+<li>vCard-Werte sind auf 300 Zeichen begrenzt, Steuerzeichen werden zu Leerzeichen, eine vCard hat höchstens 200 Zeilen. Ablago prüft jeden Vorschlag gegen die Feldart und speichert nichts ohne deine Bestätigung.</li>
+<li>Das Paket liest nur die Seitenbilder der genannten Dokumente (bei Visitenkarten höchstens drei Dokumente je Aufruf).</li>
+</ul>
+<h3>Bibliotheken und Lizenzen</h3>
+<p>Das Paket steht unter <strong>Apache-2.0</strong>. Der Leser ist <strong>zxing-cpp 2.3.0</strong> (Apache-2.0, Text in <a href="code/lizenzen/zxing-cpp.txt"><code>code/lizenzen/zxing-cpp.txt</code></a>), aus den Quellen auf dem festen Commit des Tags v2.3.0 gebaut, nur mit den Lesern. Darin enthalten ist <strong>libzueci</strong> für Zeichensätze (BSD-3-Clause, mit einem UTF-8-Decoder unter MIT-Lizenz; Text in <a href="code/lizenzen/libzueci.txt"><code>code/lizenzen/libzueci.txt</code></a>).</p>
+<p><strong>Bau</strong> (<code>code/bauen.sh</code>): zxing-cpp wirft intern Ausnahmen und fängt sie selbst. Das kann erst das <strong>WASI-SDK 33</strong> (WebAssembly-Ausnahmen mit libunwind); das Skript holt diese Version über <code>werkzeuge/wasi-sdk.sh</code> mit fester Prüfsumme, alle anderen Pakete bleiben bei Version 25. Das Modul ist etwa 1 MB groß und braucht für zwei A4-Seiten rund 60 MB Speicher (Grenze 256 MB).</p>
+<h3>Tests</h3>
+<p><code>tests/pruefen.sh</code> baut das Modul und ruft es wie Ablago auf (<code>tests/modul_test.mjs</code>):</p>
+<ul>
+<li><strong>dms:codes:</strong> zwei A4-Seiten mit QR, EAN-13, Code 128, Data Matrix, Aztec (gedreht), PDF417 und ITF in Lesereihenfolge; Seitenzahl von Ablago; kaputter QR-Code neben einem heilen; Seite ohne Code; doppelte Codes; GiroCode mit Zeilenumbrüchen; fremde Dokument-Id; Dokument ohne Seiten; Protokoll ohne Inhalte.</li>
+<li><strong>dms:erkennen:</strong> vCards 2.1, 3.0 und 4.0 für Person und Organisation, gedreht, klein und verrauscht, auf der zweiten Seite neben einem anderen Code, präparierte vCard mit überlangen Werten, Steuerzeichen und Foto, Internetadresse, GiroCode, nur Strichcode, Bild ohne Code, fremde Dokument-Id.</li>
+</ul>
+<p>Die Matrizen in <code>tests/codes/</code> erzeugen <code>tests/erzeuge.cpp</code> (Schreiber von zxing-cpp) und <code>tests/erzeuge_vcard.mjs</code> (npm-Paket <code>qrcode</code>), beide nur von Hand nötig. Alle Namen, Nummern und Adressen sind erfunden.</p></div></details>
+    <details class="bereich changelog"><summary><h2>Änderungen</h2> <span class="leise kurz">Version 1.0.0</span></summary><div class="innen"><h3>1.0.0</h3>
+<ul>
+<li>Erste Fassung (dms-registry #294), löst <strong>QR-Code lesen</strong> ab.</li>
+<li><strong>Codes am Dokument</strong> (Schnittstelle <code>dms:codes</code>, Ablago 0.337.0, dms #1723): liest alle gängigen Codes auf allen Seiten (bis 40 Seiten, etwa 20 Sekunden) – QR, Micro-QR, rMQR, Aztec, Data Matrix, PDF417, MaxiCode, EAN-8/-13, UPC-A/-E, Code 39/93/128, ITF, Codabar, GS1 DataBar – und antwortet wie die Leistung <code>dokument.lesen.barcode@1</code> mit <code>{ codes: [{ art, inhalt, seite }] }</code> in Lesereihenfolge. Feste Namen je Art (<code>qr</code>, <code>ean13</code>, <code>code128</code>, <code>itf</code>, <code>aztec</code> …) für <code>codeart</code> am Feld.</li>
+<li><strong>Visitenkarten</strong> (<code>dms:erkennen</code>): die vCard-Vorschläge aus QR-Code lesen 1.0.2 unverändert; Meldungen nennen jetzt jede Codeart („Code gefunden (EAN-13), aber keine Visitenkarte“).</li>
+<li>Leser: zxing-cpp 2.3.0 (Apache-2.0, darin libzueci unter BSD-3-Clause) aus den Quellen auf festem Commit, gebaut mit WASI-SDK 33 wegen C++-Ausnahmen.</li>
+</ul></div></details>
+    <details class="bereich klein"><summary><h2>Für Fortgeschrittene und Entwickler</h2> <span class="leise kurz">Version, Lizenz, Quellcode, Downloads</span></summary><div class="innen"><dl class="eckdaten"><dt>Version</dt><dd>1.0.0 vom 27.11.2026</dd><dt>Herausgeber</dt><dd>app.ablago <span class="leise">– das Ablago-Projekt, geprüft über den signierten Katalog</span></dd><dt>Lizenz</dt><dd>Apache-2.0</dd><dt>Nötige Ablago-Version</dt><dd>&gt;=0.337.0</dd><dt>Downloads</dt><dd>über 10 <span class="leise">– Downloads aller Versionen laut GitHub, nicht Installationen; Updates und Tests zählen mit</span></dd><dt>Abhängigkeiten</dt><dd>keine</dd><dt>Quellcode</dt><dd><a href="https://github.com/motom001/dms-registry/tree/main/pakete/barcodes">auf GitHub ansehen</a></dd></dl><h3>Alle Versionen</h3><div class="tabelle"><table><thead><tr><th>Version</th><th>Datum</th><th>Ablago</th><th>Download</th><th><span class="unsichtbar">Installieren</span></th></tr></thead><tbody><tr><td>1.0.0</td><td>27.11.2026</td><td>&gt;=0.337.0</td><td><a href="https://github.com/motom001/dms-registry/releases/download/barcodes-v1.0.0/barcodes-1.0.0.zip">Archiv</a></td><td><button type="button" class="textknopf" data-installieren="barcodes@1.0.0">installieren</button></td></tr></tbody></table></div><p><a href="https://github.com/motom001/dms-registry/issues/new?template=paket-meldung.yml&amp;title=%5BBarcodes%5D%20&amp;paket=Barcodes%20%28barcodes%29">Fehler oder Wunsch zu diesem Paket melden</a> <span class="leise">(auf GitHub; übertragen wird nur der Paketname)</span></p></div></details>
+    <section class="passt"><h2>Passt dazu</h2><h3><a class="weiter" href="../../?kategorie=post">Ähnliche Pakete <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/benachrichtigungen/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><span><strong>Benachrichtigungen</strong><br><span class="leise kurzfassung">Ablago erinnert dich an offene Aufgaben und meldet Post für dich, Änderungen an Favoriten, Vertretungen und gesperrte Konten – als Automatisierungen, die du anpassen kannst. Dazu die Vorlagen „Aufgabe vergeben“, „Erinnern“ und „Wiedervorlage“ im Menü „Mappe“.</span></span></a><a class="mini" href="../../paket/leerseiten/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span><strong>Leerseiten</strong><br><span class="leise kurzfassung">Erkennt leere Seiten in neuer Post, etwa die Rückseiten beidseitiger Scans, und markiert sie. Beim Übernehmen in eine Mappe fallen sie weg; gelöscht wird nichts, das Original bleibt als frühere Version. Ohne Internet.</span></span></a><a class="mini" href="../../paket/trennblatt/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 7v10"/><path d="M12 7v10"/><path d="M17 7v10"/></svg></span><span><strong>Trennblatt</strong><br><span class="leise kurzfassung">Teilt einen Stapel Briefe, die du in einem Rutsch gescannt hast, an ausgedruckten Trennblättern in einzelne Post auf; die Trennblätter fallen weg. Ein Aufkleber mit Archivnummer auf einem Brief trägt die Nummer gleich ein. Ohne Internet.</span></span></a></div><h3><a class="weiter" href="../../autor/motom001/">Weitere Pakete von Thomas Meissner <span aria-hidden="true">›</span></a></h3><div class="minis"><a class="mini" href="../../paket/basis/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span><strong>Basis</strong><br><span class="leise kurzfassung">Die Grundlage für die anderen Pakete: Firmen, Behörden, Ärzte und Banken mit ihren Filialen, die Menschen, mit denen du zu tun hast, und die Orte, an denen dein Papier liegt.</span></span></a><a class="mini" href="../../paket/bildformate/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span><strong>Bildformate</strong><br><span class="leise kurzfassung">Macht TIFF-Scans (auch mehrseitig), WebP, GIF und BMP in Ablago sichtbar – mit Vorschaubild. Für durchsuchbaren Text bei Scans zusätzlich das Paket „Texterkennung“ installieren. Das Original bleibt unverändert.</span></span></a><a class="mini" href="../../paket/fahrzeuge/"><span class="symbol klein bild" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span><span><strong>Fahrzeuge</strong><br><span class="leise kurzfassung">Auto, Motorrad, Wohnmobil und Anhänger mit HU-Termin, Halter, Fahrzeugbrief, Versicherung und allen Rechnungen – dazu die Vertragsarten Pkw-Kaufvertrag (mit Vorlage) und Leasing.</span></span></a></div></section>
+
+  </main>
+  <dialog id="dms-dialog">
+    <form method="dialog" class="stapel">
+      <h2>Adresse deines Ablago</h2>
+      <p class="leise">Zum Beispiel <code>https://dms.example.org</code> oder <code>http://192.168.1.20:3000</code>. Die Adresse bleibt nur in diesem Browser; die Seite sendet nichts an dein Ablago.</p>
+      <input type="url" id="dms-url" required placeholder="https://…" autocomplete="url">
+      <p class="fehler" id="dms-fehler" hidden>Bitte eine Adresse mit http:// oder https:// angeben.</p>
+      <div class="knoepfe"><button value="ok" class="knopf primaer">Speichern und öffnen</button><button value="abbruch" class="textknopf" formnovalidate>Abbrechen</button></div>
+    </form>
+  </dialog>
+  <footer><a href="https://github.com/motom001/dms-registry/blob/main/REGELN.md">Regeln für Pakete</a> · <a href="../../zusammenhaenge/">Wie alles zusammenhängt</a> · <a href="../../katalog.json">katalog.json</a> · <a href="https://github.com/motom001/dms-registry/blob/main/werkzeuge/symbole/LICENSE">Symbole: Lucide (ISC-Lizenz)</a></footer>
+</body>
+</html>
